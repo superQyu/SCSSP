@@ -1,0 +1,209 @@
+├── .browserslistrc
+├── .eslintignore
+├── .eslintrc.js
+├── .git
+├── .gitattributes
+├── .github
+├── .gitignore
+├── .husky
+├── .prettierignore
+├── .prettierrc
+├── .yarnrc
+├── apps
+│  └── admin
+│     ├── .env.development
+│     ├── .env.production
+│     ├── .eslintrc.js
+│     ├── .github
+│     ├── index.html
+│     ├── node_modules
+│     ├── package.json
+│     ├── src
+│     │  ├── apis
+│     │  │  ├── basic.api.ts
+│     │  │  ├── index.ts
+│     │  │  ├── login.api.ts
+│     │  │  ├── sites.api.ts
+│     │  │  └── user.api.ts
+│     │  ├── App.scss
+│     │  ├── app.tsx
+│     │  ├── assets
+│     │  │  ├── 404.png
+│     │  │  ├── bgImg
+│     │  │  │  └── TVYTbAXWheQpRcWDaDMu.svg
+│     │  │  └── logo
+│     │  │     ├── 140-140.png
+│     │  │     ├── 64-64.ico
+│     │  │     ├── 64-64.png
+│     │  │     ├── logo.png
+│     │  │     └── title.png
+│     │  ├── common
+│     │  │  └── mock
+│     │  │     └── index.tsx
+│     │  ├── config
+│     │  │  └── index.ts
+│     │  ├── context
+│     │  ├── main.css
+│     │  ├── main.tsx
+│     │  ├── modes
+│     │  │  ├── model.d.tsx
+│     │  │  └── site.model.tsx
+│     │  ├── pages
+│     │  │  ├── dashboard
+│     │  │  │  ├── index.tsx
+│     │  │  │  └── style.module.scss
+│     │  │  ├── error-page
+│     │  │  │  ├── index.module.scss
+│     │  │  │  └── index.tsx
+│     │  │  ├── list-page
+│     │  │  │  └── index.tsx
+│     │  │  ├── login
+│     │  │  │  ├── index.module.scss
+│     │  │  │  └── index.tsx
+│     │  │  ├── systemManagement
+│     │  │  │  ├── roleManagement
+│     │  │  │  │  └── index.tsx
+│     │  │  │  ├── siteManagement
+│     │  │  │  │  ├── index.module.scss
+│     │  │  │  │  └── index.tsx
+│     │  │  │  └── userManagement
+│     │  │  │     ├── components
+│     │  │  │     │  └── sites
+│     │  │  │     │     └── structural.tsx
+│     │  │  │     ├── index.module.scss
+│     │  │  │     └── index.tsx
+│     │  │  └── user
+│     │  │     └── index.tsx
+│     │  ├── react-admin.d.ts
+│     │  ├── routes
+│     │  │  └── index.tsx
+│     │  └── utils
+│     │     ├── index.tsx
+│     │     ├── InitSettings.tsx
+│     │     └── routers.tsx
+│     ├── tsconfig.json
+│     └── vite.config.ts
+├── CNAME
+├── commitlint.config.js
+├── LICENSE.md
+├── node_modules
+├── package.json
+├── packages
+│  ├── apis
+│  │  ├── .eslintrc.js
+│  │  ├── index.ts
+│  │  ├── module
+│  │  │  ├── admin
+│  │  │  │  ├── index.ts
+│  │  │  │  └── typing.d.ts
+│  │  │  ├── index.ts
+│  │  │  └── request.ts
+│  │  ├── node_modules
+│  │  ├── package.json
+│  │  └── tsconfig.json
+│  ├── components
+│  │  ├── .eslintrc.js
+│  │  ├── index.ts
+│  │  ├── node_modules
+│  │  ├── package.json
+│  │  ├── src
+│  │  │  ├── components
+│  │  │  │  ├── header.tsx
+│  │  │  │  ├── Layout
+│  │  │  │  │  ├── components
+│  │  │  │  │  │  ├── bgLayoutImgList.tsx
+│  │  │  │  │  │  ├── item.tsx
+│  │  │  │  │  │  ├── list.tsx
+│  │  │  │  │  │  ├── MenuCard.tsx
+│  │  │  │  │  │  ├── profile.scss
+│  │  │  │  │  │  ├── profile.tsx
+│  │  │  │  │  │  └── SearchInput.tsx
+│  │  │  │  │  ├── index.tsx
+│  │  │  │  │  ├── layout.d.ts
+│  │  │  │  │  └── _defaultProps.tsx
+│  │  │  │  ├── OutletLayoutRouter
+│  │  │  │  │  └── index.tsx
+│  │  │  │  └── Text
+│  │  │  │     └── index.tsx
+│  │  │  └── index.ts
+│  │  └── tsconfig.json
+│  ├── eslint-config-custom
+│  │  ├── index.js
+│  │  ├── node_modules
+│  │  └── package.json
+│  ├── hooks
+│  │  ├── .eslintrc.js
+│  │  ├── index.ts
+│  │  ├── module
+│  │  │  ├── context.ts
+│  │  │  ├── index.tsx
+│  │  │  └── KeepAlive.tsx
+│  │  ├── node_modules
+│  │  ├── package.json
+│  │  └── tsconfig.json
+│  ├── request
+│  │  ├── index.ts
+│  │  ├── module
+│  │  │  ├── autoInterface.ts
+│  │  │  ├── fetch.ts
+│  │  │  ├── index.ts
+│  │  │  ├── netStatus.ts
+│  │  │  └── type.ts
+│  │  ├── node_modules
+│  │  ├── package-lock.json
+│  │  ├── package.json
+│  │  └── tsconfig.json
+│  ├── store
+│  │  ├── .eslintrc.js
+│  │  ├── index.ts
+│  │  ├── module
+│  │  │  ├── index.ts
+│  │  │  └── reducers
+│  │  │     ├── common.ts
+│  │  │     ├── site.ts
+│  │  │     └── user.ts
+│  │  ├── node_modules
+│  │  ├── package.json
+│  │  └── tsconfig.json
+│  ├── tsconfig
+│  │  ├── base.json
+│  │  ├── node_modules
+│  │  ├── package.json
+│  │  ├── react-library.json
+│  │  └── vite.json
+│  ├── ui
+│  │  ├── .eslintrc.js
+│  │  ├── components
+│  │  │  └── Button.tsx
+│  │  ├── index.ts
+│  │  ├── node_modules
+│  │  ├── package.json
+│  │  └── tsconfig.json
+│  └── utils
+│     ├── .eslintrc.js
+│     ├── index.ts
+│     ├── module
+│     │  ├── common.ts
+│     │  ├── contans.ts
+│     │  ├── encryptions
+│     │  │  ├── base64js.ts
+│     │  │  ├── index.ts
+│     │  │  ├── sm3.ts
+│     │  │  └── sm4.ts
+│     │  ├── index.ts
+│     │  ├── storage.ts
+│     │  ├── tools.ts
+│     │  └── type.tsx
+│     ├── node_modules
+│     ├── package.json
+│     └── tsconfig.json
+├── plugin
+│  ├── preinstall.js
+│  ├── startup.js
+│  ├── treer.js
+│  ├── treer.txt
+│  └── unmods.js
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+├── README.md
+└── turbo.json
