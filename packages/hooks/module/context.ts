@@ -9,8 +9,6 @@ interface AuthContextType {
   saveSiteInfor: (dispatch: Dispatch<any>, values: any) => Promise<unknown>;
   mockSignIn: (dispatch: Dispatch<any>, values: string) => Promise<unknown>;
   signOut: (dispatch: Dispatch<any>) => Promise<unknown>;
-  BaseConf: Object;
-  MountedApis: Object;
 }
 // 用户登录
 export const signIn = async (dispatch: any, values: string) => {
@@ -53,6 +51,4 @@ export const AuthContext = React.createContext<AuthContextType>({
   saveSiteInfor, //  保存站点信息
   mockSignIn, //模拟登录
   signOut, // 退出
-  BaseConf: Object, // 基础参数配置
-  MountedApis: Object, // 自动化接口
 });

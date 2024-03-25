@@ -14,10 +14,13 @@ import { logo, title, describe } from '@/config';
 // Current usage CSS stylesheet
 import styles from './index.module.scss';
 
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+
 type LoginType = 'phone' | 'account';
 
 const Login: React.FC = () => {
-  const { signIn, saveUserInfor, MountedApis } = useContext(AuthContext);
+  const { server } = useBasicConfiguration();
+  const { signIn, saveUserInfor } = useContext(AuthContext);
   const navigator = useNavigate();
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(false);
@@ -31,7 +34,7 @@ const Login: React.FC = () => {
 
   const [form] = Form.useForm();
   //  api server
-  const { login } = MountedApis as any;
+  const { login } = server;
   // 获取图片验证
   const getCaptchaVal = () => {
     if (loading) return;

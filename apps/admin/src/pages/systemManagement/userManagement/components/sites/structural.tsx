@@ -10,6 +10,7 @@ import type { FormInstance } from 'antd/es/form';
 
 import { AuthContext } from 'hooks';
 import { url2key } from 'utils';
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 interface Props {
   /** 控制 Modal 是否显示 */
@@ -47,7 +48,7 @@ const layout = {
 };
 
 const AddSite: React.FC<Props> = ({ subForm, openModal, onStateChange }: Props) => {
-  const { MountedApis } = useContext(AuthContext);
+  const { server, config } = useBasicConfiguration();
   const formRef = React.useRef<FormInstance>(null);
   const [title, setTitle] = useState<string>('新建站点');
   const [loading, setLoading] = useState<boolean>(false);
@@ -63,7 +64,7 @@ const AddSite: React.FC<Props> = ({ subForm, openModal, onStateChange }: Props) 
   });
 
   //  api server
-  const { sites } = MountedApis as any;
+  const { sites } = server;
   const { Option } = Select;
 
   // 字段提示

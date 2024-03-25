@@ -1,10 +1,9 @@
-import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
+import { EllipsisOutlined } from '@ant-design/icons';
 
 import type { ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
-import { Button, Dropdown, message, Modal } from 'antd';
-import React, { useContext, useRef, useState } from 'react';
-import { AuthContext } from 'hooks';
+import { Button, Dropdown, message } from 'antd';
+import React, { useRef, useState } from 'react';
 
 import { TOKEN, getToken } from 'utils';
 
@@ -17,17 +16,19 @@ import AddSite from './components/sites/structural';
 import type { ModesApi } from '@/modes/model.d';
 import siteModel from '@/modes/site.model';
 
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+
 export default () => {
-  const { MountedApis } = useContext(AuthContext);
+  const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
 
-  const [subForm, setSubForm] = useState<Record<string, any>>({});
+  const [subForm, _] = useState<Record<string, any>>({});
   const [formModal, setFormModal] = useState<boolean>(false);
 
   //  api server
-  const { sites } = MountedApis as any;
+  const { sites } = server;
 
-  const iinitColumns = siteModel({ apis: MountedApis });
+  const iinitColumns = siteModel({ apis: server });
 
   const handleModalStateChange = (state: boolean) => setFormModal(state);
   const handleCancel = (state: boolean) => setFormModal(state);

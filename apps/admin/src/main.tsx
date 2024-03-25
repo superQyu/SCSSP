@@ -9,22 +9,27 @@ import { store, Provider } from 'store';
 
 import 'virtual:uno.css';
 
+// Load global configuration items
+import { BasicConfigurationProvider } from '@/context/BasicConfigurationContext';
+
 const root = createRoot(document.getElementById('root') as HTMLDivElement);
 root.render(
-  <Provider store={store}>
-    <BrowserRouter
-      // 生产环境配置二级路径
-      basename={'/' + import.meta.env.BASE_URL.replaceAll('/', '')}
-    >
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: 'pink',
-          },
-        }}
+  <BasicConfigurationProvider>
+    <Provider store={store}>
+      <BrowserRouter
+        // 生产环境配置二级路径
+        basename={'/' + import.meta.env.BASE_URL.replaceAll('/', '')}
       >
-        <App />
-      </ConfigProvider>
-    </BrowserRouter>
-  </Provider>
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: 'pink',
+            },
+          }}
+        >
+          <App />
+        </ConfigProvider>
+      </BrowserRouter>
+    </Provider>
+  </BasicConfigurationProvider>
 );

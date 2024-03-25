@@ -14,18 +14,13 @@ import {
   useAppSelector,
   useLocationListen,
 } from 'hooks';
-import { TOKEN, Settings } from 'utils';
+import { Settings } from 'utils';
 import { defaultRoutes } from './routes';
 import { filepathToElement } from './utils/routers';
 
-import * as baseConf from '@/config';
-import { autoInterface } from '@spms/web-request';
-import apisGather from '@/apis';
-const apiServer = autoInterface(apisGather, TOKEN);
-
 function App() {
   const {
-    user: { menu, userInfor },
+    user: { menu },
   } = useAppSelector((state) => state) as { user: { menu: any; userInfor: object } };
   const cloneDefaultRoutes = cloneDeep(defaultRoutes);
 
@@ -35,9 +30,7 @@ function App() {
     document.title = `${Settings.title}: ${Settings.describe || r.pathname.replace('/', '')}`;
   });
   const element = useRoutes(cloneDefaultRoutes);
-  useEffect(() => {
-    // userInfor
-  }, [menu]);
+  useEffect(() => {}, [menu]);
 
   return (
     <AuthContext.Provider
@@ -47,8 +40,6 @@ function App() {
         signOut,
         saveUserInfor,
         saveSiteInfor,
-        BaseConf: baseConf as any,
-        MountedApis: apiServer,
       }}
     >
       {element}

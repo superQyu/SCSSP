@@ -4,15 +4,18 @@ import { AuthContext, useAppDispatch } from 'hooks';
 import { setMenu } from 'store';
 import { TOKEN, buildTree } from 'utils';
 
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+
 export default ({ children }: any) => {
-  const navigate = useNavigate();
+  const { server, config } = useBasicConfiguration();
   const { signOut } = useContext(AuthContext);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { saveUserInfor, saveSiteInfor, BaseConf, MountedApis } = useContext(AuthContext);
+  const { saveUserInfor, saveSiteInfor } = useContext(AuthContext);
   const location = window.location;
 
-  const { prefix, fieldConversion = {} } = BaseConf as any; // 基本设置
-  const { user: U, basic } = MountedApis as any; //  api server
+  const { prefix, fieldConversion = {} } = config; // 基本设置
+  const { user: U, basic } = server;
 
   const getAvatar = (a: any) => {
     return `${prefix.static}${a}`;
@@ -43,28 +46,11 @@ export default ({ children }: any) => {
   const getRoutes = async () => {
     await U.getRoute({ siteKey: TOKEN.replace(/^Qy_/, '') }).then((res: any) => {
       const menus = buildTree(res, {
-        intercept: ({
-          id,
-          parentId,
-          name,
-          ico,
-          path,
-          filepath,
-          routes,
-          orderNum,
-        }: {
-          [key: string]: string;
-        }) => {
+        intercept: (item: { [key: string]: string }) => {
           return {
-            id,
-            parentId,
-            name,
-            icon: `/static${ico}`,
-            path,
-            filepath,
-            component: filepath,
-            routes,
-            orderNum,
+            ...item,
+            icon: `/static${item.ico}`,
+            component: item.filepath,
           };
         },
       });
