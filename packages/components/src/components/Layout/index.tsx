@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { GithubFilled, InfoCircleFilled, QuestionCircleFilled } from '@ant-design/icons';
-import type { ProSettings, MenuDataItem } from '@ant-design/pro-components';
+import styled from 'styled-components';
+import { Switch, Tooltip, Space, Popover, Image, Skeleton } from 'antd';
+import { QuestionCircleFilled } from '@ant-design/icons';
 import {
   PageContainer,
   ProConfigProvider,
   ProLayout,
   SettingDrawer,
   WaterMark,
+  type ProSettings,
+  type MenuDataItem,
 } from '@ant-design/pro-components';
-import { Switch, Tooltip, Space, Popover, Dropdown, Image, Skeleton } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { route, appList } from './_defaultProps';
+import { route } from './_defaultProps';
 
 import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
 import { useAppDispatch, useAppSelector, KeepAlive, useLocationListen } from 'hooks';
@@ -20,9 +22,19 @@ import { MenuItem, sortMenu } from 'utils';
 import SearchInput from './components/SearchInput';
 import MenuCard from './components/MenuCard';
 import Profile from './components/profile';
-import bgLayoutImgList from './components/bgLayoutImgList';
 
-const layout: React.FC<{}> = () => {
+import { CommonObject } from './layout';
+
+const areaId: string = 'Qy-pro-layout';
+const CustomProLayout = styled(ProLayout)(() => ({
+  '.Qy-pro-layout-prefix-sider-logo>a': {
+    'white-space': 'nowrap',
+  },
+}));
+
+const layout: React.FC<CommonObject> = (props: any) => {
+  if (typeof document === 'undefined') return <div />;
+
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -30,13 +42,12 @@ const layout: React.FC<{}> = () => {
   const [pathname, setPathname] = useState(location.pathname);
   const [isDark, setDark] = useState<boolean>(false);
   const [settings, setSetting] = useState<Partial<ProSettings> | undefined>({
-    title: '--',
-    contentWidth: 'Fluid',
-    fixSiderbar: true,
-    layout: 'mix',
     navTheme: 'light',
-    splitMenus: true,
     colorPrimary: '#1677FF',
+    contentWidth: 'Fluid',
+    layout: 'side',
+    fixSiderbar: true,
+    splitMenus: false,
   });
 
   const [num, setNum] = useState(40);
@@ -44,15 +55,14 @@ const layout: React.FC<{}> = () => {
   const [shouldRender, setShouldRender] = useState<boolean>(false);
 
   const [loading, setLoading] = useState(true);
-  const { userInfor = {}, menu = [] } = user as Record<string, any>; // 获取用户基本信息
-  const { siteInfor = {} } = site as Record<string, any>; // 获取站点基本信息
+  const { userInfor = {}, menu = [] } = user as CommonObject; // 获取用户基本信息
+  const { siteInfor = {} } = site as CommonObject; // 获取站点基本信息
   const [baseInfor, setBaseInfor] = useState<object>({
     avatar: '',
     userName: null,
     logo: '',
     siteName: '',
   });
-
   const [menus, setMenus] = useState<{ path: string; routes: MenuItem[] }>({
     path: '/',
     routes: [],
@@ -98,14 +108,23 @@ const layout: React.FC<{}> = () => {
     setSetting(v);
   };
 
-  if (typeof document === 'undefined') return <div />;
+  const filteredObject = (a: CommonObject, b: CommonObject): CommonObject => {
+    return Object.keys(b).reduce((obj, key) => {
+      if (a.hasOwnProperty(key)) {
+        obj[key] = b[key];
+      }
+      return obj;
+    }, {} as CommonObject);
+  };
+
   useEffect(() => {
     if (menu.length != 0) {
-      const _routes = { ...menus, routes: sortMenu([...[...route.routes, ...menu]]) };
-      setMenus(_routes);
-      // 默认跳转路由
-      navigate(_routes.routes[2].path);
+      setMenus({ ...menus, routes: sortMenu([...menu]) });
+    } else {
+      setMenus({ ...menus, routes: sortMenu([...[...route.routes, ...menu]]) });
     }
+    // 默认跳转路由
+    // navigate(menus?.routes[0]?.path);
   }, [menu]);
   useEffect(() => {
     setBaseInfor({
@@ -117,17 +136,18 @@ const layout: React.FC<{}> = () => {
     if (siteInfor.ico && siteInfor.ico != '') setShouldRender(true);
     setLoading(false);
   }, [user, site]);
-
-  const areaId: string = 'Qy-pro-layout';
+  useEffect(() => {
+    const newSettings = filteredObject(settings as CommonObject, props);
+    setSetting({ ...settings, ...newSettings });
+  }, [props]);
   return (
-    <WaterMark content="Digital Chain Industrial Control by antd">
+    <WaterMark content={props.waterMarkProps || 'Digital Chain Industrial Control by antd'}>
       <ProConfigProvider>
         <div id={areaId} style={{ height: '100vh', overflow: 'auto' }}>
-          <ProLayout
-            {...settings}
+          <CustomProLayout
+            title="管理平台"
             prefixCls={`${areaId}-prefix`}
             route={menus}
-            appList={appList}
             location={{
               pathname,
             }}
@@ -136,11 +156,9 @@ const layout: React.FC<{}> = () => {
                 colorBgMenuItemSelected: 'rgba(0,0,0,0.08)',
               },
             }}
-            siderMenuType="group"
             menu={{
               collapsedShowGroupTitle: true,
             }}
-            // menuDataRender={() => loopMenuItem(route.routes)}
             postMenuData={(menus) => filterByMenuData(menus || [], keyWord)}
             avatarProps={{
               size: 'small',
@@ -178,9 +196,15 @@ const layout: React.FC<{}> = () => {
                 props.layout !== 'side' && document.body.clientWidth > 1400 ? (
                   <SearchInput />
                 ) : undefined,
-                <InfoCircleFilled key="InfoCircleFilled" />,
+                <Tooltip placement="bottom" title={'主题切换'}>
+                  <Switch
+                    checkedChildren="🌜"
+                    unCheckedChildren="🌞"
+                    checked={isDark}
+                    onChange={(v) => handlerThemeSwitching(v)}
+                  />
+                </Tooltip>,
                 <QuestionCircleFilled key="QuestionCircleFilled" />,
-                <GithubFilled key="GithubFilled" />,
               ];
             }}
             headerTitleRender={(logo, title, _) => {
@@ -223,35 +247,12 @@ const layout: React.FC<{}> = () => {
                       style={{ width: '100%', marginBlockStart: '32px' }}
                     />
                   </div>
-                  <div>
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <QuestionCircleFilled key="QuestionCircleFilled" />
-                      <InfoCircleFilled key="InfoCircleFilled" />
-                      <Tooltip placement="bottom" title={'Theme switching'}>
-                        <Switch
-                          checkedChildren="🌜"
-                          unCheckedChildren="🌞"
-                          checked={isDark}
-                          onChange={(v) => handlerThemeSwitching(v)}
-                        />
-                      </Tooltip>
-                    </div>
-                  </div>
                   <div style={{ textAlign: 'center', paddingBlockStart: 12 }}>
                     <div>© 2022 Made with love</div>
                     <div>by Ant Design</div>
                   </div>
                 </div>
               );
-            }}
-            onMenuHeaderClick={(e) => {
-              console.log('menu 菜单的头部点击事件', e);
             }}
             menuItemRender={(item, dom) => (
               <div
@@ -262,7 +263,8 @@ const layout: React.FC<{}> = () => {
                 {dom}
               </div>
             )}
-            bgLayoutImgList={bgLayoutImgList}
+            {...props}
+            {...settings}
           >
             <PageContainer
               token={{
@@ -298,7 +300,7 @@ const layout: React.FC<{}> = () => {
               disableUrlParams={false}
             />
             <ErrorBoundary>{<KeepAlive include={[]} keys={[]} />}</ErrorBoundary>
-          </ProLayout>
+          </CustomProLayout>
         </div>
       </ProConfigProvider>
     </WaterMark>

@@ -9,3 +9,7 @@ export interface MenuItem {
   children?: MenuItem[];
   // element?: { element: () => Promise<{ [key: string]: any }> };
 }
+
+export interface CommonObject {
+  [key: string]: any;
+}

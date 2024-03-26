@@ -7,7 +7,7 @@ import * as baseConf from '@/config';
 
 interface ConfigurationType {
   server: Record<string, any>;
-  config: Record<string, any>;
+  config?: Record<string, any>;
 }
 
 interface BasicConfigurationContextType extends ConfigurationType {

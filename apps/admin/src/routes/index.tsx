@@ -7,6 +7,9 @@ import Dashboard from '@/pages/dashboard';
 import ErrorPage from '@/pages/error-page';
 import Login from '@/pages/login';
 import InitSettings from '@/utils/InitSettings';
+import LayoutConfig from '@/config/LayoutConfig';
+// 左上角logo
+import myImage from '@/assets/logo/64-64.png'; // 导入图片
 
 // 验证权限
 const Permissions = ({ children }: any) => {
@@ -16,7 +19,7 @@ const Permissions = ({ children }: any) => {
 export const defaultRoutes: any = [
   {
     path: '/',
-    element: <Permissions>{<Layout />}</Permissions>,
+    element: <Permissions>{<Layout {...{ ...LayoutConfig(), logo: myImage }} />}</Permissions>,
     errorElement: <ErrorPage />,
     children: [
       {

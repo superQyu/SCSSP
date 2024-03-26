@@ -8,8 +8,6 @@ import ErrorPage from '@/pages/error-page';
 // /**/ 表示二级目录 一般二级目录就够了  不够在加即可
 export const modules = import.meta.glob('../pages/**/*.tsx');
 
-// console.log(modules);
-
 function pathToLazyComponent(Ele: string) {
   const path = modules[`../${Ele}`] as any;
   if (!path)

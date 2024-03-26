@@ -14,7 +14,7 @@ export default ({ children }: any) => {
   const { saveUserInfor, saveSiteInfor } = useContext(AuthContext);
   const location = window.location;
 
-  const { prefix, fieldConversion = {} } = config; // 基本设置
+  const { prefix, fieldConversion = {} } = config || {}; // 基本设置
   const { user: U, basic } = server;
 
   const getAvatar = (a: any) => {
