@@ -20,7 +20,7 @@ export default () => {
     appList: [], //跨站点导航列表
     onMenuHeaderClick: (e: React.MouseEvent<HTMLDivElement>) => {
       //menu 菜单的头部点击事件
-      console.log(e);
+      console.log('左上角logo 点击事件');
     },
   };
 };

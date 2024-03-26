@@ -10,7 +10,7 @@ export const modules = import.meta.glob('../pages/**/*.tsx');
 
 function pathToLazyComponent(Ele: string) {
   const path = modules[`../${Ele}`] as any;
-  if (!path)
+  if (!path) {
     return (
       <ErrorPage>
         <Alert
@@ -19,7 +19,8 @@ function pathToLazyComponent(Ele: string) {
         />
       </ErrorPage>
     );
-  const Components = lazy(path);
+  }
+  const Components = lazy(() => import(/* @vite-ignore */ `../${Ele}`)); //lazy(path);
   return (
     <Suspense fallback={<Spin size="small" />}>
       <Components />
@@ -32,9 +33,7 @@ export const filepathToElement = (list: MenuItem[]) =>
     if (item.children) {
       return {
         path: item.path,
-        key: item.key,
         children: item.children?.map((c) => ({
-          key: c.key,
           path: c.path,
           element: pathToLazyComponent(c.filepath),
         })),
@@ -42,7 +41,6 @@ export const filepathToElement = (list: MenuItem[]) =>
       };
     } else {
       return {
-        key: item.key,
         path: item.path,
         element: pathToLazyComponent(item.filepath),
       };

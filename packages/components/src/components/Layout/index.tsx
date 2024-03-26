@@ -121,7 +121,7 @@ const layout: React.FC<CommonObject> = (props: any) => {
     if (menu.length != 0) {
       setMenus({ ...menus, routes: sortMenu([...menu]) });
     } else {
-      setMenus({ ...menus, routes: sortMenu([...[...route.routes, ...menu]]) });
+      // setMenus({ ...menus, routes: sortMenu([...[...route.routes, ...menu]]) });
     }
     // 默认跳转路由
     // navigate(menus?.routes[0]?.path);
@@ -141,7 +141,7 @@ const layout: React.FC<CommonObject> = (props: any) => {
     setSetting({ ...settings, ...newSettings });
   }, [props]);
   return (
-    <WaterMark content={props.waterMarkProps || 'Digital Chain Industrial Control by antd'}>
+    <WaterMark content={props.waterMarkProps || ''}>
       <ProConfigProvider>
         <div id={areaId} style={{ height: '100vh', overflow: 'auto' }}>
           <CustomProLayout
@@ -257,6 +257,7 @@ const layout: React.FC<CommonObject> = (props: any) => {
             menuItemRender={(item, dom) => (
               <div
                 onClick={() => {
+                  console.log(item);
                   setPathname(item.path || '/welcome');
                 }}
               >

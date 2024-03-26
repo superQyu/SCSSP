@@ -24,6 +24,8 @@ function App() {
   } = useAppSelector((state) => state) as { user: { menu: any; userInfor: object } };
   const cloneDefaultRoutes = cloneDeep(defaultRoutes);
 
+  console.log(filepathToElement(menu));
+
   cloneDefaultRoutes[0].children = [...filepathToElement(menu), ...cloneDefaultRoutes[0].children];
 
   useLocationListen((r) => {

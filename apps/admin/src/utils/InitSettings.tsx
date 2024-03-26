@@ -1,10 +1,16 @@
+import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useContext, useEffect } from 'react';
+import * as Icons from '@ant-design/icons';
 import { AuthContext, useAppDispatch } from 'hooks';
 import { setMenu } from 'store';
 import { TOKEN, buildTree } from 'utils';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+
+interface IconMap {
+  [key: string]: any;
+}
+const iconMap: IconMap = Icons as unknown as IconMap;
 
 export default ({ children }: any) => {
   const { server, config } = useBasicConfiguration();
@@ -43,19 +49,23 @@ export default ({ children }: any) => {
     });
   };
   // 获取路由列表
+
   const getRoutes = async () => {
     await U.getRoute({ siteKey: TOKEN.replace(/^Qy_/, '') }).then((res: any) => {
       const menus = buildTree(res, {
         intercept: (item: { [key: string]: string }) => {
           return {
             ...item,
-            icon: `/static${item.ico}`,
+            icon:
+              item.ico.indexOf('.') != -1
+                ? `/static${item.ico}`
+                : React.createElement(iconMap[item.ico]),
             component: item.filepath,
           };
         },
       });
       dispatch(setMenu([...menus]));
-      setMenu(menus);
+      // setMenu(menus);
     });
   };
 
