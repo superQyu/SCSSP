@@ -146,11 +146,11 @@ export const appList = [
     url: 'https://d.umijs.org/zh-CN',
   },
 ];
-// export {
-//   appList,
-//   route
-//    routes : (remote: []) => {
-//     return remote;
-//   }
-// };
-export default 'defaultRoutes';
+
+export default {
+  appList,
+  route,
+  routes: (remote: []) => {
+    return remote;
+  },
+};
