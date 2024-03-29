@@ -2,19 +2,9 @@ import './App.scss';
 
 import { cloneDeep } from 'lodash';
 import { useEffect } from 'react';
-import { useRoutes } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
-import {
-  AuthContext,
-  signIn,
-  mockSignIn,
-  signOut,
-  saveUserInfor,
-  saveSiteInfor,
-  useAppSelector,
-  useLocationListen,
-} from 'hooks';
-import { Settings } from 'utils';
+import { useAppSelector } from 'hooks';
 import { defaultRoutes } from './routes';
 import { filepathToElement } from './utils/routers';
 
@@ -24,28 +14,16 @@ function App() {
   } = useAppSelector((state) => state) as { user: { menu: any; userInfor: object } };
   const cloneDefaultRoutes = cloneDeep(defaultRoutes);
 
-  console.log(filepathToElement(menu));
-
   cloneDefaultRoutes[0].children = [...filepathToElement(menu), ...cloneDefaultRoutes[0].children];
+  const router = createBrowserRouter([...cloneDefaultRoutes]);
 
-  useLocationListen((r) => {
-    document.title = `${Settings.title}: ${Settings.describe || r.pathname.replace('/', '')}`;
-  });
-  const element = useRoutes(cloneDefaultRoutes);
-  useEffect(() => {}, [menu]);
-
+  useEffect(() => {
+    console.log(cloneDefaultRoutes);
+  }, [menu]);
   return (
-    <AuthContext.Provider
-      value={{
-        signIn,
-        mockSignIn,
-        signOut,
-        saveUserInfor,
-        saveSiteInfor,
-      }}
-    >
-      {element}
-    </AuthContext.Provider>
+    <>
+      <RouterProvider router={router}></RouterProvider>
+    </>
   );
 }
 

@@ -11,7 +11,7 @@ import {
   type ProSettings,
   type MenuDataItem,
 } from '@ant-design/pro-components';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { route } from './_defaultProps';
 
 import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
@@ -147,6 +147,7 @@ const layout: React.FC<CommonObject> = (props: any) => {
           <CustomProLayout
             title="管理平台"
             prefixCls={`${areaId}-prefix`}
+            contentStyle={{ height: 'calc(100vh - 5px)' }}
             route={menus}
             location={{
               pathname,
@@ -156,9 +157,11 @@ const layout: React.FC<CommonObject> = (props: any) => {
                 colorBgMenuItemSelected: 'rgba(0,0,0,0.08)',
               },
             }}
-            menu={{
-              collapsedShowGroupTitle: true,
-            }}
+            menu={
+              {
+                // collapsedShowGroupTitle: true,
+              }
+            }
             postMenuData={(menus) => filterByMenuData(menus || [], keyWord)}
             avatarProps={{
               size: 'small',
@@ -248,58 +251,29 @@ const layout: React.FC<CommonObject> = (props: any) => {
                     />
                   </div>
                   <div style={{ textAlign: 'center', paddingBlockStart: 12 }}>
-                    <div>© 2022 Made with love</div>
-                    <div>by Ant Design</div>
+                    <div>© 2023 Made with love</div>
+                    <div>by Designer Q_Y</div>
                   </div>
                 </div>
               );
             }}
-            menuItemRender={(item, dom) => (
-              <div
-                onClick={() => {
-                  console.log(item);
-                  setPathname(item.path || '/welcome');
-                }}
-              >
-                {dom}
-              </div>
-            )}
+            menuItemRender={(item, dom) => <Link to={item.path ?? '/'}>{dom}</Link>}
             {...props}
             {...settings}
           >
-            <PageContainer
-              token={{
-                paddingInlinePageContainerContent: num,
-              }}
-              tabList={[
-                {
-                  tab: '基本信息',
-                  key: 'base',
-                  closable: false,
-                },
-                {
-                  tab: '详细信息',
-                  key: 'info',
-                },
-              ]}
-              tabProps={{
-                type: 'editable-card',
-                hideAdd: true,
-                onEdit: (e, action) => console.log('tabProps', e, action),
-              }}
-            ></PageContainer>
-
-            <SettingDrawer
-              pathname={pathname}
-              enableDarkTheme
-              getContainer={(e: any) => {
-                if (typeof window === 'undefined') return e;
-                return document.getElementById(areaId);
-              }}
-              settings={settings}
-              onSettingChange={(v) => handlerSetting(v)}
-              disableUrlParams={false}
-            />
+            {props.settingDrawerShow && (
+              <SettingDrawer
+                pathname={pathname}
+                enableDarkTheme
+                getContainer={(e: any) => {
+                  if (typeof window === 'undefined') return e;
+                  return document.getElementById(areaId);
+                }}
+                settings={settings}
+                onSettingChange={(v) => handlerSetting(v)}
+                disableUrlParams={false}
+              />
+            )}
             <ErrorBoundary>{<KeepAlive include={[]} keys={[]} />}</ErrorBoundary>
           </CustomProLayout>
         </div>

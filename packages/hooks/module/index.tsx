@@ -6,6 +6,7 @@ import { AppDispatch, RootState, TypedUseSelectorHook, useSelector, useDispatch 
 
 const useLocationListen = (listener: (location: Location) => void) => {
   const location = useLocation();
+
   useEffect(() => {
     listener(location);
   }, [location]);

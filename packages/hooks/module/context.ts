@@ -7,7 +7,7 @@ interface AuthContextType {
   signIn: (dispatch: Dispatch<any>, values: string) => Promise<unknown>;
   saveUserInfor: (dispatch: Dispatch<any>, values: any) => Promise<unknown>;
   saveSiteInfor: (dispatch: Dispatch<any>, values: any) => Promise<unknown>;
-  mockSignIn: (dispatch: Dispatch<any>, values: string) => Promise<unknown>;
+  mockSignIn?: (dispatch: Dispatch<any>, values: string) => Promise<unknown>;
   signOut: (dispatch: Dispatch<any>) => Promise<unknown>;
 }
 // 用户登录

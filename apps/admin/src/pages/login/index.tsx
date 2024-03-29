@@ -61,12 +61,14 @@ const Login: React.FC = () => {
       login
         .login({ ...values })
         .then(async (res: any) => {
+          console.info('%c✔  登陆成功！！！ ==============', 'color: green; font-size: 14px;');
+
           const { token, userInfo } = res;
+          navigator('/');
           // 储存令牌
           await signIn(dispatch, token);
           // 保存用户信息
           await saveUserInfor(dispatch, userInfo);
-          navigator('/');
         })
         .catch(() => {
           getCaptchaVal();

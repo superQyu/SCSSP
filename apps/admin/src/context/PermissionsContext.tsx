@@ -1,28 +1,39 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
+
 import { useNavigate } from 'react-router-dom';
-
 import * as Icons from '@ant-design/icons';
-
-import { CusSkeleton } from 'ui';
 import { AuthContext, useAppDispatch } from 'hooks';
 import { setMenu } from 'store';
 import { TOKEN, buildTree } from 'utils';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-import { ProSkeleton } from '@ant-design/pro-components';
 
 interface IconMap {
   [key: string]: any;
 }
+
 const iconMap: IconMap = Icons as unknown as IconMap;
 
-export default ({ children }: any) => {
+interface PermissionsContextType {
+  // eslint-disable-next-line no-unused-vars
+}
+
+const PermissionsContext = createContext<PermissionsContextType | undefined>(undefined);
+
+export const usePermissions = () => {
+  const context = useContext(PermissionsContext);
+  if (!context) {
+    throw new Error('usePermissions must be used within a PermissionsProvider');
+  }
+  return context;
+};
+
+export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { server, config } = useBasicConfiguration();
   const { signOut } = useContext(AuthContext);
-  const navigate = useNavigate();
+  //   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { saveUserInfor, saveSiteInfor } = useContext(AuthContext);
-  const [loading, setLoading] = useState<boolean>(true);
   const location = window.location;
 
   const { prefix, fieldConversion = {} } = config || {}; // 基本设置
@@ -42,7 +53,8 @@ export default ({ children }: any) => {
       })
       .catch(async () => {
         await signOut(dispatch);
-        navigate('/');
+        // navigate('/');
+        // window.open('/login', '_self')
       });
   };
   // 获取站点详情
@@ -68,7 +80,6 @@ export default ({ children }: any) => {
           };
         },
       });
-      // console.log(menus);
       dispatch(setMenu([...menus]));
     });
   };
@@ -77,11 +88,9 @@ export default ({ children }: any) => {
     getUserInfor(() => {
       getSiteInfor();
       getRoutes();
-      console.info('%c✔  初始化基础信息成功！！！ =======', 'color: green; font-size: 14px;');
-
-      setLoading(false);
+      console.info('%c✔  初始化用户信息 ==============', 'color: green; font-size: 14px;');
     });
   }, []);
 
-  return <>{loading ? <CusSkeleton /> : children}</>;
+  return <PermissionsContext.Provider value={{}}>{children}</PermissionsContext.Provider>;
 };
