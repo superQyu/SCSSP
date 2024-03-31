@@ -20,6 +20,7 @@ function pathToLazyComponent(Ele: string) {
       </ErrorPage>
     );
   }
+  // console.log(Ele, path);
   const Components = lazy(() => import(/* @vite-ignore */ `../${Ele}`)); //lazy(path);
   return (
     <Suspense fallback={<Spin size="small" />}>
@@ -30,7 +31,8 @@ function pathToLazyComponent(Ele: string) {
 
 export const filepathToElement = (list: MenuItem[]) =>
   list.map((item) => {
-    if (item.children) {
+    if (item.children?.length) {
+      // filepathToElement(item.children);
       return {
         path: item.path,
         children: item.children?.map((c) => ({

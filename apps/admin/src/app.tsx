@@ -18,7 +18,8 @@ function App() {
   const router = createBrowserRouter([...cloneDefaultRoutes]);
 
   useEffect(() => {
-    console.log(cloneDefaultRoutes);
+    // console.log(menu);
+    // console.log(filepathToElement(menu));
   }, [menu]);
   return (
     <>

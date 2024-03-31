@@ -16,10 +16,10 @@ export const defaultRoutes: any = [
     element: <Layout />,
     errorElement: <ErrorPage />,
     children: [
-      // {
-      //   path: '/*',
-      //   element: <PreventRouteLoss />,
-      // },
+      {
+        path: '/*',
+        element: <PreventRouteLoss />,
+      },
     ],
   },
   {

@@ -9,7 +9,6 @@ import { setMenu } from 'store';
 import { TOKEN, buildTree } from 'utils';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-import { ProSkeleton } from '@ant-design/pro-components';
 
 interface IconMap {
   [key: string]: any;
@@ -65,6 +64,7 @@ export default ({ children }: any) => {
                 ? `/static${item.ico}`
                 : React.createElement(iconMap[item.ico]),
             component: item.filepath,
+            children: item.routes,
           };
         },
       });

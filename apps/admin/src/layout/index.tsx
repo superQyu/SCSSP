@@ -1,5 +1,7 @@
 import { Navigate, useNavigate } from 'react-router-dom';
 
+import { type RouterTypes } from './_suppllyTypes';
+
 import { TOKEN, getToken } from 'utils';
 import { Layout } from 'components';
 import InitSettings from '@/utils/InitSettings';
@@ -19,22 +21,14 @@ const LayoutContext: React.FC = () => {
       <Layout
         {...{
           ...LayoutConfig(),
-          onMenuHeaderClick: (e: React.MouseEvent<HTMLDivElement>) => {
-            navigator('/');
+          onMenuHeaderClick: (_: React.MouseEvent<HTMLDivElement>) => {
+            navigator('/login');
           },
           logo: myImage,
-          // route: [],
-          // menuDataRender: (e) => {
-          //   console.log(e);
-          //   return [e[e.length-1]];
-          // },
-          // menuRender:(e)=>{
-          //   console.log(e);
-          //   return e;
-          // }
-          // menuFooterRender: (props) => {
-          //   console.log(props);
-          // },
+          reRenderRoute: (e: RouterTypes) => {
+            e.routes = e.routes?.filter((item: Record<string, any>) => item.isHidden != '1');
+            return e;
+          },
         }}
       />
     </Permissions>

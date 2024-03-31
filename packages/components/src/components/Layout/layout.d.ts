@@ -7,6 +7,7 @@ export interface MenuItem {
   filepath: string;
   icon?: React.ReactNode;
   children?: MenuItem[];
+  routes?: MenuItem[];
   // element?: { element: () => Promise<{ [key: string]: any }> };
 }
 

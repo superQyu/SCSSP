@@ -126,6 +126,7 @@ const layout: React.FC<CommonObject> = (props: any) => {
     // 默认跳转路由
     // navigate(menus?.routes[0]?.path);
   }, [menu]);
+
   useEffect(() => {
     setBaseInfor({
       avatar: userInfor.avatar,
@@ -148,7 +149,7 @@ const layout: React.FC<CommonObject> = (props: any) => {
             title="管理平台"
             prefixCls={`${areaId}-prefix`}
             contentStyle={{ height: 'calc(100vh - 5px)' }}
-            route={menus}
+            route={props.reRenderRoute ? props.reRenderRoute(menus) : menus}
             location={{
               pathname,
             }}
