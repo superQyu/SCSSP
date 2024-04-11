@@ -6,9 +6,7 @@ import Login from '@/pages/login';
 import Layout from '@/layout';
 
 // 防止路由丢失
-const PreventRouteLoss = () => {
-  return <Navigate to={useLocation().pathname} />;
-};
+const PreventRouteLoss = () => <Navigate to={useLocation().pathname} />;
 
 export const defaultRoutes: any = [
   {
@@ -16,10 +14,8 @@ export const defaultRoutes: any = [
     element: <Layout />,
     errorElement: <ErrorPage />,
     children: [
-      {
-        path: '/*',
-        element: <PreventRouteLoss />,
-      },
+      { path: '/', element: <Navigate to="dashboard" /> },
+      { path: '/*', element: <PreventRouteLoss /> },
     ],
   },
   {
