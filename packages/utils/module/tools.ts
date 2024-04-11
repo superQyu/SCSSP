@@ -94,6 +94,7 @@ export const buildTree = (arr: TreeNode[], params?: {}) => {
     spId: 0,
     idKey: 'id',
     pIdKey: 'parentId',
+    delEmptyRoutes: false,
     ...params,
   };
 
@@ -103,17 +104,19 @@ export const buildTree = (arr: TreeNode[], params?: {}) => {
 
   for (const node of arr) {
     let curItem = map[node[defaultParams.idKey]];
-    if (defaultParams.intercept && typeof defaultParams.intercept === 'function')
+
+    if (defaultParams.intercept && typeof defaultParams.intercept === 'function') {
       curItem = defaultParams.intercept(curItem);
+    }
+
     if (node[defaultParams.pIdKey] * 1 === 0) {
       roots.push(curItem);
     } else {
       const parent = map[node[defaultParams.pIdKey]];
       parent && parent.routes?.push(curItem);
-      //else { roots.push(map[node[params.idKey]]); };
     }
   }
-
+  if (defaultParams.delEmptyRoutes) removeEmptyRoutes(roots, 'routes');
   return roots;
 };
 /**
@@ -129,4 +132,19 @@ export const sortMenu = (arr: TreeNode[], sortByKey = 'orderNum'): MenuItem[] =>
       if (menu.routes && menu.routes.length > 0) menu = { ...menu, routes: sortMenu(menu.routes) };
       return menu as unknown as MenuItem;
     });
+};
+
+const removeEmptyRoutes = (array: any[], key: string) => {
+  // 遍历数组中的每一项
+  array.forEach((item) => {
+    // 如果当前项存在 routes 字段且长度为0，则删除该字段
+    if (item.routes && item.routes.length === 0) {
+      delete item.routes;
+      delete item.children;
+    }
+    // 如果当前项存在 children 字段，则递归调用该函数处理子项
+    if (item.children && item.children.length > 0) {
+      removeEmptyRoutes(item.children, key);
+    }
+  });
 };
