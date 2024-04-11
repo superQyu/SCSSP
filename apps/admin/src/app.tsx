@@ -17,15 +17,8 @@ function App() {
   cloneDefaultRoutes[0].children = [...filepathToElement(menu), ...cloneDefaultRoutes[0].children];
   const router = createBrowserRouter([...cloneDefaultRoutes]);
 
-  useEffect(() => {
-    // console.log(menu);
-    // console.log(filepathToElement(menu));
-  }, [menu]);
-  return (
-    <>
-      <RouterProvider router={router}></RouterProvider>
-    </>
-  );
+  useEffect(() => {}, [menu]);
+  return <RouterProvider router={router}></RouterProvider>;
 }
 
 export default App;
