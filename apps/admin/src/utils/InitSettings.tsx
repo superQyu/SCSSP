@@ -68,7 +68,7 @@ export default ({ children }: any) => {
           };
         },
       });
-      // console.log(menus);
+      console.log(menus);
       dispatch(setMenu([...menus]));
     });
   };
