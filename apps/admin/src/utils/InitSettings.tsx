@@ -60,9 +60,13 @@ export default ({ children }: any) => {
           return {
             ...item,
             icon:
-              item.ico.indexOf('.') != -1
-                ? `/static${item.ico}`
-                : React.createElement(iconMap[item.ico]),
+              item.ico == '' || !item.ico ? (
+                <></>
+              ) : item.ico.indexOf('.') != -1 ? (
+                `/static${item.ico}`
+              ) : (
+                React.createElement(iconMap[item.ico])
+              ),
             component: item.filepath,
             children: item.routes,
           };

@@ -12,7 +12,6 @@ import 'virtual:uno.css';
 // Load global configuration items
 import { BasicConfigurationProvider } from '@/context/BasicConfigurationContext';
 import { SnackbarProvider } from '@/context/SnackbarContext';
-import { PermissionsProvider } from '@/context/PermissionsContext';
 
 import App from './app';
 

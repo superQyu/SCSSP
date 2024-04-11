@@ -1,6 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
+export interface InitialState {
+  [key: string]: any;
+}
+
+const initialState: InitialState = {
   data: [],
   menuTab: [],
 };
