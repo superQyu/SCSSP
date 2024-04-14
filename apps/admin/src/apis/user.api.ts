@@ -13,11 +13,12 @@ const user: ApiItem[] = [
     key: 'getRoute',
     url: '/api/v1/admin/system/getRoute',
     type: 'GET',
-    name: '路由列表',
-    description: '获取路由列表',
+    name: '菜单列表',
+    description: '获取菜单列表',
     params: [
       { key: 'Authorization', location: 'header' },
       { key: 'siteKey', cn: '站点标识' },
+      { key: 'isDelete', cn: '菜单状态' },
     ],
   },
 ];

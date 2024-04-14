@@ -1,62 +1,78 @@
-import { createElement } from 'react';
-import * as Icons from '@ant-design/icons';
 import { StarTwoTone, StopTwoTone } from '@ant-design/icons';
 import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
-import { Switch, message, Avatar } from 'antd';
+import { message, Tag } from 'antd';
 
+import { IconSelect, IconShow } from 'ui';
 type objJson = Record<string, any>;
 
-type ColumnsType = {
-  /** 站点标识 */
-  apis?: objJson;
+type MenusPropsType = {
+  server?: objJson;
 };
 
-interface ColumnsProps extends ProColumns {
-  [key: string]: any;
+export interface ColumnsParamsProps extends objJson {
+  id: number;
+  name: string;
+  ico: string;
+  orderNum: number;
+  roleKey: number | string;
+  filepath: string;
+  isDelete: '0' | '1';
 }
 
-const iconMap = Icons as unknown as objJson;
+export default ({ server }: MenusPropsType) => {
+  const { menus: M } = server as objJson;
 
-export default ({ apis }: ColumnsType) => {
-  //  api server
-  const { sites } = apis as objJson;
-
-  const columns: ColumnsProps[] = [
+  const columns: ProColumns[] = [
     {
       hideInSearch: true,
       title: '菜单名称',
       dataIndex: 'name',
       ellipsis: true,
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '请输入菜单名称',
+          },
+        ],
+      },
+    },
+    {
+      width: 60,
+      hideInSearch: true,
+      title: 'ID编号',
+      editable: false,
+      dataIndex: 'id',
     },
     {
       title: '图标',
-      width: 80,
+      hideInSearch: true,
+      width: 60,
       dataIndex: 'ico',
       ellipsis: true,
-      render: (_, record) => {
-        const ico = record.ico;
-        return (
-          <>
-            {ico == '' || !ico ? (
-              <></>
-            ) : ico.indexOf('.') != -1 ? (
-              <Avatar size={18} src={`/static${ico}`} />
-            ) : (
-              createElement(iconMap[ico])
-            )}
-          </>
-        );
+      valueType: 'select',
+      render: (_, record) => <IconShow ico={record.ico} />,
+      renderFormItem: () => <IconSelect model="simple" />,
+    },
+    {
+      width: 120,
+      hideInSearch: true,
+      title: '排序',
+      valueType: 'digit',
+      dataIndex: 'orderNum',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '请输入排序',
+          },
+        ],
       },
     },
     {
       width: 80,
       hideInSearch: true,
-      title: '排序',
-      dataIndex: 'orderNum',
-    },
-    {
-      width: 80,
-      hideInSearch: true,
+      editable: false,
       title: '权限标识',
       dataIndex: 'roleKey',
     },
@@ -66,11 +82,51 @@ export default ({ apis }: ColumnsType) => {
       dataIndex: 'filepath',
     },
     {
-      disable: true,
-      width: 150,
-      title: '站点状态',
-      dataIndex: 'isDelete',
+      tooltip: '控制是否在主菜单中显示，不影响路由访问！',
+      width: 120,
+      hideInSearch: true,
+      title: '显示状态',
+      dataIndex: 'isHidden',
+      initialValue: '',
       valueType: 'select',
+      filters: true,
+      valueEnum: {
+        '0': {
+          text: (
+            <>
+              <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
+              显示
+            </>
+          ),
+        },
+        '1': {
+          text: (
+            <>
+              <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
+              隐藏
+            </>
+          ),
+        },
+      },
+      render: (_, record) => (
+        <>{record.isHidden == '0' ? <Tag color="green">显示</Tag> : <Tag color="red">隐藏</Tag>}</>
+      ),
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '请选择显示状态',
+          },
+        ],
+      },
+    },
+    {
+      width: 120,
+      title: '菜单状态',
+      dataIndex: 'isDelete',
+      initialValue: '', //筛选默认值
+      valueType: 'select',
+      filters: true,
       valueEnum: {
         '0': {
           text: (
@@ -79,7 +135,6 @@ export default ({ apis }: ColumnsType) => {
               使用中
             </>
           ),
-          status: 'Success',
         },
         '1': {
           text: (
@@ -88,53 +143,54 @@ export default ({ apis }: ColumnsType) => {
               已停运
             </>
           ),
-          status: 'Error',
         },
       },
       render: (_, record) => (
-        <Switch
-          checkedChildren="正常"
-          unCheckedChildren="停运"
-          disabled
-          defaultChecked={record?.isDelete == '0' ? true : false}
-        />
+        <>
+          {record.isDelete == '0' ? <Tag color="green">使用中</Tag> : <Tag color="red">已停运</Tag>}
+        </>
       ),
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '请选择菜单状态',
+          },
+        ],
+      },
     },
     {
       title: '操作',
-      width: 160,
+      width: 140,
       valueType: 'option',
       key: 'option',
       render: (_text, record, _, action) => [
         <a
           key="editable"
           onClick={() => {
-            // console.log(action);
             action?.startEditable?.(record.id);
           }}
         >
           编辑
         </a>,
-        <a href={record.url} target="_blank" rel="noopener noreferrer" key="view">
-          查看
-        </a>,
         <TableDropdown
           key="actionGroup"
           onSelect={(key) => {
             if (key === 'delete') {
-              sites
-                .deleteSites({
-                  ids: record.id,
-                })
-                .then((res: any) => {
-                  message.success('操作成功!');
-                  action?.reload();
-                });
+              try {
+                M.deleteMenus({ ids: record.id })
+                  .then(() => {
+                    message.success('操作成功!');
+                    action?.reload();
+                  })
+                  .catch(() => {});
+              } catch (errorInfo) {}
             }
           }}
           menus={[
-            { key: 'copy', name: '复制' },
             { key: 'delete', name: '删除' },
+            { key: 'detail', name: '详情' },
+            { key: 'copy', name: '复制' },
           ]}
         />,
       ],

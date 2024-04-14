@@ -1,16 +1,16 @@
-import { createElement, useRef, useState } from 'react';
-import { Button } from 'antd';
+import { createElement, cloneElement, useRef, useState } from 'react';
+import { Button, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 import { type ActionType } from '@ant-design/pro-components';
-import { ProTable, ProForm } from 'components';
+import { ProTable } from 'components';
 import { TOKEN, buildTree, sortMenu } from 'utils';
 
-// import AddSite from './components/sites/structural';
+import AddMenus from './components/menus/structural';
 
 // 站点表格模型
 import type { ModesApi } from './modes/model';
-import siteModel from './modes/menu.model';
+import siteModel, { type ColumnsParamsProps } from './modes/menu.model';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
@@ -18,25 +18,61 @@ export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
 
-  //   const [subForm, _] = useState<Record<string, any>>({});
-  //   const [formModal, setFormModal] = useState<boolean>(false);
+  const [subForm, _] = useState<Record<string, any>>({});
+  const [formModal, setFormModal] = useState<boolean>(false);
 
   //  api server
-  const { user: U } = server;
+  const { user: U, menus: M } = server;
 
-  const iinitColumns = siteModel({ apis: server });
+  // 修改状态
+  const handleModalStateChange = async (state: boolean) => {
+    setFormModal(state);
+    await actionRef.current?.reload();
+  };
 
-  //   const handleModalStateChange = (state: boolean) => setFormModal(state);
-  //   const handleCancel = (state: boolean) => setFormModal(state);
+  // 初始化 表格列表项
+  const initColumns = siteModel({ server });
+
+  // 删除行
+  const onDelete = async (id: number) => {
+    try {
+      await M.deleteMenus({ ids: id })
+        .then(async () => {
+          message.success('操作成功!');
+          await actionRef.current?.reload();
+        })
+        .catch(() => {});
+    } catch (errorInfo) {}
+  };
+
+  // 重写save方法 阻止提交失败也退出编辑状态
+  const onSave = async (...args: any[]) => {
+    const [config, id, n, , ,] = args;
+    // 更新行数据
+    const res = await M.updateMenu(JSON.parse(JSON.stringify({ ...n })) as ColumnsParamsProps)
+      .then(async () => {
+        message.success('信息更新成功！');
+        await actionRef.current?.reload();
+      })
+      .catch(() => false);
+    if (res === false) {
+      message.error('信息更新失败，请重新提交！');
+      return false;
+    }
+    // 保存时解除编辑模式
+    config.cancelEditable(id);
+    return true;
+  };
 
   return (
     <>
       <ProTable
-        headerTitle="路由列表"
+        headerTitle="菜单列表"
         request={async (params = {}) => {
-          const list = await U.getRoute({ siteKey: TOKEN.replace(/^Qy_/, '') });
+          const list = await U.getRoute({ siteKey: TOKEN.replace(/^Qy_/, ''), ...params });
           const menus = buildTree(list, {
             delEmptyRoutes: true,
+            // isflter: !!Object.entries(params).filter(([_, value]) => value != '').length,
             intercept: (item: { [key: string]: string }) => ({ ...item, children: item.routes }),
           });
           return {
@@ -45,38 +81,40 @@ export default () => {
             total: list.length,
           } as unknown as ModesApi.pageItemType;
         }}
-        columns={iinitColumns}
+        columns={initColumns}
         onSubmit={async (params: {}) => {
           console.log(params);
         }}
         actionRef={actionRef}
         pagination={false}
         toolBarRender={() => [
-          //   <ProForm />,
           <Button
             key="button"
             icon={createElement(PlusOutlined)}
-            onClick={() => {
-              // setFormModal(true)
-            }}
+            onClick={() => setFormModal(true)}
             type="primary"
           >
             新建
           </Button>,
         ]}
         form={{
-          syncToUrl: (values: any, type: any) => {
-            if (type === 'get') {
-              return {
-                ...values,
-                created_at: [values.startTime, values.endTime],
-              };
-            }
-            return values;
-          },
+          // 请求之前参数格式化
+          syncToUrl: (values: any, _: string) => ({ ...values }),
         }}
         editable={{
           type: 'multiple',
+          onSave,
+          onDelete,
+          actionRender: (...args: any[]) => {
+            const [, config, defaultDom] = args;
+            return [
+              cloneElement(defaultDom.save as React.ReactElement, {
+                onSave: onSave.bind(null, config),
+              }),
+              defaultDom.cancel,
+              defaultDom.delete,
+            ];
+          },
         }}
         columnsState={{
           persistenceKey: 'pro-table-singe-demos',
@@ -87,7 +125,7 @@ export default () => {
           labelWidth: 'auto',
         }}
       ></ProTable>
-      {/* <AddSite subForm={subForm} openModal={formModal} onStateChange={handleModalStateChange} /> */}
+      <AddMenus subForm={subForm} openModal={formModal} onStateChange={handleModalStateChange} />
     </>
   );
 };

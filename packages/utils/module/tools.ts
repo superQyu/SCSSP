@@ -95,6 +95,7 @@ export const buildTree = (arr: TreeNode[], params?: {}) => {
     idKey: 'id',
     pIdKey: 'parentId',
     delEmptyRoutes: false,
+    isflter: false,
     ...params,
   };
 
@@ -113,7 +114,12 @@ export const buildTree = (arr: TreeNode[], params?: {}) => {
       roots.push(curItem);
     } else {
       const parent = map[node[defaultParams.pIdKey]];
-      parent && parent.routes?.push(curItem);
+      if (parent) {
+        parent.routes?.push(curItem);
+      } else {
+        // defaultParams.isflter &&
+        roots.push(curItem);
+      }
     }
   }
   if (defaultParams.delEmptyRoutes) removeEmptyRoutes(roots, 'routes');
