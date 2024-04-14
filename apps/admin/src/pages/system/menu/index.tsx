@@ -1,4 +1,4 @@
-import { createElement, cloneElement, useRef, useState } from 'react';
+import { createElement, cloneElement, useRef, useState, useEffect } from 'react';
 import { Button, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -22,7 +22,7 @@ export default () => {
   const [formModal, setFormModal] = useState<boolean>(false);
 
   //  api server
-  const { user: U, menus: M } = server;
+  const { user: U, menus: M, basic: B } = server;
 
   // 修改状态
   const handleModalStateChange = async (state: boolean) => {
@@ -63,6 +63,14 @@ export default () => {
     config.cancelEditable(id);
     return true;
   };
+
+  useEffect(() => {
+    B.test()
+      .then((res: any) => {
+        console.log(res);
+      })
+      .catch(() => false);
+  }, []);
 
   return (
     <>

@@ -15,7 +15,6 @@ const alias: Record<string, string> = {
 
 export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
   const env = loadEnv(mode, process.cwd());
-
   return {
     plugins: [
       UnoCSS(),
@@ -35,6 +34,11 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
           target: 'http://localhost:7001',
           secure: false,
           // rewrite: (path) => path.replace('', ''),
+        },
+        [env.VITE_APP_MOCK_API]: {
+          target: 'http://localhost:3001',
+          secure: false,
+          rewrite: (path) => path.replace(`${env.VITE_APP_MOCK_API}`, ''),
         },
         '/static': {
           target: 'http://192.168.142.133:9000',
