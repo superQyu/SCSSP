@@ -24,7 +24,6 @@ export default ({ server }: MenusPropsType) => {
 
   const columns: ProColumns[] = [
     {
-      hideInSearch: true,
       title: '菜单名称',
       dataIndex: 'name',
       ellipsis: true,

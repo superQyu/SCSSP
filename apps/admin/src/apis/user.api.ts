@@ -18,6 +18,7 @@ const user: ApiItem[] = [
     params: [
       { key: 'Authorization', location: 'header' },
       { key: 'siteKey', cn: '站点标识' },
+      { key: 'name', cn: '菜单名称' },
       { key: 'isDelete', cn: '菜单状态' },
     ],
   },
