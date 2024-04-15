@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { HomeOutlined } from '@ant-design/icons';
 import { type RouterTypes } from './_suppllyTypes';
 import { type MenuDataItem } from '@ant-design/pro-layout';
-import { TOKEN, getToken, setToken } from 'utils';
+import { TOKEN, getToken, setToken, filterRoutes } from 'utils';
+
 import { Layout } from 'components';
 import InitSettings from '@/utils/InitSettings';
 import LayoutConfig from '@/config/LayoutConfig';
@@ -77,13 +78,10 @@ const LayoutContext: React.FC = () => {
         {...{
           ...LayoutConfig(),
           onMenuHeaderClick: (_: React.MouseEvent<HTMLDivElement>) => {
-            navigator('/login');
+            navigator('/');
           },
           logo: myImage,
-          reRenderRoute: (e: RouterTypes) => {
-            e.routes = e.routes?.filter((item: Record<string, any>) => item.isHidden != '1');
-            return e;
-          },
+          reRenderRoute: (e: RouterTypes) => ({ ...e, routes: filterRoutes(e.routes || []) }),
           menuItemRender: (item: MenuDataItem, dom: React.ReactNode) => (
             <div onClick={() => menuClick(item)}>{dom}</div>
           ),

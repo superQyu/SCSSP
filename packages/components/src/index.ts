@@ -12,18 +12,6 @@ import PageContainer from './components/PageContainer';
 import ProTable from './components/ProTable';
 import ProForm from './components/ProForm';
 import AdForm, { FormColumnsTypes, FornPropsTypes } from './components/ProForm/form';
-
-export {
-  Header,
-  Layout,
-  OutletLayoutRouter,
-  Text,
-  PageContainer,
-  Breadcrumb,
-  TabCom,
-  ProTable,
-  ProForm,
-  AdForm,
-};
+export { Header, OutletLayoutRouter, Layout, Text, PageContainer, ProTable, ProForm, AdForm };
 
 export type { MenuItem, FormColumnsTypes, FornPropsTypes };
