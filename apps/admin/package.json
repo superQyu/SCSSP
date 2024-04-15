@@ -38,6 +38,7 @@
     "react-transition-group": "^4.4.5",
     "sass": "^1.72.0",
     "store": "workspace:*",
+    "styled-components": "^6.1.8",
     "ui": "workspace:*",
     "utils": "workspace:*"
   },
