@@ -5,6 +5,7 @@ export interface MenuItem {
   key: string;
   path: string;
   filepath: string;
+  redirect?: string;
   icon?: React.ReactNode;
   children?: MenuItem[];
   routes?: MenuItem[];

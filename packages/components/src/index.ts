@@ -1,11 +1,28 @@
 import Header from './components/header';
 import Layout from './components/Layout';
 
+import Breadcrumb from './components/Breadcrumb';
+import TabCom from './components/TabCom';
+
+import Text from './components/Text';
+
 import { MenuItem } from './components/Layout/layout';
 import OutletLayoutRouter from './components/OutletLayoutRouter';
-import Text from './components/Text';
 import PageContainer from './components/PageContainer';
+import ProTable from './components/ProTable';
+import ProForm from './components/ProForm';
+import AdForm, { FormColumnsTypes, FornPropsTypes } from './components/ProForm/form';
+export {
+  Header,
+  OutletLayoutRouter,
+  Layout,
+  Text,
+  PageContainer,
+  ProTable,
+  ProForm,
+  AdForm,
+  Breadcrumb,
+  TabCom,
+};
 
-export { Header, Layout, OutletLayoutRouter, Text, PageContainer };
-
-export type { MenuItem };
+export type { MenuItem, FormColumnsTypes, FornPropsTypes };

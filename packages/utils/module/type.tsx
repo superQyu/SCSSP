@@ -1,9 +1,12 @@
-export interface TreeParam {
+export interface UnLimit {
+  [key: string]: any;
+}
+
+export interface TreeParam extends UnLimit {
   spId: number;
   pIdKey: string;
   idKey: string;
   intercept?: (args: TreeNode) => TreeNode;
-  [key: string]: any;
 }
 export interface TreeNode {
   id: number;

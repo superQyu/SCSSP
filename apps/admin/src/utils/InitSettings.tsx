@@ -1,19 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import * as Icons from '@ant-design/icons';
-
-import { CusSkeleton } from 'ui';
+import { CusSkeleton, IconShow } from 'ui';
 import { AuthContext, useAppDispatch } from 'hooks';
 import { setMenu } from 'store';
 import { TOKEN, buildTree } from 'utils';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-
-interface IconMap {
-  [key: string]: any;
-}
-const iconMap: IconMap = Icons as unknown as IconMap;
 
 export default ({ children }: any) => {
   const { server, config } = useBasicConfiguration();
@@ -59,16 +52,12 @@ export default ({ children }: any) => {
         intercept: (item: { [key: string]: string }) => {
           return {
             ...item,
-            icon:
-              item.ico.indexOf('.') != -1
-                ? `/static${item.ico}`
-                : React.createElement(iconMap[item.ico]),
+            icon: <IconShow ico={item.ico} />,
             component: item.filepath,
             children: item.routes,
           };
         },
       });
-      // console.log(menus);
       dispatch(setMenu([...menus]));
     });
   };

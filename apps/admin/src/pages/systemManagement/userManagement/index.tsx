@@ -1,17 +1,14 @@
-import { EllipsisOutlined } from '@ant-design/icons';
-
-import type { ActionType } from '@ant-design/pro-components';
-import { ProTable } from '@ant-design/pro-components';
-import { Button, Dropdown, message } from 'antd';
 import React, { useRef, useState } from 'react';
+
+import { EllipsisOutlined } from '@ant-design/icons';
+import { ProTable, type ActionType } from '@ant-design/pro-components';
+import { Button, Dropdown, message } from 'antd';
 
 import { TOKEN, getToken } from 'utils';
 
-// Current usage CSS stylesheet
-import styles from './index.module.scss';
-
 import { copyToken } from '@/utils';
 import AddSite from './components/sites/structural';
+
 // 站点表格模型
 import type { ModesApi } from '@/modes/model.d';
 import siteModel from '@/modes/site.model';

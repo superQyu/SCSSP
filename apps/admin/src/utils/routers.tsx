@@ -1,11 +1,10 @@
 import { OutletLayoutRouter } from 'components';
 import { lazy, Suspense } from 'react';
 
-import { Alert, Spin } from 'antd';
+import { Alert, Spin, Empty } from 'antd';
 import type { MenuItem } from 'components';
 import ErrorPage from '@/pages/error-page';
 
-// /**/ 表示二级目录 一般二级目录就够了  不够在加即可
 export const modules = import.meta.glob('../pages/**/*.tsx');
 
 function pathToLazyComponent(Ele: string) {
@@ -13,15 +12,17 @@ function pathToLazyComponent(Ele: string) {
   if (!path) {
     return (
       <ErrorPage>
+        <Empty description={''} style={{ marginBottom: '20px' }} />
         <Alert
-          message={Ele + ':Cannot find the path, please configure the correct folder path'}
+          message={`${
+            Ele || '未知组件：'
+          }Cannot find the path, please configure the correct folder path`}
           type="error"
         />
       </ErrorPage>
     );
   }
-  // console.log(Ele, path);
-  const Components = lazy(() => import(/* @vite-ignore */ `../${Ele}`)); //lazy(path);
+  const Components = lazy(() => import(/* @vite-ignore */ `../${Ele}`));
   return (
     <Suspense fallback={<Spin size="small" />}>
       <Components />
@@ -29,16 +30,13 @@ function pathToLazyComponent(Ele: string) {
   );
 }
 
-export const filepathToElement = (list: MenuItem[]) =>
-  list.map((item) => {
+export const filepathToElement: any = (list: MenuItem[]) =>
+  list.map((item: MenuItem) => {
     if (item.children?.length) {
-      // filepathToElement(item.children);
+      let children = [...filepathToElement(item.children)];
       return {
         path: item.path,
-        children: item.children?.map((c) => ({
-          path: c.path,
-          element: pathToLazyComponent(c.filepath),
-        })),
+        children,
         element: <OutletLayoutRouter />,
       };
     } else {
