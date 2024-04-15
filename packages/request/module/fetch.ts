@@ -45,8 +45,8 @@ const request = (url: string, setting: any) => {
           dataType === 'text'
             ? await res.text()
             : dataType === 'blob'
-            ? await res.blob()
-            : await res.json();
+              ? await res.blob()
+              : await res.json();
 
         // if (interceptor.response) interceptor.response(resObject);
 
@@ -127,6 +127,25 @@ export const fetchRequest = {
     }
   },
   async put(url: string, params = {}, config = {}) {
+    // post
+    try {
+      const res = await request(url, {
+        body: JSON.stringify(params),
+        method: 'PUT',
+        ...paramsApart(config, {
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        }),
+      });
+      return new Promise((resolve, reject) => {
+        resolve(res);
+      });
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
+  async patch(url: string, params = {}, config = {}) {
     // post
     try {
       const res = await request(url, {

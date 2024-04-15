@@ -5,8 +5,6 @@ import Text from './components/Text';
 import Breadcrumb from './components/Breadcrumb';
 import TabCom from './components/TabCom';
 
-import Text from './components/Text';
-
 import { MenuItem } from './components/Layout/layout';
 import OutletLayoutRouter from './components/OutletLayoutRouter';
 import PageContainer from './components/PageContainer';
@@ -25,5 +23,5 @@ export {
   Breadcrumb,
   TabCom,
 };
-
+// 组件通用类型
 export type { MenuItem, FormColumnsTypes, FornPropsTypes };
