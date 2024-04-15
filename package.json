@@ -17,7 +17,8 @@
     "prepare": "husky install",
     "treer": "node ./plugin/treer.js --path",
     "commit": "git-cz",
-    "unmods": "node ./plugin/unmods.js"
+    "unmods": "node ./plugin/unmods.js",
+    "start-mock": "json-server -c ./json-server/json-server.json  -w ./json-server/db.json -r ./json-server/routes.json "
   },
   "devDependencies": {
     "@commitlint/cli": "^19.2.1",

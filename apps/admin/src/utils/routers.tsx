@@ -1,7 +1,7 @@
 import { OutletLayoutRouter } from 'components';
 import { lazy, Suspense } from 'react';
 
-import { Alert, Spin } from 'antd';
+import { Alert, Spin, Empty } from 'antd';
 import type { MenuItem } from 'components';
 import ErrorPage from '@/pages/error-page';
 
@@ -12,8 +12,11 @@ function pathToLazyComponent(Ele: string) {
   if (!path) {
     return (
       <ErrorPage>
+        <Empty description={''} style={{ marginBottom: '20px' }} />
         <Alert
-          message={Ele + ':Cannot find the path, please configure the correct folder path'}
+          message={`${
+            Ele || '未知组件：'
+          }Cannot find the path, please configure the correct folder path`}
           type="error"
         />
       </ErrorPage>
