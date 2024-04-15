@@ -2,7 +2,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 
 import { type RouterTypes } from './_suppllyTypes';
 
-import { TOKEN, getToken } from 'utils';
+import { TOKEN, getToken, filterRoutes } from 'utils';
 import { Layout } from 'components';
 import InitSettings from '@/utils/InitSettings';
 import LayoutConfig from '@/config/LayoutConfig';
@@ -22,13 +22,10 @@ const LayoutContext: React.FC = () => {
         {...{
           ...LayoutConfig(),
           onMenuHeaderClick: (_: React.MouseEvent<HTMLDivElement>) => {
-            navigator('/login');
+            navigator('/');
           },
           logo: myImage,
-          reRenderRoute: (e: RouterTypes) => {
-            e.routes = e.routes?.filter((item: Record<string, any>) => item.isHidden != '1');
-            return e;
-          },
+          reRenderRoute: (e: RouterTypes) => ({ ...e, routes: filterRoutes(e.routes || []) }),
         }}
       />
     </Permissions>
