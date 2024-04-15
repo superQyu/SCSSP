@@ -16,7 +16,7 @@ import { route } from './_defaultProps';
 
 import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
 import { useAppDispatch, useAppSelector, KeepAlive, useLocationListen } from 'hooks';
-import { MenuItem, sortMenu } from 'utils';
+import { MenuItem, sortMenu, setToken } from 'utils';
 
 // 组件列表
 import SearchInput from './components/SearchInput';
@@ -262,6 +262,7 @@ const layout: React.FC<CommonObject> = (props: any) => {
             {...props}
             {...settings}
           >
+            {props.slot()}
             {props.settingDrawerShow && (
               <SettingDrawer
                 pathname={pathname}

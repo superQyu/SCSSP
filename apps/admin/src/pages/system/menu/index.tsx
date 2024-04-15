@@ -65,11 +65,11 @@ export default () => {
   };
 
   useEffect(() => {
-    B.test()
-      .then((res: any) => {
-        console.log(res);
-      })
-      .catch(() => false);
+    // B.test()
+    //   .then((res: any) => {
+    //     console.log(res);
+    //   })
+    //   .catch(() => false);
   }, []);
 
   return (

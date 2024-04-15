@@ -31,7 +31,7 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       open: false,
       proxy: {
         [env.VITE_APP_BASE_API]: {
-          target: 'http://localhost:7001',
+          target: 'http://192.168.10.26:7001',
           secure: false,
           // rewrite: (path) => path.replace('', ''),
         },
