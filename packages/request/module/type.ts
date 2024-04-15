@@ -1,5 +1,5 @@
 type xhrType = 'fetch' | 'axios' | 'ajax' | 'xhr';
-export type Method = 'GET' | 'POST' | 'DELETE' | 'PUT' | 'HEAD';
+export type Method = 'GET' | 'POST' | 'DELETE' | 'PUT' | 'HEAD' | 'PATCH';
 export type jsonObject = Record<string, any>;
 
 export interface paramsItem {
