@@ -126,4 +126,23 @@ export const fetchRequest = {
       return Promise.reject(err);
     }
   },
+  async put(url: string, params = {}, config = {}) {
+    // post
+    try {
+      const res = await request(url, {
+        body: JSON.stringify(params),
+        method: 'PUT',
+        ...paramsApart(config, {
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+        }),
+      });
+      return new Promise((resolve, reject) => {
+        resolve(res);
+      });
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  },
 };

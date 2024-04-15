@@ -1,18 +1,11 @@
 import React, { createContext, useContext, useEffect } from 'react';
-
 import { useNavigate } from 'react-router-dom';
-import * as Icons from '@ant-design/icons';
 import { AuthContext, useAppDispatch } from 'hooks';
 import { setMenu } from 'store';
 import { TOKEN, buildTree } from 'utils';
+import { IconShow } from 'ui';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-
-interface IconMap {
-  [key: string]: any;
-}
-
-const iconMap: IconMap = Icons as unknown as IconMap;
 
 interface PermissionsContextType {
   // eslint-disable-next-line no-unused-vars
@@ -72,10 +65,7 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
         intercept: (item: { [key: string]: string }) => {
           return {
             ...item,
-            icon:
-              item.ico.indexOf('.') != -1
-                ? `/static${item.ico}`
-                : React.createElement(iconMap[item.ico]),
+            icon: <IconShow ico={item.ico} />,
             component: item.filepath,
           };
         },
