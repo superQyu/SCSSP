@@ -6,6 +6,8 @@ import { useRef } from 'react';
 import { getGithubIssueItem } from 'apis';
 import type { AdminApi } from 'apis';
 
+
+const  temp = "3";
 const columns: ProColumns<AdminApi.GithubIssueItem>[] = [
   {
     dataIndex: 'index',
