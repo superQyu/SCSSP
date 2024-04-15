@@ -1,5 +1,6 @@
 import Header from './components/header';
 import Layout from './components/Layout';
+import Text from './components/Text';
 
 import Breadcrumb from './components/Breadcrumb';
 import TabCom from './components/TabCom';
