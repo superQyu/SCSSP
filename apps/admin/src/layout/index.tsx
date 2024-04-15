@@ -10,6 +10,11 @@ import LayoutConfig from '@/config/LayoutConfig';
 import { useAppDispatch, useAppSelector } from 'hooks';
 import { setMenuTab } from 'store';
 
+interface MenuTabItem {
+  label: string;
+  path: string;
+}
+
 // 左上角logo
 import myImage from '@/assets/logo/64-64.png'; // 导入图片
 import { Breadcrumb, TabCom } from 'components';
@@ -22,32 +27,46 @@ const Permissions = ({ children }: any) => {
 const LayoutContext: React.FC = () => {
   const navigator = useNavigate();
   const dispatch = useAppDispatch();
-
   const {
     common: { menuTab },
   } = useAppSelector((state) => state) as { common: { menuTab: any } };
 
-  // 面包屑
-  const [breadcrumbList, setBreadcrumbList] = useState<{ path: string; title: string }[]>([]);
+  const [breadcrumbList, setBreadcrumbList] = useState<MenuTabItem[]>([]);
+
+  const menuClick = (item: MenuDataItem) => {
+    const locale = item.locale as string;
+    const localeArr = locale.slice(5).split('.');
+    const breadcrumbs = localeArr.map((pathName: string) => {
+      return {
+        title: pathName,
+      };
+    });
+    const newMenuTab = {
+      label: item.name,
+      path: item.itemPath,
+      key: item.itemPath,
+      breadcrumbs,
+    };
+    setToken('BREADCRUMBS', JSON.stringify(newMenuTab));
+    if (!menuTab.some((el: MenuTabItem) => el.label == item.name)) {
+      dispatch(setMenuTab([...menuTab, newMenuTab]));
+    }
+    item.path && navigator(item.path);
+  };
 
   useEffect(() => {
-    // const arr =
-    //   getToken('BREADCRUMBS')
-    //     ?.split('.')
-    //     .map((item: string) => {
-    //       return {
-    //         title: item,
-    //       };
-    //     }) || [];
-    // arr.unshift({
-    //   href: '',
-    //   title: <HomeOutlined />,
-    // });
-    // setBreadcrumbList(arr);
+    if (!getToken('BREADCRUMBS')) return;
+    let breadcrumbs = JSON.parse(getToken('BREADCRUMBS')).breadcrumbs;
+    breadcrumbs.unshift({
+      title: <HomeOutlined />,
+    });
+    setBreadcrumbList(breadcrumbs);
   }, [getToken('BREADCRUMBS')]);
 
   useEffect(() => {
-    console.log('111', 111);
+    if (!getToken('BREADCRUMBS')) return;
+    const initialMenuTab = JSON.parse(getToken('BREADCRUMBS'));
+    dispatch(setMenuTab([initialMenuTab]));
   }, []);
 
   useEffect(() => {}, [menuTab]);
@@ -66,43 +85,18 @@ const LayoutContext: React.FC = () => {
             return e;
           },
           menuItemRender: (item: MenuDataItem, dom: React.ReactNode) => (
-            <div
-              onClick={() => {
-                console.log('item', item);
-                const locale = item.locale as string;
-                const localeArr = locale.slice(5).split('.');
-                const breadcrumbs = localeArr.map((pathName: string, i) => {
-                  return {
-                    label: pathName,
-                    path: i == localeArr.length - 1 ? item.itemPath : '',
-                  };
-                });
-                setToken('BREADCRUMBS', JSON.stringify(breadcrumbs));
-                // if (!menuTab.some((el: any) => el.label == item.name)) {
-                //   dispatch(
-                //     setMenuTab([
-                //       ...menuTab,
-                //       {
-                //         label: item.name,
-                //         key: item.path,
-                //       },
-                //     ])
-                //   );
-                // }
-                item.path && navigator(item.path);
-              }}
-            >
-              {dom}
-            </div>
+            <div onClick={() => menuClick(item)}>{dom}</div>
           ),
           contentStyle: {
-            padding: '10px 20px',
+            padding: '0',
           },
           slot: (): React.ReactElement => {
             return (
               <>
-                <Breadcrumb routes={breadcrumbList} />
-                <TabCom data={menuTab} render={(data) => console.log(data)} />
+                <div style={{ padding: '0 15px' }}>
+                  <Breadcrumb routes={breadcrumbList} />
+                </div>
+                <TabCom />
               </>
             );
           },

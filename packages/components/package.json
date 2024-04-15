@@ -33,6 +33,7 @@
     "react-router-dom": "^6.8.1",
     "sass": "^1.56.1",
     "styled-components": "^6.1.8",
-    "utils": "workspace:*"
+    "utils": "workspace:*",
+    "store": "workspace:*"
   }
 }

@@ -1,48 +1,50 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { getToken, setToken } from 'utils';
+import { useAppDispatch, useAppSelector } from 'hooks';
+import { setMenuTab } from 'store';
+import style from './style.module.scss';
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
-interface AppProps {
-  // {data: []}
-  [key: string]: any;
-}
 interface Item {
   label: string;
   key: string;
 }
 
-const App: React.FC = (props: AppProps) => {
+export default () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const {
+    common: { menuTab },
+  } = useAppSelector((state) => state) as { common: { menuTab: any } };
   const [activeKey, setActiveKey] = useState('');
-  const [items, setItems] = useState(props.data);
-  const newTabIndex = useRef(0);
 
   const onChange = (newActiveKey: string) => {
+    const breadcrumbs = menuTab.find((item: Item) => item.key == newActiveKey);
     navigate(newActiveKey);
     setActiveKey(newActiveKey);
+    setToken('BREADCRUMBS', JSON.stringify(breadcrumbs));
   };
 
   const remove = (targetKey: TargetKey) => {
     let newActiveKey = activeKey;
     let lastIndex = -1;
-    items.forEach((item: Item, i) => {
+    menuTab.forEach((item: Item, i: number) => {
       if (item.key === targetKey) {
         lastIndex = i - 1;
       }
     });
-    const newPanes = items.filter((item: Item) => item.key !== targetKey);
+    const newPanes = menuTab.filter((item: Item) => item.key !== targetKey);
+    dispatch(setMenuTab(newPanes));
     if (newPanes.length && newActiveKey === targetKey) {
-      if (lastIndex >= 0) {
-        newActiveKey = newPanes[lastIndex].key;
-      } else {
-        newActiveKey = newPanes[0].key;
-      }
+      newActiveKey = lastIndex >= 0 ? newPanes[lastIndex].key : newPanes[0].key;
     }
-    setItems(newPanes);
     setActiveKey(newActiveKey);
-    props.render && props.render('newPanes');
+    const breadcrumbs = menuTab.find((item: Item) => item.key == newActiveKey);
+    setToken('BREADCRUMBS', JSON.stringify(breadcrumbs));
   };
 
   const onEdit = (
@@ -55,22 +57,20 @@ const App: React.FC = (props: AppProps) => {
   };
 
   useEffect(() => {
-    setItems(props.data);
-    if (props.data.length > 0) {
-      setActiveKey(props.data[0].key);
-    }
-  });
+    getToken('BREADCRUMBS') && setActiveKey(JSON.parse(getToken('BREADCRUMBS')).key);
+  }, [getToken('BREADCRUMBS')]);
 
   return (
-    <Tabs
-      type="editable-card"
-      onChange={onChange}
-      activeKey={activeKey}
-      onEdit={onEdit}
-      items={items}
-      hideAdd={true}
-    />
+    <div class={style.menuTab}>
+      <Tabs
+        size="small"
+        type="editable-card"
+        onChange={onChange}
+        activeKey={activeKey}
+        onEdit={onEdit}
+        items={menuTab}
+        hideAdd={true}
+      />
+    </div>
   );
 };
-
-export default App;
