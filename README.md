@@ -157,3 +157,47 @@ This project is licensed under the MIT License. .
 ```bash
   pnpm i {依赖名} --filter {项目名}
 ```
+
+## json-server 相关操作
+
+- 启动 mock server 访问地址：http://localhost:3001
+
+```bash
+  pnpm start-mock
+```
+
+- 使用 mock server
+
+```bash
+ 1. get
+ get http://localhost:3001/rights
+
+ 1.1 ID查询
+ get http://localhost:3001/rights/{id}
+
+ 1.2 单一条件查询
+ get http://localhost:3001/rights/？name=徐飞
+
+ 1.3 多条件查询（且）
+ get http://localhost:3001/rights?name=张飞&age=12
+
+ 1.4 多条件查询（或）
+ get http://localhost:3001/rights?age=12&age=13
+
+ 1.5 分页查询 _page _limit
+ get http://localhost:3001/rights?_page=2&_limit=3
+
+ 2 post
+ post http://localhost:3001/rights
+ 这里使用 post 方法向 /rights 接口传输数据，/rights 原本的数据结构是包含 id、name、age、class 四个字段，id 默认是自增主键，不传的话会默认增加
+
+ 3 delete
+ delete http://localhost:3001/rights/{id}
+
+ 4 put 和 patch
+ delete http://localhost:3001/rights/{id}
+  a.当发送put请求时 把 id 为 01 的数据改成 { "name": "李浩","age":12, "class": "211班" }
+  注意：原本的数据包含 name、age 和 class ，使用 put 时必须把这三个字段都写上，不然会删掉没传的字段。这就是 “覆盖” 的意思。
+  b.当发送patch请求时 只改了 id 为 01 的 age 值，并没有删掉其他字段的数据。
+
+```

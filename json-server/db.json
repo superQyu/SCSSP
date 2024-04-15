@@ -1,0 +1,488 @@
+{
+  "children": [
+    {
+      "id": "3",
+      "title": "添加用户",
+      "rightId": 2,
+      "key": "/user-manage/add",
+      "grade": 2
+    },
+    {
+      "id": "4",
+      "title": "删除用户",
+      "rightId": 2,
+      "key": "/user-manage/delete",
+      "grade": 2
+    },
+    {
+      "id": "3",
+      "title": "修改用户",
+      "rightId": 2,
+      "key": "/user-manage/update",
+      "grade": 2
+    },
+    {
+      "id": "6",
+      "title": "用户列表",
+      "rightId": 2,
+      "key": "/user-manage/list",
+      "pagepermisson": 1,
+      "grade": 2
+    },
+    {
+      "id": "8",
+      "title": "角色列表",
+      "rightId": 7,
+      "key": "/right-manage/role/list",
+      "pagepermisson": 1,
+      "grade": 2
+    },
+    {
+      "id": "9",
+      "title": "权限列表",
+      "rightId": 7,
+      "key": "/right-manage/right/list",
+      "pagepermisson": 1,
+      "grade": 2
+    },
+    {
+      "id": "10",
+      "title": "修改角色",
+      "rightId": 7,
+      "key": "/right-manage/role/update",
+      "grade": 2
+    },
+    {
+      "id": "11",
+      "title": "删除角色",
+      "rightId": 7,
+      "key": "/right-manage/role/delete",
+      "grade": 2
+    },
+    {
+      "id": "12",
+      "title": "修改权限",
+      "rightId": 7,
+      "key": "/right-manage/right/update",
+      "grade": 2
+    },
+    {
+      "id": "13",
+      "title": "删除权限",
+      "rightId": 7,
+      "key": "/right-manage/right/delete",
+      "grade": 2
+    },
+    {
+      "id": "15",
+      "title": "新闻列表",
+      "rightId": 14,
+      "key": "/news-manage/list",
+      "grade": 2
+    },
+    {
+      "id": "16",
+      "title": "撰写新闻",
+      "rightId": 14,
+      "key": "/news-manage/add",
+      "grade": 2,
+      "pagepermisson": 1
+    },
+    {
+      "id": "17",
+      "title": "新闻更新",
+      "rightId": 14,
+      "key": "/news-manage/update/:id",
+      "grade": 2,
+      "routepermisson": 1
+    },
+    {
+      "id": "18",
+      "title": "新闻预览",
+      "rightId": 14,
+      "key": "/news-manage/preview/:id",
+      "grade": 2,
+      "routepermisson": 1
+    },
+    {
+      "id": "19",
+      "title": "草稿箱",
+      "rightId": 14,
+      "key": "/news-manage/draft",
+      "grade": 2,
+      "pagepermisson": 1
+    },
+    {
+      "id": "20",
+      "title": "新闻分类",
+      "rightId": 14,
+      "key": "/news-manage/category",
+      "grade": 2,
+      "pagepermisson": 1
+    },
+    {
+      "id": "22",
+      "title": "审核新闻",
+      "rightId": 21,
+      "key": "/audit-manage/audit",
+      "grade": 2,
+      "pagepermisson": 1
+    },
+    {
+      "id": "23",
+      "title": "审核列表",
+      "rightId": 21,
+      "key": "/audit-manage/list",
+      "grade": 2,
+      "pagepermisson": 1
+    },
+    {
+      "id": "25",
+      "title": "待发布",
+      "rightId": 24,
+      "key": "/publish-manage/unpublished",
+      "grade": 2,
+      "pagepermisson": 1
+    },
+    {
+      "id": "26",
+      "title": "已发布",
+      "rightId": 24,
+      "key": "/publish-manage/published",
+      "grade": 2,
+      "pagepermisson": 1
+    },
+    {
+      "id": "27",
+      "title": "已下线",
+      "rightId": 24,
+      "key": "/publish-manage/sunset",
+      "grade": 2,
+      "pagepermisson": 1
+    }
+  ],
+  "roles": [
+    {
+      "id": "1",
+      "roleName": "超级管理员",
+      "roleType": 1,
+      "rights": [
+        "/user-manage",
+        "/user-manage/add",
+        "/user-manage/delete",
+        "/user-manage/update",
+        "/user-manage/list",
+        "/right-manage",
+        "/right-manage/role/list",
+        "/right-manage/right/list",
+        "/right-manage/role/update",
+        "/right-manage/role/delete",
+        "/right-manage/right/update",
+        "/right-manage/right/delete",
+        "/news-manage",
+        "/news-manage/list",
+        "/news-manage/add",
+        "/news-manage/update/:id",
+        "/news-manage/preview/:id",
+        "/news-manage/draft",
+        "/news-manage/category",
+        "/audit-manage",
+        "/audit-manage/audit",
+        "/audit-manage/list",
+        "/publish-manage",
+        "/publish-manage/unpublished",
+        "/publish-manage/published",
+        "/publish-manage/sunset",
+        "/home"
+      ]
+    },
+    {
+      "id": "2",
+      "roleName": "区域管理员",
+      "roleType": 2,
+      "rights": [
+        "/home",
+        "/user-manage",
+        "/user-manage/add",
+        "/user-manage/delete",
+        "/user-manage/update",
+        "/user-manage/list",
+        "/news-manage",
+        "/news-manage/list",
+        "/news-manage/add",
+        "/news-manage/update/:id",
+        "/news-manage/preview/:id",
+        "/news-manage/draft",
+        "/news-manage/category",
+        "/audit-manage",
+        "/audit-manage/audit",
+        "/audit-manage/list",
+        "/publish-manage",
+        "/publish-manage/unpublished",
+        "/publish-manage/published",
+        "/publish-manage/sunset"
+      ]
+    },
+    {
+      "id": "3",
+      "roleName": "区域编辑",
+      "roleType": 3,
+      "rights": [
+        "/home",
+        "/news-manage",
+        "/news-manage/list",
+        "/news-manage/add",
+        "/news-manage/update/:id",
+        "/news-manage/preview/:id",
+        "/news-manage/draft",
+        "/audit-manage",
+        "/audit-manage/list",
+        "/publish-manage",
+        "/publish-manage/unpublished",
+        "/publish-manage/published",
+        "/publish-manage/sunset"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "1",
+      "username": "admin",
+      "password": 123456,
+      "roleState": true,
+      "default": true,
+      "region": "",
+      "roleId": 1
+    },
+    {
+      "id": "2",
+      "username": "铁锤",
+      "password": 123,
+      "roleState": true,
+      "default": false,
+      "region": "亚洲",
+      "roleId": 2,
+      "pagepermisson": 1
+    },
+    {
+      "id": "3",
+      "username": "钢蛋",
+      "password": 123,
+      "roleState": true,
+      "default": false,
+      "region": "南极洲",
+      "roleId": 3
+    },
+    {
+      "id": "4",
+      "username": "诸葛山珍",
+      "password": 123,
+      "roleState": true,
+      "default": false,
+      "region": "",
+      "roleId": 1
+    },
+    {
+      "id": "5",
+      "username": "西门吹灯",
+      "password": 123,
+      "roleState": true,
+      "default": false,
+      "region": "南极洲",
+      "roleId": 2
+    },
+    {
+      "username": "summer",
+      "password": "123",
+      "region": "",
+      "roleId": 1,
+      "roleState": true,
+      "default": false,
+      "id": "6"
+    }
+  ],
+  "news": [
+    {
+      "title": "测试",
+      "categoryId": 1,
+      "content": "<p>测试</p>\n",
+      "region": "全球",
+      "author": "admin",
+      "roleId": 1,
+      "auditState": 2,
+      "publishState": 2,
+      "createTime": 161577743864,
+      "star": 1000,
+      "view": 2010,
+      "id": "1",
+      "publishTime": 1615778496314
+    },
+    {
+      "title": "士大夫",
+      "categoryId": 1,
+      "content": "<p style=\"text-align:center;\">大师傅</p>\n<ul>\n<li><span style=\"background-color: rgb(44,130,201);\">dsfknashdfs</span></li>\n<li><span style=\"background-color: rgb(44,130,201);\">dsfjhasgkal</span></li>\n</ul>\n",
+      "region": "全球",
+      "author": "summer",
+      "roleId": 1,
+      "auditState": 2,
+      "publishState": 3,
+      "createTime": 1665732803067,
+      "star": 0,
+      "view": 0,
+      "id": "2",
+      "publishTime": 1665846232550
+    },
+    {
+      "title": "收到就回复",
+      "categoryId": 5,
+      "content": "<p>sdfsadfsdfasd</p>\n",
+      "region": "全球",
+      "author": "summer",
+      "roleId": 1,
+      "auditState": 2,
+      "publishState": 2,
+      "createTime": 1665832939282,
+      "star": 2,
+      "view": 5,
+      "id": "3",
+      "publishTime": 1665900147916
+    },
+    {
+      "title": "士大夫11111",
+      "categoryId": 1,
+      "content": "<p>ewrwqerwerq</p>\n",
+      "region": "全球",
+      "author": "summer",
+      "roleId": 1,
+      "auditState": 2,
+      "publishState": 2,
+      "createTime": 1665839712217,
+      "star": 0,
+      "view": 0,
+      "id": "4",
+      "publishTime": 1665978794323
+    },
+    {
+      "title": "是淡粉色的方式",
+      "categoryId": 1,
+      "content": "<p>淡粉色的 v</p>\n",
+      "region": "亚洲",
+      "author": "铁锤",
+      "roleId": 2,
+      "auditState": 2,
+      "publishState": 2,
+      "createTime": 1665847372657,
+      "star": 0,
+      "view": 0,
+      "id": "5",
+      "publishTime": 1665984841630
+    },
+    {
+      "title": "是的",
+      "categoryId": 1,
+      "content": "<p>当时发生的方式地方</p>\n",
+      "region": "南极洲",
+      "author": "钢蛋",
+      "roleId": 3,
+      "auditState": 2,
+      "publishState": 1,
+      "createTime": 1665847644925,
+      "star": 0,
+      "view": 0,
+      "id": "6"
+    },
+    {
+      "title": "dfsd",
+      "categoryId": 3,
+      "content": "<p>dfssadfasd</p>\n",
+      "region": "全球",
+      "author": "summer",
+      "roleId": 1,
+      "auditState": 2,
+      "publishState": 2,
+      "createTime": 1665978842194,
+      "star": 0,
+      "view": 0,
+      "id": "7",
+      "publishTime": 1665978848362
+    },
+    {
+      "title": "sd",
+      "categoryId": 1,
+      "content": "<p>rgdv&nbsp;</p>\n",
+      "region": "全球",
+      "author": "summer",
+      "roleId": 1,
+      "auditState": 2,
+      "publishState": 2,
+      "createTime": 1665979485659,
+      "star": 0,
+      "view": 0,
+      "id": "8",
+      "publishTime": 1665979492659
+    },
+    {
+      "title": "士大夫",
+      "categoryId": 2,
+      "content": "<p>ewrwe</p>\n",
+      "region": "全球",
+      "author": "summer",
+      "roleId": 1,
+      "auditState": 2,
+      "publishState": 2,
+      "createTime": 1665982559799,
+      "star": 0,
+      "view": 0,
+      "id": "9",
+      "publishTime": 1665982564848
+    },
+    {
+      "title": "士大夫",
+      "categoryId": 5,
+      "content": "<p>ewrwe</p>\n",
+      "region": "全球",
+      "author": "summer",
+      "roleId": 1,
+      "auditState": 2,
+      "publishState": 2,
+      "createTime": 1665982579600,
+      "star": 0,
+      "view": 2,
+      "id": "10",
+      "publishTime": 1665982584210
+    },
+    {
+      "title": "df",
+      "categoryId": 6,
+      "content": "<p>erwrwerwer</p>\n",
+      "region": "全球",
+      "author": "summer",
+      "roleId": 1,
+      "auditState": 2,
+      "publishState": 2,
+      "createTime": 1665982599056,
+      "star": 0,
+      "view": 0,
+      "id": "11",
+      "publishTime": 1665982603977
+    },
+    {
+      "title": "sd",
+      "categoryId": 4,
+      "content": "<p>fdsv&nbsp;</p>\n",
+      "region": "全球",
+      "author": "summer",
+      "roleId": 1,
+      "auditState": 2,
+      "publishState": 2,
+      "createTime": 1665982644959,
+      "star": 0,
+      "view": 0,
+      "id": "12",
+      "publishTime": 1665982649000
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}
