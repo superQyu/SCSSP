@@ -61,7 +61,7 @@ export default () => {
   }, [getToken('BREADCRUMBS')]);
 
   return (
-    <div class={style.menuTab}>
+    <div className={style.menuTab}>
       <Tabs
         size="small"
         type="editable-card"

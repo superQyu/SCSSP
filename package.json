@@ -21,20 +21,20 @@
     "start-mock": "json-server -c ./json-server/json-server.json  -w ./json-server/db.json -r ./json-server/routes.json "
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.2.1",
-    "@commitlint/config-conventional": "^19.1.0",
-    "@mui/material": "^5.15.14",
+    "@commitlint/cli": "^19.2.2",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@mui/material": "^5.15.15",
     "commitizen": "^4.3.0",
     "commitlint-config-cz": "^0.13.3",
     "cz-conventional-changelog": "^3.3.0",
     "cz-customizable": "^7.0.0",
-    "cz-git": "^1.9.0",
+    "cz-git": "^1.9.1",
     "eslint": "^8.57.0",
     "git-commit-emoji": "^1.0.5",
     "husky": "^8.0.3",
     "prettier": "^2.8.8",
-    "terser": "^5.29.2",
-    "turbo": "^1.13.0"
+    "terser": "^5.30.3",
+    "turbo": "^1.13.2"
   },
   "engines": {
     "node": ">=16.00",
