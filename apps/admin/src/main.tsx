@@ -25,7 +25,26 @@ root.render(
         {/* 基础信息 */}
         <BasicConfigurationProvider>
           {/* antd 主题配置 */}
-          <ConfigProvider theme={{ token: { colorPrimary: 'pink' } }}>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#00a2fb',
+                borderRadius: 6,
+                // colorBgContainer: 'transparent',
+                wireframe: false,
+                sizeUnit: 4,
+                sizeStep: 4,
+                fontSize: 14,
+                colorTextBase: '#000000',
+                colorLink: '#1677ff',
+                colorError: '#ff0000',
+                colorWarning: '#ffa153',
+                colorSuccess: '#67c23a',
+                colorInfo: '#458fff',
+              },
+              components: {},
+            }}
+          >
             {/* <PermissionsProvider> */}
             <App />
             {/* </PermissionsProvider> */}
