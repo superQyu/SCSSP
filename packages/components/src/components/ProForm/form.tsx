@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Form, Spin, Input } from 'antd';
+import { Col, Row, Form, Spin, Input } from 'antd';
 
 import type { FormInstance } from 'antd/es/form';
 
@@ -14,6 +14,7 @@ export type FormColumnsTypes = {
   defaultValue?: string | number;
   formItemProps?: FieldType;
   show?: boolean;
+  colNum?: 2 | 3 | 4 | 6 | 8 | 12 | 24;
   [key: string]: any;
 };
 
@@ -23,6 +24,7 @@ export interface FornPropsTypes extends FieldType {
   loading?: boolean;
   labelAlign?: 'left';
   columns?: FormColumnsTypes[];
+
   onFormChange?: (_: FieldType) => void;
   formRef: React.RefObject<FormInstance<any>>;
 }
@@ -50,6 +52,8 @@ const AdForm: React.FC<FornPropsTypes> = ({
     setMenus(_menus);
   };
 
+  const formItem = () => {};
+
   useEffect(() => {
     setMenus({ ...initialValues });
   }, []);
@@ -65,22 +69,24 @@ const AdForm: React.FC<FornPropsTypes> = ({
         colon={false}
         initialValues={{ ...initialValues }}
       >
-        {columns.map((item: FormColumnsTypes) => (
-          <div key={item.dataIndex}>
-            {!item.hasOwnProperty('show') || item.show ? (
-              <Form.Item<FieldType>
-                key={item.dataIndex}
-                name={item.dataIndex}
-                label={item.label}
-                {...item.formItemProps}
-              >
-                {item.formItem || <Input placeholder={`请输入${item.label}`} />}
-              </Form.Item>
-            ) : (
-              <></>
-            )}
-          </div>
-        ))}
+        <Row gutter={16}>
+          {columns.map((item: FormColumnsTypes) => (
+            <Col span={item.colNum || 24} key={item.dataIndex}>
+              {!item.hasOwnProperty('show') || item.show ? (
+                <Form.Item<FieldType>
+                  key={item.dataIndex}
+                  name={item.dataIndex}
+                  label={item.label}
+                  {...item.formItemProps}
+                >
+                  {item.formItem || <Input placeholder={`请输入${item.label}`} />}
+                </Form.Item>
+              ) : (
+                <></>
+              )}
+            </Col>
+          ))}
+        </Row>
       </Form>
     </Spin>
   );
