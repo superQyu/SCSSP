@@ -484,5 +484,23 @@
   ],
   "profile": {
     "name": "typicode"
-  }
+  },
+  "jobList": [
+    {
+      "id": 1,
+      "code": "GZ001",
+      "name": "刨木工",
+      "initialsSpell": "PMG",
+      "isSpecialWorkType": "0",
+      "sort": "1"
+    },
+    {
+      "id": 2,
+      "code": "GZ001",
+      "name": "刨木工",
+      "initialsSpell": "PMG",
+      "isSpecialWorkType": "1",
+      "sort": "2"
+    }
+  ]
 }
