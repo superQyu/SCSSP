@@ -1,0 +1,240 @@
+import { StarTwoTone, StopTwoTone } from '@ant-design/icons';
+import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
+import { message, Tag } from 'antd';
+
+import { IconSelect, IconShow } from 'ui';
+type objJson = Record<string, any>;
+
+type MenusPropsType = {
+  server?: objJson;
+};
+
+export interface ColumnsParamsProps extends objJson {
+  id: number;
+  name: string;
+  ico: string;
+  orderNum: number;
+  roleKey: number | string;
+  filepath: string;
+  isDelete: '0' | '1';
+}
+
+export default ({ server }: MenusPropsType) => {
+  const { menus: M } = server as objJson;
+
+  const columns: ProColumns[] = [
+    {
+      title: '序号',
+      dataIndex: 'name',
+      ellipsis: true,
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '请输入菜单名称',
+          },
+        ],
+      },
+    },
+    {
+      width: 60,
+      hideInSearch: true,
+      title: '头像',
+      editable: false,
+      dataIndex: 'id',
+    },
+    {
+      title: '姓名',
+      hideInSearch: true,
+      width: 60,
+      dataIndex: 'ico',
+      ellipsis: true,
+      valueType: 'select',
+      render: (_, record) => <IconShow ico={record.ico} />,
+      renderFormItem: () => <IconSelect model="simple" />,
+    },
+    {
+      width: 120,
+      hideInSearch: true,
+      title: '性别',
+      valueType: 'digit',
+      dataIndex: 'orderNum',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '请输入排序',
+          },
+        ],
+      },
+    },
+    {
+      width: 80,
+      hideInSearch: true,
+      editable: false,
+      title: '身份证号',
+      dataIndex: 'roleKey',
+    },
+    {
+      hideInSearch: true,
+      title: '名族',
+      dataIndex: 'filepath',
+    },
+    {
+      tooltip: '控制是否在主菜单中显示，不影响路由访问！',
+      width: 120,
+      hideInSearch: true,
+      title: '出生日期',
+      dataIndex: 'isHidden',
+      initialValue: '',
+      valueType: 'select',
+      filters: true,
+      valueEnum: {
+        '0': {
+          text: (
+            <>
+              <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
+              显示
+            </>
+          ),
+        },
+        '1': {
+          text: (
+            <>
+              <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
+              隐藏
+            </>
+          ),
+        },
+      },
+      render: (_, record) => (
+        <>{record.isHidden == '0' ? <Tag color="green">显示</Tag> : <Tag color="red">隐藏</Tag>}</>
+      ),
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '请选择显示状态',
+          },
+        ],
+      },
+    },
+    {
+      width: 120,
+      title: '电话号码',
+      dataIndex: 'isDelete',
+      initialValue: '', //筛选默认值
+      valueType: 'select',
+      filters: true,
+      valueEnum: {
+        '0': {
+          text: (
+            <>
+              <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
+              使用中
+            </>
+          ),
+        },
+        '1': {
+          text: (
+            <>
+              <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
+              已停运
+            </>
+          ),
+        },
+      },
+      render: (_, record) => (
+        <>
+          {record.isDelete == '0' ? <Tag color="green">使用中</Tag> : <Tag color="red">已停运</Tag>}
+        </>
+      ),
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '请选择菜单状态',
+          },
+        ],
+      },
+    },
+    {
+      title: '家庭住址',
+      width: 140,
+      valueType: 'option',
+      key: 'option',
+      render: (_text, record, _, action) => [
+        <a
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(record.id);
+          }}
+        >
+          编辑
+        </a>,
+        <TableDropdown
+          key="actionGroup"
+          onSelect={(key) => {
+            if (key === 'delete') {
+              try {
+                M.deleteMenus({ ids: record.id })
+                  .then(() => {
+                    message.success('操作成功!');
+                    action?.reload();
+                  })
+                  .catch(() => {});
+              } catch (errorInfo) {}
+            }
+          }}
+          menus={[
+            { key: 'delete', name: '删除' },
+            { key: 'detail', name: '详情' },
+            { key: 'copy', name: '复制' },
+          ]}
+        />,
+      ],
+    },
+    {
+      hideInSearch: true,
+      title: '进场时间',
+      dataIndex: 'filepath',
+    },
+    {
+      hideInSearch: true,
+      title: '分包单位',
+      dataIndex: 'filepath',
+    },
+    {
+      hideInSearch: true,
+      title: '劳务工种',
+      dataIndex: 'filepath',
+    },
+    {
+      hideInSearch: true,
+      title: '班组名',
+      dataIndex: 'filepath',
+    },
+    {
+      hideInSearch: true,
+      title: '是否班组长',
+      dataIndex: 'filepath',
+    },
+    {
+      hideInSearch: true,
+      title: '计价方式',
+      dataIndex: 'filepath',
+    },
+    {
+      hideInSearch: true,
+      title: '合同签订日',
+      dataIndex: 'filepath',
+    },
+    {
+      hideInSearch: true,
+      title: '是否零工',
+      dataIndex: 'filepath',
+    },
+  ];
+
+  return columns;
+};
