@@ -15,7 +15,7 @@ export interface ColumnsParamsProps extends objJson {
   ico: string;
   orderNum: number;
   roleKey: number | string;
-  filepath: string;
+  name: string;
   isDelete: '0' | '1';
 }
 
@@ -25,144 +25,125 @@ export default ({ server }: MenusPropsType) => {
   const columns: ProColumns[] = [
     {
       title: '序号',
-      dataIndex: 'name',
-      ellipsis: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '请输入菜单名称',
-          },
-        ],
-      },
-    },
-    {
-      width: 60,
-      hideInSearch: true,
-      title: '头像',
-      editable: false,
       dataIndex: 'id',
-    },
-    {
-      title: '姓名',
-      hideInSearch: true,
       width: 60,
-      dataIndex: 'ico',
-      ellipsis: true,
-      valueType: 'select',
-      render: (_, record) => <IconShow ico={record.ico} />,
-      renderFormItem: () => <IconSelect model="simple" />,
-    },
-    {
-      width: 120,
+      editable: false,
       hideInSearch: true,
-      title: '性别',
-      valueType: 'digit',
-      dataIndex: 'orderNum',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '请输入排序',
-          },
-        ],
+      sorter: true,
+      fixed: 'left',
+    },  {
+      title: '创建者',
+      width: 120,
+      dataIndex: 'creator',
+      valueType: 'select',
+      valueEnum: {
+        all: { text: '全部' },
+        付小小: { text: '付小小' },
+        曲丽丽: { text: '曲丽丽' },
+        林东东: { text: '林东东' },
+        陈帅帅: { text: '陈帅帅' },
+        兼某某: { text: '兼某某' },
       },
     },
     {
       width: 80,
       hideInSearch: true,
+      title: '头像',
+      editable: false,
+      dataIndex: 'avatar',
+    },
+    {
+      title: '姓名',
+      dataIndex: 'name',
+      width: 120,
+      ellipsis: true,
+    },
+    {
+      width: 60,
+      hideInSearch: true,
+      title: '性别',
+      dataIndex: 'gender',
+    },
+    {
+      hideInSearch: true,
       editable: false,
       title: '身份证号',
-      dataIndex: 'roleKey',
+      dataIndex: 'identityCard',
     },
     {
+      width: 80,
       hideInSearch: true,
-      title: '名族',
-      dataIndex: 'filepath',
+      title: '民族',
+      dataIndex: 'nationality',
     },
     {
-      tooltip: '控制是否在主菜单中显示，不影响路由访问！',
-      width: 120,
+      width: 220,
       hideInSearch: true,
       title: '出生日期',
-      dataIndex: 'isHidden',
-      initialValue: '',
-      valueType: 'select',
-      filters: true,
-      valueEnum: {
-        '0': {
-          text: (
-            <>
-              <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
-              显示
-            </>
-          ),
-        },
-        '1': {
-          text: (
-            <>
-              <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
-              隐藏
-            </>
-          ),
-        },
-      },
-      render: (_, record) => (
-        <>{record.isHidden == '0' ? <Tag color="green">显示</Tag> : <Tag color="red">隐藏</Tag>}</>
-      ),
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '请选择显示状态',
-          },
-        ],
-      },
+      dataIndex: 'birthday',
     },
     {
       width: 120,
       title: '电话号码',
-      dataIndex: 'isDelete',
-      initialValue: '', //筛选默认值
-      valueType: 'select',
-      filters: true,
-      valueEnum: {
-        '0': {
-          text: (
-            <>
-              <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
-              使用中
-            </>
-          ),
-        },
-        '1': {
-          text: (
-            <>
-              <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
-              已停运
-            </>
-          ),
-        },
-      },
-      render: (_, record) => (
-        <>
-          {record.isDelete == '0' ? <Tag color="green">使用中</Tag> : <Tag color="red">已停运</Tag>}
-        </>
-      ),
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '请选择菜单状态',
-          },
-        ],
-      },
+      dataIndex: 'phone',
     },
     {
       title: '家庭住址',
+      width: 220,
+      key: 'address',
+    },
+    {
+      hideInSearch: true,
+      width: 220,
+      title: '进场时间',
+      dataIndex: 'name',
+    },
+    {
+      hideInSearch: true,
+      title: '分包单位',
+      dataIndex: 'companyName',
+    },
+    {
+      hideInSearch: true,
+      width: 120,
+      title: '劳务工种',
+      dataIndex: 'workType',
+    },
+    {
+      hideInSearch: true,
+      width: 220,
+      title: '班组名',
+      dataIndex: 'name',
+    },
+    {
+      hideInSearch: true,
+      width: 100,
+      title: '是否班组长',
+      dataIndex: 'name',
+    },
+    {
+      hideInSearch: true,
+      width: 220,
+      title: '计价方式',
+      dataIndex: 'name',
+    },
+    {
+      hideInSearch: true,
+      width: 220,
+      title: '合同签订日',
+      dataIndex: 'name',
+    },
+    {
+      hideInSearch: true,
+      title: '是否零工',
+      dataIndex: 'name',
+    },
+    {
+      title: '操作',
       width: 140,
       valueType: 'option',
       key: 'option',
+      fixed: 'right',
       render: (_text, record, _, action) => [
         <a
           key="editable"
@@ -193,46 +174,6 @@ export default ({ server }: MenusPropsType) => {
           ]}
         />,
       ],
-    },
-    {
-      hideInSearch: true,
-      title: '进场时间',
-      dataIndex: 'filepath',
-    },
-    {
-      hideInSearch: true,
-      title: '分包单位',
-      dataIndex: 'filepath',
-    },
-    {
-      hideInSearch: true,
-      title: '劳务工种',
-      dataIndex: 'filepath',
-    },
-    {
-      hideInSearch: true,
-      title: '班组名',
-      dataIndex: 'filepath',
-    },
-    {
-      hideInSearch: true,
-      title: '是否班组长',
-      dataIndex: 'filepath',
-    },
-    {
-      hideInSearch: true,
-      title: '计价方式',
-      dataIndex: 'filepath',
-    },
-    {
-      hideInSearch: true,
-      title: '合同签订日',
-      dataIndex: 'filepath',
-    },
-    {
-      hideInSearch: true,
-      title: '是否零工',
-      dataIndex: 'filepath',
     },
   ];
 

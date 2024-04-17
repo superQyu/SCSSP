@@ -62,7 +62,7 @@ export default (props: any) => {
             }
       }
       dateFormatter="string"
-      headerTitle={props.headerTitle || '表格'}
+      headerTitle={props.headerTitle}
     />
   );
 };

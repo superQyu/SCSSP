@@ -35,13 +35,13 @@ export const filepathToElement: any = (list: MenuItem[]) =>
     if (item.children?.length) {
       let children = [...filepathToElement(item.children)];
       return {
-        path: item.path,
+        path: `${item.path.startsWith('/') ? '' : '/'}${item.path}`,
         children,
         element: <OutletLayoutRouter />,
       };
     } else {
       return {
-        path: item.path,
+        path: item.path.startsWith('/') ? item.path.replace('/', '') : item.path,
         element: pathToLazyComponent(item.filepath),
       };
     }

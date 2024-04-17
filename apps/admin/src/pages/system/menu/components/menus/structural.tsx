@@ -8,7 +8,7 @@ import type { FormInstance } from 'antd/es/form';
 import { IconSelect } from 'ui';
 import { AdForm, FormColumnsTypes } from 'components';
 
-import { url2key, TOKEN, buildTree, sortMenu } from 'utils';
+import { url2key, RebuildTree, flattenArray, sortMenu } from 'utils';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 interface Props {
@@ -27,7 +27,13 @@ type MenusType = {
 type DefaultOptionType = GetProp<TreeSelectProps, 'treeData'>[number];
 
 const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
-  const { server } = useBasicConfiguration();
+  const { server, config } = useBasicConfiguration();
+
+  //  api server
+  const { user: U, menus: M, sites: S } = server;
+  const { PLATFORMID } = config as Record<string, any>;
+  // 字段提示
+
   const formRef = useRef<FormInstance>(null);
   const [title] = useState<string>('新建菜单');
   const [loading, setLoading] = useState<boolean>(false);
@@ -35,20 +41,17 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
   const [treeData, setTreeData] = useState<Omit<DefaultOptionType, 'label'>[]>([]);
   const [menus, setMenus] = useState<MenusType>({
     name: '',
-    ico: '',
+    icon: '',
     path: '',
-    filepath: '',
-    orderNum: '',
-    isDelete: 0,
-    isHidden: 0,
+    component: '',
+    sort: '',
+    status: "0",
     description: '',
-    parentId: '0',
-    menuType: 'dir',
+    parentId: `${PLATFORMID}`,
+    type: '1',
+    permission: '',
   });
 
-  //  api server
-  const { user: U, menus: M } = server;
-  // 字段提示
   const ItemTooltip = (tips: string | Array<string>) => {
     if (typeof tips === 'string') tips = [tips];
     return (
@@ -76,8 +79,10 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
 
       M.createMenu(JSON.parse(JSON.stringify({ ...values, siteKey: url2key() })))
         .then(() => {
+          message.success('菜单创建成功！');
+          setLoading(false);
           onStateChange(false);
-          message.success('站点创建成功！');
+          onReset();
         })
         .catch(() => {
           setLoading(false);
@@ -101,8 +106,8 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
     setMenus(updated);
   };
   const validatorPath = async (_: any, value: any) => {
-    const { menuType } = menus;
-    if (menuType == 'menu' && value && value.indexOf('/') === 0) {
+    const { type } = menus;
+    if (type == 'menu' && value && value.indexOf('/') === 0) {
       return Promise.reject('不允许"/"开头');
     }
 
@@ -110,20 +115,27 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
   };
 
   const onLoadTreeData = async () => {
-    const list = await U.getRoute({ siteKey: TOKEN.replace(/^Qy_/, '') });
-    const menus = buildTree(list, {
+    const res = await S.menuList();
+    // * 筛选出 华光智慧监管 平台 id:2583  相关菜单表
+    const M =
+      RebuildTree(res, {
+        intercept: (item: { [key: string]: string }) => ({ ...item, children: item.routes }),
+      }).filter((item) => item.id === PLATFORMID)[0] || {};
+    const roorId = M[0]?.id || 0;
+    const menus = RebuildTree(flattenArray([M]), {
       delEmptyRoutes: true,
-      intercept: (item: { [key: string]: string }) => ({
-        ...item,
-        children: item.routes,
-        key: item.id,
-        value: item.id,
-        title: item.name,
-      }),
+      intercept: (item: { [key: string]: string }) => {
+        return {
+          ...item,
+          children: item.routes,
+          key: item.id,
+          value: item.id,
+          title: item.name,
+        };
+      },
+      _rootId: roorId,
     });
-    setTreeData([
-      { id: 1, pId: 0, key: '0', value: '0', title: '主类目', children: sortMenu(menus) },
-    ]);
+    setTreeData([...sortMenu(menus)]);
   };
 
   useEffect(() => {
@@ -133,7 +145,7 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
 
   useEffect(() => {
     formRef.current?.resetFields(['filepath']);
-  }, [menus.menuType]);
+  }, [menus.type]);
 
   const columns: FormColumnsTypes[] = [
     {
@@ -145,7 +157,7 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
           style={{ width: '100%' }}
           value={menus.parentId}
           dropdownStyle={{ maxHeight: 480, overflow: 'auto' }}
-          treeDefaultExpandedKeys={['0']}
+          treeDefaultExpandedKeys={[PLATFORMID]}
           placeholder="请选择上级"
           onChange={(v: string) => handlerChange('parentId', `${v}`)}
           treeData={treeData}
@@ -161,18 +173,13 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
     },
     {
       label: '菜单类型',
-      dataIndex: 'menuType',
-      defaultValue: 'dir',
+      dataIndex: 'type',
+      defaultValue: '1',
       formItem: (
-        <Radio.Group
-          onChange={(e) => handlerChange('menuType', e.target.value)}
-          buttonStyle="solid"
-        >
-          <Radio.Button value="dir">目录</Radio.Button>
-          <Radio.Button value="menu">菜单</Radio.Button>
-          <Radio.Button disabled value="button">
-            按钮
-          </Radio.Button>
+        <Radio.Group onChange={(e) => handlerChange('type', e.target.value)} buttonStyle="solid">
+          <Radio.Button value="1">目录</Radio.Button>
+          <Radio.Button value="2">菜单</Radio.Button>
+          <Radio.Button value="3">按钮</Radio.Button>
         </Radio.Group>
       ),
       formItemProps: {
@@ -181,11 +188,13 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
     },
     {
       label: '图标',
-      dataIndex: 'ico',
+      show: menus.type != '3',
+      dataIndex: 'icon',
       formItem: <IconSelect />,
     },
     {
       label: '路由地址',
+      show: menus.type != '3',
       dataIndex: 'path',
       formItemProps: {
         tooltip: ItemTooltip([
@@ -197,8 +206,8 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
     },
     {
       label: '组件地址',
-      dataIndex: 'filepath',
-      show: menus.menuType === 'menu',
+      dataIndex: 'component',
+      show: menus.type == '2',
       formItemProps: {
         rules: [
           {
@@ -211,46 +220,40 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
       },
     },
     {
+      label: '权限标识',
+      show: menus.type === '3',
+      dataIndex: 'permission',
+      formItemProps: {
+        tooltip: ItemTooltip(['Controller 方法上的权限字符', '如：system:user:list']),
+      },
+    },
+    {
       label: '显示排序',
-      dataIndex: 'orderNum',
+      dataIndex: 'sort',
       formItem: <InputNumber min={0} />,
       formItemProps: {
         rules: [{ required: true, message: '请输入排序' }],
       },
     },
     {
-      label: '菜单状态',
-      dataIndex: 'isDelete',
-      defaultValue: '0',
-      formItem: (
-        <Radio.Group>
-          <Radio value={0}>开启</Radio>
-          <Radio value={1}>关闭</Radio>
-        </Radio.Group>
-      ),
-      formItemProps: {
-        rules: [{ required: true }],
-      },
-    },
-    {
       label: '显示状态',
-      dataIndex: 'isHidden',
-      defaultValue: '0',
+      dataIndex: 'status',
+      defaultValue: "0",
       formItem: (
         <Radio.Group>
-          <Radio value={0}>显示</Radio>
-          <Radio value={1}>隐藏</Radio>
+          <Radio value={"0"}>显示</Radio>
+          <Radio value={"1"}>隐藏</Radio>
         </Radio.Group>
       ),
       formItemProps: {
         tooltip: ItemTooltip('选择隐藏时，路由将不会出现在侧边栏，但仍然可以访问'),
       },
     },
-    {
-      label: '菜单描述',
-      dataIndex: 'description',
-      formItem: <Input.TextArea placeholder="菜单描述" autoSize={{ minRows: 4 }} allowClear />,
-    },
+    // {
+    //   label: '菜单描述',
+    //   dataIndex: 'description',
+    //   formItem: <Input.TextArea placeholder="菜单描述" autoSize={{ minRows: 4 }} allowClear />,
+    // },
   ];
 
   return (
