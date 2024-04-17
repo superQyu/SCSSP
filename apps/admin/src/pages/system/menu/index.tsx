@@ -1,11 +1,10 @@
 import { createElement, cloneElement, useRef, useState, useEffect } from 'react';
 import { Button, message } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined, RedoOutlined } from '@ant-design/icons';
 
-import { IconShow } from 'ui';
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
-import { TOKEN, buildTree, sortMenu, RebuildTree, flattenArray } from 'utils';
+import { sortMenu, RebuildTree, flattenArray } from 'utils';
 
 import AddMenus from './components/menus/structural';
 
@@ -75,12 +74,14 @@ export default () => {
       <ProTable
         headerTitle="菜单列表"
         request={async (params = {}) => {
-          const res = await S.menuList();
-          // * 筛选出 华光智慧监管 平台 id:PLATFORMID  相关菜单表
-          const M =
-            RebuildTree(res, {
-              intercept: (item: { [key: string]: string }) => ({ ...item, children: item.routes }),
-            }).filter((item) => item.id === PLATFORMID)[0].routes || [];
+          const res = await S.menuList({ ...params });
+          // * 筛选出 华光智慧监管平台 id:PLATFORMID  相关菜单表
+          const isSearch = Object.entries(params).length > 0; // 判断是否为搜索
+
+          let M = RebuildTree(res, {
+            intercept: (item: { [key: string]: string }) => ({ ...item, children: item.routes }),
+          });
+          if (!isSearch) M = M.filter((item) => item.id === PLATFORMID)[0]?.routes || [];
           const menus = RebuildTree(flattenArray(M), {
             delEmptyRoutes: true,
             intercept: (item: { [key: string]: string }) => {
@@ -105,16 +106,6 @@ export default () => {
         }}
         actionRef={actionRef}
         pagination={false}
-        toolBarRender={() => [
-          <Button
-            key="button"
-            icon={createElement(PlusOutlined)}
-            onClick={() => setFormModal(true)}
-            type="primary"
-          >
-            新建
-          </Button>,
-        ]}
         form={{
           // 请求之前参数格式化
           syncToUrl: (values: any, _: string) => ({ ...values }),
@@ -139,8 +130,31 @@ export default () => {
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}
+        toolBarRender={() => [
+          <Button
+            key="button"
+            icon={createElement(PlusOutlined)}
+            onClick={() => setFormModal(true)}
+            type="primary"
+          >
+            新建
+          </Button>,
+        ]}
         search={{
           labelWidth: 'auto',
+          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+            return [
+              dom[0],
+              <Button
+                type="primary"
+                key="sub"
+                icon={createElement(SearchOutlined)}
+                onClick={() => form?.submit()}
+              >
+                {searchText}
+              </Button>,
+            ];
+          },
         }}
       ></ProTable>
       <AddMenus subForm={subForm} openModal={formModal} onStateChange={handleModalStateChange} />
