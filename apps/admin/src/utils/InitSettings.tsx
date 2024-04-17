@@ -17,10 +17,14 @@ export default ({ children }: any) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const { prefix } = config || {}; // 基本设置
-  const { user: U, basic } = server;
+  const { user: U, basic: B } = server;
 
   const getAvatar = (a: any) => {
     return `${prefix.static}${a}`;
+  };
+  // 初始化字典
+  const initDir = async () => {
+    await U.getSimpleDictTypeList();
   };
   // 获取路由列表
   const getRoutes = async () => {

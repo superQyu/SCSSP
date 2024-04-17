@@ -45,7 +45,7 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
     path: '',
     component: '',
     sort: '',
-    status: "0",
+    status: '0',
     description: '',
     parentId: `${PLATFORMID}`,
     type: '1',
@@ -148,6 +148,17 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
   }, [menus.type]);
 
   const columns: FormColumnsTypes[] = [
+    // {
+    //   label: '测试字典',
+    //   dataIndex: 'dir',
+    //   valueType: 'select',
+    //   options={[
+    //     {
+    //       value: 'time',
+    //       label: '履行完终止',
+    //     },
+    //   ]}
+    // },
     {
       label: '上级菜单',
       dataIndex: 'parentId',
@@ -238,11 +249,11 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
     {
       label: '显示状态',
       dataIndex: 'status',
-      defaultValue: "0",
+      defaultValue: '0',
       formItem: (
         <Radio.Group>
-          <Radio value={"0"}>显示</Radio>
-          <Radio value={"1"}>隐藏</Radio>
+          <Radio value={'0'}>显示</Radio>
+          <Radio value={'1'}>隐藏</Radio>
         </Radio.Group>
       ),
       formItemProps: {

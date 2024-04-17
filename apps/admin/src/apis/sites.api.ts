@@ -10,7 +10,8 @@ const sites: ApiItem[] = [
     name: '菜单列表',
     description: '菜单列表',
     params: [
-      { key: 'Authorization', location: 'header' }
+      { key: 'Authorization', location: 'header' },
+      { key: 'name', }
     ],
   },
   {
