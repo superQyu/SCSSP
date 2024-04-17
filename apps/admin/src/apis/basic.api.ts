@@ -12,12 +12,27 @@ const user: ApiItem[] = [
   },
   {
     key: 'getDictType',
-    url: `${ADMIN_API}/system/dict-type/get`,
+    url: `${ADMIN_API}/system/dict-data/page`,
     type: 'GET',
     name: '字典详情',
     description: '查询字典详情',
-    params: [{ key: 'Authorization', location: "header" }, { key: 'id' }]
+    params: [
+      { key: 'Authorization', location: "header" },
+      { key: 'pageNo', valueAttrs: { value: 1 } },
+      { key: 'pageSize', valueAttrs: { value: 1000 } },
+      { key: 'label' },
+      { key: 'dictType' }
+    ]
   },
+  // {
+  //   key: 'getDictType',
+  //   url: `${ADMIN_API}/system/dict-type/get`,
+  //   type: 'GET',
+  //   name: '字典详情',
+  //   description: '查询字典详情',
+  //   params: [{ key: 'Authorization', location: "header" },
+  //   { key: 'id' }]
+  // },
   {
     key: 'siteInfor',
     url: '/api/v1/site/siteInfor',
