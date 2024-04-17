@@ -10,6 +10,9 @@ interface IconShowProp {
 
 const IconShow = ({ ico, handlerIco }: IconShowProp) => {
   if (!ico || ico == '') return <></>;
+  
+  if (typeof ico == 'object') return ico;
+  
   const iconInfor = ico.split(':');
   const [key, iconName]: string[] = iconInfor.length === 1 ? ['ad', ...iconInfor] : iconInfor;
 

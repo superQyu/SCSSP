@@ -22,8 +22,8 @@ interface verifyedParam {
 interface IHttpFn<T = any> {
   (): Promise<T>;
 }
-const request = (url: string, setting: any) => {};
-const paramsValidate = (obj: object = {}, os: jsonObject = {}) => {};
+const request = (url: string, setting: any) => { };
+const paramsValidate = (obj: object = {}, os: jsonObject = {}) => { };
 
 class AutoInterface {
   [prop: string]: any;
@@ -108,6 +108,7 @@ class AutoInterface {
             if (rdv == '' && mandatorykey) verifyed.params[rtk] = rdv;
           }
         }
+        
       }
       if (required.length > 0)
         return _this.errorMethod(

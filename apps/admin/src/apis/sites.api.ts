@@ -1,6 +1,18 @@
 import { ApiItem } from '@spms/web-request';
 
+const ADMIN_API = import.meta.env.VITE_APP_ADMIN_API;
+
 const sites: ApiItem[] = [
+  {
+    key: 'menuList',
+    url: `${ADMIN_API}/system/menu/list`,
+    type: 'GET',
+    name: '菜单列表',
+    description: '菜单列表',
+    params: [
+      { key: 'Authorization', location: 'header' }
+    ],
+  },
   {
     key: 'sitesList',
     url: '/api/v1/site/sitesList',

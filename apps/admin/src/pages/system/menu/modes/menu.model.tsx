@@ -47,10 +47,10 @@ export default ({ server }: MenusPropsType) => {
       title: '图标',
       hideInSearch: true,
       width: 60,
-      dataIndex: 'ico',
+      dataIndex: 'icon',
       ellipsis: true,
       valueType: 'select',
-      render: (_, record) => <IconShow ico={record.ico} />,
+      render: (_, record) => <IconShow ico={record.icon} />,
       renderFormItem: () => <IconSelect model="simple" />,
     },
     {
@@ -58,7 +58,7 @@ export default ({ server }: MenusPropsType) => {
       hideInSearch: true,
       title: '排序',
       valueType: 'digit',
-      dataIndex: 'orderNum',
+      dataIndex: 'sort',
       formItemProps: {
         rules: [
           {
@@ -69,23 +69,23 @@ export default ({ server }: MenusPropsType) => {
       },
     },
     {
-      width: 80,
       hideInSearch: true,
+      width: 140,
       editable: false,
       title: '权限标识',
-      dataIndex: 'roleKey',
+      dataIndex: 'permission',
     },
     {
       hideInSearch: true,
       title: '组件路径',
-      dataIndex: 'filepath',
+      dataIndex: 'component',
     },
     {
       tooltip: '控制是否在主菜单中显示，不影响路由访问！',
       width: 120,
       hideInSearch: true,
       title: '显示状态',
-      dataIndex: 'isHidden',
+      dataIndex: 'status',
       initialValue: '',
       valueType: 'select',
       filters: true,
@@ -108,7 +108,7 @@ export default ({ server }: MenusPropsType) => {
         },
       },
       render: (_, record) => (
-        <>{record.isHidden == '0' ? <Tag color="green">显示</Tag> : <Tag color="red">隐藏</Tag>}</>
+        <>{record.status == '0' ? <Tag color="green">显示</Tag> : <Tag color="red">隐藏</Tag>}</>
       ),
       formItemProps: {
         rules: [
@@ -119,45 +119,45 @@ export default ({ server }: MenusPropsType) => {
         ],
       },
     },
-    {
-      width: 120,
-      title: '菜单状态',
-      dataIndex: 'isDelete',
-      initialValue: '', //筛选默认值
-      valueType: 'select',
-      filters: true,
-      valueEnum: {
-        '0': {
-          text: (
-            <>
-              <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
-              使用中
-            </>
-          ),
-        },
-        '1': {
-          text: (
-            <>
-              <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
-              已停运
-            </>
-          ),
-        },
-      },
-      render: (_, record) => (
-        <>
-          {record.isDelete == '0' ? <Tag color="green">使用中</Tag> : <Tag color="red">已停运</Tag>}
-        </>
-      ),
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '请选择菜单状态',
-          },
-        ],
-      },
-    },
+    // {
+    //   width: 120,
+    //   title: '菜单状态',
+    //   dataIndex: 'status',
+    //   initialValue: '', //筛选默认值
+    //   valueType: 'select',
+    //   filters: true,
+    //   valueEnum: {
+    //     1: {
+    //       text: (
+    //         <>
+    //           <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
+    //           使用中
+    //         </>
+    //       ),
+    //     },
+    //     0: {
+    //       text: (
+    //         <>
+    //           <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
+    //           已停运
+    //         </>
+    //       ),
+    //     },
+    //   },
+    //   render: (_, record) => (
+    //     <>
+    //       {record.isDelete == 1 ? <Tag color="green">使用中</Tag> : <Tag color="red">已停运</Tag>}
+    //     </>
+    //   ),
+    //   formItemProps: {
+    //     rules: [
+    //       {
+    //         required: true,
+    //         message: '请选择菜单状态',
+    //       },
+    //     ],
+    //   },
+    // },
     {
       title: '操作',
       width: 140,
@@ -177,7 +177,7 @@ export default ({ server }: MenusPropsType) => {
           onSelect={(key) => {
             if (key === 'delete') {
               try {
-                M.deleteMenus({ ids: record.id })
+                M.deleteMenus({ id: record.id })
                   .then(() => {
                     message.success('操作成功!');
                     action?.reload();
