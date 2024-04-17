@@ -125,6 +125,43 @@ export const buildTree = (arr: TreeNode[], params?: {}) => {
   if (defaultParams.delEmptyRoutes) removeEmptyRoutes(roots, 'routes');
   return roots;
 };
+export const RebuildTree = (arr: TreeNode[], params?: {}, roodId = 0) => {
+  const map: Record<number, TreeNode> = {};
+  const roots: TreeNode[] = [];
+  const defaultParams: TreeParam = {
+    spId: 0,
+    idKey: 'id',
+    pIdKey: 'parentId',
+    delEmptyRoutes: false,
+    isflter: false,
+    ...params,
+  };
+
+  for (const node of arr) {
+    map[node.id] = { ...node, children: [], routes: [] };
+  }
+
+  for (const node of arr) {
+    let curItem = map[node[defaultParams.idKey]];
+
+    if (defaultParams.intercept && typeof defaultParams.intercept === 'function') {
+      curItem = defaultParams.intercept(curItem);
+    }
+
+    if (node[defaultParams.pIdKey] * 1 === roodId) {
+      roots.push(curItem);
+    } else {
+      const parent = map[node[defaultParams.pIdKey]];
+      if (parent) {
+        parent.routes?.push(curItem);
+      } else {
+        roots.push(curItem);
+      }
+    }
+  }
+  if (defaultParams.delEmptyRoutes) removeEmptyRoutes(roots, 'routes');
+  return roots;
+};
 /**
  * @description 菜单排序
  * @param {}

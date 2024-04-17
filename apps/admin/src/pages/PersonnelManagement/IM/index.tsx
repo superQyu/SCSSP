@@ -75,17 +75,12 @@ export default () => {
   return (
     <>
       <ProTable
-        headerTitle="菜单列表"
+        headerTitle="人员管理"
         request={async (params = {}) => {
           const list = await U.getRoute({ siteKey: TOKEN.replace(/^Qy_/, ''), ...params });
-          const menus = buildTree(list, {
-            delEmptyRoutes: true,
-            // isflter: !!Object.entries(params).filter(([_, value]) => value != '').length,
-            intercept: (item: { [key: string]: string }) => ({ ...item, children: item.routes }),
-          });
           return {
             ...params,
-            data: sortMenu(menus),
+            data: list,
             total: list.length,
           } as unknown as ModesApi.pageItemType;
         }}
@@ -94,7 +89,11 @@ export default () => {
           console.log(params);
         }}
         actionRef={actionRef}
-        pagination={false}
+        scroll={{ x: 900 }}
+        pagination={{
+          pageSize: 5,
+          onChange: (page: number) => console.log(page),
+        }}
         toolBarRender={() => [
           <Button
             key="button"

@@ -2,9 +2,10 @@ import { createElement, cloneElement, useRef, useState, useEffect } from 'react'
 import { Button, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
+import { IconShow } from 'ui';
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
-import { TOKEN, buildTree, sortMenu } from 'utils';
+import { TOKEN, buildTree, sortMenu, RebuildTree, flattenArray } from 'utils';
 
 import AddMenus from './components/menus/structural';
 
@@ -15,14 +16,15 @@ import siteModel, { type ColumnsParamsProps } from './modes/menu.model';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 export default () => {
-  const { server } = useBasicConfiguration();
+  const { server, config } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
 
   const [subForm, _] = useState<Record<string, any>>({});
   const [formModal, setFormModal] = useState<boolean>(false);
 
   //  api server
-  const { user: U, menus: M, basic: B } = server;
+  const { menus: M, sites: S } = server;
+  const { PLATFORMID } = config as Record<string, any>;
 
   // 修改状态
   const handleModalStateChange = async (state: boolean) => {
@@ -49,6 +51,8 @@ export default () => {
   const onSave = async (...args: any[]) => {
     const [config, id, n, , ,] = args;
     // 更新行数据
+
+    console.log(JSON.parse(JSON.stringify({ ...n })));
     const res = await M.updateMenu(JSON.parse(JSON.stringify({ ...n })) as ColumnsParamsProps)
       .then(async () => {
         message.success('信息更新成功！');
@@ -64,29 +68,35 @@ export default () => {
     return true;
   };
 
-  useEffect(() => {
-    // B.test()
-    //   .then((res: any) => {
-    //     console.log(res);
-    //   })
-    //   .catch(() => false);
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <>
       <ProTable
         headerTitle="菜单列表"
         request={async (params = {}) => {
-          const list = await U.getRoute({ siteKey: TOKEN.replace(/^Qy_/, ''), ...params });
-          const menus = buildTree(list, {
+          const res = await S.menuList();
+          // * 筛选出 华光智慧监管 平台 id:PLATFORMID  相关菜单表
+          const M =
+            RebuildTree(res, {
+              intercept: (item: { [key: string]: string }) => ({ ...item, children: item.routes }),
+            }).filter((item) => item.id === PLATFORMID)[0].routes || [];
+          const menus = RebuildTree(flattenArray(M), {
             delEmptyRoutes: true,
-            // isflter: !!Object.entries(params).filter(([_, value]) => value != '').length,
-            intercept: (item: { [key: string]: string }) => ({ ...item, children: item.routes }),
+            intercept: (item: { [key: string]: string }) => {
+              return {
+                ...item,
+                filepath: item.component,
+                children: item.routes,
+                status: `${item.status}`,
+              };
+            },
+            _rootId: M[0]?.id,
           });
           return {
             ...params,
             data: sortMenu(menus),
-            total: list.length,
+            total: menus.length,
           } as unknown as ModesApi.pageItemType;
         }}
         columns={initColumns}

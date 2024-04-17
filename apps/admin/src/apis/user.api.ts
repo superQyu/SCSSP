@@ -1,6 +1,27 @@
 import { ApiItem } from '@spms/web-request';
 
+const ADMIN_API = import.meta.env.VITE_APP_ADMIN_API;
+
 const user: ApiItem[] = [
+  {
+    key: 'adminGetRoute',
+    url: `${ADMIN_API}/system/auth/get-permission-info`,
+    type: 'GET',
+    name: '获取用户权限',
+    description: '获取用户权限',
+    params: [
+      { key: 'Authorization', location: 'header' }
+    ],
+  },  
+  {
+    key: 'loginOut',
+    url: `${ADMIN_API}/admin-api/system/auth/logout`,
+    type: 'GET',
+    name: '推出登录',
+    description: '推出登录'
+  },
+
+
   {
     key: 'userInfor',
     url: '/api/v1/admin/system/getInfo',

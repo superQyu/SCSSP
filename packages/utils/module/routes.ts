@@ -4,8 +4,8 @@ import { type UnLimit } from './type';
 
 export const flattenArray = (arr: any[]) => {
   return arr.reduce((acc, curr: UnLimit) => {
-    acc.push(curr);
     if (curr.children && Array.isArray(curr.children)) acc.push(...flattenArray(curr.children));
+    acc.push({ ...curr });
     return acc;
   }, []);
 };

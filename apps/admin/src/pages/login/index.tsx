@@ -37,6 +37,7 @@ const Login: React.FC = () => {
   const { login } = server;
   // 获取图片验证
   const getCaptchaVal = () => {
+    return;
     if (loading) return;
     setcaptcha('');
     // 重置 验证码
@@ -51,7 +52,7 @@ const Login: React.FC = () => {
       });
   };
   useEffect(() => {
-    form.setFieldsValue({ userName: 'admin', password: '123456', remember: false });
+    form.setFieldsValue({ username: 'hgzhjg', password: 'hgzhjg123', remember: false });
     getCaptchaVal();
   }, []);
   const onFinish = async (values: any) => {
@@ -59,16 +60,16 @@ const Login: React.FC = () => {
     try {
       setLoading(true);
       login
-        .login({ ...values })
+        .adminLogin({ ...values })
         .then(async (res: any) => {
           console.info('%c✔  登陆成功！！！ ==============', 'color: green; font-size: 14px;');
 
-          const { token, userInfo } = res;
+          const { accessToken } = res;
           navigator('/');
           // 储存令牌
-          await signIn(dispatch, token);
+          await signIn(dispatch, accessToken);
           // 保存用户信息
-          await saveUserInfor(dispatch, userInfo);
+          await saveUserInfor(dispatch, res);
         })
         .catch(() => {
           getCaptchaVal();
@@ -114,12 +115,12 @@ const Login: React.FC = () => {
         {loginType === 'account' && (
           <>
             <ProFormText
-              name="userName"
+              name="username"
               fieldProps={{ size: 'large' }}
               placeholder={'用户名'}
               rules={[{ required: true, message: '请输入用户名!' }]}
               disabled={loading}
-              initialValue={{ userName: 'admin', password: '123456', remember: false }}
+              initialValue={{ username: 'admin', password: '123456', remember: false }}
             />
             <ProFormText.Password
               name="password"
@@ -128,7 +129,7 @@ const Login: React.FC = () => {
               rules={[{ required: true, message: '请输入密码！' }]}
               disabled={loading}
             />
-            <Row>
+            {/* <Row>
               <Col span={12}>
                 <ProFormText
                   name="captcha"
@@ -151,7 +152,7 @@ const Login: React.FC = () => {
                   ></div>
                 )}
               </Col>
-            </Row>
+            </Row> */}
           </>
         )}
         {loginType === 'phone' && (
