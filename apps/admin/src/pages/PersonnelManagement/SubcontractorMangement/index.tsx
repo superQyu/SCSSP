@@ -1,9 +1,9 @@
-import { useRef, cloneElement, useState, useEffect } from 'react';
+import { useRef, cloneElement, useState } from 'react';
 
 import { ProTable } from 'components';
 import { type ActionType } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 
 import EditDialog from './components/editdialog';
 
@@ -67,11 +67,11 @@ export default () => {
     <>
       <ProTable
         actionRef={actionRef}
-        headerTitle="工种列表"
+        headerTitle="分包商列表"
         columns={initColumns}
         request={async (params = {}) => {
-          const res = await job.getJobList(params);
-          console.log('工种列表', res.list);
+          const res = await job.getSubContractorList(params);
+          // console.log('工种列表', res.list);
           return {
             ...params,
             data: res.list,
@@ -84,10 +84,7 @@ export default () => {
         toolBarRender={() => [
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
-          </Button>,
-          <Button icon={<UploadOutlined />} onClick={() => console.log('导出')} type="primary">
-            导出
-          </Button>,
+          </Button>
         ]}
         editable={{
           type: 'multiple',

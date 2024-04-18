@@ -33,8 +33,8 @@ const columns: FormColumnsTypes[] = [
     dataIndex: 'isSpecialWorkType',
     formItem: (
       <Radio.Group>
-        <Radio value={1}>是</Radio>
-        <Radio value={0}>否</Radio>
+        <Radio value={true}>是</Radio>
+        <Radio value={false}>否</Radio>
       </Radio.Group>
     ),
   },
