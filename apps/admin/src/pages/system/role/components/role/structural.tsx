@@ -11,7 +11,7 @@ import { AdForm, FormColumnsTypes } from 'components';
 import { url2key, RebuildTree, flattenArray, sortMenu } from 'utils';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-// import DictSelect from '@/components/DictSelect';
+import DictSelect from '@/components/DictSelect';
 
 interface Props {
   /** 控制 Modal 是否显示 */
@@ -19,7 +19,7 @@ interface Props {
   /** 表单初始化 */
   subForm: {};
   /** 监听Modal状态变化 */
-  onStateChange: (state: boolean) => void;
+  onStateChange: (state: string) => void;
 }
 
 type MenusType = {
@@ -83,7 +83,7 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
         .then(() => {
           message.success('操作成功！');
           setLoading(false);
-          onStateChange(false);
+          onStateChange('');
           onReset();
         })
         .catch(() => {
@@ -98,7 +98,7 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
     }
     setOpen(false);
     onReset();
-    onStateChange(false);
+    onStateChange('');
   };
   const onFormChange = (_: MenusType) => {};
 

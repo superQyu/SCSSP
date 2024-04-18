@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Radio, Button, InputNumber, Input, message, Modal, TreeSelect } from 'antd';
+import { Radio, Card, Tag, Button, InputNumber, Input, message, Modal, TreeSelect } from 'antd';
 import type { GetProp, TreeSelectProps } from 'antd';
 
 import { ExclamationCircleTwoTone } from '@ant-design/icons';
@@ -11,7 +11,7 @@ import { AdForm, FormColumnsTypes } from 'components';
 import { url2key, RebuildTree, flattenArray, sortMenu } from 'utils';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-// import DictSelect from '@/components/DictSelect';
+import DictSelect from '@/components/DictSelect';
 
 interface Props {
   /** 控制 Modal 是否显示 */
@@ -28,7 +28,7 @@ type MenusType = {
 
 type DefaultOptionType = GetProp<TreeSelectProps, 'treeData'>[number];
 
-const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
+const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) => {
   const { server, config } = useBasicConfiguration();
 
   //  api server
@@ -43,15 +43,8 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
   const [treeData, setTreeData] = useState<Omit<DefaultOptionType, 'label'>[]>([]);
   const [menus, setMenus] = useState<MenusType>({
     name: '',
-    icon: '',
-    path: '',
-    component: '',
-    sort: '',
-    status: '0',
-    description: '',
-    parentId: `${PLATFORMID}`,
-    type: '1',
-    permission: '',
+    type: '',
+    menuIds: [],
   });
 
   const ItemTooltip = (tips: string | Array<string>) => {
@@ -102,14 +95,8 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
   };
   const onFormChange = (_: MenusType) => {};
 
-  const handlerChange = (key: string, val: any) => setMenus({ ...menus, [key]: val });
-  const validatorPath = async (_: any, value: any) => {
-    const { type } = menus;
-    if (type == 'menu' && value && value.indexOf('/') === 0) {
-      return Promise.reject('不允许"/"开头');
-    }
-
-    return Promise.resolve();
+  const handlerChange = (key: string, val: any) => {
+    setMenus({ ...menus, [key]: val });
   };
 
   const onLoadTreeData = async () => {
@@ -142,129 +129,42 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
   }, [openModal]);
 
   useEffect(() => {
-    formRef.current?.resetFields(['filepath']);
-  }, [menus.type]);
-
+    setMenus(subForm);
+  }, [subForm]);
+  useEffect(() => {
+    console.log(menus)
+  }, [menus]);
   const columns: FormColumnsTypes[] = [
-    // {
-    //   label: '测试字典',
-    //   dataIndex: 'dir',
-    //   formItem: (
-    //     <DictSelect
-    //       dictKey={'is_conformity'}
-    //       dropdownExtend={true}
-    //       onChange={(val) => console.log(val)}
-    //       onLoadingStatus={(v: boolean) => console.log(v)}
-    //       afterAddItem={(val) => console.log(val)}
-    //     />
-    //   ),
-    // },
     {
-      label: '上级菜单',
-      dataIndex: 'parentId',
-      formItem: (
-        <TreeSelect
-          treeDataSimpleMode
-          style={{ width: '100%' }}
-          value={menus.parentId}
-          dropdownStyle={{ maxHeight: 480, overflow: 'auto' }}
-          treeDefaultExpandedKeys={[PLATFORMID]}
-          placeholder="请选择上级"
-          onChange={(v: string) => handlerChange('parentId', `${v}`)}
-          treeData={treeData}
-        />
-      ),
-    },
-    {
-      label: '菜单名称',
+      label: '菜单名称:',
       dataIndex: 'name',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入菜单名称' }],
-      },
+      formItem: <Tag color="blue">{menus.name}</Tag>,
     },
     {
-      label: '菜单类型',
-      dataIndex: 'type',
-      defaultValue: '1',
+      label: '角色类型:',
+      dataIndex: 'code',
+      formItem: <Tag color="blue">{menus.code}</Tag>,
+    },
+    {
+      label: '菜单权限:',
+      dataIndex: 'menuIds',
       formItem: (
-        <Radio.Group onChange={(e) => handlerChange('type', e.target.value)} buttonStyle="solid">
-          <Radio.Button value="1">目录</Radio.Button>
-          <Radio.Button value="2">菜单</Radio.Button>
-          <Radio.Button value="3">按钮</Radio.Button>
-        </Radio.Group>
+        <>
+          <TreeSelect
+            treeDataSimpleMode
+            treeCheckable={true}
+            showCheckedStrategy={'SHOW_PARENT'}
+            style={{ width: '100%' }}
+            value={menus.parentId}
+            dropdownStyle={{ maxHeight: 480, overflow: 'auto' }}
+            treeDefaultExpandedKeys={[PLATFORMID]}
+            placeholder="请选择上级"
+            onChange={(vs: string[]) => handlerChange('menuIds', vs)}
+            treeData={treeData}
+          />
+        </>
       ),
-      formItemProps: {
-        rules: [{ required: true, message: '请输入菜单名称' }],
-      },
     },
-    {
-      label: '图标',
-      show: menus.type != '3',
-      dataIndex: 'icon',
-      formItem: <IconSelect />,
-    },
-    {
-      label: '路由地址',
-      show: menus.type != '3',
-      dataIndex: 'path',
-      formItemProps: {
-        tooltip: ItemTooltip([
-          '访问的路由地址，如：`user` `/user`。',
-          '如需外网地址时，则以 `http(s)://` 开头',
-        ]),
-        rules: [{ required: true, message: '请输入路由地址' }, { validator: validatorPath }],
-      },
-    },
-    {
-      label: '组件地址',
-      dataIndex: 'component',
-      show: menus.type == '2',
-      formItemProps: {
-        rules: [
-          {
-            validator: (_: any, value: any) => {
-              if (value && value.startsWith('/')) return Promise.reject('不能以/开头');
-              return Promise.resolve();
-            },
-          },
-        ],
-      },
-    },
-    {
-      label: '权限标识',
-      show: menus.type === '3',
-      dataIndex: 'permission',
-      formItemProps: {
-        tooltip: ItemTooltip(['Controller 方法上的权限字符', '如：system:user:list']),
-      },
-    },
-    {
-      label: '显示排序',
-      dataIndex: 'sort',
-      formItem: <InputNumber min={0} />,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入排序' }],
-      },
-    },
-    {
-      label: '显示状态',
-      dataIndex: 'status',
-      defaultValue: '0',
-      formItem: (
-        <Radio.Group>
-          <Radio value={'0'}>显示</Radio>
-          <Radio value={'1'}>隐藏</Radio>
-        </Radio.Group>
-      ),
-      formItemProps: {
-        tooltip: ItemTooltip('选择隐藏时，路由将不会出现在侧边栏，但仍然可以访问'),
-      },
-    },
-    // {
-    //   label: '菜单描述',
-    //   dataIndex: 'description',
-    //   formItem: <Input.TextArea placeholder="菜单描述" autoSize={{ minRows: 4 }} allowClear />,
-    // },
   ];
 
   return (
