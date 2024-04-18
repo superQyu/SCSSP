@@ -1,12 +1,13 @@
 import { createElement, cloneElement, useRef, useState, useEffect } from 'react';
 import { Button, message } from 'antd';
+import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
 import { PlusOutlined, SearchOutlined, RedoOutlined } from '@ant-design/icons';
 
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
-import { sortMenu, RebuildTree, flattenArray } from 'utils';
 
-import AddMenus from './components/menus/structural';
+import AddRole from '../role/components/role/structural';
+import MenuRole from '../role/components/role/menuRole';
 
 // 站点表格模型
 import type { ModesApi } from './modes/model';
@@ -15,18 +16,17 @@ import siteModel, { type ColumnsParamsProps } from './modes/menu.model';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 export default () => {
-  const { server, config } = useBasicConfiguration();
+  const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
 
-  const [subForm, _] = useState<Record<string, any>>({});
-  const [formModal, setFormModal] = useState<boolean>(false);
+  const [subForm, setsubForm] = useState<Record<string, any>>({});
+  const [formModal, setFormModal] = useState<string>('');
 
   //  api server
-  const { menus: M, sites: S } = server;
-  const { PLATFORMID } = config as Record<string, any>;
+  const { menus: M, sites: S, systemRole: SR } = server;
 
   // 修改状态
-  const handleModalStateChange = async (state: boolean) => {
+  const handleModalStateChange = async (state: string) => {
     setFormModal(state);
     await actionRef.current?.reload();
   };
@@ -74,38 +74,17 @@ export default () => {
       <ProTable
         headerTitle="菜单列表"
         request={async (params = {}) => {
-          const res = await S.menuList({ ...params });
-          // * 筛选出 华光智慧监管平台 id:PLATFORMID  相关菜单表
-          const isSearch = Object.entries(params).length > 0; // 判断是否为搜索
-
-          let M = RebuildTree(res, {
-            intercept: (item: { [key: string]: string }) => ({ ...item, children: item.routes }),
-          });
-          if (!isSearch) M = M.filter((item) => item.id === PLATFORMID)[0]?.routes || [];
-          const menus = RebuildTree(flattenArray(M), {
-            delEmptyRoutes: true,
-            intercept: (item: { [key: string]: string }) => {
-              return {
-                ...item,
-                filepath: item.component,
-                children: item.routes,
-                status: `${item.status}`,
-              };
-            },
-            _rootId: M[0]?.id,
-          });
+          const res = await SR.roleList({ ...params });
           return {
             ...params,
-            data: sortMenu(menus),
-            total: menus.length,
+            data: res?.list || [],
+            total: res?.totlal || 0,
           } as unknown as ModesApi.pageItemType;
         }}
-        columns={initColumns}
         onSubmit={async (params: {}) => {
           console.log(params);
         }}
         actionRef={actionRef}
-        pagination={false}
         form={{
           // 请求之前参数格式化
           syncToUrl: (values: any, _: string) => ({ ...values }),
@@ -126,7 +105,7 @@ export default () => {
           },
         }}
         columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
+          persistenceKey: 'pro-table-singe-role',
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}
@@ -134,7 +113,7 @@ export default () => {
           <Button
             key="button"
             icon={createElement(PlusOutlined)}
-            onClick={() => setFormModal(true)}
+            onClick={() => setFormModal('addRole')}
             type="primary"
           >
             新建
@@ -156,8 +135,67 @@ export default () => {
             ];
           },
         }}
+        columns={[
+          ...initColumns,
+          {
+            title: '操作',
+            width: 140,
+            valueType: 'option',
+            key: 'option',
+            render: (_text: any, record: any, _, action: any) => [
+              <a
+                key="editable"
+                onClick={() => {
+                  action?.startEditable?.(record.id);
+                }}
+              >
+                编辑
+              </a>,
+              <a
+                key="menuRole"
+                onClick={() => {
+                  setsubForm(record);
+                  setFormModal('menuRole');
+                }}
+              >
+                菜单权限
+              </a>,
+              <TableDropdown
+                key="actionGroup"
+                onSelect={(key) => {
+                  if (key === 'delete') {
+                    try {
+                      M.deleteMenus({ id: record.id })
+                        .then(() => {
+                          message.success('操作成功!');
+                          action?.reload();
+                        })
+                        .catch(() => {});
+                    } catch (errorInfo) {}
+                  }
+                }}
+                menus={[
+                  { key: 'delete', name: '删除' },
+                  { key: 'detail', name: '详情' },
+                  { key: 'copy', name: '复制' },
+                ]}
+              />,
+            ],
+          },
+        ]}
       ></ProTable>
-      <AddMenus subForm={subForm} openModal={formModal} onStateChange={handleModalStateChange} />
+      {/* 新增角色 */}
+      <AddRole
+        subForm={subForm}
+        openModal={formModal == 'addRole'}
+        onStateChange={handleModalStateChange}
+      />
+      {/* 菜单权限 */}
+      <MenuRole
+        subForm={subForm}
+        openModal={formModal == 'menuRole'}
+        onStateChange={handleModalStateChange}
+      />
     </>
   );
 };

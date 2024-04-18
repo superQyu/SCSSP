@@ -9,10 +9,8 @@ const user: ApiItem[] = [
     type: 'GET',
     name: '获取用户权限',
     description: '获取用户权限',
-    params: [
-      { key: 'Authorization', location: 'header' }
-    ],
-  },  
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
   {
     key: 'loginOut',
     url: `${ADMIN_API}/admin-api/system/auth/logout`,
@@ -20,7 +18,6 @@ const user: ApiItem[] = [
     name: '推出登录',
     description: '推出登录'
   },
-
 
   {
     key: 'userInfor',
