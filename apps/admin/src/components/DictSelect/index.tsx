@@ -40,57 +40,10 @@ const DictSelect: React.FC<Props> = ({
   const inputRef = useRef<InputRef>(null);
 
   const loadData = async () => {
-    // B.getDictType({ dictType: props.dictKey })
-    //   .then((res) => {
-    //     console.log(res);
-    //   })
-    //   .catch(() => {
-    //     //   setLoading(false);
-    //   });
-    const res = await simulateAsyncRequest();
-    setItems(res as SelectOption[]);
+    const res = await B.getDictType({ dictType: dictKey });
+    setItems(res.list as SelectOption[]);
     setLoading(false);
   };
-
-  function simulateAsyncRequest() {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const success = Math.random() < 0.8; // 模拟80%的成功率
-        if (success) {
-          resolve([
-            {
-              id: 2,
-              sort: 2,
-              label: '女',
-              value: '2',
-              dictType: 'system_user_sex',
-              status: 0,
-              colorType: 'success',
-              cssClass: '',
-              remark: '性别女',
-              createTime: 1609837428000,
-            },
-            {
-              id: 1,
-              sort: 1,
-              label: '男',
-              value: '1',
-              dictType: 'system_user_sex',
-              status: 0,
-              colorType: 'default',
-              cssClass: 'A',
-              remark: '性别男',
-              createTime: 1609837428000,
-            },
-          ]);
-        } else {
-          // 模拟异步操作失败，返回错误信息
-          setLoading(false);
-          reject(new Error('模拟异步请求失败'));
-        }
-      }, 2000);
-    });
-  }
 
   const onFocusSelect = () => {
     if (items.length == 0) {

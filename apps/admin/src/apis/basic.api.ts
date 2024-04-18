@@ -19,7 +19,7 @@ const user: ApiItem[] = [
     params: [
       { key: 'Authorization', location: "header" },
       { key: 'pageNo', valueAttrs: { value: 1 } },
-      { key: 'pageSize', valueAttrs: { value: 1000 } },
+      { key: 'pageSize', valueAttrs: { value: 99 } },
       { key: 'label' },
       { key: 'dictType' }
     ]
