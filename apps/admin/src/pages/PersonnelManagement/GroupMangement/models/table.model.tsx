@@ -1,6 +1,5 @@
-import { StarTwoTone, StopTwoTone } from '@ant-design/icons';
 import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
-import { message, Tag } from 'antd';
+import { message, Select } from 'antd';
 
 type objJson = Record<string, any>;
 
@@ -9,11 +8,14 @@ type MenusPropsType = {
 };
 
 export interface ColumnsParamsProps extends objJson {
-  code: string;
-  name: string;
-  initialsSpell: string;
-  isSpecialWorkType: number | string;
-  sort: number;
+  subcontractorType: string;
+  realName: string;
+  corpCode: string;
+  legalRepresentative: string;
+  registeredCapital: string;
+  unitAddress: string;
+  principal: string;
+  principalTel: string;
 }
 
 export default ({ server }: MenusPropsType) => {
@@ -27,55 +29,54 @@ export default ({ server }: MenusPropsType) => {
       ellipsis: true,
     },
     {
-      title: '编号',
-      dataIndex: 'code',
+      title: '班组名称',
+      dataIndex: 'teamName',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '班组长名',
+      dataIndex: 'realName',
       ellipsis: true,
     },
     {
-      title: '工种',
-      dataIndex: 'name',
+      title: '身份证号',
+      dataIndex: 'realName',
       ellipsis: true,
+      hideInSearch: true,
     },
     {
-      title: '首字母简拼',
-      dataIndex: 'initialsSpell',
+      title: '分包单位名称',
+      dataIndex: 'subcontractorName',
       ellipsis: true,
+      formItemProps: {
+        label: '分包单位',
+      },
     },
     {
-      title: '是否特殊工种',
-      dataIndex: 'isSpecialWorkType',
+      title: '劳务工种',
+      dataIndex: 'workerTypeName',
       ellipsis: true,
       valueType: 'select',
-      // filters: true,
-      // onFilter: true,
+      filters: true,
       valueEnum: {
         '1': {
-          text: (
-            <>
-              <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
-              是
-            </>
-          ),
+          text: '架子工',
         },
         '0': {
-          text: (
-            <>
-              <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
-              否
-            </>
-          ),
+          text: '否',
         },
       },
-      render: (_, record) => (
-        <>
-          {record.isSpecialWorkType == '1' ? <Tag color="green">是</Tag> : <Tag color="red">否</Tag>}
-        </>
-      ),
     },
     {
-      title: '排序',
-      dataIndex: 'sort',
-      valueType: 'digit',
+      title: '公司简称简拼',
+      dataIndex: 'corpCode',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '联系电话',
+      dataIndex: 'legalRepresentative',
       ellipsis: true,
       hideInSearch: true,
     },

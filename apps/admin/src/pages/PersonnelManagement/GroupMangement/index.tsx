@@ -1,9 +1,9 @@
-import { useRef, cloneElement, useState, useEffect } from 'react';
+import { useRef, cloneElement, useState } from 'react';
 
 import { ProTable } from 'components';
 import { type ActionType } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 
 import EditDialog from './components/editdialog';
 
@@ -33,11 +33,9 @@ export default () => {
   // 重写save方法 阻止提交失败也退出编辑状态
   const onSave = async (...args: any[]) => {
     const [config, id, n, , ,] = args;
-    const params: ColumnsParamsProps = { ...n };
-    // console.log('更新时的数据', params);
     // 更新行数据
     const res = await job
-      .updateJob(params)
+      .updateJob(JSON.parse(JSON.stringify({ ...n })) as ColumnsParamsProps)
       .then(async () => {
         message.success('信息更新成功！');
         await actionRef.current?.reload();
@@ -56,7 +54,7 @@ export default () => {
   const onDelete = async (id: number) => {
     try {
       await job
-        .deleteJob({ id })
+        .deleteMenus({ ids: id })
         .then(async () => {
           message.success('操作成功!');
           await actionRef.current?.reload();
@@ -69,12 +67,11 @@ export default () => {
     <>
       <ProTable
         actionRef={actionRef}
-        headerTitle="工种列表"
+        headerTitle="班组列表"
         columns={initColumns}
         request={async (params = {}) => {
-          const res = await job.getJobList(params);
+          const res = await job.getSubContractorList(params);
           // console.log('工种列表', res.list);
-          res.list.forEach((item: any) => item.isSpecialWorkType = `${item.isSpecialWorkType}`)
           return {
             ...params,
             data: res.list,
@@ -87,10 +84,7 @@ export default () => {
         toolBarRender={() => [
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
-          </Button>,
-          <Button icon={<UploadOutlined />} onClick={() => console.log('导出')} type="primary">
-            导出
-          </Button>,
+          </Button>
         ]}
         editable={{
           type: 'multiple',
