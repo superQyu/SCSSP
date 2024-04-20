@@ -25,7 +25,7 @@ export default ({ server }: MenusPropsType) => {
     {
       title: '序号',
       valueType: 'indexBorder',
-      key: 'index',
+      dataIndex: 'index',
       ellipsis: true,
     },
     {
@@ -36,29 +36,37 @@ export default ({ server }: MenusPropsType) => {
     },
     {
       title: '班组长名',
-      dataIndex: 'realName',
+      dataIndex: 'userId',
       ellipsis: true,
     },
     {
       title: '身份证号',
-      dataIndex: 'realName',
+      dataIndex: 'identityCard',
       ellipsis: true,
       hideInSearch: true,
     },
     {
       title: '分包单位名称',
-      dataIndex: 'subcontractorName',
+      dataIndex: 'subcontractorId',
       ellipsis: true,
-      formItemProps: {
-        label: '分包单位',
+      valueType: 'select',
+      valueEnum: {
+        '1': {
+          text: '架子工',
+        },
+        '0': {
+          text: '否',
+        },
       },
+      formItemProps: {
+        label: '分包单位'
+      }
     },
     {
       title: '劳务工种',
-      dataIndex: 'workerTypeName',
+      dataIndex: 'workerTypeId',
       ellipsis: true,
       valueType: 'select',
-      filters: true,
       valueEnum: {
         '1': {
           text: '架子工',
@@ -76,7 +84,7 @@ export default ({ server }: MenusPropsType) => {
     },
     {
       title: '联系电话',
-      dataIndex: 'legalRepresentative',
+      dataIndex: 'phone',
       ellipsis: true,
       hideInSearch: true,
     },
@@ -84,7 +92,7 @@ export default ({ server }: MenusPropsType) => {
       title: '操作',
       width: 140,
       valueType: 'option',
-      key: 'option',
+      dataIndex: 'option',
       render: (_text, record, _, action) => [
         <a
           key="editable"

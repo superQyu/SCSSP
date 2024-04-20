@@ -1,13 +1,13 @@
 import React from 'react';
 
 import { FormColumnsTypes } from 'components';
-import { Select, Radio, DatePicker, Input } from 'antd';
+import { Select, Radio, DatePicker, Input, InputNumber } from 'antd';
 
 export default (subFormRef: any) => {
   const getNameSpell = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value: inputValue } = e.target;
     console.log('input改变', inputValue);
-    subFormRef.current.setFieldsValue({nameSpell: inputValue})
+    subFormRef.current.setFieldsValue({ nameSpell: inputValue });
   };
 
   // 分包商信息
@@ -38,9 +38,10 @@ export default (subFormRef: any) => {
       },
       formItem: (
         <Select
+          placeholder="请选择分包商类型"
           options={[
-            { value: 'jack', label: 'Jack' },
-            { value: 'lucy', label: 'Lucy' },
+            { value: '1', label: 'Jack' },
+            { value: '2', label: 'Lucy' },
           ]}
         />
       ),
@@ -78,9 +79,11 @@ export default (subFormRef: any) => {
       },
       formItem: (
         <Select
+          placeholder="请选择参建单位类型"
           options={[
-            { value: 'jack', label: 'Jack' },
-            { value: 'lucy', label: 'Lucy' },
+            { value: '1', label: 'Jack' },
+            { value: '2', label: 'Lucy' },
+            { value: '3', label: 'Lucy' },
           ]}
         />
       ),
@@ -89,6 +92,15 @@ export default (subFormRef: any) => {
       label: '等级',
       dataIndex: 'overallMerit',
       colNum: 12,
+      formItem: (
+        <Select
+          placeholder="请选择参建单位类型"
+          options={[
+            { value: '0', label: 'A' },
+            { value: '1', label: 'B' },
+          ]}
+        />
+      ),
     },
     {
       label: '是否生效',
@@ -187,36 +199,21 @@ export default (subFormRef: any) => {
       label: '住建部投诉电话',
       dataIndex: 'buildComplaintCall',
       colNum: 12,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入住建部投诉电话' }],
-      },
     },
     {
       label: '人社部投诉电话',
       dataIndex: 'societyComplaintCall',
       colNum: 12,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入人社部投诉电话' }],
-      },
     },
     {
       label: '公司项目经验',
       dataIndex: 'companyScore',
       colNum: 12,
-      formItem: (
-        <Radio.Group>
-          <Radio value={1}>是</Radio>
-          <Radio value={0}>否</Radio>
-        </Radio.Group>
-      ),
     },
     {
       label: '公司简介',
       dataIndex: 'companySummary',
       colNum: 12,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入公司简介' }],
-      },
     },
   ];
 

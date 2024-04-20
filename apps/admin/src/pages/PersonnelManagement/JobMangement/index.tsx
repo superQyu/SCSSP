@@ -72,6 +72,7 @@ export default () => {
         headerTitle="工种列表"
         columns={initColumns}
         request={async (params = {}) => {
+          console.log('请求工种列表的参数', params)
           const res = await job.getJobList(params);
           // console.log('工种列表', res.list);
           res.list.forEach((item: any) => item.isSpecialWorkType = `${item.isSpecialWorkType}`)

@@ -16,7 +16,7 @@ import siteModel, { type ColumnsParamsProps } from './models/table.model';
 export default () => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { job } = server;
+  const { subContractor } = server;
 
   // 初始化表格列
   const initColumns = siteModel({ server });
@@ -33,9 +33,10 @@ export default () => {
   // 重写save方法 阻止提交失败也退出编辑状态
   const onSave = async (...args: any[]) => {
     const [config, id, n, , ,] = args;
+    console.log('更新分包商的请求参数', n);
     // 更新行数据
-    const res = await job
-      .updateJob(JSON.parse(JSON.stringify({ ...n })) as ColumnsParamsProps)
+    const res = await subContractor
+      .updateSubContractor(JSON.parse(JSON.stringify({ ...n })) as ColumnsParamsProps)
       .then(async () => {
         message.success('信息更新成功！');
         await actionRef.current?.reload();
@@ -53,7 +54,7 @@ export default () => {
   // 删除行
   const onDelete = async (id: number) => {
     try {
-      await job
+      await subContractor
         .deleteMenus({ ids: id })
         .then(async () => {
           message.success('操作成功!');
@@ -70,7 +71,7 @@ export default () => {
         headerTitle="分包商列表"
         columns={initColumns}
         request={async (params = {}) => {
-          const res = await job.getSubContractorList(params);
+          const res = await subContractor.getSubContractorList(params);
           // console.log('工种列表', res.list);
           return {
             ...params,
@@ -84,7 +85,7 @@ export default () => {
         toolBarRender={() => [
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
-          </Button>
+          </Button>,
         ]}
         editable={{
           type: 'multiple',

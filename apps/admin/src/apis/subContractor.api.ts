@@ -56,6 +56,7 @@ const subContractor: ApiItem[] = [
     description: '编辑分包商',
     params: [
       { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: '数据库主键' },
       { key: 'realName', cn: '分包商名称' },
       { key: 'subcontractorType', cn: '分包商类型' },
       { key: 'corpCode', cn: '社会信用代码' },

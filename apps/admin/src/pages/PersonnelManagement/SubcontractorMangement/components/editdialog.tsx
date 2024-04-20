@@ -22,7 +22,7 @@ type MenusType = {
 export default ({ openModal, onStateChange }: Props) => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { job } = server;
+  const { subContractor } = server;
 
   const [open, setOpen] = useState<boolean>(openModal);
   const [title] = useState<string>('添加分包商信息');
@@ -76,16 +76,19 @@ export default ({ openModal, onStateChange }: Props) => {
       return;
     }
     subFormRef.current?.resetFields();
+    addressFormRef.current?.resetFields();
   };
 
   // 点击保存
   const handleOk = async () => {
     try {
-      const values: MenusType = await subFormRef.current?.validateFields();
+      const subFormValues: MenusType = await subFormRef.current?.validateFields();
+      const addressFormValues: MenusType = await addressFormRef.current?.validateFields();
       setLoading(true);
-
-      job
-        .createJob(JSON.parse(JSON.stringify({ ...values })))
+      const params = { ...subFormValues, ...addressFormValues }
+      console.log('创建分包商的请求参数', params)
+      subContractor
+        .createSubContractor(params)
         .then(() => {
           onStateChange(false);
           message.success('站点创建成功！');

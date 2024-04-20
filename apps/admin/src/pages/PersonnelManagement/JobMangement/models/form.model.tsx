@@ -1,6 +1,8 @@
 import { FormColumnsTypes } from 'components';
 import { InputNumber, Radio } from 'antd';
 
+import DictSelect from '@/components/DictSelect';
+
 const columns: FormColumnsTypes[] = [
   {
     label: '编码',
@@ -32,10 +34,11 @@ const columns: FormColumnsTypes[] = [
     label: '是否特殊工种',
     dataIndex: 'isSpecialWorkType',
     formItem: (
-      <Radio.Group>
-        <Radio value={1}>是</Radio>
-        <Radio value={0}>否</Radio>
-      </Radio.Group>
+      <DictSelect
+        dictKey={'is_conformity'}
+        // dropdownExtend={true}
+        onChange={() => {}}
+      />
     ),
   },
 ];

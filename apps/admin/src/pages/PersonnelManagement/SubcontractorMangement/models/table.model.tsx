@@ -8,10 +8,10 @@ type MenusPropsType = {
 };
 
 export interface ColumnsParamsProps extends objJson {
-  subcontractorType: string;
+  subcontractorType: number | string;
   realName: string;
   corpCode: string;
-  legalRepresentative: string;
+  legalRepresentative: number | string;
   registeredCapital: string;
   unitAddress: string;
   principal: string;
@@ -25,7 +25,7 @@ export default ({ server }: MenusPropsType) => {
     {
       title: '序号',
       valueType: 'indexBorder',
-      key: 'index',
+      dataIndex: 'index',
       ellipsis: true,
     },
     {
@@ -101,7 +101,7 @@ export default ({ server }: MenusPropsType) => {
       title: '操作',
       width: 140,
       valueType: 'option',
-      key: 'option',
+      dataIndex: 'option',
       render: (_text, record, _, action) => [
         <a
           key="editable"

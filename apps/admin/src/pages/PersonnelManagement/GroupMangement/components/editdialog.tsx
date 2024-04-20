@@ -25,17 +25,16 @@ export default ({ openModal, onStateChange }: Props) => {
   const { job } = server;
 
   const [open, setOpen] = useState<boolean>(openModal);
-  const [title] = useState<string>('添加分包商信息');
+  const [title] = useState<string>('添加班组信息');
   const [loading, setLoading] = useState<boolean>(false);
 
-  const subFormRef = useRef<FormInstance>(null);
-  const addressFormRef = useRef<FormInstance>(null);
+  const formRef = useRef<FormInstance>(null);
 
   // 表单项配置
-  const { subColumns, addressColumns } = initColumns(subFormRef);
+  const formColumns = initColumns(formRef);
 
   // 分包商信息表单的默认值
-  const [subInitialValues] = useState<MenusType>({
+  const [initialValues] = useState<MenusType>({
     realName: '',
     shortName: '',
     subcontractorType: '',
@@ -57,13 +56,6 @@ export default ({ openModal, onStateChange }: Props) => {
     nameSpell: '',
     corpCode: '',
   });
-  // 注册地信息表单的默认值
-  const [addressInitialValues] = useState<MenusType>({
-    buildComplaintCall: '',
-    societyComplaintCall: '',
-    companyScore: '',
-    companySummary: '',
-  });
 
   useEffect(() => {
     setOpen(openModal);
@@ -75,13 +67,13 @@ export default ({ openModal, onStateChange }: Props) => {
       message.warning(`数据提交中,请稍等...`);
       return;
     }
-    subFormRef.current?.resetFields();
+    formRef.current?.resetFields();
   };
 
   // 点击保存
   const handleOk = async () => {
     try {
-      const values: MenusType = await subFormRef.current?.validateFields();
+      const values: MenusType = await formRef.current?.validateFields();
       setLoading(true);
 
       job
@@ -130,20 +122,11 @@ export default ({ openModal, onStateChange }: Props) => {
       >
         <AdForm
           loadingTitle="提交中..."
-          formRef={subFormRef}
-          initialValues={subInitialValues}
+          formRef={formRef}
+          initialValues={initialValues}
           loading={loading}
           labelAlign="left"
-          columns={subColumns}
-        />
-        <div>注册地</div>
-        <AdForm
-          loadingTitle="提交中..."
-          formRef={addressFormRef}
-          initialValues={addressInitialValues}
-          loading={loading}
-          labelAlign="left"
-          columns={addressColumns}
+          columns={formColumns}
         />
       </Modal>
     </>

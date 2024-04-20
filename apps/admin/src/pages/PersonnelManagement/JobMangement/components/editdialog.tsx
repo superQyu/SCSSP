@@ -57,16 +57,16 @@ export default ({ openModal, onStateChange }: Props) => {
     try {
       const values: MenusType = await formRef.current?.validateFields();
       console.log('保存时的值', values);
-      setLoading(true);
-      job
-        .createJob(values)
-        .then(() => {
-          onStateChange(false);
-          message.success('站点创建成功！');
-        })
-        .catch(() => {
-          setLoading(false);
-        });
+      // setLoading(true);
+      // job
+      //   .createJob(values)
+      //   .then(() => {
+      //     onStateChange(false);
+      //     message.success('站点创建成功！');
+      //   })
+      //   .catch(() => {
+      //     setLoading(false);
+      //   });
     } catch (errorInfo) {}
   };
 
