@@ -6,7 +6,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 interface Props {
   /** 监听值状态变化 */
-  onChange: (state: any) => void;
+  onChange?: (state: any) => void;
   /** 监听loading状态变化 */
   onLoadingStatus?: (state: boolean) => void;
   /** 新增选项 */
@@ -24,6 +24,7 @@ interface SelectOption {
 }
 
 const DictSelect: React.FC<Props> = ({
+  value,
   dictKey,
   dropdownExtend,
   onLoadingStatus,
@@ -41,16 +42,17 @@ const DictSelect: React.FC<Props> = ({
 
   const loadData = async () => {
     const res = await B.getDictType({ dictType: dictKey });
+    console.log('res.lit', res.list)
     setItems(res.list as SelectOption[]);
     setLoading(false);
   };
 
-  const onFocusSelect = () => {
-    if (items.length == 0) {
-      setLoading(true);
-      loadData();
-    }
-  };
+  // const onFocusSelect = () => {
+  //   if (items.length == 0) {
+  //     setLoading(true);
+  //     loadData();
+  //   }
+  // };
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -68,7 +70,12 @@ const DictSelect: React.FC<Props> = ({
     afterAddItem && afterAddItem(newItem);
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (items.length == 0) {
+      setLoading(true);
+      loadData();
+    }
+  }, [dictKey]);
 
   useEffect(() => {
     onLoadingStatus && onLoadingStatus(loading);
@@ -79,6 +86,7 @@ const DictSelect: React.FC<Props> = ({
       style={{ width: '100%' }}
       allowClear
       placeholder="请选择"
+      value={value}
       notFoundContent={
         loading ? (
           <Space
@@ -90,7 +98,7 @@ const DictSelect: React.FC<Props> = ({
           <Empty />
         )
       }
-      onFocus={onFocusSelect}
+      // onFocus={onFocusSelect}
       dropdownRender={(menu) => (
         <>
           {menu}

@@ -76,20 +76,10 @@ export default ({ server }: MenusPropsType) => {
           )}
         </>
       ),
-      renderFormItem: () => (
-        <DictSelect
-          // dictKey={'is_conformity'}
-          // dropdownExtend={true}
-          onChange={(value) => {console.log(value)}}
-        />
-        // <Select
-        //   placeholder="请选择参建单位类型"
-        //   options={[
-        //     { value: '0', label: '否' },
-        //     { value: '1', label: '是' },
-        //   ]}
-        // />
-      ),
+      renderFormItem: (...args) => {
+        console.log('参数', args);
+        return <DictSelect dictKey={'is_conformity'} />;
+      },
     },
     {
       title: '排序',
