@@ -1,13 +1,14 @@
 import { createElement, cloneElement, useRef, useState, useEffect } from 'react';
-import { Button, message } from 'antd';
-import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
-import { PlusOutlined, SearchOutlined, RedoOutlined } from '@ant-design/icons';
+import { Button, message, Modal, Alert } from 'antd';
+import { TableDropdown } from '@ant-design/pro-components';
+import { PlusOutlined, SearchOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
 
 import AddRole from '../role/components/role/structural';
 import MenuRole from '../role/components/role/menuRole';
+import AataRole from '../role/components/role/dataRole';
 
 // 站点表格模型
 import type { ModesApi } from './modes/model';
@@ -20,13 +21,13 @@ export default () => {
   const actionRef = useRef<ActionType>();
 
   const [subForm, setsubForm] = useState<Record<string, any>>({});
-  const [formModal, setFormModal] = useState<string>('');
+  const [formModal, setFormModal] = useState<string | false>(false);
 
   //  api server
-  const { menus: M, sites: S, systemRole: SR } = server;
+  const { menus: M, systemRole: SR } = server;
 
   // 修改状态
-  const handleModalStateChange = async (state: string) => {
+  const GetModalStateChange = async (state: string | false) => {
     setFormModal(state);
     await actionRef.current?.reload();
   };
@@ -51,8 +52,7 @@ export default () => {
     const [config, id, n, , ,] = args;
     // 更新行数据
 
-    console.log(JSON.parse(JSON.stringify({ ...n })));
-    const res = await M.updateMenu(JSON.parse(JSON.stringify({ ...n })) as ColumnsParamsProps)
+    const res = await SR.updateRole(JSON.parse(JSON.stringify({ ...n })) as ColumnsParamsProps)
       .then(async () => {
         message.success('信息更新成功！');
         await actionRef.current?.reload();
@@ -71,10 +71,11 @@ export default () => {
 
   return (
     <>
+      <Alert message="后端更新(状态)字段未变化！" type="error" showIcon />
       <ProTable
-        headerTitle="菜单列表"
-        request={async (params = {}) => {
-          const res = await SR.roleList({ ...params });
+        headerTitle="角色列表"
+        request={async (params: ModesApi.ParamsType) => {
+          const res = await SR.roleList({ ...params, pageNo: params?.current || 0 });
           return {
             ...params,
             data: res?.list || [],
@@ -86,7 +87,6 @@ export default () => {
         }}
         actionRef={actionRef}
         form={{
-          // 请求之前参数格式化
           syncToUrl: (values: any, _: string) => ({ ...values }),
         }}
         editable={{
@@ -139,10 +139,10 @@ export default () => {
           ...initColumns,
           {
             title: '操作',
-            width: 140,
+            width: 200,
             valueType: 'option',
             key: 'option',
-            render: (_text: any, record: any, _, action: any) => [
+            render: (_text: any, record: any, _: any, action: any) => [
               <a
                 key="editable"
                 onClick={() => {
@@ -153,49 +153,60 @@ export default () => {
               </a>,
               <a
                 key="menuRole"
-                onClick={() => {
-                  setsubForm(record);
+                onClick={async () => {
+                  const res = await SR.listRoleMenus({ roleId: record.id });
                   setFormModal('menuRole');
+                  setsubForm({ ...record, menuIds: res });
                 }}
               >
                 菜单权限
+              </a>,
+              <a
+                key="dataRole"
+                onClick={async () => {
+                  setFormModal('dataRole');
+                  setsubForm({ ...record });
+                }}
+              >
+                数据权限
               </a>,
               <TableDropdown
                 key="actionGroup"
                 onSelect={(key) => {
                   if (key === 'delete') {
                     try {
-                      M.deleteMenus({ id: record.id })
-                        .then(() => {
-                          message.success('操作成功!');
-                          action?.reload();
-                        })
-                        .catch(() => {});
+                      Modal.confirm({
+                        title: `删除操作`,
+                        icon: createElement(ExclamationCircleFilled),
+                        content: `确定删除角色 [${record.name}]?`,
+                        okText: '删除',
+                        okType: 'danger',
+                        cancelText: '取消',
+                        onOk: async () => {
+                          await SR.deleteRole({ id: record.id });
+                          action.reload();
+                        },
+                        onCancel() {},
+                      });
                     } catch (errorInfo) {}
                   }
                 }}
-                menus={[
-                  { key: 'delete', name: '删除' },
-                  { key: 'detail', name: '详情' },
-                  { key: 'copy', name: '复制' },
-                ]}
+                menus={[{ key: 'delete', name: '删除' }]}
               />,
             ],
           },
         ]}
       ></ProTable>
       {/* 新增角色 */}
-      <AddRole
-        subForm={subForm}
-        openModal={formModal == 'addRole'}
-        onStateChange={handleModalStateChange}
-      />
-      {/* 菜单权限 */}
-      <MenuRole
-        subForm={subForm}
-        openModal={formModal == 'menuRole'}
-        onStateChange={handleModalStateChange}
-      />
+      {formModal == 'addRole' ? (
+        <AddRole subForm={subForm} openModal={!!formModal} onStateChange={GetModalStateChange} />
+      ) : formModal == 'menuRole' ? (
+        <MenuRole subForm={subForm} openModal={!!formModal} onStateChange={GetModalStateChange} />
+      ) : formModal == 'dataRole' ? (
+        <AataRole subForm={subForm} openModal={!!formModal} onStateChange={GetModalStateChange} />
+      ) : (
+        <></>
+      )}
     </>
   );
 };

@@ -15,6 +15,16 @@ const sites: ApiItem[] = [
     ],
   },
   {
+    key: 'simpleMenuList',
+    url: `${ADMIN_API}/system/menu/simple-list`,
+    type: 'GET',
+    name: '展示菜单列表',
+    description: '展示菜单列表',
+    params: [
+      { key: 'Authorization', location: 'header' },
+    ],
+  },
+  {
     key: 'sitesList',
     url: '/api/v1/site/sitesList',
     type: 'GET',

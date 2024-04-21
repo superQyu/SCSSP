@@ -24,6 +24,17 @@ const user: ApiItem[] = [
       { key: 'dictType' }
     ]
   },
+  // 
+  // 查询字典数据（精简)列表
+  // {
+  //   key: 'getDictType',
+  //   url: `${ADMIN_API}/system/dict-data/simple-list`,
+  //   type: 'GET',
+  //   name: '字典详情',
+  //   description: '查询字典详情',
+  //   params: [{ key: 'Authorization', location: "header" },
+  //   { key: 'id' }]
+  // },
   // {
   //   key: 'getDictType',
   //   url: `${ADMIN_API}/system/dict-type/get`,

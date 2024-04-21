@@ -1,16 +1,18 @@
 import Header from './components/header';
+import OutletLayoutRouter from './components/OutletLayoutRouter';
 import Layout from './components/Layout';
-import Text from './components/Text';
+import { MenuItem } from './components/Layout/layout';
 
+import Text from './components/Text';
 import Breadcrumb from './components/Breadcrumb';
 import TabCom from './components/TabCom';
 
-import { MenuItem } from './components/Layout/layout';
-import OutletLayoutRouter from './components/OutletLayoutRouter';
 import PageContainer from './components/PageContainer';
 import ProTable from './components/ProTable';
 import ProForm from './components/ProForm';
 import AdForm, { FormColumnsTypes, FornPropsTypes } from './components/ProForm/form';
+
+import ProTree, { TreeNodes, CheckedsType } from './components/ProTree';
 export {
   Header,
   OutletLayoutRouter,
@@ -22,6 +24,10 @@ export {
   AdForm,
   Breadcrumb,
   TabCom,
+  ProTree
 };
 // 组件通用类型
 export type { MenuItem, FormColumnsTypes, FornPropsTypes };
+export type { TreeNodes, CheckedsType };
+
+

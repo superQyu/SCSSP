@@ -16,16 +16,13 @@ export default ({ children }: any) => {
   const { saveUserInfor } = useContext(AuthContext);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const { prefix } = config || {}; // 基本设置
+  const { prefix, PLATFORMID } = config as Record<string, any>; // 基本设置
   const { user: U, basic: B } = server;
 
   const getAvatar = (a: any) => {
     return `${prefix.static}${a}`;
   };
-  // 初始化字典
-  const initDir = async () => {
-    await U.getSimpleDictTypeList();
-  };
+
   // 获取路由列表
   const getRoutes = async () => {
     await U.adminGetRoute()
@@ -36,7 +33,7 @@ export default ({ children }: any) => {
           avatar: getAvatar('/test/loit-small.png'),
         });
         // 根据实际开发的项目的路由表提取路由
-        const _M = M[0]?.children;
+        const _M = M.filter((item: any) => item.id === PLATFORMID)[0]?.children || [];
         const menus = RebuildTree(flattenArray(_M), {
           intercept: (item: { [key: string]: string }) => {
             return {
@@ -46,7 +43,7 @@ export default ({ children }: any) => {
               children: item.routes,
             };
           },
-          _rootId: M[0]?.id,
+          _rootId: PLATFORMID,
         });
         dispatch(setMenu([...menus]));
       })

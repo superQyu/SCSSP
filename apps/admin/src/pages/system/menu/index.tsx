@@ -101,9 +101,7 @@ export default () => {
           } as unknown as ModesApi.pageItemType;
         }}
         columns={initColumns}
-        onSubmit={async (params: {}) => {
-          console.log(params);
-        }}
+        onSubmit={async (params: {}) => {}}
         actionRef={actionRef}
         pagination={false}
         form={{
@@ -126,7 +124,7 @@ export default () => {
           },
         }}
         columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
+          persistenceKey: 'pro-table-singe-menu',
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}

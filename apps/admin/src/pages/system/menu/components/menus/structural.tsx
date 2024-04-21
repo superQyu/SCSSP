@@ -73,6 +73,7 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
       return;
     }
     formRef.current?.resetFields();
+    // setMenus({...menus,type:'1'})
   };
   const handleOk = async () => {
     try {
@@ -146,19 +147,6 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
   }, [menus.type]);
 
   const columns: FormColumnsTypes[] = [
-    // {
-    //   label: '测试字典',
-    //   dataIndex: 'dir',
-    //   formItem: (
-    //     <DictSelect
-    //       dictKey={'is_conformity'}
-    //       dropdownExtend={true}
-    //       onChange={(val) => console.log(val)}
-    //       onLoadingStatus={(v: boolean) => console.log(v)}
-    //       afterAddItem={(val) => console.log(val)}
-    //     />
-    //   ),
-    // },
     {
       label: '上级菜单',
       dataIndex: 'parentId',
@@ -185,7 +173,7 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
     {
       label: '菜单类型',
       dataIndex: 'type',
-      defaultValue: '1',
+      defaultValue:menus.type,
       formItem: (
         <Radio.Group onChange={(e) => handlerChange('type', e.target.value)} buttonStyle="solid">
           <Radio.Button value="1">目录</Radio.Button>

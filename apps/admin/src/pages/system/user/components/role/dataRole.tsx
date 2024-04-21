@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Col, Row, Switch, Space, Tag, Button, message, Modal, Tree } from 'antd';
-import type { TreeDataNode, TreeProps } from 'antd';
+import { Tag, Button, message, Modal } from 'antd';
 
 import type { FormInstance } from 'antd/es/form';
 
 import { AdForm, FormColumnsTypes, ProTree } from 'components';
-
-import { RebuildTree, flattenArray, sortMenu } from 'utils';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+
+import DictSelect from '@/components/DictSelect';
 
 interface Props {
   /** 控制 Modal 是否显示 */
@@ -24,8 +23,9 @@ type MenusType = {
 
 const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) => {
   //  api server && config
-  const { server } = useBasicConfiguration();
-  const { sites: S, systemRole: SR } = server;
+  const { server, config: C } = useBasicConfiguration();
+  const { systemRole: SR } = server;
+  const { SYSTEM_DATA_SCOPE } = C?.DICT_TYPE || {};
 
   const formRef = useRef<FormInstance>(null);
   const treeRef = useRef<any>(null);
@@ -33,7 +33,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
   const [title] = useState<string>('菜单权限');
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
-  const [menus, setMenus] = useState<MenusType>({ id: -1, code: '', name: '', menuIds: [] });
+  const [menus, setMenus] = useState<MenusType>({ id: -1, dataScope: '', dataScopeDeptIds: [] });
 
   const [treeNodes, SetTreeNodes] = useState([]);
 
@@ -43,23 +43,26 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
       return;
     }
     treeRef?.current?.onReset();
+    formRef.current?.resetFields();
   };
 
   const handleOk = async () => {
-    setLoading(true);
-    SR.assignRoleMenu({
-      ...menus,
-      roleId: menus.id,
-    })
-      .then(() => {
-        message.success('操作成功！');
-        setLoading(false);
-        onStateChange(false);
-        onReset();
+    try {
+      setLoading(true);
+      SR.assignRoleData({
+        ...menus,
+        roleId: menus.id,
       })
-      .catch(() => {
-        setLoading(false);
-      });
+        .then(() => {
+          message.success('操作成功！');
+          setLoading(false);
+          onStateChange(false);
+          onReset();
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    } catch (errorInfo: any) {}
   };
 
   const handleCancel = () => {
@@ -77,7 +80,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
   const handlerChange = (key: string, val: any) => setMenus({ ...menus, [key]: val });
 
   const onLoadTreeData = async () => {
-    const res = await S.simpleMenuList();
+    const res = await SR.deptSimpleList();
     SetTreeNodes(res);
   };
 
@@ -106,64 +109,35 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
       formItem: <Tag color="#2db7f5">{menus.code}</Tag>,
     },
     {
-      label: '菜单权限',
-      dataIndex: 'menuIds',
+      label: '权限范围',
+      dataIndex: 'dataScope',
+      formItem: (
+        <DictSelect
+          dictKey={`${SYSTEM_DATA_SCOPE}`}
+          initValue={`${subForm.dataScope}`}
+          dropdownExtend={false}
+          onChange={(val) => setMenus({ ...menus, dataScope: val, dataScopeDeptIds: [] })}
+        />
+      ),
+    },
+    {
+      show: menus.dataScope == '4',
+      label: '具体范围',
+      dataIndex: 'dataScopeDeptIds',
       formItem: (
         <ProTree
           ref={treeRef}
           treeNodes={treeNodes}
+          // flat={true}
           topToolBar={true}
-          defSelected={subForm.menuIds}
-          onStateChange={(checked: (string | number)[]) => handlerChange('menuIds', checked)}
-          //
+          defSelected={subForm.dataScopeDeptIds}
+          expandAll={true}
+          onStateChange={(checked: (string | number)[]) =>
+            handlerChange('dataScopeDeptIds', checked)
+          }
         />
       ),
     },
-    // {
-    //   label: '菜单权限',
-    //   dataIndex: 'menuIds',
-    //   formItem: (
-    //     <Row>
-    //       <Col span={12}>
-    //         <Space>
-    //           全选/全不选
-    //           <Switch
-    //             checkedChildren="是"
-    //             unCheckedChildren="否"
-    //             value={radiorCheck}
-    //             onChange={(checked: boolean) => handerRadioCheck(checked)}
-    //           />
-    //         </Space>
-    //       </Col>
-    //       <Col span={12}>
-    //         <Space>
-    //           全部展开/折叠
-    //           <Switch
-    //             checkedChildren="展开"
-    //             unCheckedChildren="折叠"
-    //             value={radiorExpand}
-    //             onChange={(checked: boolean) => handerExpandCheck(checked)}
-    //           />
-    //         </Space>
-    //       </Col>
-    //       <Col span={24} style={{ marginTop: '10px' }}>
-    //         <Tree
-    //           checkable
-    //           onExpand={onExpand}
-    //           expandedKeys={expandedKeys}
-    //           autoExpandParent={autoExpandParent}
-    //           onCheck={onCheck}
-    //           checkedKeys={checkedKeys}
-    //           // checkStrictly={true}
-    //           onSelect={onSelect}
-    //           selectedKeys={selectedKeys}
-    //           treeData={treeData}
-    //           height={350}
-    //         />
-    //       </Col>
-    //     </Row>
-    //   ),
-    // },
   ];
 
   return (
