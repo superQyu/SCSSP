@@ -78,7 +78,7 @@ export default (props: MenusPropsType) => {
     {
       hideInSearch: true,
       width: 140,
-      editable: false,
+      // editable: false,
       title: '权限标识',
       dataIndex: 'permission',
     },

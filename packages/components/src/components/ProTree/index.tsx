@@ -39,9 +39,6 @@ const ProTree: React.FC<Props> = forwardRef(
     { treeNodes = [], flat = true, expandAll, defSelected, topToolBar, onStateChange }: Props,
     ref
   ) => {
-    const formRef = useRef<FormInstance>(null);
-    const [menus, setMenus] = useState<MenusType>({ id: -1, code: '', name: '', menuIds: [] });
-
     const [treeData, setTreeData] = useState<TreeNodes[]>([]);
     const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
     const [checkedKeys, setCheckedKeys] = useState<number[]>([]);
@@ -66,7 +63,6 @@ const ProTree: React.FC<Props> = forwardRef(
 
     const CheckDelsKeys = (tree: TreeDataNode[], id: number, l: number, acc: number[], i = 0) => {
       const curNode: MenusType | false = tree.filter((node: any) => node.id == id)[0] || false;
-
       if ((curNode.children && curNode.children.length !== l) || l === -1)
         acc = [...acc, curNode.id];
       if (curNode && curNode.parentId) {
@@ -88,7 +84,7 @@ const ProTree: React.FC<Props> = forwardRef(
 
       const delsKeys = Object.entries(selectedNode)
         .map(([key, val]: [string, any]) => {
-          return CheckDelsKeys(treeData, Number(key), val.length, []);
+          return CheckDelsKeys(flattenArray(treeData), Number(key), val.length, []);
         })
         .flatMap((item) => item);
 
