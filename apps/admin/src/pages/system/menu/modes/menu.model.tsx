@@ -3,6 +3,10 @@ import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
 import { message, Tag } from 'antd';
 
 import { IconSelect, IconShow } from 'ui';
+
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import DictSelect from '@/components/DictSelect';
+
 type objJson = Record<string, any>;
 
 type MenusPropsType = {
@@ -19,8 +23,11 @@ export interface ColumnsParamsProps extends objJson {
   isDelete: '0' | '1';
 }
 
-export default ({ server }: MenusPropsType) => {
+export default (props: MenusPropsType) => {
+  const { config: C,server } = useBasicConfiguration();
   const { menus: M } = server as objJson;
+
+  const { COMMON_STATUS } = C?.DICT_TYPE || {};
 
   const columns: ProColumns[] = [
     {
@@ -86,27 +93,34 @@ export default ({ server }: MenusPropsType) => {
       hideInSearch: true,
       title: '显示状态',
       dataIndex: 'status',
-      initialValue: '',
       valueType: 'select',
       filters: true,
-      valueEnum: {
-        '0': {
-          text: (
-            <>
-              <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
-              显示
-            </>
-          ),
-        },
-        '1': {
-          text: (
-            <>
-              <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
-              隐藏
-            </>
-          ),
-        },
-      },
+      renderFormItem: (_, { record }) => (
+        <DictSelect
+          dictKey={`${COMMON_STATUS}`}
+          initValue={`${record.status}`}
+          dropdownExtend={false}
+          onChange={(val) => (record.status = val)}
+          valueEnum={{
+            '0': {
+              text: (
+                <>
+                  <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
+                  显示
+                </>
+              ),
+            },
+            '1': {
+              text: (
+                <>
+                  <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
+                  隐藏
+                </>
+              ),
+            },
+          }}
+        />
+      ),
       render: (_, record) => (
         <>{record.status == '0' ? <Tag color="green">显示</Tag> : <Tag color="red">隐藏</Tag>}</>
       ),
@@ -119,45 +133,6 @@ export default ({ server }: MenusPropsType) => {
         ],
       },
     },
-    // {
-    //   width: 120,
-    //   title: '菜单状态',
-    //   dataIndex: 'status',
-    //   initialValue: '', //筛选默认值
-    //   valueType: 'select',
-    //   filters: true,
-    //   valueEnum: {
-    //     1: {
-    //       text: (
-    //         <>
-    //           <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
-    //           使用中
-    //         </>
-    //       ),
-    //     },
-    //     0: {
-    //       text: (
-    //         <>
-    //           <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
-    //           已停运
-    //         </>
-    //       ),
-    //     },
-    //   },
-    //   render: (_, record) => (
-    //     <>
-    //       {record.isDelete == 1 ? <Tag color="green">使用中</Tag> : <Tag color="red">已停运</Tag>}
-    //     </>
-    //   ),
-    //   formItemProps: {
-    //     rules: [
-    //       {
-    //         required: true,
-    //         message: '请选择菜单状态',
-    //       },
-    //     ],
-    //   },
-    // },
     {
       title: '操作',
       width: 140,

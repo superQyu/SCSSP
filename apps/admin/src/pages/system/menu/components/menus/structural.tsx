@@ -146,19 +146,6 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
   }, [menus.type]);
 
   const columns: FormColumnsTypes[] = [
-    // {
-    //   label: '测试字典',
-    //   dataIndex: 'dir',
-    //   formItem: (
-    //     <DictSelect
-    //       dictKey={'is_conformity'}
-    //       dropdownExtend={true}
-    //       onChange={(val) => console.log(val)}
-    //       onLoadingStatus={(v: boolean) => console.log(v)}
-    //       afterAddItem={(val) => console.log(val)}
-    //     />
-    //   ),
-    // },
     {
       label: '上级菜单',
       dataIndex: 'parentId',

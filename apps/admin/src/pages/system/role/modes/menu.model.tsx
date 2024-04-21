@@ -1,16 +1,18 @@
 import { StarTwoTone, StopTwoTone } from '@ant-design/icons';
-import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
-import { message, Tag } from 'antd';
-import dayjs, { type Dayjs } from 'dayjs';
+import { type ProColumns } from '@ant-design/pro-components';
+import { Tag } from 'antd';
+import dayjs from 'dayjs';
 
-import { IconSelect, IconShow } from 'ui';
-type objJson = Record<string, any>;
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import DictSelect from '@/components/DictSelect';
+
+type ParamsType = Record<string, any>;
 
 type MenusPropsType = {
-  server?: objJson;
+  server?: ParamsType;
 };
 
-export interface ColumnsParamsProps extends objJson {
+export interface ColumnsParamsProps extends ParamsType {
   id: number;
   name: string;
   ico: string;
@@ -20,8 +22,9 @@ export interface ColumnsParamsProps extends objJson {
   isDelete: '0' | '1';
 }
 
-export default ({ server }: MenusPropsType) => {
-  const { menus: M } = server as objJson;
+export default (_: MenusPropsType) => {
+  const { config: C } = useBasicConfiguration();
+  const { COMMON_STATUS } = C?.DICT_TYPE || {};
 
   const columns: ProColumns[] = [
     {
@@ -49,23 +52,11 @@ export default ({ server }: MenusPropsType) => {
       hideInSearch: true,
       width: 80,
       dataIndex: 'type',
-      ellipsis: true,
-      // valueType: 'select',
-      // render: (_, record) => <IconShow ico={record.icon} />,
-      // renderFormItem: () => <IconSelect model="simple" />,
     },
     {
       hideInSearch: true,
       title: '角色标识',
       dataIndex: 'code',
-      // formItemProps: {
-      //   rules: [
-      //     {
-      //       required: true,
-      //       message: '请输入排序',
-      //     },
-      //   ],
-      // },
     },
     {
       width: 120,
@@ -89,43 +80,50 @@ export default ({ server }: MenusPropsType) => {
     },
     {
       width: 120,
-      hideInSearch: true,
+      filters: true,
       title: '状态',
       dataIndex: 'status',
-      initialValue: '',
       valueType: 'select',
-      filters: true,
-      valueEnum: {
-        '0': {
-          text: (
-            <>
-              <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
-              开启
-            </>
-          ),
-        },
-        '1': {
-          text: (
-            <>
-              <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
-              关闭
-            </>
-          ),
-        },
+      renderFormItem: (...args: any[]) => {
+        const [_, { record }] = args;
+        let p = {
+          dropdownExtend: false,
+          dictKey: `${COMMON_STATUS}`,
+          valueEnum: {
+            '0': {
+              text: (
+                <>
+                  <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
+                  开启
+                </>
+              ),
+            },
+            '1': {
+              text: (
+                <>
+                  <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
+                  关闭
+                </>
+              ),
+            },
+          },
+        } as ParamsType;
+        if (record) {
+          p = {
+            ...p,
+            initValue: `${record?.status}`,
+            onChange: (val: any) => (record.status = val),
+          };
+        }
+        return <DictSelect {...p} />;
       },
       render: (_, record) => (
         <>{record.status == '0' ? <Tag color="green">开启</Tag> : <Tag color="red">关闭</Tag>}</>
       ),
       formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '请选择状态',
-          },
-        ],
+        rules: [{ required: true, message: '请选择状态' }],
       },
     },
-
     {
       title: '创建时间',
       hideInSearch: true,
@@ -133,7 +131,6 @@ export default ({ server }: MenusPropsType) => {
       editable: false,
       dataIndex: 'createTime',
       ellipsis: true,
-      // valueType: 'select',
       render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD hh:mm:ss')}</>,
     },
   ];
