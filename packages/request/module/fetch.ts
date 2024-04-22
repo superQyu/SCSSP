@@ -75,7 +75,7 @@ const paramsApart = (obj: object = {}, os: stringKey = {}) => {
 };
 
 export const fetchRequest = {
-  async get(url: string, params: Object = {}, config = {}) {
+  async get(url: string, params: Object = {}, config = {}, cusParmas = {}) {
     // get
     try {
       const res = await request(json2url({ url, params }), {
@@ -83,6 +83,7 @@ export const fetchRequest = {
         ...paramsApart(config, {
           headers: {},
         }),
+        ...cusParmas
       });
       return new Promise((resolve) => {
         resolve(res);
@@ -91,7 +92,7 @@ export const fetchRequest = {
       return Promise.reject(err);
     }
   },
-  async post(url: string, params = {}, config = {}) {
+  async post(url: string, params = {}, config = {}, cusParmas = {}) {
     // post
     try {
       const res = await request(url, {
@@ -102,6 +103,7 @@ export const fetchRequest = {
             'Content-Type': 'application/json; charset=UTF-8',
           },
         }),
+        ...cusParmas
       });
       return new Promise((resolve, reject) => {
         resolve(res);
@@ -110,7 +112,7 @@ export const fetchRequest = {
       return Promise.reject(err);
     }
   },
-  async delete(url: string, params: Object = {}, config = {}) {
+  async delete(url: string, params: Object = {}, config = {}, cusParmas = {}) {
     // delete
     try {
       const res = await request(json2url({ url, params }), {
@@ -118,6 +120,7 @@ export const fetchRequest = {
         ...paramsApart(config, {
           headers: {},
         }),
+        ...cusParmas
       });
       return new Promise((resolve) => {
         resolve(res);
@@ -126,7 +129,7 @@ export const fetchRequest = {
       return Promise.reject(err);
     }
   },
-  async put(url: string, params = {}, config = {}) {
+  async put(url: string, params = {}, config = {}, cusParmas = {}) {
     // post
     try {
       const res = await request(url, {
@@ -137,6 +140,7 @@ export const fetchRequest = {
             'Content-Type': 'application/json; charset=UTF-8',
           },
         }),
+        ...cusParmas
       });
       return new Promise((resolve, reject) => {
         resolve(res);
@@ -145,7 +149,7 @@ export const fetchRequest = {
       return Promise.reject(err);
     }
   },
-  async patch(url: string, params = {}, config = {}) {
+  async patch(url: string, params = {}, config = {}, cusParmas = {}) {
     // post
     try {
       const res = await request(url, {
@@ -156,6 +160,7 @@ export const fetchRequest = {
             'Content-Type': 'application/json; charset=UTF-8',
           },
         }),
+        ...cusParmas
       });
       return new Promise((resolve, reject) => {
         resolve(res);

@@ -71,15 +71,14 @@ export default () => {
 
   return (
     <>
-      <Alert message="后端更新(状态)字段未变化！" type="error" showIcon />
       <ProTable
         headerTitle="角色列表"
         request={async (params: ModesApi.ParamsType) => {
           const res = await SR.roleList({ ...params, pageNo: params?.current || 0 });
-          res['list'] = res?.list.map((item)=>{
-            return {...item,status:`${item.status}`}
-          })
-          console.log(res?.list)
+          // 指定字段类型转换
+          res['list'] = res?.list.map((item: ModesApi.ParamsType) => {
+            return { ...item, status: `${item.status}` };
+          });
           return {
             ...params,
             data: res?.list || [],
