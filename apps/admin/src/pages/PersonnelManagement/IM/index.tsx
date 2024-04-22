@@ -22,7 +22,7 @@ export default () => {
   const [formModal, setFormModal] = useState<boolean>(false);
 
   //  api server
-  const { user: U, menus: M, basic: B } = server;
+  const { PMIM: P, menus: M } = server;
 
   // 修改状态
   const handleModalStateChange = async (state: boolean) => {
@@ -35,14 +35,15 @@ export default () => {
 
   // 删除行
   const onDelete = async (id: number) => {
-    try {
-      await M.deleteMenus({ ids: id })
-        .then(async () => {
-          message.success('操作成功!');
-          await actionRef.current?.reload();
-        })
-        .catch(() => {});
-    } catch (errorInfo) {}
+    console.log(id);
+    // try {
+    //   await M.deleteMenus({ ids: id })
+    //     .then(async () => {
+    //       message.success('操作成功!');
+    //       await actionRef.current?.reload();
+    //     })
+    //     .catch(() => {});
+    // } catch (errorInfo) {}
   };
 
   // 重写save方法 阻止提交失败也退出编辑状态
@@ -64,24 +65,18 @@ export default () => {
     return true;
   };
 
-  useEffect(() => {
-    // B.test()
-    //   .then((res: any) => {
-    //     console.log(res);
-    //   })
-    //   .catch(() => false);
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <>
       <ProTable
         headerTitle="人员管理"
         request={async (params = {}) => {
-          // const list = await U.getRoute({ siteKey: TOKEN.replace(/^Qy_/, ''), ...params });
+          const res = await P.personnelInfoList({ ...params });
           return {
             ...params,
-            data: [],
-            total: 1,
+            data: res.list,
+            total: res.total,
           } as unknown as ModesApi.pageItemType;
         }}
         columns={initColumns}
@@ -91,8 +86,7 @@ export default () => {
         actionRef={actionRef}
         // scroll={{ x: 900 }}
         pagination={{
-          pageSize: 5,
-          onChange: (page: number) => console.log(page),
+          pageSize: 20,
         }}
         toolBarRender={() => [
           <Button
@@ -108,21 +102,22 @@ export default () => {
           // 请求之前参数格式化
           syncToUrl: (values: any, _: string) => ({ ...values }),
         }}
-        editable={{
-          type: 'multiple',
-          onSave,
-          onDelete,
-          actionRender: (...args: any[]) => {
-            const [, config, defaultDom] = args;
-            return [
-              cloneElement(defaultDom.save as React.ReactElement, {
-                onSave: onSave.bind(null, config),
-              }),
-              defaultDom.cancel,
-              defaultDom.delete,
-            ];
-          },
-        }}
+        editable={{ onDelete, onSave }}
+        // editable={{
+        //   type: 'multiple',
+        //   onSave,
+        //   onDelete,
+        //   actionRender: (...args: any[]) => {
+        //     const [, config, defaultDom] = args;
+        //     return [
+        //       cloneElement(defaultDom.save as React.ReactElement, {
+        //         onSave: onSave.bind(null, config),
+        //       }),
+        //       defaultDom.cancel,
+        //       defaultDom.delete,
+        //     ];
+        //   },
+        // }}
         columnsState={{
           persistenceKey: 'pro-table-singe-demos',
           persistenceType: 'localStorage',

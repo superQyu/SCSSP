@@ -1,9 +1,41 @@
-import React, { useRef } from 'react';
-import type { ActionType, ProColumns } from '@ant-design/pro-components';
+import React, { cloneElement, useRef } from 'react';
+import { message } from 'antd';
+import type { ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 
 export default (props: any) => {
   const actionRef = useRef<ActionType>();
+
+  // 重写save方法 阻止提交失败也退出编辑状态
+  const onSave = async (...args: any[]) => {
+    const [C, id, n, a, b] = args;
+
+    const onSaveRes = await props.editable.onSave({ ...n }).then(async () => {
+      message.success('更新成功！');
+      await (props.actionRef || actionRef).current?.reload();
+    });
+
+    if (onSaveRes === false) {
+      message.error('信息更新失败，请重新提交！');
+      return false;
+    }
+    C.cancelEditable(id);
+    return true;
+  };
+
+  // 删除行
+  const onDelete = async (...args: any[]) => {
+    const [C, id, n] = args;
+    const onDeleteRes = await props.editable.onDelete(id).then(async () => {
+      await (props.actionRef || actionRef).current?.reload();
+    });
+    if (onDeleteRes === false) {
+      return false;
+    }
+    C.cancelEditable(id);
+    return true;
+  };
+
   return (
     <ProTable<Record<string, any>>
       columns={props.columns}
@@ -11,11 +43,24 @@ export default (props: any) => {
       actionRef={props.actionRef || actionRef}
       toolBarRender={props.toolBarRender}
       cardBordered
-      editable={
-        props.editable || {
-          type: 'multiple',
-        }
-      }
+      editable={{
+        type: 'multiple',
+        onSave,
+        onDelete,
+        actionRender: (...args: any[]) => {
+          const [, config, defaultDom] = args;
+          return [
+            cloneElement(defaultDom.save as React.ReactElement, {
+              onSave: onSave.bind(null, config),
+            }),
+            defaultDom.cancel,
+            cloneElement(defaultDom.delete as React.ReactElement, {
+              onDelete: onDelete.bind(null, config),
+            }),
+            // defaultDom.delete,
+          ];
+        },
+      }}
       columnsState={
         props.columnsState || {
           persistenceKey: 'pro-table-singe-demos',

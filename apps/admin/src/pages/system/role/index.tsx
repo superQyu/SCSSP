@@ -37,34 +37,18 @@ export default () => {
 
   // 删除行
   const onDelete = async (id: number) => {
-    try {
-      await M.deleteMenus({ ids: id })
-        .then(async () => {
-          message.success('操作成功!');
-          await actionRef.current?.reload();
-        })
-        .catch(() => {});
-    } catch (errorInfo) {}
+    const res = await SR.deleteRole({ id }).then(async () => {
+      message.success('操作成功!');
+    });
+    return res;
   };
 
-  // 重写save方法 阻止提交失败也退出编辑状态
-  const onSave = async (...args: any[]) => {
-    const [config, id, n, , ,] = args;
-    // 更新行数据
-
-    const res = await SR.updateRole(JSON.parse(JSON.stringify({ ...n })) as ColumnsParamsProps)
-      .then(async () => {
-        message.success('信息更新成功！');
-        await actionRef.current?.reload();
-      })
-      .catch(() => false);
-    if (res === false) {
-      message.error('信息更新失败，请重新提交！');
-      return false;
-    }
-    // 保存时解除编辑模式
-    config.cancelEditable(id);
-    return true;
+  // 保存save
+  const onSave = async (params: any) => {
+    const res = await SR.updateRole(
+      JSON.parse(JSON.stringify({ ...params })) as ColumnsParamsProps
+    );
+    return res;
   };
 
   useEffect(() => {}, []);
@@ -92,21 +76,7 @@ export default () => {
         form={{
           syncToUrl: (values: any, _: string) => ({ ...values }),
         }}
-        editable={{
-          type: 'multiple',
-          onSave,
-          onDelete,
-          actionRender: (...args: any[]) => {
-            const [, config, defaultDom] = args;
-            return [
-              cloneElement(defaultDom.save as React.ReactElement, {
-                onSave: onSave.bind(null, config),
-              }),
-              defaultDom.cancel,
-              defaultDom.delete,
-            ];
-          },
-        }}
+        editable={{ onDelete, onSave }}
         columnsState={{
           persistenceKey: 'pro-table-singe-role',
           persistenceType: 'localStorage',
