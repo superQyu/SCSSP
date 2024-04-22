@@ -23,16 +23,16 @@ const netStatus = (status: any, data: any) => {
       },
     ],
     [
-      [...new Set([400, 401, 500, ...(isArray(error) ? error : [error])])],
+      [...new Set([400, 401, 404, 405, 500, ...(isArray(error) ? error : [error])])],
       () => {
         const { message: m, msg, error } = data || {};
-        message.error(`${m || msg || error || data}`);
+        throw new Error(`${m || msg || error || data}`);
       },
     ],
     [
-      [-1, 404],
+      [-1],
       () => {
-        message.error(`请求失败，请联系管理员！状态码:${data.code}`);
+        message.error(data.message ? `${data.message}` : `请求失败，请联系管理员！状态码:${data.code}`);
       },
     ],
     [

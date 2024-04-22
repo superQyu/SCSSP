@@ -85,6 +85,7 @@ export default (_: MenusPropsType) => {
       dataIndex: 'status',
       valueType: 'select',
       renderFormItem: (...args: any[]) => {
+        const [_, { record }] = args;
         let p = {
           dropdownExtend: false,
           dictKey: `${COMMON_STATUS}`,
@@ -107,7 +108,14 @@ export default (_: MenusPropsType) => {
             },
           },
         } as ParamsType;
-        return <DictSelect dictKey={`${COMMON_STATUS}`} {...p} />;
+        if (record) {
+          p = {
+            ...p,
+            initValue: `${record?.status}`,
+            onChange: (val: any) => (record.status = val),
+          };
+        }
+        return <DictSelect {...p} />;
       },
       render: (_, record) => (
         <>{record.status == '0' ? <Tag color="green">开启</Tag> : <Tag color="red">关闭</Tag>}</>
