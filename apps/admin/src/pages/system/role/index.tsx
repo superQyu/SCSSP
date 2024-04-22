@@ -76,6 +76,10 @@ export default () => {
         headerTitle="角色列表"
         request={async (params: ModesApi.ParamsType) => {
           const res = await SR.roleList({ ...params, pageNo: params?.current || 0 });
+          res['list'] = res?.list.map((item)=>{
+            return {...item,status:`${item.status}`}
+          })
+          console.log(res?.list)
           return {
             ...params,
             data: res?.list || [],

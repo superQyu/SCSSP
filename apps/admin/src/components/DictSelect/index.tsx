@@ -39,6 +39,7 @@ interface SelectOption {
 const DictSelect: React.FC<Props> = forwardRef(
   (
     {
+      value,
       dictKey,
       dropdownExtend,
       onLoadingStatus,
@@ -72,13 +73,11 @@ const DictSelect: React.FC<Props> = forwardRef(
       const res = await fetchRemoteData(dictKey);
       setItems(res.list as SelectOption[]);
       setLoading(false);
-      setDefaultValue(initValue);
     };
 
     const onFocusSelect = () => {
       if (items.length == 0) {
         setLoading(true);
-        // loadData();
       }
     };
 
@@ -114,11 +113,10 @@ const DictSelect: React.FC<Props> = forwardRef(
     return (
       <>
         <Select
-          key={defaultValue}
+          value={value}
           style={{ width: '100%' }}
           allowClear
           placeholder="请选择"
-          defaultValue={defaultValue}
           notFoundContent={
             loading ? (
               <Space
@@ -135,7 +133,7 @@ const DictSelect: React.FC<Props> = forwardRef(
               <Empty />
             )
           }
-          onFocus={onFocusSelect}
+          // onFocus={onFocusSelect}
           dropdownRender={(menu) => (
             <>
               {menu}
