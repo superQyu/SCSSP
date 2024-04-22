@@ -42,7 +42,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
       message.warning(`数据提交中,请稍等...`);
       return;
     }
-    treeRef?.current?.onReset();
+    treeRef.current?.onReset();
     formRef.current?.resetFields();
   };
 

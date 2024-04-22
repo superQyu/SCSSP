@@ -77,11 +77,11 @@ export default () => {
       <ProTable
         headerTitle="人员管理"
         request={async (params = {}) => {
-          const list = await U.getRoute({ siteKey: TOKEN.replace(/^Qy_/, ''), ...params });
+          // const list = await U.getRoute({ siteKey: TOKEN.replace(/^Qy_/, ''), ...params });
           return {
             ...params,
-            data: list,
-            total: list.length,
+            data: [],
+            total: 1,
           } as unknown as ModesApi.pageItemType;
         }}
         columns={initColumns}
@@ -89,7 +89,7 @@ export default () => {
           console.log(params);
         }}
         actionRef={actionRef}
-        scroll={{ x: 900 }}
+        // scroll={{ x: 900 }}
         pagination={{
           pageSize: 5,
           onChange: (page: number) => console.log(page),

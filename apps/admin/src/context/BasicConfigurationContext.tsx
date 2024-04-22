@@ -4,6 +4,7 @@ import { TOKEN } from 'utils';
 import { autoInterface } from '@spms/web-request';
 import apisGather from '@/apis';
 import * as baseConf from '@/config';
+import { NET_STATUS } from '@/config/NetStatus';
 
 interface ConfigurationType {
   server: Record<string, any>;
@@ -33,7 +34,7 @@ export const BasicConfigurationProvider: React.FC<{ children: React.ReactNode }>
     <BasicConfigurationContext.Provider
       value={
         {
-          server: autoInterface(apisGather, TOKEN),
+          server: autoInterface(apisGather, TOKEN, { requested: NET_STATUS }),
           config: baseConf,
         } as ConfigurationType
       }

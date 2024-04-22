@@ -27,8 +27,9 @@ const paramsValidate = (obj: object = {}, os: jsonObject = {}) => { };
 
 class AutoInterface {
   [prop: string]: any;
-  constructor(list: jsonObject, platformKey: string) {
+  constructor(list: jsonObject, platformKey: string, cusParmas: jsonObject) {
     this.platformKey = platformKey;
+    this.cusParmas = cusParmas || {};
     Object.entries(list).forEach((item, index) => {
       const [key, value]: [string, jsonObject | []] = item;
       const filePath = `@/api/${key}.api.ts`;
@@ -108,7 +109,7 @@ class AutoInterface {
             if (rdv == '' && mandatorykey) verifyed.params[rtk] = rdv;
           }
         }
-        
+
       }
       if (required.length > 0)
         return _this.errorMethod(
@@ -132,7 +133,7 @@ class AutoInterface {
       const xhrType: Method = type.toLowerCase();
       const service: jsonObject = fetchService;
       if (service.hasOwnProperty(xhrType))
-        return service[xhrType](url, verifyed.params, verifyed.config);
+        return service[xhrType](url, verifyed.params, verifyed.config, _this.cusParmas);
       return _this.errorMethod(`请填写正确的请求类型!`);
     };
   }
@@ -153,6 +154,6 @@ class AutoInterface {
     });
   }
 }
-export const autoInterface = (list: jsonObject, platformKey: string) => {
-  return new AutoInterface(list, platformKey);
+export const autoInterface = (list: jsonObject, platformKey: string, cusParmas: jsonObject) => {
+  return new AutoInterface(list, platformKey, cusParmas);
 };
