@@ -15,7 +15,6 @@ export interface ColumnsParamsProps extends objJson {
   ico: string;
   orderNum: number;
   roleKey: number | string;
-  name: string;
   isDelete: '0' | '1';
 }
 
@@ -30,20 +29,7 @@ export default ({ server }: MenusPropsType) => {
       editable: false,
       hideInSearch: true,
       sorter: true,
-      fixed: 'left',
-    },  {
-      title: '创建者',
-      width: 120,
-      dataIndex: 'creator',
-      valueType: 'select',
-      valueEnum: {
-        all: { text: '全部' },
-        付小小: { text: '付小小' },
-        曲丽丽: { text: '曲丽丽' },
-        林东东: { text: '林东东' },
-        陈帅帅: { text: '陈帅帅' },
-        兼某某: { text: '兼某某' },
-      },
+      // fixed: 'left',
     },
     {
       width: 80,
@@ -74,6 +60,7 @@ export default ({ server }: MenusPropsType) => {
       width: 80,
       hideInSearch: true,
       title: '民族',
+      ellipsis:true,
       dataIndex: 'nationality',
     },
     {
@@ -143,7 +130,7 @@ export default ({ server }: MenusPropsType) => {
       width: 140,
       valueType: 'option',
       key: 'option',
-      fixed: 'right',
+      // fixed: 'right',
       render: (_text, record, _, action) => [
         <a
           key="editable"

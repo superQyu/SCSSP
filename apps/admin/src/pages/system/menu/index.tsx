@@ -46,25 +46,11 @@ export default () => {
     } catch (errorInfo) {}
   };
 
-  // 重写save方法 阻止提交失败也退出编辑状态
-  const onSave = async (...args: any[]) => {
-    const [config, id, n, , ,] = args;
+  // 保存save
+  const onSave = async (params: any) => {
     // 更新行数据
-
-    console.log(JSON.parse(JSON.stringify({ ...n })));
-    const res = await M.updateMenu(JSON.parse(JSON.stringify({ ...n })) as ColumnsParamsProps)
-      .then(async () => {
-        message.success('信息更新成功！');
-        await actionRef.current?.reload();
-      })
-      .catch(() => false);
-    if (res === false) {
-      message.error('信息更新失败，请重新提交！');
-      return false;
-    }
-    // 保存时解除编辑模式
-    config.cancelEditable(id);
-    return true;
+    const res = await M.updateMenu(JSON.parse(JSON.stringify({ ...params })) as ColumnsParamsProps);
+    return res;
   };
 
   useEffect(() => {}, []);
@@ -108,21 +94,7 @@ export default () => {
           // 请求之前参数格式化
           syncToUrl: (values: any, _: string) => ({ ...values }),
         }}
-        editable={{
-          type: 'multiple',
-          onSave,
-          onDelete,
-          actionRender: (...args: any[]) => {
-            const [, config, defaultDom] = args;
-            return [
-              cloneElement(defaultDom.save as React.ReactElement, {
-                onSave: onSave.bind(null, config),
-              }),
-              defaultDom.cancel,
-              defaultDom.delete,
-            ];
-          },
-        }}
+        editable={{ onDelete, onSave }}
         columnsState={{
           persistenceKey: 'pro-table-singe-menu',
           persistenceType: 'localStorage',
