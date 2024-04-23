@@ -124,17 +124,17 @@ const IconSelect: React.FC<IconSelectProp> = (props: IconSelectProp) => {
           arrow
           overlayStyle={{ maxWidth: '320px', backgroundColor: '#fff' }}
         >
-          <Tag
+          {/* <Tag
             icon={!value || value == '' ? <AimOutlined /> : <IconShow ico={value} handlerIco />}
             style={{ display: 'flex', fontSize: '22px', padding: '3px 7px', cursor: 'pointer' }}
-          />
+          /> */}
         </Dropdown>
       ) : (
         <>
-          <Tag
+          {/* <Tag
             icon={!value || value == '' ? <AimOutlined /> : <IconShow ico={value} handlerIco />}
             style={{ display: 'flex', width: '34px', fontSize: '20px' }}
-          />
+          /> */}
           <Select ref={selectRef} value={value} dropdownRender={dropdownRender}></Select>
         </>
       )}

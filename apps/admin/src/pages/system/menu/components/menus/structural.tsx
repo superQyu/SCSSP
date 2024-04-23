@@ -11,7 +11,7 @@ import { AdForm, FormColumnsTypes } from 'components';
 import { url2key, RebuildTree, flattenArray, sortMenu } from 'utils';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-// import DictSelect from '@/components/DictSelect';
+import DictSelect from '@/components/DictSelect';
 
 interface Props {
   /** 控制 Modal 是否显示 */
@@ -76,8 +76,11 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
     // setMenus({...menus,type:'1'})
   };
   const handleOk = async () => {
+    const values: MenusType = await formRef.current?.validateFields();
+    console.log('values',values );
     try {
       const values: MenusType = await formRef.current?.validateFields();
+      console.log('values',values );
       setLoading(true);
 
       M.createMenu(JSON.parse(JSON.stringify({ ...values, siteKey: url2key() })))
@@ -143,10 +146,24 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
   }, [openModal]);
 
   useEffect(() => {
-    formRef.current?.resetFields(['filepath']);
+    formRef.current?.resetFields(['component']);
   }, [menus.type]);
 
   const columns: FormColumnsTypes[] = [
+    {
+      label: '测试字典',
+      dataIndex: 'dir',
+      formItem: (
+        <DictSelect
+          dictKey={'is_conformity'}
+          dropdownExtend={true}
+          onChange={(val) => console.log(val)}
+          onLoadingStatus={(v: boolean) => console.log(v)}
+          afterAddItem={(val) => console.log(val)}
+          
+        />
+      ),
+    },
     {
       label: '上级菜单',
       dataIndex: 'parentId',

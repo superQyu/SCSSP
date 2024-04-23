@@ -20,7 +20,23 @@ const describe: string =
 // 
 const PLATFORMID = 2583;
 
-export { PLATFORMID, logo, title, flogo, prefix, fieldConversion, describe };
+
+const jobCategoryDanger = [
+  {
+    label: '项目经理',
+    value: '9'
+  },
+  {
+    label: '监理安全员',
+    value: '7'
+  },
+  {
+    label: '安全监理工程师',
+    value: '3'
+  },
+]
+
+export { PLATFORMID, logo, title, flogo, prefix, fieldConversion, describe,jobCategoryDanger };
 
 export enum DICT_TYPE {
   USER_TYPE = 'user_type',

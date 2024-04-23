@@ -1,209 +1,169 @@
-import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
-import type { ActionType, ProColumns } from '@ant-design/pro-components';
-import { ProTable, TableDropdown } from '@ant-design/pro-components';
-import { Button, Dropdown, Space, Tag } from 'antd';
-import { useRef } from 'react';
-import { getGithubIssueItem } from 'apis';
-import type { AdminApi } from 'apis';
-
-// Current usage CSS stylesheet
-// import styles from './index.module.scss';
-
-const columns: ProColumns<AdminApi.GithubIssueItem>[] = [
-  {
-    dataIndex: 'index',
-    valueType: 'indexBorder',
-    width: 48,
-  },
-  {
-    title: '标题',
-    dataIndex: 'title',
-    copyable: true,
-    ellipsis: true,
-    tip: '标题过长会自动收缩',
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '此项为必填项',
-        },
-      ],
-    },
-  },
-  {
-    disable: true,
-    title: '状态',
-    dataIndex: 'state',
-    filters: true,
-    onFilter: true,
-    ellipsis: true,
-    valueType: 'select',
-    valueEnum: {
-      all: { text: '超长'.repeat(50) },
-      open: {
-        text: '未解决',
-        status: 'Error',
-      },
-      closed: {
-        text: '已解决',
-        status: 'Success',
-        disabled: true,
-      },
-      processing: {
-        text: '解决中',
-        status: 'Processing',
-      },
-    },
-  },
-  {
-    disable: true,
-    title: '标签',
-    dataIndex: 'labels',
-    search: false,
-    renderFormItem: (_, { defaultRender }) => {
-      return defaultRender(_);
-    },
-    render: (_, record) => (
-      <Space>
-        {record.labels.map(({ name, color }) => (
-          <Tag color={color} key={name}>
-            {name}
-          </Tag>
-        ))}
-      </Space>
-    ),
-  },
-  {
-    title: '创建时间',
-    key: 'showTime',
-    dataIndex: 'created_at',
-    valueType: 'date',
-    sorter: true,
-    hideInSearch: true,
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'created_at',
-    valueType: 'dateRange',
-    hideInTable: true,
-    search: {
-      transform: (value) => {
-        return {
-          startTime: value[0],
-          endTime: value[1],
-        };
-      },
-    },
-  },
-  {
-    title: '操作',
-    valueType: 'option',
-    key: 'option',
-    render: (_text, record, _, action) => [
-      <a
-        key="editable"
-        onClick={() => {
-          action?.startEditable?.(record.id);
-        }}
-      >
-        编辑
-      </a>,
-      <a href={record.url} target="_blank" rel="noopener noreferrer" key="view">
-        查看
-      </a>,
-      <TableDropdown
-        key="actionGroup"
-        onSelect={() => action?.reload()}
-        menus={[
-          { key: 'copy', name: '复制' },
-          { key: 'delete', name: '删除' },
-        ]}
-      />,
-    ],
-  },
-];
+import { useState, useRef } from 'react';
+import { Col, Row, Flex, Button, message } from 'antd';
+import type { FormInstance } from 'antd/es/form';
+import styles from './index.module.scss';
+import siteModel from './modes/info.model';
+import type { ModesApi } from './modes/model';
+import { AdForm } from 'components';
+import FunctionCom from './components/function';
+import UploadFileCom from './components/uploadFile';
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 export default () => {
-  const actionRef = useRef<ActionType>();
+  const { server } = useBasicConfiguration();
+  const [loading, setLoading] = useState<boolean>(false);
+  const { infoColumns, entryColumns, workTypeColumns } = siteModel();
+
+  const infoRef = useRef<FormInstance>(null);
+  const entryRef = useRef<FormInstance>(null);
+  const workTypeRef = useRef<FormInstance>(null);
+  const imgsRef = useRef<FormInstance>(null);
+  const functionRef = useRef<FormInstance>(null);
+
+  const { person: P } = server;
+  const [otherInfo, setOtherInfo] = useState<any>({});
+  const [certificate, setCertificates] = useState<ModesApi.PersonnelCertificateSaveReqVO[]>([]);
+
+  // 点击确定按钮提交信息
+  const handleOk = async () => {
+    const [infoValue, workTypeValue, entfyValue] = await Promise.all([
+      infoRef.current?.validateFields(),
+      workTypeRef.current?.validateFields(),
+      entryRef.current?.validateFields(),
+    ]);
+    // setLoading(true);
+    console.log('参数', {
+      personnelInfoSaveReqVO: { ...infoValue, ...workTypeValue, ...otherInfo },
+      personnelCertificateSaveReqVOS: certificate,
+      entryInfoSaveReqVO: entfyValue,
+    });
+    return 
+    try {
+      await P.createFullPersonInfo({
+        personnelInfoSaveReqVO: { ...infoValue, ...workTypeValue, ...otherInfo },
+        personnelCertificateSaveReqVOS: certificate,
+        entryInfoSaveReqVO: entfyValue,
+      });
+      message.success('信息采集成功');
+      resetForm();
+    } catch {
+      message.error('信息采集失败');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //接收证书信息
+  const onSubmitCertificate = (data: ModesApi.PersonnelCertificateSaveReqVO[]) => {
+    setCertificates(data);
+    functionRef.current?.setFormModal(false);
+  };
+
+  // 点击重置按钮
+  const onReset = () => {
+    if (loading) {
+      message.warning(`数据提交中,请稍等...`);
+      return;
+    }
+    resetForm();
+  };
+
+  //重置表单
+  const resetForm = () => {
+    infoRef.current?.resetFields();
+    workTypeRef.current?.resetFields();
+    entryRef.current?.resetFields();
+    imgsRef?.current?.resetAll();
+    functionRef.current?.resetAll();
+    setOtherInfo({});
+  };
+
+  // 修改所属工种
+  const handleModalStateChange = (any) => {
+    setOtherInfo({ ...otherInfo, ...any });
+  };
+
   return (
-    <ProTable<AdminApi.GithubIssueItem>
-      columns={columns}
-      actionRef={actionRef}
-      cardBordered
-      request={async (params = {} /*sort, filter*/) => {
-        // console.log(sort, filter);
-        // return request<{
-        //   data: GithubIssueItem[];
-        // }>('https://proapi.azurewebsites.net/github/issues', {
-        //   params,
-        // });
-        return await getGithubIssueItem(params as AdminApi.IGetGithubIssueItemType);
-      }}
-      editable={{
-        type: 'multiple',
-      }}
-      columnsState={{
-        persistenceKey: 'pro-table-singe-demos',
-        persistenceType: 'localStorage',
-        onChange(value) {
-          // console.log('value: ', value);
-        },
-      }}
-      rowKey="id"
-      search={{
-        labelWidth: 'auto',
-      }}
-      options={{
-        setting: {
-          listsHeight: 400,
-        },
-      }}
-      form={{
-        // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
-        syncToUrl: (values, type) => {
-          if (type === 'get') {
-            return {
-              ...values,
-              created_at: [values.startTime, values.endTime],
-            };
-          }
-          return values;
-        },
-      }}
-      pagination={{
-        pageSize: 5,
-        // onChange: (page) => console.log(page),
-      }}
-      dateFormatter="string"
-      headerTitle="高级表格"
-      toolBarRender={() => [
-        <Button key="button" icon={<PlusOutlined />} type="primary">
-          新建
-        </Button>,
-        <Dropdown
-          key="menu"
-          menu={{
-            items: [
-              {
-                label: '1st item',
-                key: '1',
-              },
-              {
-                label: '2nd item',
-                key: '1',
-              },
-              {
-                label: '3rd item',
-                key: '1',
-              },
-            ],
-          }}
-        >
-          <Button>
-            <EllipsisOutlined />
+    <div className="px-10 bg-#fff">
+      <div className={styles.infoTitle}>基本信息</div>
+      <Row gutter={16}>
+        <Col className="gutter-row" span={4}>
+          <Flex justify="center" align="center" className="h-full">
+            <div>
+              <UploadFileCom
+                ref={imgsRef}
+                maxNo={1}
+                callback={(url: string) =>
+                  setOtherInfo({
+                    ...otherInfo,
+                    passportPhoto: url,
+                  })
+                }
+              />
+            </div>
+          </Flex>
+        </Col>
+        <Col className="gutter-row" span={20}>
+          <AdForm layout="horizontal" formRef={infoRef} columns={infoColumns} />
+        </Col>
+      </Row>
+
+      <div className={styles.infoTitle}>
+        所属工种
+        <span className={styles.tip}>红色为特殊工种，需要维护证件信息</span>
+      </div>
+      <Row gutter={8}>
+        <Col className="gutter-row" span={8}>
+          <AdForm
+            layout="horizontal"
+            formRef={workTypeRef}
+            columns={workTypeColumns}
+            onFormChange={(changedValues) => {
+              setOtherInfo({
+                ...otherInfo,
+                ...changedValues,
+              });
+            }}
+          />
+        </Col>
+        <Col className="gutter-row" span={16}>
+          <Button
+            className="pos-absolute"
+            type="link"
+            onClick={() => {
+              if (!otherInfo.workerType) {
+                message.warning('请先选择工人类型');
+              } else {
+                functionRef.current?.setFormModal(true);
+              }
+            }}
+          >
+            修改信息
           </Button>
-        </Dropdown>,
-      ]}
-    />
+        </Col>
+      </Row>
+
+      <div className={styles.infoTitle}>
+        进场信息
+        <span className={styles.tip}>首先录入班组长（是否班组长选【是】），再录入其他工人</span>
+      </div>
+      <AdForm layout="horizontal" formRef={entryRef} columns={entryColumns} />
+
+      <Flex gap="middle" justify="center" className="py-10">
+        <Button size="large" key="submit" type="primary" loading={loading} onClick={handleOk}>
+          确定
+        </Button>
+        <Button size="large" key="reset" htmlType="reset" onClick={onReset} disabled={loading}>
+          重置
+        </Button>
+      </Flex>
+
+      <FunctionCom
+        ref={functionRef}
+        subForm={otherInfo}
+        onStateChange={handleModalStateChange}
+        onSubmit={(data) => onSubmitCertificate(data)}
+      />
+    </div>
   );
 };

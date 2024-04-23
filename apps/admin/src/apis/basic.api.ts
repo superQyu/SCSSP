@@ -8,7 +8,7 @@ const user: ApiItem[] = [
     type: 'GET',
     name: '字典列表',
     description: '获取字典列表',
-    params: [{ key: 'Authorization', location: "header" }]
+    params: [{ key: 'Authorization', location: 'header' }],
   },
   {
     key: 'getDictType',
@@ -17,12 +17,12 @@ const user: ApiItem[] = [
     name: '字典详情',
     description: '查询字典详情',
     params: [
-      { key: 'Authorization', location: "header" },
+      { key: 'Authorization', location: 'header' },
       { key: 'pageNo', valueAttrs: { value: 1 } },
       { key: 'pageSize', valueAttrs: { value: 99 } },
       { key: 'label' },
-      { key: 'dictType' }
-    ]
+      { key: 'dictType' },
+    ],
   },
   // 
   // 查询字典数据（精简)列表
@@ -58,6 +58,26 @@ const user: ApiItem[] = [
     type: 'GET',
     name: '测试',
     description: '测试',
+  },
+  {
+    key: 'upload',
+    url: `${ADMIN_API}/infra/file/upload`,
+    type: 'POST',
+    name: '上传文件',
+    description: '上传文件',
+    params: [
+      {
+        key: 'tenant-id',
+        location: 'header',
+        value: '1',
+        valueAttrs: {
+          value: '1',
+        },
+      },
+      { key: 'Authorization', location: 'header' },
+      { key: 'path', cn: '路径' },
+      { key: 'file:', cn: '文件信息' },
+    ],
   },
 ];
 export default user;

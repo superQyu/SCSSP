@@ -11,7 +11,7 @@ export type FormColumnsTypes = {
   label: string;
   dataIndex: string;
   formItem?: JSX.Element | string;
-  defaultValue?: string | number | string[];
+  defaultValue?: string | number;
   formItemProps?: FieldType;
   show?: boolean;
   colNum?: 2 | 3 | 4 | 6 | 8 | 12 | 24;
@@ -51,11 +51,6 @@ const AdForm: React.FC<FornPropsTypes> = ({
     }, {});
     setMenus(_menus);
   };
-
-  useEffect(() => {
-    setMenus({ ...initialValues });
-  }, []);
-
 
   return (
     <Spin spinning={loading} tip={loadingTitle}>
