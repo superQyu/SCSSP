@@ -2,7 +2,7 @@ import React from 'react';
 import { ProUpload } from 'components';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-import { Col, Row, Typography } from 'antd';
+import { Col, Row, Typography, Descriptions, Button } from 'antd';
 
 interface Props {}
 
@@ -14,6 +14,7 @@ const AddMenus: React.FC<Props> = () => {
     <>
       <Row gutter={16}>
         <Col className="gutter-row" span={12}>
+          <Descriptions title="上传文件 可设置上传文件个数" />
           <ProUpload
             onRequest={async (params: any) => await F.fileUpload(params)}
             onUploadSuccess={(res: any) => {
@@ -25,6 +26,23 @@ const AddMenus: React.FC<Props> = () => {
             onDeleted={(uid: string) => {
               console.log('文件ID:', uid);
             }}
+            maxCount={1}
+          />
+          <Descriptions title="自定义上传按钮(限制上传文件个数，是否显示文件列表)" />
+          <ProUpload
+            onRequest={async (params: any) => await F.fileUpload(params)}
+            onUploadSuccess={(res: any) => {
+              console.log('上传成功:', res);
+            }}
+            onUploadError={(err: any) => {
+              console.log('上传失败');
+            }}
+            onDeleted={(uid: string) => {
+              console.log('文件ID:', uid);
+            }}
+            maxCount={2}
+            buttonRender={<Button>上传</Button>}
+            showUploadList={false}
           />
         </Col>
         <Col className="gutter-row" span={12}>
@@ -45,11 +63,15 @@ const AddMenus: React.FC<Props> = () => {
     onDeleted={(uid: string) => {
       console.log('文件ID:', uid);
     }}
+    maxCount={2}
+    buttonRender={<Button>上传</Button>}
+    showUploadList={false}
 />`}
           </Typography.Paragraph>
           <Typography.Paragraph style={{ whiteSpace: 'pre-wrap' }} code={true} strong={true}>
-            {`参数设置：
-{
+            {`参数设置：{
+    /** 自定义上传按钮  */
+    buttonRender?: JSX.Element;
     /** 上传接口配置  */
     onRequest?: (params: any) => Promise<Partial<RequestData<any>>>;
     /** 上传成功  */
@@ -62,6 +84,10 @@ const AddMenus: React.FC<Props> = () => {
     fileType?: string[];
     /** 文件上传大限制 默认 20M*/
     fileSize?: number;
+    /** 文件上传个数 默认 上限8个 (false 按钮一直显示 不设上限)*/ 
+    maxCount?: number | false;
+    /** 是否显示上传列表 */
+    showUploadList?: boolean;
 }`}
           </Typography.Paragraph>
         </Col>
