@@ -1,8 +1,8 @@
 import { createElement, cloneElement, useRef, useState, useEffect } from 'react';
-import { Button, message } from 'antd';
-import { PlusOutlined, SearchOutlined, RedoOutlined } from '@ant-design/icons';
+import { Button, message, Alert, Modal } from 'antd';
+import { PlusOutlined, SearchOutlined, ExclamationCircleFilled } from '@ant-design/icons';
 
-import { type ActionType } from '@ant-design/pro-components';
+import { TableDropdown, type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
 import { sortMenu, RebuildTree, flattenArray } from 'utils';
 
@@ -18,7 +18,7 @@ export default () => {
   const { server, config } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
 
-  const [subForm, _] = useState<Record<string, any>>({});
+  const [subForm, setSubForm] = useState<Record<string, any>>({});
   const [formModal, setFormModal] = useState<boolean>(false);
 
   //  api server
@@ -27,6 +27,7 @@ export default () => {
 
   // 修改状态
   const handleModalStateChange = async (state: boolean) => {
+    setSubForm({});
     setFormModal(state);
     await actionRef.current?.reload();
   };
@@ -36,14 +37,11 @@ export default () => {
 
   // 删除行
   const onDelete = async (id: number) => {
-    try {
-      await M.deleteMenus({ ids: id })
-        .then(async () => {
-          message.success('操作成功!');
-          await actionRef.current?.reload();
-        })
-        .catch(() => {});
-    } catch (errorInfo) {}
+    const res = await M.deleteMenus({ id: id }).then(async () => {
+      message.success('操作成功!');
+      await actionRef.current?.reload();
+    });
+    return res;
   };
 
   // 保存save
@@ -57,6 +55,7 @@ export default () => {
 
   return (
     <>
+      {/* <Alert message="删除路由报错" type="warning" showIcon /> */}
       <ProTable
         headerTitle="菜单列表"
         request={async (params = {}) => {
@@ -86,7 +85,72 @@ export default () => {
             total: menus.length,
           } as unknown as ModesApi.pageItemType;
         }}
-        columns={initColumns}
+        columns={[
+          ...initColumns,
+          {
+            title: '操作',
+            width: 140,
+            valueType: 'option',
+            key: 'option',
+            render: (_text: any, record: any, _: any, action: any) => [
+              <a
+                key="editable"
+                onClick={() => {
+                  action?.startEditable?.(record.id);
+                }}
+              >
+                编辑
+              </a>,
+              <TableDropdown
+                key="actionGroup"
+                onSelect={(key) => {
+                  if (key === 'delete') {
+                    try {
+                      try {
+                        Modal.confirm({
+                          title: `删除操作`,
+                          icon: createElement(ExclamationCircleFilled),
+                          content: `确定删除菜单 [${record.name}]?`,
+                          okText: '删除',
+                          okType: 'danger',
+                          cancelText: '取消',
+                          onOk: async () => {
+                            await M.deleteMenus({ id: record.id });
+                            message.success('操作成功!');
+                            action?.reload();
+                          },
+                          onCancel() {},
+                        });
+                      } catch (errorInfo) {
+                        message.error('操作失败!');
+                      }
+                    } catch (errorInfo) {}
+                  } else if (key === 'detail') {
+                    setSubForm({
+                      ...record,
+                      parentId: `${record.parentId}`,
+                      type: `${record.type}`,
+                    });
+                    setFormModal(true);
+                    try {
+                      // M.deleteMenus({ id: record.id })
+                      //   .then(() => {
+                      //     message.success('操作成功!');
+                      //     action?.reload();
+                      //   })
+                      //   .catch(() => {});
+                    } catch (errorInfo) {}
+                  }
+                }}
+                menus={[
+                  { key: 'detail', name: '详情' },
+                  { key: 'delete', name: '删除' },
+                  // { key: 'copy', name: '复制' },
+                ]}
+              />,
+            ],
+          },
+        ]}
         onSubmit={async (params: {}) => {}}
         actionRef={actionRef}
         pagination={false}
@@ -110,6 +174,7 @@ export default () => {
             新建
           </Button>,
         ]}
+        scroll={{ y: 640 }}
         search={{
           labelWidth: 'auto',
           optionRender: ({ searchText }: any, { form }: any, dom: any) => {

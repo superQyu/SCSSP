@@ -1,11 +1,23 @@
 import { OutletLayoutRouter } from 'components';
 import { lazy, Suspense } from 'react';
-
 import { Alert, Spin, Empty } from 'antd';
 import type { MenuItem } from 'components';
 import ErrorPage from '@/pages/error-page';
 
 export const modules = import.meta.glob('../pages/**/*.tsx');
+
+const Loading = () => (
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '50vh', // 视图高度
+    }}
+  >
+    <Spin size="large" />
+  </div>
+);
 
 function pathToLazyComponent(Ele: string) {
   const path = modules[`../${Ele}`] as any;
@@ -24,7 +36,7 @@ function pathToLazyComponent(Ele: string) {
   }
   const Components = lazy(() => import(/* @vite-ignore */ `../${Ele}`));
   return (
-    <Suspense fallback={<Spin size="small" />}>
+    <Suspense fallback={<Loading />}>
       <Components />
     </Suspense>
   );
@@ -33,15 +45,14 @@ function pathToLazyComponent(Ele: string) {
 export const filepathToElement: any = (list: MenuItem[]) =>
   list.map((item: MenuItem) => {
     if (item.children?.length) {
-      let children = [...filepathToElement(item.children)];
       return {
-        path: `${item.path.startsWith('/') ? '' : '/'}${item.path}`,
-        children,
+        path: item.path,
+        children: [...filepathToElement(item.children)],
         element: <OutletLayoutRouter />,
       };
     } else {
       return {
-        path: item.path.startsWith('/') ? item.path.replace('/', '') : item.path,
+        path: item.path,
         element: pathToLazyComponent(item.filepath),
       };
     }

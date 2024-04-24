@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { getToken, setToken } from 'utils';
 import { useAppDispatch, useAppSelector } from 'hooks';
 import { setMenuTab } from 'store';
-import style from './style.module.scss';
+
+import styled from 'styled-components';
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
@@ -12,6 +13,16 @@ interface Item {
   label: string;
   key: string;
 }
+
+const CustomTabs = styled(Tabs)(() => ({
+  '& .ant-tabs-nav': {
+    padding: ' 2px 0',
+    'border-block-start': '1px solid rgba(0, 0, 0, 0.06)',
+    '& .ant-tabs-nav-wrap': {
+      padding: '0 10px',
+    },
+  },
+}));
 
 export default () => {
   const navigate = useNavigate();
@@ -52,7 +63,7 @@ export default () => {
     action: 'add' | 'remove'
   ) => {
     if (action === 'remove') {
-      remove(targetKey);
+      if (menuTab.length > 1) remove(targetKey);
     }
   };
 
@@ -61,16 +72,14 @@ export default () => {
   }, [getToken('BREADCRUMBS')]);
 
   return (
-    <div className={style.menuTab}>
-      <Tabs
-        size="small"
-        type="editable-card"
-        onChange={onChange}
-        activeKey={activeKey}
-        onEdit={onEdit}
-        items={menuTab}
-        hideAdd={true}
-      />
-    </div>
+    <CustomTabs
+      size="small"
+      type="editable-card"
+      onChange={onChange}
+      activeKey={activeKey}
+      onEdit={onEdit}
+      items={menuTab}
+      hideAdd={true}
+    />
   );
 };

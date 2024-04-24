@@ -1,8 +1,11 @@
-import { StarTwoTone, StopTwoTone } from '@ant-design/icons';
+import { UserOutlined, StarTwoTone, StopTwoTone } from '@ant-design/icons';
 import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
-import { message, Tag } from 'antd';
+import { message, Avatar, Tag } from 'antd';
 
 import { IconSelect, IconShow } from 'ui';
+import DictSelect from '@/components/DictSelect';
+import DictText from '@/components/DictSelect/DictText';
+
 type objJson = Record<string, any>;
 
 type MenusPropsType = {
@@ -18,6 +21,9 @@ export interface ColumnsParamsProps extends objJson {
   isDelete: '0' | '1';
 }
 
+const url =
+  'https://img1.baidu.com/it/u=1377073336,1053961489&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500';
+
 export default ({ server }: MenusPropsType) => {
   const { menus: M } = server as objJson;
 
@@ -29,14 +35,18 @@ export default ({ server }: MenusPropsType) => {
       editable: false,
       hideInSearch: true,
       sorter: true,
-      // fixed: 'left',
+      fixed: 'left',
     },
     {
-      width: 80,
+      width: 60,
       hideInSearch: true,
       title: '头像',
       editable: false,
-      dataIndex: 'avatar',
+      dataIndex: 'passportPhoto',
+      render: (_, record) => (
+        <Avatar icon={<UserOutlined />} src={<img src={url} alt={record.name} />} />
+      ),
+      // renderFormItem: () => <IconSelect model="simple" />,
     },
     {
       title: '姓名',
@@ -45,12 +55,15 @@ export default ({ server }: MenusPropsType) => {
       ellipsis: true,
     },
     {
-      width: 60,
+      width: 120,
       hideInSearch: true,
       title: '性别',
       dataIndex: 'gender',
+      // type='text'
+      render: (_, record) => <DictText value={record.gender} dictKey={`pm_gender`} />,
     },
     {
+      width: 160,
       hideInSearch: true,
       editable: false,
       title: '身份证号',
@@ -60,28 +73,24 @@ export default ({ server }: MenusPropsType) => {
       width: 80,
       hideInSearch: true,
       title: '民族',
-      ellipsis:true,
+      ellipsis: true,
       dataIndex: 'nationality',
     },
     {
-      width: 220,
       hideInSearch: true,
       title: '出生日期',
       dataIndex: 'birthday',
     },
     {
-      width: 120,
       title: '电话号码',
       dataIndex: 'phone',
     },
     {
       title: '家庭住址',
-      width: 220,
       key: 'address',
     },
     {
       hideInSearch: true,
-      width: 220,
       title: '进场时间',
       dataIndex: 'name',
     },
@@ -92,31 +101,26 @@ export default ({ server }: MenusPropsType) => {
     },
     {
       hideInSearch: true,
-      width: 120,
       title: '劳务工种',
       dataIndex: 'workType',
     },
     {
       hideInSearch: true,
-      width: 220,
       title: '班组名',
       dataIndex: 'name',
     },
     {
       hideInSearch: true,
-      width: 100,
       title: '是否班组长',
       dataIndex: 'name',
     },
     {
       hideInSearch: true,
-      width: 220,
       title: '计价方式',
       dataIndex: 'name',
     },
     {
       hideInSearch: true,
-      width: 220,
       title: '合同签订日',
       dataIndex: 'name',
     },
@@ -130,7 +134,7 @@ export default ({ server }: MenusPropsType) => {
       width: 140,
       valueType: 'option',
       key: 'option',
-      // fixed: 'right',
+      fixed: 'right',
       render: (_text, record, _, action) => [
         <a
           key="editable"
@@ -140,26 +144,14 @@ export default ({ server }: MenusPropsType) => {
         >
           编辑
         </a>,
-        <TableDropdown
-          key="actionGroup"
-          onSelect={(key) => {
-            if (key === 'delete') {
-              try {
-                M.deleteMenus({ ids: record.id })
-                  .then(() => {
-                    message.success('操作成功!');
-                    action?.reload();
-                  })
-                  .catch(() => {});
-              } catch (errorInfo) {}
-            }
+        <a
+          key="delete"
+          onClick={() => {
+            // action?.startEditable?.(record.id);
           }}
-          menus={[
-            { key: 'delete', name: '删除' },
-            { key: 'detail', name: '详情' },
-            { key: 'copy', name: '复制' },
-          ]}
-        />,
+        >
+          删除
+        </a>,
       ],
     },
   ];

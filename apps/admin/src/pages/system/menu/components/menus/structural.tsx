@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Radio, Button, InputNumber, Input, message, Modal, TreeSelect } from 'antd';
+import { Radio, Button, InputNumber, message, Modal, TreeSelect } from 'antd';
 import type { GetProp, TreeSelectProps } from 'antd';
 
 import { ExclamationCircleTwoTone } from '@ant-design/icons';
@@ -11,7 +11,7 @@ import { AdForm, FormColumnsTypes } from 'components';
 import { url2key, RebuildTree, flattenArray, sortMenu } from 'utils';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-import DictSelect from '@/components/DictSelect';
+// import DictSelect from '@/components/DictSelect';
 
 interface Props {
   /** 控制 Modal 是否显示 */
@@ -28,31 +28,27 @@ type MenusType = {
 
 type DefaultOptionType = GetProp<TreeSelectProps, 'treeData'>[number];
 
-const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
+const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) => {
   const { server, config } = useBasicConfiguration();
 
   //  api server
   const { user: U, menus: M, sites: S } = server;
   const { PLATFORMID } = config as Record<string, any>;
+  const _DefParams = {
+    status: '0',
+    parentId: `${PLATFORMID}`,
+    type: '1',
+  };
   // 字段提示
 
+  // const [formKey,setFormKey] = useState<string>('新建菜单');
   const formRef = useRef<FormInstance>(null);
   const [title] = useState<string>('新建菜单');
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(openModal);
   const [treeData, setTreeData] = useState<Omit<DefaultOptionType, 'label'>[]>([]);
-  const [menus, setMenus] = useState<MenusType>({
-    name: '',
-    icon: '',
-    path: '',
-    component: '',
-    sort: '',
-    status: '0',
-    description: '',
-    parentId: `${PLATFORMID}`,
-    type: '1',
-    permission: '',
-  });
+  const [menus, setMenus] = useState<MenusType>({ ..._DefParams });
+  const [isCreate, setIsCreate] = useState<boolean>(false);
 
   const ItemTooltip = (tips: string | Array<string>) => {
     if (typeof tips === 'string') tips = [tips];
@@ -73,17 +69,16 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
       return;
     }
     formRef.current?.resetFields();
-    // setMenus({...menus,type:'1'})
   };
   const handleOk = async () => {
-    const values: MenusType = await formRef.current?.validateFields();
-    console.log('values',values );
     try {
       const values: MenusType = await formRef.current?.validateFields();
-      console.log('values',values );
       setLoading(true);
 
-      M.createMenu(JSON.parse(JSON.stringify({ ...values, siteKey: url2key() })))
+      let params = values;
+      if (menus.id) params = { ...menus, ...values };
+
+      M[isCreate ? 'createMenu' : 'updateMenu'](JSON.parse(JSON.stringify({ ...params })))
         .then(() => {
           message.success('操作成功！');
           setLoading(false);
@@ -108,8 +103,7 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
 
   const handlerChange = (key: string, val: any) => setMenus({ ...menus, [key]: val });
   const validatorPath = async (_: any, value: any) => {
-    const { type } = menus;
-    if (type == 'menu' && value && value.indexOf('/') === 0) {
+    if (value && value.indexOf('/') === 0) {
       return Promise.reject('不允许"/"开头');
     }
 
@@ -142,28 +136,29 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
 
   useEffect(() => {
     setOpen(openModal);
-    if (openModal) onLoadTreeData();
+    if (openModal) {
+      if (!Object.entries(subForm).length) {
+        setMenus({ ..._DefParams });
+      } else {
+        setMenus({ ..._DefParams, ...subForm });
+      }
+      onLoadTreeData();
+    } else {
+      formRef.current?.resetFields();
+    }
   }, [openModal]);
+
+  useEffect(() => {
+    setIsCreate(!(menus.id || menus.id === 0));
+  }, [menus]);
+
+  useEffect(() => {}, [subForm]);
 
   useEffect(() => {
     formRef.current?.resetFields(['component']);
   }, [menus.type]);
 
   const columns: FormColumnsTypes[] = [
-    {
-      label: '测试字典',
-      dataIndex: 'dir',
-      formItem: (
-        <DictSelect
-          dictKey={'is_conformity'}
-          dropdownExtend={true}
-          onChange={(val) => console.log(val)}
-          onLoadingStatus={(v: boolean) => console.log(v)}
-          afterAddItem={(val) => console.log(val)}
-          
-        />
-      ),
-    },
     {
       label: '上级菜单',
       dataIndex: 'parentId',
@@ -190,7 +185,7 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
     {
       label: '菜单类型',
       dataIndex: 'type',
-      defaultValue:menus.type,
+      defaultValue: menus.type,
       formItem: (
         <Radio.Group onChange={(e) => handlerChange('type', e.target.value)} buttonStyle="solid">
           <Radio.Button value="1">目录</Radio.Button>
@@ -287,11 +282,12 @@ const AddMenus: React.FC<Props> = ({ openModal, onStateChange }: Props) => {
           重置
         </Button>,
         <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
-          提交
+          {isCreate ? '提交' : '更新'}
         </Button>,
       ]}
     >
       <AdForm
+        key={`${JSON.stringify(subForm)}`}
         loadingTitle="提交中..."
         formRef={formRef}
         initialValues={{ ...menus }}

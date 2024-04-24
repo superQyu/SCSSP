@@ -24,7 +24,7 @@ const menus: ApiItem[] = [
   },
   {
     key: 'deleteMenus',
-    url: `${ADMIN_API}/admin-api/system/menu/delete`,
+    url: `${ADMIN_API}/system/menu/delete`,
     type: 'DELETE',
     name: '删除菜单',
     description: '删除菜单',

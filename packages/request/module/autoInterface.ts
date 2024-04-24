@@ -16,8 +16,9 @@ interface Item {
   type: string;
 }
 interface verifyedParam {
-  params: jsonObject;
+  params: jsonObject | string;
   config: jsonObject;
+  formData?: any
 }
 interface IHttpFn<T = any> {
   (): Promise<T>;
@@ -69,72 +70,94 @@ class AutoInterface {
    */
   mountedMethod(item: jsonObject, path: string) {
     const _this = this;
-    return (args: jsonObject = {}) => {
+    return (args: any = {}) => {
       /** 参数验证开始 */
-      if (!isJSON(args)) return _this.errorMethod();
-      let verifyed: verifyedParam = { params: {}, config: {} },
-        unPassed: jsonObject[] = [],
-        required: jsonObject[] = [];
+      if (isJSON(args) || args instanceof FormData) {
 
-      const { key, url, type, params = [] } = item;
-      for (let i = 0, j = params.length; i < j; i++) {
-        // 校验主参数
-        const {
-          key: k,
-          targetKey: tk,
-          valueAttrs = {},
-          location,
-          cn,
-          description: desc,
-        }: jsonObject = params[i];
-        // 校验key 属性
-        const { mandatorykey, required: reqd, value: dv } = valueAttrs;
-        let rdv: string = args[k] || dv || '';
+        let verifyed: any = { params: {}, config: {} },
+          unPassed: jsonObject[] = [],
+          required: jsonObject[] = [];
 
-        if (!args.hasOwnProperty(k) && !mandatorykey && location && location != 'header') {
-          unPassed = [...unPassed, params[i]];
-        } else {
-          const rtk: string = tk || k;
+        const isFormData = args instanceof FormData;
+        const { key, url, type, params = [] } = item;
 
-          if (reqd && rdv == '') {
-            required = [...required, params[i]];
-            continue;
+        for (let i = 0, j = params.length; i < j; i++) {
+          // 校验主参数
+          const {
+            key: k,
+            targetKey: tk,
+            valueAttrs = {},
+            location,
+            cn,
+            description: desc,
+          }: jsonObject = params[i];
+          // 校验key 属性
+          const { mandatorykey, required: reqd, value: dv } = valueAttrs;
+          let rdv: string | number = args[k] || dv || '';
+          if (args[k] === 0) rdv = 0;
+
+          if (!args.hasOwnProperty(k) && !mandatorykey && location && location != 'header') {
+            unPassed = [...unPassed, params[i]];
+          } else {
+            const rtk: string = tk || k;
+
+            if (reqd && rdv == '') {
+              required = [...required, params[i]];
+              continue;
+            }
+            if (location === 'header') {
+              if (rtk.toLocaleLowerCase() === 'Authorization'.toLocaleLowerCase())
+                rdv = `Bearer ${rdv || getToken(_this.platformKey)}`;
+              verifyed.config[rtk] = rdv;
+            } else if (location === 'query' || !location) {
+              if (rdv != '' || `${rdv}` === '0') verifyed.params[rtk] = rdv;
+              if ((rdv == '' || `${rdv}` === '0') && mandatorykey) verifyed.params[rtk] = rdv;
+            }
           }
-          if (location === 'header') {
-            if (rtk.toLocaleLowerCase() === 'Authorization'.toLocaleLowerCase())
-              rdv = `Bearer ${rdv || getToken(_this.platformKey)}`;
-            verifyed.config[rtk] = rdv;
-          } else if (location === 'query' || !location) {
-            if (rdv != '') verifyed.params[rtk] = rdv;
-            if (rdv == '' && mandatorykey) verifyed.params[rtk] = rdv;
-          }
+
         }
+        if (required.length > 0) {
+          return _this.errorMethod(
+            `文件路径:${path}；${required
+              .map((i) => {
+                return `${i.key}(${i.cn || '无描述'}) 为必填项`;
+              })
+              .join('、')}，请检查！！！`
+          );
+        }
+        if (unPassed.length > 0) {
+          return _this.errorMethod(
+            `文件路径:${path}；缺少字段： ${unPassed
+              .map((i) => {
+                return `${i.key}(${i.cn || '无描述'})`;
+              })
+              .join('、')}，请检查！！！`
+          );
+        };
+        /** 参数验证结束 */
+        if (isFormData) { verifyed['params'] = args };
 
-      }
-      if (required.length > 0)
-        return _this.errorMethod(
-          `文件路径:${path}；${required
-            .map((i) => {
-              return `${i.key}(${i.cn || '无描述'}) 为必填项`;
-            })
-            .join('、')}，请检查！！！`
-        );
-      if (unPassed.length > 0)
-        return _this.errorMethod(
-          `文件路径:${path}；缺少字段： ${unPassed
-            .map((i) => {
-              return `${i.key}(${i.cn || '无描述'})`;
-            })
-            .join('、')}，请检查！！！`
-        );
-      /** 参数验证结束 */
+        // service
+        const xhrType: Method = type.toLowerCase();
+        const service: jsonObject = fetchService;
+        if (service.hasOwnProperty(xhrType)) {
+          let headerParams = {}
+          if (['post', 'put', 'patch'].indexOf(xhrType) != -1) {
+            if (!isFormData) {
+              verifyed.params = JSON.stringify(verifyed.params);
+            } else {
+              headerParams = {
+                headers: {},
+              }
+            };
+          };
+          return service[xhrType](url, verifyed.params, verifyed.config, _this.cusParmas, headerParams);
+        };
+        return _this.errorMethod(`请填写正确的请求类型!`);
 
-      // service
-      const xhrType: Method = type.toLowerCase();
-      const service: jsonObject = fetchService;
-      if (service.hasOwnProperty(xhrType))
-        return service[xhrType](url, verifyed.params, verifyed.config, _this.cusParmas);
-      return _this.errorMethod(`请填写正确的请求类型!`);
+      } else {
+        return _this.errorMethod();
+      };
     };
   }
   /**

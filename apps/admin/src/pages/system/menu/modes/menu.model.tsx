@@ -44,6 +44,12 @@ export default (props: MenusPropsType) => {
       },
     },
     {
+      hideInSearch: true,
+      title: '地址',
+      editable: false,
+      dataIndex: 'path',
+    },
+    {
       width: 60,
       hideInSearch: true,
       title: 'ID编号',
@@ -78,7 +84,7 @@ export default (props: MenusPropsType) => {
     {
       hideInSearch: true,
       width: 140,
-      // editable: false,
+      editable: false,
       title: '权限标识',
       dataIndex: 'permission',
     },
@@ -132,43 +138,7 @@ export default (props: MenusPropsType) => {
           },
         ],
       },
-    },
-    {
-      title: '操作',
-      width: 140,
-      valueType: 'option',
-      key: 'option',
-      render: (_text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.id);
-          }}
-        >
-          编辑
-        </a>,
-        <TableDropdown
-          key="actionGroup"
-          onSelect={(key) => {
-            if (key === 'delete') {
-              try {
-                M.deleteMenus({ id: record.id })
-                  .then(() => {
-                    message.success('操作成功!');
-                    action?.reload();
-                  })
-                  .catch(() => {});
-              } catch (errorInfo) {}
-            }
-          }}
-          menus={[
-            { key: 'delete', name: '删除' },
-            { key: 'detail', name: '详情' },
-            { key: 'copy', name: '复制' },
-          ]}
-        />,
-      ],
-    },
+    }
   ];
 
   return columns;

@@ -9,6 +9,7 @@ export interface MenuItem {
   icon?: React.ReactNode;
   children?: MenuItem[];
   routes?: MenuItem[];
+  name?: string;
   // element?: { element: () => Promise<{ [key: string]: any }> };
 }
 
