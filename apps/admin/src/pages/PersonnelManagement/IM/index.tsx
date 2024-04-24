@@ -93,12 +93,9 @@ export default () => {
   return (
     <>
       <Alert message="表格字典为同步" type="warning" showIcon />
-      <Alert message="fecth 中添加FormData数据" type="warning" showIcon />
       <ProTable<TableListItem>
         request={async (params = {}) => {
-          console.log(params);
           const res = await P.personnelInfoList({ ...params });
-          console.log(res);
           return {
             ...params,
             data: res.list,
