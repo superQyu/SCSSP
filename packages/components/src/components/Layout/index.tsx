@@ -12,7 +12,6 @@ import {
   type MenuDataItem,
 } from '@ant-design/pro-components';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { route } from './_defaultProps';
 
 import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
 import { useAppDispatch, useAppSelector, KeepAlive, useLocationListen } from 'hooks';
@@ -27,9 +26,12 @@ import { CommonObject } from './layout';
 
 const areaId: string = 'Qy-pro-layout';
 const CustomProLayout = styled(ProLayout)(() => ({
+  height: '100vh',
   '.Qy-pro-layout-prefix-sider-logo>a': {
     'white-space': 'nowrap',
   },
+  '.Qy-pro-layout-prefix-layout-container': { height: '100vh' },
+  '.ant-layout': { height: '100vh' },
 }));
 
 const layout: React.FC<CommonObject> = (props: any) => {
@@ -144,7 +146,7 @@ const layout: React.FC<CommonObject> = (props: any) => {
   return (
     <WaterMark content={props.waterMarkProps || ''}>
       <ProConfigProvider>
-        <div id={areaId} style={{ height: '100vh', overflow: 'auto' }}>
+        <div id={areaId} style={{ height: '100vh', overflow: 'hidden' }}>
           <CustomProLayout
             title="管理平台"
             prefixCls={`${areaId}-prefix`}
@@ -158,11 +160,7 @@ const layout: React.FC<CommonObject> = (props: any) => {
                 colorBgMenuItemSelected: 'rgba(0,0,0,0.08)',
               },
             }}
-            menu={
-              {
-                // collapsedShowGroupTitle: true,
-              }
-            }
+            menu={{}}
             postMenuData={(menus) => filterByMenuData(menus || [], keyWord)}
             avatarProps={{
               size: 'small',

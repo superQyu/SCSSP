@@ -34,6 +34,7 @@ export default ({ children }: any) => {
         });
         // 根据实际开发的项目的路由表提取路由
         const _M = M.filter((item: any) => item.id === PLATFORMID)[0]?.children || [];
+
         const menus = RebuildTree(flattenArray(_M), {
           intercept: (item: { [key: string]: string }) => {
             return {

@@ -40,7 +40,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     name: '',
     code: '',
     sort: null,
-    status: 0,
+    status: '0',
     type: '',
     remark: '',
   });
@@ -114,14 +114,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     {
       label: '状态',
       dataIndex: 'status',
-      formItem: (
-        <DictSelect
-          dictKey={`${COMMON_STATUS}`}
-          initValue={`${menus.status}`}
-          dropdownExtend={false}
-          onChange={(val) => console.log(val)}
-        />
-      ),
+      formItem: <DictSelect dictKey={`${COMMON_STATUS}`} dropdownExtend={false} />,
       formItemProps: {
         rules: [{ required: true, message: '请选中状态' }],
       },

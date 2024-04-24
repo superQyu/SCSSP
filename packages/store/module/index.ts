@@ -2,7 +2,7 @@ import { Provider, TypedUseSelectorHook, useSelector, useDispatch } from 'react-
 
 import { configureStore } from '@reduxjs/toolkit';
 
-import common, { setData, setMenuTab } from './reducers/common';
+import common, { setData, setMenuTab, setDict } from './reducers/common';
 import user, { setMenu, setUserToken, setUserInfor } from './reducers/user';
 import site, { setSiteInfor } from './reducers/site';
 
@@ -16,9 +16,9 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         // Ignore these action types
-        ignoredActions: ['user/setMenu'],
+        ignoredActions: ['common/setDict', 'user/setMenu'],
         // Ignore these paths in the state
-        ignoredPaths: ['user'],
+        ignoredPaths: ['common', 'user'],
       },
     }),
 });
@@ -30,6 +30,6 @@ type AppDispatch = typeof store.dispatch;
 
 export { store, Provider, useSelector, useDispatch };
 
-export { setUserToken, setUserInfor, setMenu, setData, setSiteInfor, setMenuTab };
+export { setUserToken, setUserInfor, setMenu, setData, setSiteInfor, setMenuTab, setDict };
 
 export type { RootState, AppDispatch, TypedUseSelectorHook };

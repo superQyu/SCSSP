@@ -108,13 +108,6 @@ export default (_: MenusPropsType) => {
             },
           },
         } as ParamsType;
-        if (record) {
-          p = {
-            ...p,
-            initValue: `${record?.status}`,
-            onChange: (val: any) => (record.status = val),
-          };
-        }
         return <DictSelect {...p} />;
       },
       render: (_, record) => (
