@@ -1,78 +1,104 @@
 import { createElement, cloneElement, useRef, useState, useEffect } from 'react';
-import { Button, message } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
 
-import { type ActionType } from '@ant-design/pro-components';
-import { ProTable } from 'components';
-import { TOKEN, buildTree, sortMenu } from 'utils';
+import { ProTable } from '@ant-design/pro-components';
+import type { ProColumns, ActionType } from '@ant-design/pro-components';
+import { Button, message, DatePicker, Space, Table, Alert } from 'antd';
 
-// import AddMenus from './components/menus/structural';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 
-// 站点表格模型
-import type { ModesApi } from './modes/model';
-import siteModel, { type ColumnsParamsProps } from './modes/menu.model';
+import { useAppSelector } from 'hooks';
+
+const { RangePicker } = DatePicker;
+
+const valueEnum = {
+  0: 'close',
+  1: 'running',
+  2: 'online',
+  3: 'error',
+};
+
+const ProcessMap = {
+  close: 'normal',
+  running: 'active',
+  online: 'success',
+  error: 'exception',
+} as const;
+
+export type TableListItem = {
+  key: number;
+  name: string;
+  progress: number;
+  containers: number;
+  callNumber: number;
+  creator: string;
+  status: string;
+  createdAt: number;
+  memo: string;
+};
+const tableListDataSource: TableListItem[] = [];
+
+const creators = ['付小小', '曲丽丽', '林东东', '陈帅帅', '兼某某'];
+
+for (let i = 0; i < 50; i += 1) {
+  tableListDataSource.push({
+    key: i,
+    name: 'AppName-' + i,
+    containers: Math.floor(Math.random() * 20),
+    callNumber: Math.floor(Math.random() * 2000),
+    progress: Math.ceil(Math.random() * 100) + 1,
+    creator: creators[Math.floor(Math.random() * creators.length)],
+    status: valueEnum[((Math.floor(Math.random() * 10) % 4) + '') as '0'],
+    createdAt: Date.now() - Math.floor(Math.random() * 100000),
+    memo: i % 2 === 1 ? '很长很长很长很长很长很长很长的文字要展示但是要留下尾巴' : '简短备注文案',
+  });
+}
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
+// 人员管理表格模型
+import type { ModesApi } from './modes/model';
+import PMmodel, { type ColumnsParamsProps } from './modes/PM.model';
+
 export default () => {
-  const { server } = useBasicConfiguration();
+  const {
+    common: { dictionary },
+  } = useAppSelector((state) => state) as { common: { dictionary: Record<string, any> } };
   const actionRef = useRef<ActionType>();
-
-  const [subForm, _] = useState<Record<string, any>>({});
-  const [formModal, setFormModal] = useState<boolean>(false);
-
+  const { server } = useBasicConfiguration();
   //  api server
   const { PMIM: P, menus: M } = server;
 
-  // 修改状态
-  const handleModalStateChange = async (state: boolean) => {
-    setFormModal(state);
-    await actionRef.current?.reload();
-  };
-
   // 初始化 表格列表项
-  const initColumns = siteModel({ server });
+  const initColumns = PMmodel({ server });
 
   // 删除行
   const onDelete = async (id: number) => {
-    console.log(id);
-    // try {
-    //   await M.deleteMenus({ ids: id })
-    //     .then(async () => {
-    //       message.success('操作成功!');
-    //       await actionRef.current?.reload();
-    //     })
-    //     .catch(() => {});
-    // } catch (errorInfo) {}
+    const res = await M.deleteMenus({ ids: id }).then(async () => {
+      message.success('操作成功!');
+      await actionRef.current?.reload();
+    });
+    return res;
   };
 
-  // 重写save方法 阻止提交失败也退出编辑状态
-  const onSave = async (...args: any[]) => {
-    const [config, id, n, , ,] = args;
-    // 更新行数据
-    const res = await M.updateMenu(JSON.parse(JSON.stringify({ ...n })) as ColumnsParamsProps)
-      .then(async () => {
-        message.success('信息更新成功！');
-        await actionRef.current?.reload();
-      })
-      .catch(() => false);
-    if (res === false) {
-      message.error('信息更新失败，请重新提交！');
-      return false;
-    }
-    // 保存时解除编辑模式
-    config.cancelEditable(id);
-    return true;
+  const onSave = async (params: any) => {
+    const res = await M.updateMenu(
+      JSON.parse(JSON.stringify({ ...params })) as ColumnsParamsProps
+    ).then(async () => {
+      message.success('信息更新成功！');
+      await actionRef.current?.reload();
+    });
+    return res;
   };
-
-  useEffect(() => {}, []);
 
   return (
     <>
-      <ProTable
-        headerTitle="人员管理"
+      <Alert message="表格字典为同步" type="warning" showIcon />
+      <Alert message="fecth 中添加FormData数据" type="warning" showIcon />
+      <ProTable<TableListItem>
         request={async (params = {}) => {
+          console.log(params);
           const res = await P.personnelInfoList({ ...params });
+          console.log(res);
           return {
             ...params,
             data: res.list,
@@ -80,54 +106,57 @@ export default () => {
           } as unknown as ModesApi.pageItemType;
         }}
         columns={initColumns}
-        onSubmit={async (params: {}) => {
-          console.log(params);
-        }}
-        actionRef={actionRef}
-        // scroll={{ x: 900 }}
+        scroll={{ x: 1900, y: 640 }}
+        onSubmit={async (params: {}) => {}}
         pagination={{
-          pageSize: 20,
+          pageSize: 2,
+        }}
+        rowKey="id"
+        headerTitle="人员管理"
+        columnsState={{
+          persistenceKey: 'pro-table-pm-im',
+          persistenceType: 'localStorage',
+          onChange(_: any) {},
+        }}
+        form={{
+          syncToUrl: (values: any, _: string) => ({ ...values }),
+        }}
+        editable={{ onDelete, onSave }}
+        style={{
+          // 设置表格的样式，这里设置高度为自适应
+          height: 'auto',
+          // 或者不设置高度，让它根据内容自然流动
+          // height: 'unset',
+        }}
+        search={{
+          labelWidth: 'auto',
+          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+            return [
+              dom[0],
+              <Button
+                type="primary"
+                key="sub"
+                icon={createElement(SearchOutlined)}
+                onClick={() => form?.submit()}
+              >
+                {searchText}
+              </Button>,
+            ];
+          },
         }}
         toolBarRender={() => [
           <Button
             key="button"
             icon={createElement(PlusOutlined)}
-            onClick={() => setFormModal(true)}
+            onClick={() => {
+              console.log(dictionary);
+            }}
             type="primary"
           >
             新建
           </Button>,
         ]}
-        form={{
-          // 请求之前参数格式化
-          syncToUrl: (values: any, _: string) => ({ ...values }),
-        }}
-        editable={{ onDelete, onSave }}
-        // editable={{
-        //   type: 'multiple',
-        //   onSave,
-        //   onDelete,
-        //   actionRender: (...args: any[]) => {
-        //     const [, config, defaultDom] = args;
-        //     return [
-        //       cloneElement(defaultDom.save as React.ReactElement, {
-        //         onSave: onSave.bind(null, config),
-        //       }),
-        //       defaultDom.cancel,
-        //       defaultDom.delete,
-        //     ];
-        //   },
-        // }}
-        columnsState={{
-          persistenceKey: 'pro-table-singe-demos',
-          persistenceType: 'localStorage',
-          onChange(_: any) {},
-        }}
-        search={{
-          labelWidth: 'auto',
-        }}
-      ></ProTable>
-      {/* <AddMenus subForm={subForm} openModal={formModal} onStateChange={handleModalStateChange} /> */}
+      />
     </>
   );
 };

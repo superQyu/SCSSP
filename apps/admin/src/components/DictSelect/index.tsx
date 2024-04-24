@@ -5,10 +5,14 @@ import React, {
   useState,
   useRef,
   useEffect,
+  useContext,
 } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Divider, Input, Select, Space, Button, Spin, Empty } from 'antd';
 import type { InputRef } from 'antd';
+
+import { AuthContext, useAppDispatch, useAppSelector } from 'hooks';
+
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 interface Props {
@@ -20,12 +24,11 @@ interface Props {
   afterAddItem?: (state: any) => void;
   /** 字典key */
   dictkey?: string;
-  /** 初始化选项 */
-  initValue?: any;
   /** 格式化下拉菜单样式 */
   valueEnum?: Record<string, any>;
   /** 绑定tree dom */
   ref?: any;
+  type?: string;
   [key: string]: any;
 }
 
@@ -46,7 +49,7 @@ const DictSelect: React.FC<Props> = forwardRef(
       afterAddItem,
       onChange,
       valueEnum,
-      initValue,
+      type,
     }: Props,
     ref
   ) => {
@@ -54,7 +57,6 @@ const DictSelect: React.FC<Props> = forwardRef(
     //  api server
     const { basic: B } = server;
 
-    const [defaultValue, setDefaultValue] = useState(null);
     const [items, setItems] = useState<SelectOption[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [name, setName] = useState('');
@@ -73,6 +75,7 @@ const DictSelect: React.FC<Props> = forwardRef(
       const res = await fetchRemoteData(dictKey);
       setItems(res.list as SelectOption[]);
       setLoading(false);
+      // }
     };
 
     const onFocusSelect = () => {
@@ -171,14 +174,13 @@ const DictSelect: React.FC<Props> = forwardRef(
           onChange={onChange}
           options={items}
           optionRender={({ value, label }) => {
-            if (valueEnum && value && valueEnum[value].text) return valueEnum[value].text;
+            let v = `${value}`;
+            if (valueEnum && typeof v != 'undefined' && valueEnum[v].text) return valueEnum[v].text;
             return label;
           }}
-          labelRender={(record) => {
-            const { value, label } = record;
-            if (valueEnum && value && valueEnum[value].text) {
-              return valueEnum[value].text;
-            }
+          labelRender={({ value, label }) => {
+            let v = `${value}`;
+            if (valueEnum && typeof v != 'undefined' && valueEnum[v].text) return valueEnum[v].text;
             return label;
           }}
         />

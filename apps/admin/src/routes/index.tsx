@@ -8,7 +8,7 @@ import Layout from '@/layout';
 // 防止路由丢失
 const PreventRouteLoss = () => <Navigate to={useLocation().pathname} />;
 
-export const defaultRoutes: any = [
+const defaultRoutes: any = [
   {
     path: '/',
     element: <Layout />,
@@ -23,3 +23,6 @@ export const defaultRoutes: any = [
     element: <Login />,
   },
 ];
+
+
+export { defaultRoutes };

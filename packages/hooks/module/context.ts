@@ -1,5 +1,5 @@
 import React, { Dispatch } from 'react';
-import { setUserToken, setUserInfor, setSiteInfor } from 'store';
+import { setUserToken, setUserInfor, setSiteInfor, setDict } from 'store';
 
 import { setToken, getStorage, removeToken, removeStorage, setStorage, sleep, TOKEN } from 'utils';
 
@@ -9,6 +9,7 @@ interface AuthContextType {
   saveSiteInfor: (dispatch: Dispatch<any>, values: any) => Promise<unknown>;
   mockSignIn?: (dispatch: Dispatch<any>, values: string) => Promise<unknown>;
   signOut: (dispatch: Dispatch<any>) => Promise<unknown>;
+  saveDicts: (dispatch: Dispatch<any>, values: any) => Promise<unknown>;
 }
 // 用户登录
 export const signIn = async (dispatch: any, values: string) => {
@@ -22,6 +23,10 @@ export const saveUserInfor = async (dispatch: any, values: any) => {
 // 保存站点信息
 export const saveSiteInfor = async (dispatch: any, values: any) => {
   dispatch(setSiteInfor(values));
+};
+// 保存字典
+export const saveDicts = async (dispatch: any, values: any) => {
+  dispatch(setDict(values));
 };
 // 基础配置
 const BaseConf: object = { avatar: '', logo: '' };
@@ -51,4 +56,5 @@ export const AuthContext = React.createContext<AuthContextType>({
   saveSiteInfor, //  保存站点信息
   mockSignIn, //模拟登录
   signOut, // 退出
+  saveDicts,// 保存字典数据
 });
