@@ -1,5 +1,6 @@
 import { FormColumnsTypes } from 'components';
-import { DatePicker, Button } from 'antd';
+import { useState } from 'react';
+import { DatePicker, Button, Form } from 'antd';
 import DictSelect from '@/components/DictSelect';
 import dayjs from 'dayjs';
 export default () => {
@@ -7,46 +8,58 @@ export default () => {
     {
       label: '姓名',
       dataIndex: 'name',
-      // formItemProps: {
-      //   rules: [{ required: true, message: '请输入姓名' }],
-      // },
+      formItemProps: {
+        rules: [{ required: true, message: '请输入姓名' }],
+      },
       colNum: 8,
     },
     {
       label: '性别',
       dataIndex: 'gender',
       formItem: <DictSelect dictKey={'system_user_sex'} />,
-      // formItemProps: {
-      //   rules: [{ required: true, message: '请选择性别' }],
-      // },
+      formItemProps: {
+        rules: [{ required: true, message: '请选择性别' }],
+      },
       colNum: 8,
     },
     {
       label: '联系电话',
       dataIndex: 'phone',
-      // formItemProps: {
-      //   rules: [{ required: true, message: '请输入联系电话' }],
-      // },
+      formItemProps: {
+        rules: [
+          { required: true, message: '请输入联系电话' },
+          {
+            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+            message: '请输入正确的联系电话',
+          },
+        ],
+      },
       colNum: 8,
     },
     {
       label: '电子邮件',
       dataIndex: 'email',
-
+      formItemProps: {
+        rules: [
+          {
+            type: 'email',
+            message: '请输入正确的电子邮件',
+          },
+        ],
+      },
       colNum: 8,
     },
-
-    {
-      label: '账户类型',
-      dataIndex: 'accountType',
-
-      colNum: 8,
-    },
-    {
-      label: '上级账号',
-      dataIndex: 'upAccount',
-      colNum: 8,
-    },
+    // {
+    //   label: '账户类型',
+    //   dataIndex: 'accountType',
+    //   formItem: <DictSelect dictKey={'pm_account_type'} />,
+    //   colNum: 8,
+    // },
+    // {
+    //   label: '上级账号',
+    //   dataIndex: 'upAccount',
+    //   colNum: 8,
+    // },
     {
       label: '出生日期',
       dataIndex: 'birthday',
@@ -62,6 +75,14 @@ export default () => {
     {
       label: '年龄',
       dataIndex: 'age',
+      formItemProps: {
+        rules: [
+          {
+            pattern: /^[1-9][0-9]$/,
+            message: '请输入正确的年龄',
+          },
+        ],
+      },
       colNum: 8,
     },
     {
@@ -96,9 +117,15 @@ export default () => {
     {
       label: '身份证号',
       dataIndex: 'identityCard',
-      // formItemProps: {
-      //   rules: [{ required: true, message: '请输入身份证号' }],
-      // },
+      formItemProps: {
+        rules: [
+          { required: true, message: '请输入身份证号' },
+          {
+            pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+            message: '请输入正确的联系电话',
+          },
+        ],
+      },
       colNum: 8,
     },
     {
@@ -126,17 +153,17 @@ export default () => {
     {
       label: '公司名称',
       dataIndex: 'companyName',
-      // formItemProps: {
-      //   rules: [{ required: true, message: '请输入公司名称' }],
-      // },
+      formItemProps: {
+        rules: [{ required: true, message: '请输入公司名称' }],
+      },
       colNum: 8,
     },
     {
       label: '单位信用代码',
       dataIndex: 'creditCode',
-      // formItemProps: {
-      //   rules: [{ required: true, message: '请输入单位信用代码' }],
-      // },
+      formItemProps: {
+        rules: [{ required: true, message: '请输入单位信用代码' }],
+      },
       colNum: 8,
     },
     {
@@ -158,12 +185,13 @@ export default () => {
     {
       label: '在岗情况',
       dataIndex: 'jobState',
+      formItem: <DictSelect dictKey={'pm_job_state'} />,
       colNum: 8,
     },
     {
       label: '是否启用',
       dataIndex: 'enabled',
-      formItem: <DictSelect dictKey={'infra_boolean_string'} />,
+      formItem: <DictSelect dictKey={'pm_enabled'} />,
       colNum: 8,
     },
     {
@@ -220,7 +248,7 @@ export default () => {
     {
       label: '是否有重大病史',
       dataIndex: 'hasMajorMedicalHistory',
-      formItem: <DictSelect dictKey={'infra_boolean_string'} />,
+      formItem: <DictSelect dictKey={'pm_has_major_medical_history'} />,
       colNum: 8,
     },
     {
@@ -231,10 +259,21 @@ export default () => {
     {
       label: '紧急联系方式',
       dataIndex: 'emergencyContactMethod',
+      formItemProps: {
+        rules: [
+          {
+            pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+            message: '请输入正确的紧急联系方式',
+          },
+        ],
+      },
       colNum: 8,
     },
   ];
 
+  const entryValues = useState({
+    isTeamLeader: '1',
+  });
   const entryColumns: FormColumnsTypes[] = [
     {
       label: '是否班组长',
@@ -248,11 +287,21 @@ export default () => {
     {
       label: '班组名称',
       dataIndex: 'teamName',
+      formItemProps: {
+        rules: [{ required: true, message: '请选择班组名称' }],
+      },
+      formItem: (
+        <DictSelect
+          dictKey={'pm_is_team_leader'}
+          dropdownExtend={entryValues.isTeamLeader == '1'}
+        />
+      ),
       colNum: 8,
     },
     {
       label: '分包单位',
       dataIndex: 'subcontractorId',
+      formItem: <DictSelect dictKey={'subcontractor_type'} />,
       colNum: 8,
     },
     {
@@ -282,6 +331,14 @@ export default () => {
     {
       label: '每日工资',
       dataIndex: 'dailyWage',
+      formItemProps: {
+        rules: [
+          {
+            pattern: /^[0-9]+([.]{1}[0-9]{1,2})?$/,
+            message: '请输入正确的每日工资',
+          },
+        ],
+      },
       colNum: 8,
     },
     {
@@ -382,19 +439,16 @@ export default () => {
     {
       label: '证书种类',
       dataIndex: 'certificateType',
-      // formItem: <Select options={functionOptions} />,
       colNum: 12,
     },
     {
       label: '证书类型',
       dataIndex: 'certificateCategory',
-      // formItem: <Select options={functionOptions} />,
       colNum: 12,
     },
     {
       label: '证书等级',
       dataIndex: 'certificateLevel',
-      // formItem: <Select options={functionOptions} />,
       colNum: 12,
     },
     {
