@@ -12,6 +12,7 @@ function App() {
   const {
     user: { menu },
   } = useAppSelector((state) => state) as { user: { menu: any; userInfor: object } };
+  
   const cloneDefaultRoutes = cloneDeep(defaultRoutes);
 
   cloneDefaultRoutes[0].children = [...filepathToElement(menu), ...cloneDefaultRoutes[0].children];

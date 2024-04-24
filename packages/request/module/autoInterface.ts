@@ -74,7 +74,7 @@ class AutoInterface {
       /** 参数验证开始 */
       if (isJSON(args) || args instanceof FormData) {
 
-        let verifyed: verifyedParam = { params: {}, config: {} },
+        let verifyed: any = { params: {}, config: {} },
           unPassed: jsonObject[] = [],
           required: jsonObject[] = [];
 

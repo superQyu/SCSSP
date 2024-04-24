@@ -103,8 +103,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
 
   const handlerChange = (key: string, val: any) => setMenus({ ...menus, [key]: val });
   const validatorPath = async (_: any, value: any) => {
-    const { type } = menus;
-    if (type == 'menu' && value && value.indexOf('/') === 0) {
+    if (value && value.indexOf('/') === 0) {
       return Promise.reject('不允许"/"开头');
     }
 
