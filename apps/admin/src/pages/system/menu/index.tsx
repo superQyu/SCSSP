@@ -55,7 +55,7 @@ export default () => {
 
   return (
     <>
-      <Alert message="删除路由报错" type="warning" showIcon />
+      {/* <Alert message="删除路由报错" type="warning" showIcon /> */}
       <ProTable
         headerTitle="菜单列表"
         request={async (params = {}) => {
