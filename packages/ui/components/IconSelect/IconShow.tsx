@@ -19,7 +19,7 @@ const IconShow = ({ ico, handlerIco }: IconShowProp) => {
   if (ico.indexOf('.') != -1)
     return <Avatar size={18} src={<img src={`/static${ico}`} alt="avatar" />} />;
 
-  const curIcon = iconList[key].filter(([name]: [string]) => {
+  const curIcon = (iconList[key] || []).filter(([name]: [string]) => {
     return iconName === name;
   });
   if (!curIcon.length) return <></>;

@@ -92,16 +92,17 @@ export const fetchRequest = {
       return Promise.reject(err);
     }
   },
-  async post(url: string, params = {}, config = {}, cusParmas = {}) {
+  async post(url: string, params = {}, config = {}, cusParmas = {}, headerParams: any) {
     // post
     try {
       const res = await request(url, {
-        body: JSON.stringify(params),
+        body: params,
         method: 'POST',
         ...paramsApart(config, {
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
           },
+          ...headerParams
         }),
         ...cusParmas
       });
@@ -133,7 +134,7 @@ export const fetchRequest = {
     // post
     try {
       const res = await request(url, {
-        body: JSON.stringify(params),
+        body: params,
         method: 'PUT',
         ...paramsApart(config, {
           headers: {
@@ -153,8 +154,8 @@ export const fetchRequest = {
     // post
     try {
       const res = await request(url, {
-        body: JSON.stringify(params),
-        method: 'PUT',
+        body: params,
+        method: 'PATCH',
         ...paramsApart(config, {
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',

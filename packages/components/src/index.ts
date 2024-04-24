@@ -12,6 +12,8 @@ import ProTable from './components/ProTable';
 import ProForm from './components/ProForm';
 import AdForm, { FormColumnsTypes, FornPropsTypes } from './components/ProForm/form';
 
+import ProUpload from './components/ProUpload';
+
 import ProTree, { TreeNodes, CheckedsType } from './components/ProTree';
 export {
   Header,
@@ -24,7 +26,8 @@ export {
   AdForm,
   Breadcrumb,
   TabCom,
-  ProTree
+  ProTree,
+  ProUpload
 };
 // 组件通用类型
 export type { MenuItem, FormColumnsTypes, FornPropsTypes };

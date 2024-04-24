@@ -81,7 +81,11 @@ const LayoutContext: React.FC = () => {
             navigator('/');
           },
           logo: myImage,
-          reRenderRoute: (e: RouterTypes) => ({ ...e, routes: filterRoutes(e.routes || []) }),
+          reRenderRoute: (e: RouterTypes) => {
+            // console.log(({ ...e, routes: filterRoutes(e.routes || []) }));
+            
+            return ({ ...e, routes: filterRoutes(e.routes || []) });
+          },
           menuItemRender: (item: MenuDataItem, dom: React.ReactNode) => (
             <div onClick={() => menuClick(item)}>{dom}</div>
           ),
@@ -91,7 +95,7 @@ const LayoutContext: React.FC = () => {
           slot: (): React.ReactElement => {
             return (
               <>
-                <div style={{ padding: '0 15px' }}>
+                <div style={{ padding: '7px 15px' }}>
                   <Breadcrumb routes={breadcrumbList} />
                 </div>
                 <TabCom />

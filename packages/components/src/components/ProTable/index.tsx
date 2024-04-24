@@ -3,6 +3,9 @@ import { message } from 'antd';
 import type { ActionType } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 
+import { SearchOutlined } from '@ant-design/icons';
+import DefModel from './model';
+
 export default (props: any) => {
   const actionRef = useRef<ActionType>();
 
@@ -36,9 +39,12 @@ export default (props: any) => {
     return true;
   };
 
+  // 初始化 表格列表项
+  const initColumns = DefModel();
+
   return (
     <ProTable<Record<string, any>>
-      columns={props.columns}
+      columns={props.columns || initColumns}
       request={props.request || false}
       actionRef={props.actionRef || actionRef}
       toolBarRender={props.toolBarRender}
@@ -61,16 +67,6 @@ export default (props: any) => {
           ];
         },
       }}
-      columnsState={
-        props.columnsState || {
-          persistenceKey: 'pro-table-singe-demos',
-          persistenceType: 'localStorage',
-          defaultValue: {
-            option: { fixed: 'right', disable: true },
-          },
-          onChange(value) {},
-        }
-      }
       rowKey={props.rowKey || 'id'}
       search={
         props.search || {

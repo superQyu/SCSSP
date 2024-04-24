@@ -39,7 +39,24 @@ const AdForm: React.FC<FornPropsTypes> = ({
   labelAlign = 'left',
   loading = false,
   initialValues,
-  columns = [],
+  columns = [
+    {
+      label: '菜单1',
+      dataIndex: 'name',
+      colNum:12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入菜单名称' }],
+      },
+    },
+    {
+      label: '菜单2',
+      dataIndex: 'name2',
+      colNum:12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入菜单名称' }],
+      },
+    }
+  ],
   formRef = useRef<FormInstance>(null),
   onFormChange,
 }: FornPropsTypes) => {
@@ -55,7 +72,6 @@ const AdForm: React.FC<FornPropsTypes> = ({
   useEffect(() => {
     setMenus({ ...initialValues });
   }, []);
-
 
   return (
     <Spin spinning={loading} tip={loadingTitle}>
