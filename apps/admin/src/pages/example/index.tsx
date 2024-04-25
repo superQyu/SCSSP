@@ -73,7 +73,7 @@ export default function ComponentDoc() {
             <StyledTab label={item.label} {...a11yProps(idx)} key={idx} />
           ))}
         </Tabs>
-        <Box sx={{ width: '100%', padding: '0 2rem' }}>
+        <Box sx={{ width: '100%', height: '100%', padding: '0 2rem' }}>
           <Suspense fallback={<CircularProgress size={20} />}>
             <Stack sx={{ width: '100%', mb: '25px' }} spacing={2}>
               <Alert severity="success">

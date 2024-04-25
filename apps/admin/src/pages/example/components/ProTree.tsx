@@ -30,8 +30,12 @@ const AddMenus: React.FC<Props> = () => {
 
   return (
     <>
-      <Row gutter={16}>
-        <Col className="gutter-row" span={12}>
+      <Row style={{ width: '100%', height: 'calc(100% - 75px)' }} gutter={16}>
+        <Col
+          style={{ width: '100%', height: '100%', overflow: 'auto' }}
+          className="gutter-row"
+          span={12}
+        >
           <div style={{ width: '400px' }}>
             <Descriptions title="不带选择框" />
             <ProTree
@@ -43,7 +47,11 @@ const AddMenus: React.FC<Props> = () => {
             />
           </div>
         </Col>
-        <Col className="gutter-row" span={12}>
+        <Col
+          style={{ width: '100%', height: '100%', overflow: 'auto' }}
+          className="gutter-row"
+          span={12}
+        >
           <Typography.Paragraph style={{ whiteSpace: 'pre-wrap' }} code={true} strong={true}>
             <Typography.Text type="success" code>
               {`import { ProTree } from 'components';`}

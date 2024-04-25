@@ -33,4 +33,12 @@ export declare namespace ModesApi {
     current: number | undefined;
     keyword: string | undefined;
   };
+
+  type DictTypeVO = ParamsType & {
+    dictType: string
+    label: string
+    colorType: string
+    value: number
+    cssClass: string
+  };
 }

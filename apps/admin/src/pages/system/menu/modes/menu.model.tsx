@@ -43,12 +43,12 @@ export default (props: MenusPropsType) => {
         ],
       },
     },
-    {
-      hideInSearch: true,
-      title: '地址',
-      editable: false,
-      dataIndex: 'path',
-    },
+    // {
+    //   hideInSearch: true,
+    //   title: '地址',
+    //   editable: false,
+    //   dataIndex: 'path',
+    // },
     {
       width: 60,
       hideInSearch: true,

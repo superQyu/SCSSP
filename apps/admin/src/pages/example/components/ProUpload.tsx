@@ -12,9 +12,19 @@ const AddMenus: React.FC<Props> = () => {
 
   return (
     <>
-      <Row gutter={16}>
-        <Col className="gutter-row" span={12}>
-          <Descriptions title="上传文件 可设置上传文件个数" />
+      <Row style={{ width: '100%', height: 'calc(100% - 75px)' }} gutter={16}>
+        <Col
+          style={{ width: '100%', height: '100%', overflow: 'auto' }}
+          className="gutter-row"
+          span={12}
+        >
+          <Descriptions title="上传文件 可设置上传文件个数">
+            <Descriptions.Item>
+              <Typography.Text style={{ whiteSpace: 'pre-wrap' }} type="success" code>
+                {`maxCount={1}`}
+              </Typography.Text>
+            </Descriptions.Item>
+          </Descriptions>
           <ProUpload
             onRequest={async (params: any) => await F.fileUpload(params)}
             onUploadSuccess={(res: any) => {
@@ -28,7 +38,14 @@ const AddMenus: React.FC<Props> = () => {
             }}
             maxCount={1}
           />
-          <Descriptions title="自定义上传按钮(限制上传文件个数，是否显示文件列表)" />
+          <Descriptions title="自定义上传按钮(限制上传文件个数，是否显示文件列表)">
+            <Descriptions.Item>
+              <Typography.Text style={{ whiteSpace: 'pre-wrap' }} type="success" code>
+                {`自定义上传按钮: buttonRender={<Button>上传</Button>}
+ 是否显示文件列表: showUploadList={false}`}
+              </Typography.Text>
+            </Descriptions.Item>
+          </Descriptions>
           <ProUpload
             onRequest={async (params: any) => await F.fileUpload(params)}
             onUploadSuccess={(res: any) => {
@@ -45,7 +62,11 @@ const AddMenus: React.FC<Props> = () => {
             showUploadList={false}
           />
         </Col>
-        <Col className="gutter-row" span={12}>
+        <Col
+          style={{ width: '100%', height: '100%', overflow: 'auto' }}
+          className="gutter-row"
+          span={12}
+        >
           <Typography.Paragraph style={{ whiteSpace: 'pre-wrap' }} code={true} strong={true}>
             <Typography.Text type="success" code>
               {`import { ProUpload } from 'components';`}
