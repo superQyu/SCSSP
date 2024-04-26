@@ -15,6 +15,7 @@ import AdForm, { FormColumnsTypes, FornPropsTypes } from './components/ProForm/f
 import ProUpload from './components/ProUpload';
 
 import ProTree, { TreeNodes, CheckedsType } from './components/ProTree';
+import TreeSelect from './components/ProTree/TreeSelect';
 export {
   Header,
   OutletLayoutRouter,
@@ -27,6 +28,7 @@ export {
   Breadcrumb,
   TabCom,
   ProTree,
+  TreeSelect,
   ProUpload
 };
 // 组件通用类型

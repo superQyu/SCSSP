@@ -1,8 +1,6 @@
 import React, { useImperativeHandle, forwardRef, useState, useEffect, useRef } from 'react';
-import { Col, Row, Switch, Space, message, Tree, Input } from 'antd';
+import { Col, Row, Switch, Space, Tree } from 'antd';
 import type { TreeDataNode, TreeProps } from 'antd';
-
-import type { FormInstance } from 'antd/es/form';
 
 import { RebuildTree, flattenArray, sortMenu } from 'utils';
 
@@ -34,6 +32,19 @@ interface Props {
   ref?: any;
 }
 
+// 检查 点选子节点父节点未转递的情况
+export const GetRealSelectedKeys = (tree: TreeDataNode[], selected: number[]) => {
+  return selected.reduce((acc: number[], curr: number) => {
+    let ParentKeys: number[] = tree
+      .filter((item) => item.key == curr)
+      .map((item: MenusType) => Number(item.parentId));
+
+    if (ParentKeys.length) acc = [...acc, ...GetRealSelectedKeys(tree, ParentKeys)];
+    if (curr > 0) acc = [...acc, curr];
+    return [...new Set([...acc])];
+  }, []);
+};
+
 const ProTree: React.FC<Props> = forwardRef(
   (
     { treeNodes = [], flat = true, expandAll, defSelected, topToolBar, onStateChange }: Props,
@@ -47,19 +58,6 @@ const ProTree: React.FC<Props> = forwardRef(
 
     const [radiorCheck, setRadiorCheck] = useState<boolean>(false);
     const [radiorExpand, setRadiorExpand] = useState<boolean>(false);
-
-    // 检查 点选子节点父节点未转递的情况
-    const GetRealSelectedKeys = (tree: TreeDataNode[], selected: number[]) => {
-      return selected.reduce((acc: number[], curr: number) => {
-        let ParentKeys: number[] = tree
-          .filter((item) => item.key == curr)
-          .map((item: MenusType) => Number(item.parentId));
-
-        if (ParentKeys.length) acc = [...acc, ...GetRealSelectedKeys(tree, ParentKeys)];
-        if (curr > 0) acc = [...acc, curr];
-        return [...new Set([...acc])];
-      }, []);
-    };
 
     const CheckDelsKeys = (tree: TreeDataNode[], id: number, l: number, acc: number[], i = 0) => {
       const curNode: MenusType | false = tree.filter((node: any) => node.id == id)[0] || false;

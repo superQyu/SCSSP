@@ -6,6 +6,7 @@ import { ExclamationCircleTwoTone } from '@ant-design/icons';
 import type { FormInstance } from 'antd/es/form';
 
 import { IconSelect } from 'ui';
+// TreeSelect
 import { AdForm, FormColumnsTypes } from 'components';
 
 import { url2key, RebuildTree, flattenArray, sortMenu } from 'utils';
@@ -166,7 +167,6 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
         <TreeSelect
           treeDataSimpleMode
           style={{ width: '100%' }}
-          value={menus.parentId}
           dropdownStyle={{ maxHeight: 480, overflow: 'auto' }}
           treeDefaultExpandedKeys={[PLATFORMID]}
           placeholder="请选择上级"

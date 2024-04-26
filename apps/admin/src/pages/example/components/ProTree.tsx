@@ -30,7 +30,7 @@ const AddMenus: React.FC<Props> = () => {
   return (
     <>
       <Alert
-        message={<>树形控件选择器:{`<ProTree/>`}</>}
+        message={<>树选择器:{`<ProTree/>`}</>}
         type="success"
         style={{ marginBlockEnd: '25px' }}
         showIcon
