@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-import { Descriptions, Col, Row, Typography } from 'antd';
+import { Descriptions, Col, Row, Typography, Alert } from 'antd';
 import DictSelect from '@/components/DictSelect';
-
-type MenusType = {
-  [key: string]: any;
-};
 
 const AddMenus: React.FC = () => {
   const { config: C } = useBasicConfiguration();
   const { COMMON_STATUS } = C?.DICT_TYPE || {};
 
+  const [value, setValue] = useState<string>('0');
+
   return (
     <>
+      <Alert message={<>字典下拉选择器:{`<DictSelect/>`}</>} type="success" style={{ marginBlockEnd: '25px' }} showIcon />
+      
       <Row style={{ width: '100%', height: 'calc(100% - 75px)' }} gutter={16}>
         <Col
           style={{ width: '100%', height: '100%', overflow: 'auto' }}
@@ -25,9 +25,9 @@ const AddMenus: React.FC = () => {
               <Descriptions title="字典下拉菜单" />
               <DictSelect
                 dictKey={`${COMMON_STATUS}`}
-                value={`0`}
+                value={value}
                 dropdownExtend={false}
-                // onChange={(val) => console.log(val)}
+                onChange={(val) => setValue(val)}
               />
             </div>
             <div style={{ marginBottom: '20px' }}>
@@ -41,9 +41,9 @@ const AddMenus: React.FC = () => {
               </Descriptions>
               <DictSelect
                 dictKey={`${COMMON_STATUS}`}
-                value={`0`}
+                value={value}
                 dropdownExtend={true}
-                // onChange={(val) => console.log(val)}
+                onChange={(val) => setValue(val)}
               />
             </div>
             <div>
@@ -54,12 +54,7 @@ const AddMenus: React.FC = () => {
                   </Typography.Text>
                 </Descriptions.Item>
               </Descriptions>
-              <DictSelect
-                dictKey={`${COMMON_STATUS}`}
-                value={`0`}
-                type={'text'}
-                // onChange={(val) => console.log(val)}
-              />
+              <DictSelect dictKey={`${COMMON_STATUS}`} value={value} type={'text'} />
             </div>
           </div>
         </Col>

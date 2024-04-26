@@ -2,7 +2,7 @@ import React from 'react';
 import { ProUpload } from 'components';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-import { Col, Row, Typography, Descriptions, Button } from 'antd';
+import { Col, Row, Typography, Descriptions, Button, Alert } from 'antd';
 
 interface Props {}
 
@@ -11,7 +11,9 @@ const AddMenus: React.FC<Props> = () => {
   const { file: F } = server;
 
   return (
-    <>
+    <> 
+    <Alert message={<>文件上传控件:{`<ProUpload/>`}</>} type="success" style={{ marginBlockEnd: '25px' }} showIcon />
+      
       <Row style={{ width: '100%', height: 'calc(100% - 75px)' }} gutter={16}>
         <Col
           style={{ width: '100%', height: '100%', overflow: 'auto' }}

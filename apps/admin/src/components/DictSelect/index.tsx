@@ -80,7 +80,7 @@ const DictSelect: React.FC<Props> = (
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [value]);
 
   useEffect(() => {
     onLoadingStatus && onLoadingStatus(loading);
