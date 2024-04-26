@@ -44,7 +44,10 @@ export default ({ server }: MenusPropsType) => {
       editable: false,
       dataIndex: 'passportPhoto',
       render: (_, record) => (
-        <Avatar icon={<UserOutlined />} src={<img src={url} alt={record.name} />} />
+        <Avatar
+          icon={<UserOutlined />}
+          src={record.passportPhoto || <img src={url} alt={record.name} />}
+        />
       ),
       // renderFormItem: () => <IconSelect model="simple" />,
     },

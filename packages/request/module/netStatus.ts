@@ -23,7 +23,7 @@ const netStatus = (status: any, data: any) => {
       },
     ],
     [
-      [...new Set([400, 401, 404, 405, 500, ...(isArray(error) ? error : [error])])],
+      [...new Set([400, 401, 403, 404, 405, 500, ...(isArray(error) ? error : [error])])],
       () => {
         const { message: m, msg, error } = data || {};
         throw new Error(`${m || msg || error || data}`);

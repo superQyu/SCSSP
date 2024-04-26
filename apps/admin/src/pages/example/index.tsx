@@ -1,6 +1,6 @@
 import { lazy, useState, Suspense } from 'react';
 
-import { Box, Tabs, Tab, Alert, CircularProgress, Stack, styled } from '@mui/material';
+import { Box, Tabs, Tab, CircularProgress, styled } from '@mui/material';
 
 const StyledTab = styled(Tab)(({ theme }) => ({
   textTransform: 'none',
@@ -73,13 +73,8 @@ export default function ComponentDoc() {
             <StyledTab label={item.label} {...a11yProps(idx)} key={idx} />
           ))}
         </Tabs>
-        <Box sx={{ width: '100%', padding: '0 2rem' }}>
+        <Box sx={{ width: '100%', height: '100%', padding: '0 2rem' }}>
           <Suspense fallback={<CircularProgress size={20} />}>
-            <Stack sx={{ width: '100%', mb: '25px' }} spacing={2}>
-              <Alert severity="success">
-                <CompNme />
-              </Alert>
-            </Stack>
             <DynamicComp />
           </Suspense>
         </Box>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, forwardRef, useRef } from 'react';
 import { Col, Row, Form, Spin, Input } from 'antd';
 
 import type { FormInstance } from 'antd/es/form';
@@ -34,76 +34,81 @@ const layout = {
   wrapperCol: { span: 18, flex: 1 },
 };
 
-const AdForm: React.FC<FornPropsTypes> = ({
-  loadingTitle = '提交中...',
-  labelAlign = 'left',
-  loading = false,
-  initialValues,
-  columns = [
+const AdForm: React.FC<FornPropsTypes> = forwardRef(
+  (
     {
-      label: '菜单1',
-      dataIndex: 'name',
-      colNum:12,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入菜单名称' }],
-      },
-    },
-    {
-      label: '菜单2',
-      dataIndex: 'name2',
-      colNum:12,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入菜单名称' }],
-      },
-    }
-  ],
-  formRef = useRef<FormInstance>(null),
-  onFormChange,
-}: FornPropsTypes) => {
-  const [menus, setMenus] = useState<FieldType>({});
+      loadingTitle = '提交中...',
+      labelAlign = 'left',
+      loading = false,
+      initialValues,
+      columns = [
+        {
+          label: '菜单1',
+          dataIndex: 'name',
+          colNum: 12,
+          formItemProps: {
+            rules: [{ required: true, message: '请输入菜单名称' }],
+          },
+        },
+        {
+          label: '菜单2',
+          dataIndex: 'name2',
+          colNum: 12,
+          formItemProps: {
+            rules: [{ required: true, message: '请输入菜单名称' }],
+          },
+        },
+      ],
+      formRef = useRef<FormInstance>(null),
+      onFormChange,
+    }: FornPropsTypes,
+    ref
+  ) => {
+    const [menus, setMenus] = useState<FieldType>({});
 
-  const init = () => {
-    const _menus = columns.reduce((acc: FieldType, curr: FormColumnsTypes) => {
-      return { ...acc, [curr.dataIndex]: curr.defaultValue || '' };
-    }, {});
-    setMenus(_menus);
-  };
+    const init = () => {
+      const _menus = columns.reduce((acc: FieldType, curr: FormColumnsTypes) => {
+        return { ...acc, [curr.dataIndex]: curr.defaultValue || '' };
+      }, {});
+      setMenus(_menus);
+    };
 
-  useEffect(() => {
-    setMenus({ ...initialValues });
-  }, []);
+    useEffect(() => {
+      setMenus({ ...initialValues });
+    }, []);
 
-  return (
-    <Spin spinning={loading} tip={loadingTitle}>
-      <Form
-        {...layout}
-        ref={formRef}
-        name="control-ref-antd-form"
-        labelAlign={labelAlign}
-        onValuesChange={onFormChange}
-        colon={false}
-        initialValues={{ ...initialValues }}
-      >
-        <Row gutter={16}>
-          {columns.map((item: FormColumnsTypes) => (
-            <Col span={item.colNum || 24} key={item.dataIndex}>
-              {!item.hasOwnProperty('show') || item.show ? (
-                <Form.Item<FieldType>
-                  key={item.dataIndex}
-                  name={item.dataIndex}
-                  label={item.label}
-                  {...item.formItemProps}
-                >
-                  {item.formItem || <Input placeholder={`请输入${item.label}`} />}
-                </Form.Item>
-              ) : (
-                <></>
-              )}
-            </Col>
-          ))}
-        </Row>
-      </Form>
-    </Spin>
-  );
-};
+    return (
+      <Spin spinning={loading} tip={loadingTitle}>
+        <Form
+          {...layout}
+          ref={formRef}
+          name="control-ref-antd-form"
+          labelAlign={labelAlign}
+          onValuesChange={onFormChange}
+          colon={false}
+          initialValues={{ ...initialValues }}
+        >
+          <Row gutter={16}>
+            {columns.map((item: FormColumnsTypes) => (
+              <Col span={item.colNum || 24} key={item.dataIndex}>
+                {!item.hasOwnProperty('show') || item.show ? (
+                  <Form.Item<FieldType>
+                    key={item.dataIndex}
+                    name={item.dataIndex}
+                    label={item.label}
+                    {...item.formItemProps}
+                  >
+                    {item.formItem || <Input placeholder={`请输入${item.label}`} />}
+                  </Form.Item>
+                ) : (
+                  <></>
+                )}
+              </Col>
+            ))}
+          </Row>
+        </Form>
+      </Spin>
+    );
+  }
+);
 export default AdForm;

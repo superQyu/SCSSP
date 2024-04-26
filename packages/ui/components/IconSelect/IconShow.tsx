@@ -6,18 +6,19 @@ import { iconList } from './IconMap';
 interface IconShowProp {
   ico?: string;
   handlerIco?: any;
+  size?: number;
 }
 
-const IconShow = ({ ico, handlerIco }: IconShowProp) => {
+const IconShow = ({ ico, size = 18, handlerIco }: IconShowProp) => {
   if (!ico || ico == '') return <></>;
-  
+
   if (typeof ico == 'object') return ico;
-  
+
   const iconInfor = ico.split(':');
   const [key, iconName]: string[] = iconInfor.length === 1 ? ['ad', ...iconInfor] : iconInfor;
 
   if (ico.indexOf('.') != -1)
-    return <Avatar size={18} src={<img src={`/static${ico}`} alt="avatar" />} />;
+    return <Avatar size={size} src={<img src={`/static${ico}`} alt="avatar" />} />;
 
   const curIcon = (iconList[key] || []).filter(([name]: [string]) => {
     return iconName === name;

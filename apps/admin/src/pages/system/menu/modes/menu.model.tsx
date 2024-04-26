@@ -24,7 +24,7 @@ export interface ColumnsParamsProps extends objJson {
 }
 
 export default (props: MenusPropsType) => {
-  const { config: C,server } = useBasicConfiguration();
+  const { config: C, server } = useBasicConfiguration();
   const { menus: M } = server as objJson;
 
   const { COMMON_STATUS } = C?.DICT_TYPE || {};
@@ -43,12 +43,12 @@ export default (props: MenusPropsType) => {
         ],
       },
     },
-    {
-      hideInSearch: true,
-      title: '地址',
-      editable: false,
-      dataIndex: 'path',
-    },
+    // {
+    //   hideInSearch: true,
+    //   title: '地址',
+    //   editable: false,
+    //   dataIndex: 'path',
+    // },
     {
       width: 60,
       hideInSearch: true,
@@ -138,7 +138,7 @@ export default (props: MenusPropsType) => {
           },
         ],
       },
-    }
+    },
   ];
 
   return columns;

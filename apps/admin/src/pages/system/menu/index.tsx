@@ -174,7 +174,7 @@ export default () => {
             新建
           </Button>,
         ]}
-        scroll={{ y: 640 }}
+        scroll={{ y: 'auto' }}
         search={{
           labelWidth: 'auto',
           optionRender: ({ searchText }: any, { form }: any, dom: any) => {

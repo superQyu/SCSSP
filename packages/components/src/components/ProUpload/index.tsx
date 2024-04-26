@@ -12,6 +12,8 @@ export type RequestData<T> = {
 } & Record<string, any>;
 
 interface Props {
+  /** 自定义上传按钮  */
+  buttonRender?: JSX.Element;
   /** 上传接口配置  */
   onRequest?: (params: any) => Promise<Partial<RequestData<any>>>;
   /** 上传成功  */
@@ -24,6 +26,10 @@ interface Props {
   fileType?: string[];
   /** 文件上传大限制 默认 20M*/
   fileSize?: number;
+  /** 文件上传个数 默认 上限8个 */
+  maxCount?: number | false;
+  /** 是否显示上传列表 */
+  showUploadList?: boolean;
 }
 
 const getBase64 = (file: FileType): Promise<string> =>
@@ -34,13 +40,16 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-const App: React.FC<Props> = ({
+const ProUpload: React.FC<Props> = ({
+  buttonRender,
   onRequest,
   onUploadSuccess,
   onUploadError,
   onDeleted,
   fileType = ['jpeg', 'png', 'image/jpeg', 'image/png'],
   fileSize = 20,
+  maxCount = 8,
+  showUploadList = true,
 }: Props) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
@@ -56,7 +65,13 @@ const App: React.FC<Props> = ({
         formData.append('file', file as FileType);
 
         const res = await onRequest(formData);
-        onUploadSuccess && onUploadSuccess({ [file.uid]: res });
+        onUploadSuccess &&
+          onUploadSuccess({
+            [file.uid]: {
+              url: res,
+              name: file.name,
+            },
+          });
 
         message.success('上传成功！');
         onSuccess();
@@ -110,13 +125,14 @@ const App: React.FC<Props> = ({
   const delErrorFile = (files: UploadFile[]) => files.map((file: UploadFile) => onRemove(file));
 
   const props: UploadProps = {
-    listType: 'picture-card',
+    listType: buttonRender ? 'text' : 'picture-card',
     onRemove,
     beforeUpload,
     fileList,
     onPreview: handlePreview,
     onChange: handleChange,
     customRequest,
+    showUploadList,
   };
 
   useEffect(() => {
@@ -125,7 +141,7 @@ const App: React.FC<Props> = ({
     }
   }, [fileList]);
 
-  const uploadButton = (
+  const uploadButton = buttonRender || (
     <Button style={{ border: 0, background: 'none' }} type="text">
       <PlusOutlined />
       <div style={{ marginTop: 8 }}>上传</div>
@@ -134,7 +150,9 @@ const App: React.FC<Props> = ({
 
   return (
     <>
-      <Upload {...props}>{fileList.length >= 8 ? null : uploadButton}</Upload>
+      <Upload {...props}>
+        {!maxCount ? uploadButton : fileList.length >= maxCount ? null : uploadButton}
+      </Upload>
       {previewImage && (
         <Image
           wrapperStyle={{ display: 'none' }}
@@ -150,4 +168,4 @@ const App: React.FC<Props> = ({
   );
 };
 
-export default App;
+export default ProUpload;

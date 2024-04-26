@@ -11,8 +11,8 @@ interface Umlimit {
   [key: string]: any;
 }
 interface IconSelectProp extends Umlimit {
-  value?: string;
-  onChange?: any;
+  onChange?: (name: string, key?: string) => void;
+  /** 显示模式 simple:简约 */
   model?: 'simple' | undefined;
 }
 
@@ -97,45 +97,33 @@ const IconSelect: React.FC<IconSelectProp> = (props: IconSelectProp) => {
       />
     </>
   );
-  const items111: any = [
-    {
-      label: <a href="https://www.antgroup.com">1st menu item</a>,
-      key: '0',
-    },
-    {
-      label: <a href="https://www.aliyun.com">2nd menu item</a>,
-      key: '1',
-    },
-    {
-      type: 'divider',
-    },
-    {
-      label: '3rd menu item',
-      key: '3',
-    },
-  ];
+
   return (
     <Space.Compact style={{ width: '100%' }}>
       {model == 'simple' ? (
         <Dropdown
           menu={{ items: [] }}
           dropdownRender={dropdownRender}
-          // trigger={['click']}
           arrow
           overlayStyle={{ maxWidth: '320px', backgroundColor: '#fff' }}
         >
-          {/* <Tag
+          <Tag
             icon={!value || value == '' ? <AimOutlined /> : <IconShow ico={value} handlerIco />}
             style={{ display: 'flex', fontSize: '22px', padding: '3px 7px', cursor: 'pointer' }}
-          /> */}
+          />
         </Dropdown>
       ) : (
         <>
-          {/* <Tag
+          <Tag
             icon={!value || value == '' ? <AimOutlined /> : <IconShow ico={value} handlerIco />}
             style={{ display: 'flex', width: '34px', fontSize: '20px' }}
-          /> */}
-          <Select ref={selectRef} value={value} dropdownRender={dropdownRender}></Select>
+          />
+          <Select
+            style={{ minWidth: '280px' }}
+            ref={selectRef}
+            value={value}
+            dropdownRender={dropdownRender}
+          />
         </>
       )}
     </Space.Compact>

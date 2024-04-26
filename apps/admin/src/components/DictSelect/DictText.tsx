@@ -1,8 +1,5 @@
-import React, { createElement, forwardRef, useState, useEffect, useContext } from 'react';
-import { Divider, Input, Select, Space, Button, Spin, Empty } from 'antd';
-import { AuthContext, useAppDispatch, useAppSelector } from 'hooks';
-
-import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import React, { createElement, useState, useEffect } from 'react';
+import { useAppSelector } from 'hooks';
 
 import { EllipsisOutlined } from '@ant-design/icons';
 
@@ -19,34 +16,22 @@ interface SelectOption {
 }
 
 const DictText: React.FC<Props> = ({ value, dictKey }: Props) => {
-  const { server } = useBasicConfiguration();
-  const { basic: B } = server;
-
   const {
     common: { dictionary },
   } = useAppSelector((state) => state) as { common: { dictionary: Record<string, any> } };
-  const dispatch = useAppDispatch();
-  const { saveDicts } = useContext(AuthContext);
 
   const [showLabel, setShowLabel] = useState<string>('');
 
   const loadData = async () => {
-    console.log(dictionary);
+    const isExsit = dictionary.get(dictKey);
 
-    if (dictionary.hasOwnProperty(dictKey)) {
-      let curItem = (dictionary[dictKey] as SelectOption[]).filter((item) => {
-        return item.value == value;
-      });
+    if (isExsit) {
+      let curItem = (isExsit as SelectOption[]).filter((item) => item.value == value);
       setShowLabel(curItem[0]?.label || '');
-    } else {
-      const res = await B.getDictType({ dictType: dictKey });
-      console.log('res.list', res.list);
-      saveDicts(dispatch, { [`${dictKey}`]: res.list });
     }
   };
 
   useEffect(() => {
-    // setShowLabel(value);
     loadData();
   }, []);
 
