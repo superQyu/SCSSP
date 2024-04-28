@@ -1,19 +1,9 @@
-import React, {
-  useImperativeHandle,
-  forwardRef,
-  createElement,
-  useState,
-  useRef,
-  useEffect,
-  useContext,
-} from 'react';
+import React, { createElement, useState, useRef, useEffect, useContext } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Divider, Input, Select, Space, Button, Spin, Empty } from 'antd';
 import type { InputRef } from 'antd';
 
-import { AuthContext, useAppDispatch, useAppSelector } from 'hooks';
-
-import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import { useAppSelector } from 'hooks';
 
 interface Props {
   /** 监听值状态变化 */
@@ -28,6 +18,7 @@ interface Props {
   valueEnum?: Record<string, any>;
   /** 绑定tree dom */
   ref?: any;
+  /** 显示模式*/
   type?: string;
   [key: string]: any;
 }
@@ -39,82 +30,67 @@ interface SelectOption {
   [key: string]: any;
 }
 
-const DictSelect: React.FC<Props> = forwardRef(
-  (
-    {
-      value,
-      dictKey,
-      dropdownExtend,
-      onLoadingStatus,
-      afterAddItem,
-      onChange,
-      valueEnum,
-      type,
-    }: Props,
-    ref
-  ) => {
-    const { server } = useBasicConfiguration();
-    //  api server
-    const { basic: B } = server;
+const DictSelect: React.FC<Props> = (
+  {
+    value,
+    dictKey,
+    dropdownExtend,
+    onLoadingStatus,
+    afterAddItem,
+    onChange,
+    valueEnum,
+    type,
+  }: Props,
+  ref
+) => {
+  const {
+    common: { dictionary },
+  } = useAppSelector((state) => state) as { common: { dictionary: Record<string, any> } };
 
-    const [items, setItems] = useState<SelectOption[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [name, setName] = useState('');
-    const inputRef = useRef<InputRef>(null);
+  const [items, setItems] = useState<SelectOption[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [name, setName] = useState('');
+  const inputRef = useRef<InputRef>(null);
+  const [showLabel, setShowLabel] = useState<string>('');
 
-    const fetchRemoteData = async (key: string) => {
-      try {
-        const response = await B.getDictType({ dictType: key });
-        return response;
-      } catch (error) {
-        return [];
-      }
-    };
+  const loadData = async () => {
+    const isExsit = dictionary.get(dictKey);
+    setItems(isExsit as SelectOption[]);
+    if (type === 'text') {
+      let curItem = (isExsit as SelectOption[]).filter((item) => item.value == value);
+      setShowLabel(curItem[0]?.label || '');
+    }
+  };
 
-    const loadData = async () => {
-      const res = await fetchRemoteData(dictKey);
-      setItems(res.list as SelectOption[]);
-      setLoading(false);
-      // }
-    };
+  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+  };
 
-    const onFocusSelect = () => {
-      if (items.length == 0) {
-        setLoading(true);
-      }
-    };
+  const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+    e.preventDefault();
+    const newItem = { key: name, value: name, label: name };
+    setItems([...items, newItem]);
+    setName('');
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 0);
 
-    const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setName(event.target.value);
-    };
+    afterAddItem && afterAddItem(newItem);
+  };
 
-    const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-      e.preventDefault();
-      const newItem = { key: name, value: name, label: name };
-      setItems([...items, newItem]);
-      setName('');
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 0);
+  useEffect(() => {
+    loadData();
+  }, [value]);
 
-      afterAddItem && afterAddItem(newItem);
-    };
+  useEffect(() => {
+    onLoadingStatus && onLoadingStatus(loading);
+  }, [loading]);
 
-    useEffect(() => {
-      loadData();
-    }, []);
-
-    useEffect(() => {
-      onLoadingStatus && onLoadingStatus(loading);
-    }, [loading]);
-
-    // 暴露API
-    useImperativeHandle(ref, () => ({
-      remoteData: fetchRemoteData,
-    }));
-
-    return (
-      <>
+  return (
+    <>
+      {type && type === 'text' ? (
+        <>{showLabel}</>
+      ) : (
         <Select
           value={value}
           style={{ width: '100%' }}
@@ -184,9 +160,9 @@ const DictSelect: React.FC<Props> = forwardRef(
             return label;
           }}
         />
-      </>
-    );
-  }
-);
+      )}
+    </>
+  );
+};
 
 export default DictSelect;

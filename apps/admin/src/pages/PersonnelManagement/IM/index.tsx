@@ -1,6 +1,7 @@
 import { createElement, cloneElement, useRef, useState, useEffect } from 'react';
 
-import { ProTable } from '@ant-design/pro-components';
+import { ProTable } from 'components';
+// import { ProTable } from '@ant-design/pro-components';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { Button, message, DatePicker, Space, Table, Alert } from 'antd';
 
@@ -92,8 +93,8 @@ export default () => {
 
   return (
     <>
-      <Alert message="表格字典为同步" type="warning" showIcon />
-      <ProTable<TableListItem>
+      {/* <Alert message="表格字典为同步" type="warning" showIcon /> */}
+      <ProTable
         request={async (params = {}) => {
           const res = await P.personnelInfoList({ ...params });
           return {
@@ -103,10 +104,10 @@ export default () => {
           } as unknown as ModesApi.pageItemType;
         }}
         columns={initColumns}
-        scroll={{ x: 1900, y: 640 }}
+        scroll={{ x: 1900, y: 'auto' }}
         onSubmit={async (params: {}) => {}}
         pagination={{
-          pageSize: 2,
+          pageSize: 30,
         }}
         rowKey="id"
         headerTitle="人员管理"
@@ -118,13 +119,8 @@ export default () => {
         form={{
           syncToUrl: (values: any, _: string) => ({ ...values }),
         }}
-        editable={{ onDelete, onSave }}
-        style={{
-          // 设置表格的样式，这里设置高度为自适应
-          height: 'auto',
-          // 或者不设置高度，让它根据内容自然流动
-          // height: 'unset',
-        }}
+        // 
+        editable={{  onSave }}
         search={{
           labelWidth: 'auto',
           optionRender: ({ searchText }: any, { form }: any, dom: any) => {

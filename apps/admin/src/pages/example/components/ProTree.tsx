@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ProTree } from 'components';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-import { Descriptions, Col, Row, Typography } from 'antd';
+import { Descriptions, Col, Row, Typography, Alert } from 'antd';
 
 interface Props {}
 
@@ -11,10 +11,9 @@ type MenusType = {
 };
 
 const AddMenus: React.FC<Props> = () => {
-  const { server, config } = useBasicConfiguration();
+  const { server } = useBasicConfiguration();
   const { sites: S } = server;
 
-  const { PLATFORMID } = config as Record<string, any>;
   const treeRef = useRef<any>(null);
   const [menus, setMenus] = useState<MenusType>({ menuIds: [] });
   const [treeNodes, SetTreeNodes] = useState([]);
@@ -30,10 +29,21 @@ const AddMenus: React.FC<Props> = () => {
 
   return (
     <>
-      <Row gutter={16}>
-        <Col className="gutter-row" span={12}>
+      <Alert
+        message={<>树选择器:{`<ProTree/>`}</>}
+        type="success"
+        style={{ marginBlockEnd: '25px' }}
+        showIcon
+      />
+
+      <Row style={{ width: '100%', height: 'calc(100% - 75px)' }} gutter={16}>
+        <Col
+          style={{ width: '100%', height: '100%', overflow: 'auto' }}
+          className="gutter-row"
+          span={12}
+        >
           <div style={{ width: '400px' }}>
-            <Descriptions title="不带选择框" />
+            <Descriptions title="带选择框" />
             <ProTree
               ref={treeRef}
               treeNodes={treeNodes}
@@ -43,7 +53,11 @@ const AddMenus: React.FC<Props> = () => {
             />
           </div>
         </Col>
-        <Col className="gutter-row" span={12}>
+        <Col
+          style={{ width: '100%', height: '100%', overflow: 'auto' }}
+          className="gutter-row"
+          span={12}
+        >
           <Typography.Paragraph style={{ whiteSpace: 'pre-wrap' }} code={true} strong={true}>
             <Typography.Text type="success" code>
               {`import { ProTree } from 'components';`}

@@ -7,7 +7,7 @@ export interface InitialState {
 const initialState: InitialState = {
   data: [],
   menuTab: [],
-  dictionary: {}
+  dictionary: []
 };
 /**
  * @description commonSlice
@@ -23,7 +23,7 @@ export const commonSlice: any = createSlice({
       state.menuTab = action.payload;
     },
     setDict: (state, action) => {
-      state.dictionary = { ...state.dictionary, ...action.payload };
+      state.dictionary = action.payload;
     },
   },
 });

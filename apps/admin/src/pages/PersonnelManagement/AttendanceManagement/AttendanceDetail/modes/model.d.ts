@@ -19,26 +19,22 @@ export declare namespace ModesApi {
 
   type SitesItem = ParamsType & {
     id: number;
+    siteKey: string;
     name: string;
-    ico: string | React.ReactNode;
-    orderNum: string | number;
-    roleKey: string | number;
-    component: string;
-    path: string;
-    isDelete: string | number;
+    address: string;
+    domainName: string;
+    ico: string;
+    description: string;
+    isDelete: string;
+    createdAt: string;
+    updatedAt: string;
+    createdBy: string;
+    updatedBy: string;
   };
 
   type pageItemType = ParamsType & {
     pageSize: number | undefined;
     current: number | undefined;
     keyword: string | undefined;
-  };
-
-  type DictTypeVO = ParamsType & {
-    dictType: string
-    label: string
-    colorType: string
-    value: number
-    cssClass: string
   };
 }

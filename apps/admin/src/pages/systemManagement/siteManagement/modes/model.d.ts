@@ -43,5 +43,6 @@ export declare namespace ModesApi {
     validityEndDate?: string;
     issuingAuthority?: string;
     reviewDate?: string;
+    picture?: string;
   };
 }

@@ -7,10 +7,11 @@ import { setMenu } from 'store';
 import { RebuildTree, flattenArray } from 'utils';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import type { ModesApi } from '@/modes/model.d';
 
 export default ({ children }: any) => {
   const { server, config } = useBasicConfiguration();
-  const { signOut } = useContext(AuthContext);
+  const { signOut, saveDicts } = useContext(AuthContext);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { saveUserInfor } = useContext(AuthContext);
@@ -53,11 +54,24 @@ export default ({ children }: any) => {
         navigate('/');
       });
   };
+  // 获取字典列表
+  const getDictList = async () => {
+    await B.getDictList().then((res: any) => {
+      const dictDataMap = new Map<string, any>();
+      res.forEach((dictData: ModesApi.DictTypeVO) => {
+        const enumObj = dictDataMap.get(dictData.dictType);
+        if (!enumObj) dictDataMap.set(dictData.dictType, []);
+        const nEnumObj = dictDataMap.get(dictData.dictType);
+        dictDataMap.set(dictData.dictType, [...nEnumObj, dictData]);
+      });
+      saveDicts(dispatch, dictDataMap);
+    });
+  };
 
   useEffect(() => {
     getRoutes();
+    getDictList();
     console.info('%c✔  初始化基础信息成功！！！ =======', 'color: green; font-size: 14px;');
-
     setLoading(false);
   }, []);
 
