@@ -14,6 +14,8 @@ const job: ApiItem[] = [
       { key: 'name', cn: '工种' },
       { key: 'initialsSpell', cn: '首字母简拼' },
       { key: 'isSpecialWorkType', cn: '是否特殊工种' },
+      {key: 'current', targetKey: 'pageNo'}, 
+      {key: 'pageSize'}, 
     ],
   },
   {

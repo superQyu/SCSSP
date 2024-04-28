@@ -36,8 +36,6 @@ const columns: FormColumnsTypes[] = [
     formItem: (
       <DictSelect
         dictKey={'is_conformity'}
-        // dropdownExtend={true}
-        onChange={() => {}}
       />
     ),
   },

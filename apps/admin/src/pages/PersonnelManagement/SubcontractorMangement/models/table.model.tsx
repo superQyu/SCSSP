@@ -1,6 +1,9 @@
 import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
 import { message } from 'antd';
 
+import DictText from '@/components/DictSelect/DictText';
+import DictSelect from '@/components/DictSelect';
+
 type objJson = Record<string, any>;
 
 type MenusPropsType = {
@@ -32,21 +35,23 @@ export default ({ server }: MenusPropsType) => {
       title: '分包商类型',
       dataIndex: 'subcontractorType',
       ellipsis: true,
-      valueType: 'select',
-      filters: true,
-      valueEnum: {
-        '1': {
-          text: '是',
-        },
-        '0': {
-          text: '否',
-        },
+      render: () => {
+        return <DictText dictKey="subcontractor_type" />;
       },
-      // render: (_, record) => (
-      //   <>
-      //     {record.isSpecialWorkType == '1' ? <Tag color="green">是</Tag> : <Tag color="red">否</Tag>}
-      //   </>
-      // ),
+      // valueEnum: {
+      //   '1': {
+      //     text: '专业承包',
+      //   },
+      //   '2': {
+      //     text: '施工总承包',
+      //   },
+      //   '3': {
+      //     text: '劳务承包',
+      //   },
+      // },
+      renderFormItem: () => {
+        return <DictSelect dictKey="subcontractor_type" />;
+      },
     },
     {
       title: '分包单位名称',
@@ -95,7 +100,7 @@ export default ({ server }: MenusPropsType) => {
       dataIndex: 'nameSpell',
       ellipsis: true,
       hideInSearch: true,
-      editable: false
+      editable: false,
     },
     {
       title: '操作',

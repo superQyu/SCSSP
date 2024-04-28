@@ -35,7 +35,7 @@ export default ({ openModal, onStateChange }: Props) => {
     code: '',
     name: '',
     initialsSpell: '',
-    isSpecialWorkType: 1,
+    // isSpecialWorkType: 1,
     sort: '',
   });
 

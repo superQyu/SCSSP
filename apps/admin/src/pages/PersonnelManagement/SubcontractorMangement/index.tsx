@@ -30,38 +30,17 @@ export default () => {
     await actionRef.current?.reload();
   };
 
-  // 重写save方法 阻止提交失败也退出编辑状态
-  const onSave = async (...args: any[]) => {
-    const [config, id, n, , ,] = args;
-    console.log('更新分包商的请求参数', n);
-    // 更新行数据
-    const res = await subContractor
-      .updateSubContractor(JSON.parse(JSON.stringify({ ...n })) as ColumnsParamsProps)
-      .then(async () => {
-        message.success('信息更新成功！');
-        await actionRef.current?.reload();
-      })
-      .catch(() => false);
-    if (res === false) {
-      message.error('信息更新失败，请重新提交！');
-      return false;
-    }
-    // 保存时解除编辑模式
-    config.cancelEditable(id);
-    return true;
+  // 点击保存
+  const onSave = async (params: any) => {
+    console.log('编辑分包商时的参数', params)
+    const res = await subContractor.updateSubContractor(params as ColumnsParamsProps);
+    return res;
   };
 
   // 删除行
   const onDelete = async (id: number) => {
-    try {
-      await subContractor
-        .deleteMenus({ ids: id })
-        .then(async () => {
-          message.success('操作成功!');
-          await actionRef.current?.reload();
-        })
-        .catch(() => {});
-    } catch (errorInfo) {}
+    const res = await subContractor.deleteSubContractor({ id });
+    return res;
   };
 
   return (
@@ -87,20 +66,9 @@ export default () => {
             新建
           </Button>,
         ]}
-        editable={{
-          type: 'multiple',
-          onSave,
-          onDelete,
-          actionRender: (...args: any[]) => {
-            const [, config, defaultDom] = args;
-            return [
-              cloneElement(defaultDom.save as React.ReactElement, {
-                onSave: onSave.bind(null, config),
-              }),
-              defaultDom.cancel,
-              defaultDom.delete,
-            ];
-          },
+        editable={{ onDelete, onSave }}
+        pagination={{
+          pageSize: 10,
         }}
       ></ProTable>
       <EditDialog openModal={dialogVisible} onStateChange={handleModalStateChange} />

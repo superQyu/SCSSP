@@ -1,9 +1,9 @@
-import { useRef, cloneElement, useState, useEffect } from 'react';
+import { useRef, cloneElement, useState } from 'react';
 
 import { ProTable } from 'components';
 import { type ActionType } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 
 import EditDialog from './components/editdialog';
 
@@ -11,12 +11,12 @@ import EditDialog from './components/editdialog';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
 import type { ModesApi } from './models/model';
-import siteModel, { type ColumnsParamsProps } from './models/table.model';
+import siteModel from './models/table.model';
 
 export default () => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { job } = server;
+  const { subContractor } = server;
 
   // 初始化表格列
   const initColumns = siteModel({ server });
@@ -32,13 +32,14 @@ export default () => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    const res = await job.updateJob(params as ColumnsParamsProps);
+    console.log('编辑分包商时的参数', params)
+    const res = await subContractor.updateSubContractor(params);
     return res;
   };
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await job.deleteJob({ id });
+    const res = await subContractor.deleteSubContractor({ id });
     return res;
   };
 
@@ -46,13 +47,11 @@ export default () => {
     <>
       <ProTable
         actionRef={actionRef}
-        headerTitle="工种列表"
+        headerTitle="分包商列表"
         columns={initColumns}
         request={async (params = {}) => {
-          // console.log('请求工种列表的参数', params)
-          const res = await job.getJobList(params);
+          const res = await subContractor.getSubContractorList(params);
           // console.log('工种列表', res.list);
-          res.list.forEach((item: any) => (item.isSpecialWorkType = `${item.isSpecialWorkType}`));
           return {
             ...params,
             data: res.list,
@@ -65,9 +64,6 @@ export default () => {
         toolBarRender={() => [
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
-          </Button>,
-          <Button icon={<UploadOutlined />} onClick={() => console.log('导出')} type="primary">
-            导出
           </Button>,
         ]}
         editable={{ onDelete, onSave }}

@@ -133,6 +133,7 @@ export default ({ openModal, onStateChange }: Props) => {
           </Button>,
         ]}
       >
+        <div>基本信息</div>
         <AdForm
           loadingTitle="提交中..."
           formRef={subFormRef}
@@ -141,7 +142,7 @@ export default ({ openModal, onStateChange }: Props) => {
           labelAlign="left"
           columns={subColumns}
         />
-        <div>注册地</div>
+        <div>证件信息</div>
         <AdForm
           loadingTitle="提交中..."
           formRef={addressFormRef}

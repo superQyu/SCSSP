@@ -3,6 +3,8 @@ import React from 'react';
 import { FormColumnsTypes } from 'components';
 import { Select, Radio, DatePicker, Input, InputNumber } from 'antd';
 
+import DictSelect from '@/components/DictSelect';
+
 export default (subFormRef: any) => {
   const getNameSpell = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value: inputValue } = e.target;
@@ -36,15 +38,7 @@ export default (subFormRef: any) => {
       formItemProps: {
         rules: [{ required: true, message: '请选择分包商类型' }],
       },
-      formItem: (
-        <Select
-          placeholder="请选择分包商类型"
-          options={[
-            { value: '1', label: 'Jack' },
-            { value: '2', label: 'Lucy' },
-          ]}
-        />
-      ),
+      formItem: <DictSelect dictKey={'subcontractor_type'} />,
     },
     {
       label: '所属省',
@@ -77,30 +71,13 @@ export default (subFormRef: any) => {
       formItemProps: {
         rules: [{ required: true, message: '请选择参建单位类型' }],
       },
-      formItem: (
-        <Select
-          placeholder="请选择参建单位类型"
-          options={[
-            { value: '1', label: 'Jack' },
-            { value: '2', label: 'Lucy' },
-            { value: '3', label: 'Lucy' },
-          ]}
-        />
-      ),
+      formItem: <DictSelect dictKey={'corp_type'} />,
     },
     {
       label: '等级',
       dataIndex: 'overallMerit',
       colNum: 12,
-      formItem: (
-        <Select
-          placeholder="请选择参建单位类型"
-          options={[
-            { value: '0', label: 'A' },
-            { value: '1', label: 'B' },
-          ]}
-        />
-      ),
+      formItem: <DictSelect dictKey={'overall_merit'} />,
     },
     {
       label: '是否生效',
@@ -109,12 +86,7 @@ export default (subFormRef: any) => {
       formItemProps: {
         rules: [{ required: true, message: '请选择是否生效' }],
       },
-      formItem: (
-        <Radio.Group>
-          <Radio value={1}>是</Radio>
-          <Radio value={0}>否</Radio>
-        </Radio.Group>
-      ),
+      formItem: <DictSelect dictKey={'is_conformity'} />,
     },
     {
       label: '单位地址',

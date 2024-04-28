@@ -1,5 +1,5 @@
 import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
-import { message, Tag } from 'antd';
+import { message } from 'antd';
 
 import DictSelect from '@/components/DictSelect';
 
@@ -9,13 +9,16 @@ type MenusPropsType = {
   server?: objJson;
 };
 
-export interface ColumnsParamsProps extends objJson {
-  code: string;
-  name: string;
-  initialsSpell: string;
-  isSpecialWorkType: number | string;
-  sort: number;
-}
+// export interface ColumnsParamsProps extends objJson {
+//   subcontractorType: number | string;
+//   realName: string;
+//   corpCode: string;
+//   legalRepresentative: number | string;
+//   registeredCapital: string;
+//   unitAddress: string;
+//   principal: string;
+//   principalTel: string;
+// }
 
 export default ({ server }: MenusPropsType) => {
   const { menus: M } = server as objJson;
@@ -26,44 +29,69 @@ export default ({ server }: MenusPropsType) => {
       valueType: 'indexBorder',
       dataIndex: 'index',
       ellipsis: true,
-      // width: 48,
     },
     {
-      title: '编号',
-      dataIndex: 'code',
+      title: '证书类型',
+      dataIndex: 'credentialClassification',
       ellipsis: true,
-    },
-    {
-      title: '工种',
-      dataIndex: 'name',
-      ellipsis: true,
-    },
-    {
-      title: '首字母简拼',
-      dataIndex: 'initialsSpell',
-      ellipsis: true,
-    },
-    {
-      title: '是否特殊工种',
-      dataIndex: 'isSpecialWorkType',
-      ellipsis: true,
-      render: (_, record) => (
-        <>
-          {record.isSpecialWorkType == '1' ? (
-            <Tag color="green">是</Tag>
-          ) : (
-            <Tag color="red">否</Tag>
-          )}
-        </>
-      ),
+      hideInTable: true,
+      editable: false,
       renderFormItem: () => {
-        return <DictSelect dictKey="is_conformity" />;
+        return (
+          <DictSelect
+            dictKey="pm_credential_classification"
+            onChange={(value) => console.log('value', value)}
+          />
+        );
       },
     },
     {
-      title: '排序',
-      dataIndex: 'sort',
-      valueType: 'digit',
+      title: '分包单位',
+      dataIndex: 'realName',
+      ellipsis: true,
+      editable: false,
+    },
+    {
+      title: '隶属人员名称',
+      dataIndex: 'userName',
+      ellipsis: true,
+      editable: false,
+    },
+    {
+      title: '人员类型',
+      dataIndex: '----',
+      ellipsis: true,
+      hideInSearch: true,
+      editable: false,
+    },
+    {
+      title: '岗位/职位',
+      dataIndex: 'jobCategory',
+      ellipsis: true,
+      hideInSearch: true,
+      editable: false,
+    },
+    {
+      title: '证书名称',
+      dataIndex: 'credentialName',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '证书编号',
+      dataIndex: 'credentialNumber',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '发证机关',
+      dataIndex: 'issuingAuthority',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '证书有效日期',
+      dataIndex: 'validityEndDate',
       ellipsis: true,
       hideInSearch: true,
     },

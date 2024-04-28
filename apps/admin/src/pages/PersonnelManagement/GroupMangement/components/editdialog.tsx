@@ -22,7 +22,7 @@ type MenusType = {
 export default ({ openModal, onStateChange }: Props) => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { job } = server;
+  const { group } = server;
 
   const [open, setOpen] = useState<boolean>(openModal);
   const [title] = useState<string>('添加班组信息');
@@ -76,11 +76,13 @@ export default ({ openModal, onStateChange }: Props) => {
       const values: MenusType = await formRef.current?.validateFields();
       setLoading(true);
 
-      job
-        .createJob(JSON.parse(JSON.stringify({ ...values })))
+      group
+        .createGroup(JSON.parse(JSON.stringify({ ...values })))
         .then(() => {
+          message.success('操作成功！');
+          setLoading(false);
           onStateChange(false);
-          message.success('站点创建成功！');
+          onReset();
         })
         .catch(() => {
           setLoading(false);

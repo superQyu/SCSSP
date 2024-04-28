@@ -16,7 +16,7 @@ import siteModel, { type ColumnsParamsProps } from './models/table.model';
 export default () => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { job } = server;
+  const { group } = server;
 
   // 初始化表格列
   const initColumns = siteModel({ server });
@@ -30,37 +30,16 @@ export default () => {
     await actionRef.current?.reload();
   };
 
-  // 重写save方法 阻止提交失败也退出编辑状态
-  const onSave = async (...args: any[]) => {
-    const [config, id, n, , ,] = args;
-    // 更新行数据
-    const res = await job
-      .updateJob(JSON.parse(JSON.stringify({ ...n })) as ColumnsParamsProps)
-      .then(async () => {
-        message.success('信息更新成功！');
-        await actionRef.current?.reload();
-      })
-      .catch(() => false);
-    if (res === false) {
-      message.error('信息更新失败，请重新提交！');
-      return false;
-    }
-    // 保存时解除编辑模式
-    config.cancelEditable(id);
-    return true;
+  // 点击保存
+  const onSave = async (params: any) => {
+    const res = await group.updateGroup(params as ColumnsParamsProps);
+    return res;
   };
 
   // 删除行
   const onDelete = async (id: number) => {
-    try {
-      await job
-        .deleteMenus({ ids: id })
-        .then(async () => {
-          message.success('操作成功!');
-          await actionRef.current?.reload();
-        })
-        .catch(() => {});
-    } catch (errorInfo) {}
+    const res = await group.deleteGroup({ id });
+    return res;
   };
 
   return (
@@ -70,8 +49,8 @@ export default () => {
         headerTitle="班组列表"
         columns={initColumns}
         request={async (params = {}) => {
-          const res = await job.getSubContractorList(params);
-          // console.log('工种列表', res.list);
+          const res = await group.getGroupList(params);
+          // console.log('工种列表', res);
           return {
             ...params,
             data: res.list,
@@ -84,22 +63,11 @@ export default () => {
         toolBarRender={() => [
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
-          </Button>
+          </Button>,
         ]}
-        editable={{
-          type: 'multiple',
-          onSave,
-          onDelete,
-          actionRender: (...args: any[]) => {
-            const [, config, defaultDom] = args;
-            return [
-              cloneElement(defaultDom.save as React.ReactElement, {
-                onSave: onSave.bind(null, config),
-              }),
-              defaultDom.cancel,
-              defaultDom.delete,
-            ];
-          },
+        editable={{ onDelete, onSave }}
+        pagination={{
+          pageSize: 10,
         }}
       ></ProTable>
       <EditDialog openModal={dialogVisible} onStateChange={handleModalStateChange} />

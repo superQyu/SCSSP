@@ -17,7 +17,7 @@ const group: ApiItem[] = [
   },
   {
     key: 'createGroup',
-    url: `${ADMIN_API}/wisdom/Group-info/create`,
+    url: `${ADMIN_API}/wisdom/group-info/create`,
     type: 'POST',
     name: '班组管理',
     description: '新建班组',
@@ -37,7 +37,7 @@ const group: ApiItem[] = [
   },
   {
     key: 'updateGroup',
-    url: `${ADMIN_API}/wisdom/Group-info/update`,
+    url: `${ADMIN_API}/wisdom/group-info/update`,
     type: 'PUT',
     name: '班组管理',
     description: '编辑班组',
@@ -50,6 +50,17 @@ const group: ApiItem[] = [
       { key: 'legalRepresentative', cn: '分包单位名称' },
       { key: 'registeredCapital', cn: '劳务工种' },
       { key: 'principalTel', cn: '联系电话' },
+    ],
+  },
+  {
+    key: 'deleteGroup',
+    url: `${ADMIN_API}/wisdom/group-info/delete`,
+    type: 'DELETE',
+    name: '班组管理',
+    description: '删除班组',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: '数据库主键' },
     ],
   },
 ];

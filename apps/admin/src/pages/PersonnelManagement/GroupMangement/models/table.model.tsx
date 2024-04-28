@@ -58,9 +58,9 @@ export default ({ server }: MenusPropsType) => {
           text: '否',
         },
       },
-      formItemProps: {
-        label: '分包单位'
-      }
+      // formItemProps: {
+      //   label: '分包单位'
+      // }
     },
     {
       title: '劳务工种',
