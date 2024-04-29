@@ -28,6 +28,8 @@ interface Props extends MenusType {
   treeDefaultExpandedKeys?: string[];
   /** Tree 最外层的 style */
   rootStyle?: CSSProperties;
+  /** 是否全部展开 */
+  expandAll?: boolean;
 }
 type DefaultOptionType = GetProp<TreeSelectProps, 'treeData'>[number];
 
@@ -42,6 +44,7 @@ const ProTreeSelect: React.FC<Props> = forwardRef(
       flat,
       treeNodes = [],
       rootStyle = { maxHeight: 480, overflow: 'auto' },
+      expandAll,
     }: Props,
     ref
   ) => {
@@ -50,6 +53,7 @@ const ProTreeSelect: React.FC<Props> = forwardRef(
     const [searchValue, setSearchValue] = useState('');
 
     const [defaultData, setDefaultData] = useState<TreeDataNode[]>([]);
+    const [defaultExpandedKeys, setdefaultExpandedKeys] = useState<(string | string)[]>([]);
     const [treeData, setTreeData] = useState<Omit<DefaultOptionType, 'label'>[]>([]);
 
     const onLoadTreeData = async () => {
@@ -68,7 +72,9 @@ const ProTreeSelect: React.FC<Props> = forwardRef(
         if (platforId != -1) nodes = nodes.filter((item) => item.value == platforId);
       }
       setTreeData([...nodes]);
-      setDefaultData(flattenArray(nodes));
+
+      const copyNodes = flattenArray(nodes);
+      setDefaultData(copyNodes);
     };
 
     const onSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,7 +100,6 @@ const ProTreeSelect: React.FC<Props> = forwardRef(
       setSearchValue(value);
     };
 
-    const onCheck = (selectedKeys: any) => {};
     const onSelect = (selectedKeys: React.Key[]) => {
       const selected = defaultData.filter((item) => {
         return selectedKeys.indexOf(item.key) != -1;
@@ -104,22 +109,27 @@ const ProTreeSelect: React.FC<Props> = forwardRef(
     const clearAll = (type: string) => {
       if (type === 'clear') {
         onLoadTreeData();
-        setExpandedKeys(treeDefaultExpandedKeys);
         setAutoExpandParent(false);
+        setExpandedKeys(initExpandedKeys());
+      }
+    };
+
+    const initExpandedKeys = () => {
+      if (!expandAll) {
+        return treeDefaultExpandedKeys;
+      } else {
+        return defaultData.filter((item: any) => item.children.length).map((item: any) => item.key);
       }
     };
 
     useEffect(() => {
-      if (searchValue == '') setExpandedKeys(treeDefaultExpandedKeys);
+      if (searchValue == '') setExpandedKeys(initExpandedKeys());
     }, [searchValue]);
 
     useEffect(() => {
       onLoadTreeData();
     }, [treeNodes]);
 
-    useEffect(() => {
-      setExpandedKeys(treeDefaultExpandedKeys);
-    }, [treeDefaultExpandedKeys]);
     return (
       <>
         {model == 'tree' ? (
@@ -136,9 +146,10 @@ const ProTreeSelect: React.FC<Props> = forwardRef(
               <></>
             )}
             <Tree
+              key={treeData.length}
               rootStyle={{ ...rootStyle }}
-              defaultExpandAll={true}
-              expandedKeys={expandedKeys}
+              defaultExpandedKeys={[...treeDefaultExpandedKeys]}
+              defaultExpandAll={!!expandAll}
               autoExpandParent={autoExpandParent}
               onSelect={onSelect}
               treeData={treeData}
@@ -150,6 +161,7 @@ const ProTreeSelect: React.FC<Props> = forwardRef(
             style={{ width: '100%' }}
             treeData={treeData}
             dropdownStyle={{ ...rootStyle }}
+            treeDefaultExpandAll={!!expandAll}
             treeDefaultExpandedKeys={[...treeDefaultExpandedKeys]}
             placeholder="请选择"
             onChange={(v: string) => onChange(`${v}`)}

@@ -16,7 +16,8 @@ interface Item {
 
 const CustomTabs = styled(Tabs)(() => ({
   '& .ant-tabs-nav': {
-    padding: ' 2px 0',
+    padding: '2px 0',
+    'margin-block-end': 0,
     'border-block-start': '1px solid rgba(0, 0, 0, 0.06)',
     '& .ant-tabs-nav-wrap': {
       padding: '0 10px',
