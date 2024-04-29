@@ -1,6 +1,12 @@
 import { createElement, cloneElement, useRef, useState, useEffect } from 'react';
 import { Button, message, Alert, Modal } from 'antd';
-import { PlusOutlined, SearchOutlined, ExclamationCircleFilled } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  EditOutlined,
+  SearchOutlined,
+  DoubleRightOutlined,
+  ExclamationCircleFilled,
+} from '@ant-design/icons';
 
 import { TableDropdown, type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
@@ -99,7 +105,7 @@ export default () => {
                   action?.startEditable?.(record.id);
                 }}
               >
-                编辑
+                {createElement(EditOutlined)}编辑
               </a>,
               <TableDropdown
                 key="actionGroup"
@@ -147,7 +153,9 @@ export default () => {
                   { key: 'delete', name: '删除' },
                   // { key: 'copy', name: '复制' },
                 ]}
-              />,
+              >
+                {createElement(DoubleRightOutlined)}更多
+              </TableDropdown>,
             ],
           },
         ]}

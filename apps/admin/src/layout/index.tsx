@@ -81,11 +81,7 @@ const LayoutContext: React.FC = () => {
             navigator('/');
           },
           logo: myImage,
-          reRenderRoute: (e: RouterTypes) => {
-            // console.log(({ ...e, routes: filterRoutes(e.routes || []) }));
-            
-            return ({ ...e, routes: filterRoutes(e.routes || []) });
-          },
+          reRenderRoute: (e: RouterTypes) => ({ ...e, routes: filterRoutes(e.routes || []) }),
           menuItemRender: (item: MenuDataItem, dom: React.ReactNode) => (
             <div onClick={() => menuClick(item)}>{dom}</div>
           ),
