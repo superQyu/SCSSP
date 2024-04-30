@@ -7,7 +7,7 @@ const job: ApiItem[] = [
     url: `${ADMIN_API}/wisdom/work-type-info/page`,
     type: 'GET',
     name: '工种管理',
-    description: '获取工种列表',
+    description: '获取工种列表(分页)',
     params: [
       { key: 'Authorization', location: 'header' },
       { key: 'code', cn: '编号' },

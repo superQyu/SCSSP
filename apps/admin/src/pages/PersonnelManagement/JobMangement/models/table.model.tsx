@@ -32,21 +32,25 @@ export default ({ server }: MenusPropsType) => {
       title: '编号',
       dataIndex: 'code',
       ellipsis: true,
+      // width: 48,
     },
     {
-      title: '工种',
+      title: '工种名称',
       dataIndex: 'name',
       ellipsis: true,
+      // width: 48,
     },
     {
       title: '首字母简拼',
       dataIndex: 'initialsSpell',
       ellipsis: true,
+      // width: 100,
     },
     {
       title: '是否特殊工种',
       dataIndex: 'isSpecialWorkType',
       ellipsis: true,
+      // minWidth: 100,
       render: (_, record) => (
         <>
           {record.isSpecialWorkType == '1' ? (
@@ -65,6 +69,7 @@ export default ({ server }: MenusPropsType) => {
       dataIndex: 'sort',
       valueType: 'digit',
       ellipsis: true,
+      // width: 48,
       hideInSearch: true,
     },
     {
@@ -82,26 +87,14 @@ export default ({ server }: MenusPropsType) => {
         >
           编辑
         </a>,
-        <TableDropdown
-          key="actionGroup"
-          onSelect={(key) => {
-            if (key === 'delete') {
-              try {
-                M.deleteMenus({ ids: record.id })
-                  .then(() => {
-                    message.success('操作成功!');
-                    action?.reload();
-                  })
-                  .catch(() => {});
-              } catch (errorInfo) {}
-            }
+        <a
+          key="delete"
+          onClick={() => {
+            // action?.startEditable?.(record.id);
           }}
-          menus={[
-            { key: 'delete', name: '删除' },
-            { key: 'detail', name: '详情' },
-            { key: 'copy', name: '复制' },
-          ]}
-        />,
+        >
+          删除
+        </a>,
       ],
     },
   ];

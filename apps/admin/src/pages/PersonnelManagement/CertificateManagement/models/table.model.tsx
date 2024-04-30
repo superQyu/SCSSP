@@ -110,26 +110,14 @@ export default ({ server }: MenusPropsType) => {
         >
           编辑
         </a>,
-        <TableDropdown
-          key="actionGroup"
-          onSelect={(key) => {
-            if (key === 'delete') {
-              try {
-                M.deleteMenus({ ids: record.id })
-                  .then(() => {
-                    message.success('操作成功!');
-                    action?.reload();
-                  })
-                  .catch(() => {});
-              } catch (errorInfo) {}
-            }
+        <a
+          key="delete"
+          onClick={() => {
+            // action?.startEditable?.(record.id);
           }}
-          menus={[
-            { key: 'delete', name: '删除' },
-            { key: 'detail', name: '详情' },
-            { key: 'copy', name: '复制' },
-          ]}
-        />,
+        >
+          删除
+        </a>,
       ],
     },
   ];

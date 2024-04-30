@@ -36,33 +36,17 @@ export default ({ openModal, onStateChange }: Props) => {
 
   // 分包商信息表单的默认值
   const [subInitialValues] = useState<MenusType>({
-    realName: '',
-    shortName: '',
-    subcontractorType: undefined,
-    province: '',
-    city: '',
-    district: '',
-    corpType: undefined,
-    overallMerit: undefined,
-    isConformity: undefined,
-    unitAddress: '',
-    legalRepresentative: '',
-    legalRepresentativePhone: '',
-    registeredCapital: '',
-    regDate: '',
-    principal: '',
-    principalTel: '',
-    idCard: '',
-    quality: '',
-    nameSpell: '',
-    corpCode: '',
+    // subcontractorType: undefined,
+    // corpType: undefined,
+    // overallMerit: undefined,
+    // isConformity: undefined,
   });
   // 注册地信息表单的默认值
   const [addressInitialValues] = useState<MenusType>({
-    buildComplaintCall: '',
-    societyComplaintCall: '',
-    companyScore: '',
-    companySummary: '',
+    // buildComplaintCall: '',
+    // societyComplaintCall: '',
+    // companyScore: '',
+    // companySummary: '',
   });
 
   useEffect(() => {

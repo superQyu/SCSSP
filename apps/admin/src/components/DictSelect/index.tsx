@@ -52,6 +52,8 @@ const DictSelect: React.FC<Props> = (
   const [name, setName] = useState('');
   const inputRef = useRef<InputRef>(null);
   const [showLabel, setShowLabel] = useState<string>('');
+  // 表单绑定项
+  const [formValue, setFormValue] = useState<string | undefined>(undefined);
 
   const loadData = async () => {
     const isExsit = dictionary.get(dictKey);
@@ -60,6 +62,10 @@ const DictSelect: React.FC<Props> = (
       let curItem = (isExsit as SelectOption[]).filter((item) => item.value == value);
       setShowLabel(curItem[0]?.label || '');
     }
+    // 将所有传入的 value 转化为 string, 因为字典中的值均为 string
+    // console.log('当前绑定值', value)
+    // 设置 undefined 的目的是, 表格搜索表单默认值为 undefined
+    if(value != undefined) setFormValue(`${value}`);
   };
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,7 +98,7 @@ const DictSelect: React.FC<Props> = (
         <>{showLabel}</>
       ) : (
         <Select
-          value={value}
+          value={formValue}
           style={{ width: '100%' }}
           allowClear
           placeholder="请选择"

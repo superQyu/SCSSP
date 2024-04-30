@@ -32,11 +32,8 @@ export default ({ openModal, onStateChange }: Props) => {
 
   // 表单的默认值
   const [initialValues] = useState<MenusType>({
-    code: '',
-    name: '',
-    initialsSpell: '',
-    // isSpecialWorkType: 1,
-    sort: '',
+    sort: 0,
+    isSpecialWorkType: 0,
   });
 
   useEffect(() => {

@@ -1,5 +1,7 @@
-import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
-import { message, Select } from 'antd';
+import { useEffect, useState } from 'react';
+
+import { type ProColumns } from '@ant-design/pro-components';
+import { Select } from 'antd';
 
 type objJson = Record<string, any>;
 
@@ -19,7 +21,32 @@ export interface ColumnsParamsProps extends objJson {
 }
 
 export default ({ server }: MenusPropsType) => {
-  const { menus: M } = server as objJson;
+  const { subContractor, certificate } = server as objJson;
+
+  // 分包单位选择下拉
+  const [subcontractorList, setSubcontractorList] = useState([]);
+  // 班组长选择下拉
+  const [personInfoList, setPersonInfoList] = useState([]);
+
+  useEffect(() => {
+    getSelectOptions();
+  }, []);
+
+  // 通过接口获取下拉框的内容
+  const getSelectOptions = async () => {
+    const res1 = await subContractor.getAllSubContractor();
+    // console.log('分包商列表', res1);
+    const list1 = res1.map((item: any) => {
+      return { label: item.realName, value: item.id };
+    });
+    setSubcontractorList(list1);
+    const res2 = await certificate.getPersonInfoList();
+    // console.log('班组长列表', res2);
+    const list2 = res2.map((item: any) => {
+      return { label: item.name, value: item.id };
+    });
+    setPersonInfoList(list2);
+  };
 
   const columns: ProColumns[] = [
     {
@@ -36,7 +63,7 @@ export default ({ server }: MenusPropsType) => {
     },
     {
       title: '班组长名',
-      dataIndex: 'userId',
+      dataIndex: 'userName',
       ellipsis: true,
     },
     {
@@ -47,34 +74,20 @@ export default ({ server }: MenusPropsType) => {
     },
     {
       title: '分包单位名称',
-      dataIndex: 'subcontractorId',
+      dataIndex: 'subcontractorName',
       ellipsis: true,
-      valueType: 'select',
-      valueEnum: {
-        '1': {
-          text: '架子工',
-        },
-        '0': {
-          text: '否',
-        },
+      // render: (_, record) => {
+      //   return <div>{record.}</div>;
+      // },
+      renderFormItem: () => {
+        return <Select placeholder="请选择分包单位" options={subcontractorList} />;
       },
-      // formItemProps: {
-      //   label: '分包单位'
-      // }
     },
     {
       title: '劳务工种',
-      dataIndex: 'workerTypeId',
+      dataIndex: 'workerTypeName',
       ellipsis: true,
-      valueType: 'select',
-      valueEnum: {
-        '1': {
-          text: '架子工',
-        },
-        '0': {
-          text: '否',
-        },
-      },
+      editable: false
     },
     {
       title: '公司简称简拼',
@@ -87,43 +100,6 @@ export default ({ server }: MenusPropsType) => {
       dataIndex: 'phone',
       ellipsis: true,
       hideInSearch: true,
-    },
-    {
-      title: '操作',
-      width: 140,
-      valueType: 'option',
-      dataIndex: 'option',
-      render: (_text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            // console.log('点击了编辑')
-            action?.startEditable?.(record.id);
-          }}
-        >
-          编辑
-        </a>,
-        <TableDropdown
-          key="actionGroup"
-          onSelect={(key) => {
-            if (key === 'delete') {
-              try {
-                M.deleteMenus({ ids: record.id })
-                  .then(() => {
-                    message.success('操作成功!');
-                    action?.reload();
-                  })
-                  .catch(() => {});
-              } catch (errorInfo) {}
-            }
-          }}
-          menus={[
-            { key: 'delete', name: '删除' },
-            { key: 'detail', name: '详情' },
-            { key: 'copy', name: '复制' },
-          ]}
-        />,
-      ],
     },
   ];
 

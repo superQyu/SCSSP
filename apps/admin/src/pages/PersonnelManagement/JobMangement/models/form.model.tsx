@@ -12,7 +12,7 @@ const columns: FormColumnsTypes[] = [
     },
   },
   {
-    label: '工种',
+    label: '工种名称',
     dataIndex: 'name',
     formItemProps: {
       rules: [{ message: '请输入工种' }],

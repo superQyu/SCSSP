@@ -1,9 +1,9 @@
-import { useRef, cloneElement, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { ProTable } from 'components';
 import { type ActionType } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 
 import EditDialog from './components/editdialog';
 
@@ -32,14 +32,22 @@ export default () => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    console.log('编辑分包商时的参数', params)
-    const res = await subContractor.updateSubContractor(params as ColumnsParamsProps);
+    // console.log('编辑分包商时的参数', params);
+    const res = await subContractor
+      .updateSubContractor(params as ColumnsParamsProps)
+      .then(async () => {
+        message.success('信息更新成功！');
+        await actionRef.current?.reload();
+      });
     return res;
   };
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await subContractor.deleteSubContractor({ id });
+    const res = await subContractor.deleteSubContractor({ id }).then(async () => {
+      message.success('信息删除成功！');
+      await actionRef.current?.reload();
+    });
     return res;
   };
 
@@ -51,7 +59,7 @@ export default () => {
         columns={initColumns}
         request={async (params = {}) => {
           const res = await subContractor.getSubContractorList(params);
-          // console.log('工种列表', res.list);
+          // console.log('分包商列表', res.list);
           return {
             ...params,
             data: res.list,
@@ -60,6 +68,23 @@ export default () => {
         }}
         form={{
           ignoreRules: false,
+        }}
+        scroll={{ y: 'auto' }}
+        search={{
+          labelWidth: 'auto',
+          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+            return [
+              dom[0],
+              <Button
+                type="primary"
+                key="sub"
+                icon={<SearchOutlined />}
+                onClick={() => form?.submit()}
+              >
+                {searchText}
+              </Button>,
+            ];
+          },
         }}
         toolBarRender={() => [
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">

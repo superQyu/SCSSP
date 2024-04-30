@@ -32,14 +32,20 @@ export default () => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    console.log('编辑分包商时的参数', params)
-    const res = await subContractor.updateSubContractor(params);
+    console.log('编辑分包商时的参数', params);
+    const res = await subContractor.updateSubContractor(params).then(async () => {
+      message.success('信息更新成功！');
+      await actionRef.current?.reload();
+    });
     return res;
   };
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await subContractor.deleteSubContractor({ id });
+    const res = await subContractor.deleteSubContractor({ id }).then(async () => {
+      message.success('信息更新成功！');
+      await actionRef.current?.reload();
+    });
     return res;
   };
 

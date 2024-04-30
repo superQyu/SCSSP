@@ -1,4 +1,4 @@
-import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
+import { type ProColumns } from '@ant-design/pro-components';
 import { message } from 'antd';
 
 import DictText from '@/components/DictSelect/DictText';
@@ -35,20 +35,9 @@ export default ({ server }: MenusPropsType) => {
       title: '分包商类型',
       dataIndex: 'subcontractorType',
       ellipsis: true,
-      render: () => {
-        return <DictText dictKey="subcontractor_type" />;
+      render: (_, record) => {
+        return <DictText value={record.subcontractorType} dictKey="subcontractor_type" />;
       },
-      // valueEnum: {
-      //   '1': {
-      //     text: '专业承包',
-      //   },
-      //   '2': {
-      //     text: '施工总承包',
-      //   },
-      //   '3': {
-      //     text: '劳务承包',
-      //   },
-      // },
       renderFormItem: () => {
         return <DictSelect dictKey="subcontractor_type" />;
       },
@@ -117,26 +106,14 @@ export default ({ server }: MenusPropsType) => {
         >
           编辑
         </a>,
-        <TableDropdown
-          key="actionGroup"
-          onSelect={(key) => {
-            if (key === 'delete') {
-              try {
-                M.deleteMenus({ ids: record.id })
-                  .then(() => {
-                    message.success('操作成功!');
-                    action?.reload();
-                  })
-                  .catch(() => {});
-              } catch (errorInfo) {}
-            }
+        <a
+          key="delete"
+          onClick={() => {
+            // action?.startEditable?.(record.id);
           }}
-          menus={[
-            { key: 'delete', name: '删除' },
-            { key: 'detail', name: '详情' },
-            { key: 'copy', name: '复制' },
-          ]}
-        />,
+        >
+          删除
+        </a>,
       ],
     },
   ];

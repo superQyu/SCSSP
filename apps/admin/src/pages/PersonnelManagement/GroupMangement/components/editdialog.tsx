@@ -8,18 +8,20 @@ import initColumns from '../models/form.model';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
+// 代表任意对象
+type MenusType = {
+  [key: string]: any;
+};
 interface Props {
   /** 控制 Modal 是否显示 */
   openModal: boolean;
   /** 监听 Modal 状态变化 */
   onStateChange: (state: boolean) => void;
+  // 当为详情表单时, 有该属性
+  detail: MenusType;
 }
 
-type MenusType = {
-  [key: string]: any;
-};
-
-export default ({ openModal, onStateChange }: Props) => {
+export default ({ openModal, onStateChange, detail }: Props) => {
   // api 相关
   const { server } = useBasicConfiguration();
   const { group } = server;
@@ -31,34 +33,26 @@ export default ({ openModal, onStateChange }: Props) => {
   const formRef = useRef<FormInstance>(null);
 
   // 表单项配置
-  const formColumns = initColumns(formRef);
+  // 只能放在外面, 因为调用该方法中使用 hook, 只能放在函数式组件的外部
+  // 传入表单的DOM 和 两个图片列表的默认值
+  const {entryAttachments, exitAttachments} = detail
+  const formColumns = initColumns(formRef, entryAttachments, exitAttachments);
 
   // 分包商信息表单的默认值
-  const [initialValues] = useState<MenusType>({
-    realName: '',
-    shortName: '',
-    subcontractorType: '',
-    province: '',
-    city: '',
-    district: '',
-    corpType: '',
-    overallMerit: '',
-    isConformity: 1,
-    unitAddress: '',
-    legalRepresentative: '',
-    legalRepresentativePhone: '',
-    registeredCapital: '',
-    regDate: '',
-    principal: '',
-    principalTel: '',
-    idCard: '',
-    quality: '',
-    nameSpell: '',
-    corpCode: '',
-  });
+  const [formData, setFormData] = useState<MenusType>();
 
   useEffect(() => {
     setOpen(openModal);
+    if (openModal) {
+      // 如果打开弹窗
+      if (!Object.entries(detail).length) {
+        setFormData({});
+      } else {
+        setFormData(detail);
+      }
+    } else {
+      formRef.current?.resetFields();
+    }
   }, [openModal]);
 
   // 点击重置
@@ -74,10 +68,12 @@ export default ({ openModal, onStateChange }: Props) => {
   const handleOk = async () => {
     try {
       const values: MenusType = await formRef.current?.validateFields();
+      values.entryAttachments = values.entryAttachments?.join('@');
+      values.exitAttachments = values.exitAttachments?.join('@');
+      values.id = detail.id
+      // console.log('表单提交时的数据', values);
       setLoading(true);
-
-      group
-        .createGroup(JSON.parse(JSON.stringify({ ...values })))
+      group[detail.id ? 'updateGroup' : 'createGroup'](values)
         .then(() => {
           message.success('操作成功！');
           setLoading(false);
@@ -118,14 +114,15 @@ export default ({ openModal, onStateChange }: Props) => {
             重置
           </Button>,
           <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
-            提交
+            {detail.id ? '更新' : '提交'}
           </Button>,
         ]}
       >
         <AdForm
+          key={JSON.stringify(formData)}
           loadingTitle="提交中..."
           formRef={formRef}
-          initialValues={initialValues}
+          initialValues={formData}
           loading={loading}
           labelAlign="left"
           columns={formColumns}

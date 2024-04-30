@@ -26,11 +26,13 @@ const certificate: ApiItem[] = [
     url: `${ADMIN_API}/wisdom/personnel-certificate/getPersonnelCertificateManagerPage`,
     type: 'GET',
     name: '证件列表',
-    description: '获取证件列表',
+    description: '获取证件列表(分页)',
     params: [
       { key: 'Authorization', location: 'header' },
       { key: 'realName', cn: '分包单位' },
       { key: 'userName', cn: '隶属人员名称' },
+      { key: 'current', targetKey: 'pageNo' },
+      { key: 'pageSize' },
     ],
   },
   {
@@ -50,7 +52,5 @@ const certificate: ApiItem[] = [
       { key: 'userName', cn: '图片上传' },
     ],
   },
-
-
 ];
 export default certificate;

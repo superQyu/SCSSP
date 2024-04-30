@@ -3,7 +3,7 @@ import { useRef, cloneElement, useState, useEffect } from 'react';
 import { ProTable } from 'components';
 import { type ActionType } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
-import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
+import { PlusOutlined, UploadOutlined, SearchOutlined } from '@ant-design/icons';
 
 import EditDialog from './components/editdialog';
 
@@ -32,13 +32,19 @@ export default () => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    const res = await job.updateJob(params as ColumnsParamsProps);
+    const res = await job.updateJob(params as ColumnsParamsProps).then(async () => {
+      message.success('信息更新成功！');
+      await actionRef.current?.reload();
+    });
     return res;
   };
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await job.deleteJob({ id });
+    const res = await job.deleteJob({ id }).then(async () => {
+      message.success('信息删除成功！');
+      await actionRef.current?.reload();
+    });
     return res;
   };
 
@@ -52,7 +58,7 @@ export default () => {
           // console.log('请求工种列表的参数', params)
           const res = await job.getJobList(params);
           // console.log('工种列表', res.list);
-          res.list.forEach((item: any) => (item.isSpecialWorkType = `${item.isSpecialWorkType}`));
+          // res.list.forEach((item: any) => (item.isSpecialWorkType = `${item.isSpecialWorkType}`));
           return {
             ...params,
             data: res.list,
@@ -61,6 +67,23 @@ export default () => {
         }}
         form={{
           ignoreRules: false,
+        }}
+        scroll={{ y: 'auto' }}
+        search={{
+          labelWidth: 'auto',
+          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+            return [
+              dom[0],
+              <Button
+                type="primary"
+                key="sub"
+                icon={<SearchOutlined />}
+                onClick={() => form?.submit()}
+              >
+                {searchText}
+              </Button>,
+            ];
+          },
         }}
         toolBarRender={() => [
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">

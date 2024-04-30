@@ -12,6 +12,8 @@ const subContractor: ApiItem[] = [
       { key: 'Authorization', location: 'header' },
       { key: 'realName', cn: '分包商名称' },
       { key: 'subcontractorType', cn: '分包商类型' },
+      {key: 'current', targetKey: 'pageNo'}, 
+      {key: 'pageSize'}, 
     ],
   },
   {
