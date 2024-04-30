@@ -22,13 +22,20 @@ export default (_: MenusPropsType) => {
       width: 60,
       hideInSearch: true,
       title: '序号',
-
-      dataIndex: 'id',
+      dataIndex: 'index',
+      valueType: 'indexBorder',
+    },
+    {
+      title: '分包单位',
+      dataIndex: 'name',
+    },
+    {
+      title: '姓名',
+      dataIndex: 'name',
     },
     {
       title: '打卡时间',
       dataIndex: 'type',
-
     },
     {
       title: '打卡方向',

@@ -16,7 +16,7 @@ const person: ApiItem[] = [
       },
       { key: 'Authorization', location: 'header' },
       { key: 'personnelInfoSaveReqVO', cn: '用户基础信息' },
-      { key: 'personnelCertificateSaveReqVO', cn: '人员证书信息' },
+      { key: 'personnelCertificateSaveReqVOS', cn: '人员证书信息' },
       { key: 'entryInfoSaveReqVO', cn: '人员进场信息' },
     ],
   },

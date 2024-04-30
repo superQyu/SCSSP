@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
-import { Button, message, Modal, Collapse, Upload, Flex, Select } from 'antd';
+import { Button, message, Modal, Collapse, Flex, Select } from 'antd';
 import { LeftOutlined, DeleteOutlined, AuditOutlined } from '@ant-design/icons';
 import type { FormInstance } from 'antd/es/form';
 
-import { AdForm, FormColumnsTypes } from 'components';
+import { AdForm, FormColumnsTypes, ProUpload } from 'components';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import siteModel from '../modes/info.model';
 import styles from '../index.module.scss';
@@ -60,7 +60,7 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
   const certificateRef = useRef<FormInstance[]>([]);
   const [activeKey, setActiveKey] = useState('');
   //  api server
-  const { user: U, basic: B, person: P } = server;
+  const { basic: B, person: P, file: F } = server;
 
   const { certificateColumns } = siteModel();
 
@@ -112,30 +112,6 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
     formRef.current?.setFieldsValue({
       [functionKey]: value,
     });
-  };
-
-  // 上传证书
-  const uploadFile = (info: any) => {
-    const formData = new FormData();
-    formData.append('file', info.file);
-    fetch('http://192.168.10.77:48081/admin-api/infra/file/upload', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        Authorization: 'Bearer 4249f7ebad4e4015a44bd4be6a1b8d69',
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        setFileList([
-          ...fileList,
-          {
-            uid: info.file.uid,
-            name: info.file.name,
-            url: res.data,
-          },
-        ]);
-      });
   };
 
   const handleAddItem = () => {
@@ -199,6 +175,7 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
         if (el) {
           const elValue: MenusType = await el.validateFields();
           arr.push({ ...elValue, picture: fileList[index].url });
+          console.log('arr', arr);
           onSubmit(arr);
           setOpen(false);
         }
@@ -292,11 +269,27 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
       <div className={styles.infoTitle}>
         <Flex justify={'space-between'} align={'center'} className="w-full">
           证书信息
-          <Upload name="file" showUploadList={false} customRequest={(info) => uploadFile(info)}>
-            <Button icon={<AuditOutlined />} className="bg-#67c23a color-#fff" size="large">
-              上传证书
-            </Button>
-          </Upload>
+          <ProUpload
+            fileType={['application/pdf', 'image/jpeg', 'image/png']}
+            onRequest={async (params: any) => await F.fileUpload(params)}
+            buttonRender={
+              <Button icon={<AuditOutlined />} className="bg-#67c23a color-#fff" size="middle">
+                上传证书
+              </Button>
+            }
+            showUploadList={false}
+            onUploadSuccess={(res: any) => {
+              const { url, name } = Object.values(res)[0] as { url: string; name: string };
+              setFileList([
+                ...fileList,
+                {
+                  uid: Object.keys(res)[0],
+                  name: name,
+                  url: url,
+                },
+              ]);
+            }}
+          />
         </Flex>
       </div>
 

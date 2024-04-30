@@ -1,9 +1,15 @@
 import { FormColumnsTypes } from 'components';
 import { useState } from 'react';
-import { DatePicker, Button, Form } from 'antd';
+import { DatePicker, Button } from 'antd';
 import DictSelect from '@/components/DictSelect';
+import AsyncSelect from '@/components/DictSelect/AsyncSelect';
 import dayjs from 'dayjs';
-export default () => {
+
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+
+export default (props) => {
+  const { server } = useBasicConfiguration();
+  const { group: G } = server;
   const infoColumns: FormColumnsTypes[] = [
     {
       label: '姓名',
@@ -49,17 +55,6 @@ export default () => {
       },
       colNum: 8,
     },
-    // {
-    //   label: '账户类型',
-    //   dataIndex: 'accountType',
-    //   formItem: <DictSelect dictKey={'pm_account_type'} />,
-    //   colNum: 8,
-    // },
-    // {
-    //   label: '上级账号',
-    //   dataIndex: 'upAccount',
-    //   colNum: 8,
-    // },
     {
       label: '出生日期',
       dataIndex: 'birthday',
@@ -271,9 +266,6 @@ export default () => {
     },
   ];
 
-  const entryValues = useState({
-    isTeamLeader: '1',
-  });
   const entryColumns: FormColumnsTypes[] = [
     {
       label: '是否班组长',
@@ -286,14 +278,43 @@ export default () => {
     },
     {
       label: '班组名称',
-      dataIndex: 'teamName',
+      dataIndex: 'team',
       formItemProps: {
         rules: [{ required: true, message: '请选择班组名称' }],
       },
       formItem: (
-        <DictSelect
-          dictKey={'pm_is_team_leader'}
-          dropdownExtend={entryValues.isTeamLeader == '1'}
+        <AsyncSelect
+          dropdownExtend={true}
+          asyncData={async () => {
+            const { list } = await G.groupList();
+            return list.map((item: { teamName: string; id: number }) => {
+              return {
+                label: item.teamName,
+                value: item.id,
+              };
+            });
+          }}
+          onChange={async (val) => {
+            if (typeof val == 'string') {
+              props?.entryRef.current?.setFieldsValue({
+                teamName: val,
+              });
+              props?.entryRef.current?.setFieldsValue({
+                teamId: null,
+              });
+            } else {
+              const { list } = await G.groupList();
+              const name = list.find(
+                (item: { label: string; value: number }) => item.value == val
+              )?.label;
+              props?.entryRef.current?.setFieldsValue({
+                teamId: val,
+              });
+              props?.entryRef.current?.setFieldsValue({
+                teamName: name,
+              });
+            }
+          }}
         />
       ),
       colNum: 8,
@@ -408,6 +429,16 @@ export default () => {
       formItem: <DictSelect dictKey={'pm_government_platform_upload'} />,
       colNum: 8,
     },
+    {
+      label: '',
+      dataIndex: 'teamName',
+      formItem: <div className="hidden"></div>,
+    },
+    {
+      label: '',
+      dataIndex: 'teamId',
+      formItem: <div className="hidden"></div>,
+    },
   ];
 
   const workTypeColumns: FormColumnsTypes[] = [
@@ -439,11 +470,13 @@ export default () => {
     {
       label: '证书种类',
       dataIndex: 'certificateType',
+      formItem: <DictSelect dictKey={'pm_certificate_type'} />,
       colNum: 12,
     },
     {
       label: '证书类型',
       dataIndex: 'certificateCategory',
+      formItem: <DictSelect dictKey={'pm_credential_classification'} />,
       colNum: 12,
     },
     {
