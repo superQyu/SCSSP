@@ -41,6 +41,7 @@ export default (_: MenusPropsType) => {
       title: '编号',
       editable: false,
       dataIndex: 'id',
+      sorter: (a, b) => a.id - b.id,
     },
     {
       title: '用户名称',

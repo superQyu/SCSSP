@@ -50,11 +50,12 @@ export default (props: MenusPropsType) => {
     //   dataIndex: 'path',
     // },
     {
-      width: 60,
+      width: 80,
       hideInSearch: true,
       title: 'ID编号',
       editable: false,
       dataIndex: 'id',
+      sorter: (a, b) => a.id - b.id,
     },
     {
       title: '图标',
@@ -72,6 +73,7 @@ export default (props: MenusPropsType) => {
       title: '排序',
       valueType: 'digit',
       dataIndex: 'sort',
+      sorter: (a, b) => a.sort - b.sort,
       formItemProps: {
         rules: [
           {

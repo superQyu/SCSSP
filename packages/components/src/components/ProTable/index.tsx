@@ -104,13 +104,15 @@ export default (props: any) => {
         }}
         rowKey={props.rowKey || 'id'}
         search={
-          {
-            ...props.search,
-            onCollapse: (v) => initSrcollY(),
-          } || {
-            labelWidth: 'auto',
-            onCollapse: (v) => initSrcollY(),
-          }
+          props.search
+            ? {
+                ...props.search,
+                onCollapse: (v) => initSrcollY(),
+              } || {
+                labelWidth: 'auto',
+                onCollapse: (v) => initSrcollY(),
+              }
+            : false
         }
         options={
           props.options || {
@@ -141,6 +143,7 @@ export default (props: any) => {
         dateFormatter="string"
         headerTitle={props.headerTitle}
         scroll={{ ...scroll() }}
+        expandable={props.expandable}
       />
     </div>
   );

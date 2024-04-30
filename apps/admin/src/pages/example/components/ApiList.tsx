@@ -1,39 +1,149 @@
-import React, { useState, useEffect } from 'react';
-import { TreeSelect } from 'components';
+import { useEffect, useRef, useState } from 'react';
+import { EditOutlined, RadarChartOutlined } from '@ant-design/icons';
+import type { ProColumns } from '@ant-design/pro-components';
+import { ProTable } from 'components';
+import { Button, Tag, Form, Input, Radio, Alert, Typography, Collapse } from 'antd';
+import type { CollapseProps } from 'antd';
 
-import { Descriptions, Col, Row, Typography, Alert, Input } from 'antd';
-import type { TreeDataNode } from 'antd';
+import { AdForm } from 'components';
 
-import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import ApiListSummary from '@/apis';
 
-import ApiListSummary from '@/apis'
+interface Unlimit {
+  [key: string]: any;
+}
+export type Status = {
+  color: string;
+  text: string;
+};
 
-console.log(ApiListSummary)
-interface Props {}
+export type TableListItem = {
+  name: string;
+  path: string;
+  function: string;
+  lists: Unlimit[];
+};
+const tableListDataSource: TableListItem[] = Object.entries(ApiListSummary).map(([name, v]) => {
+  let _lists = v;
+  if (!Array.isArray(v)) {
+    _lists = Object.entries(_lists).map(([_, list]) => list);
+  }
 
-const ApiList: React.FC<Props> = () => {
-  const { server, config } = useBasicConfiguration();
-  //  api server
-  const { sites: S } = server;
-  const { PLATFORMID } = config as Record<string, any>;
-
-  const [menus, setMenus] = useState({ selected: '' });
-  const [treeNodes, SetTreeNodes] = useState<any[]>([]);
-
-  const onLoadTreeData = async () => {
-    const res = await S.menuList();
-    SetTreeNodes([...res]);
+  return {
+    name,
+    path: `@/apis/${name}.api.ts`,
+    function: `await ${name}[key]() /  ${name}[key]().then().catch()`,
+    lists: _lists,
   };
+});
 
-  const getSelectedNodes = (node: TreeDataNode[]) => {
-    let selected = '';
-    if (node) selected = node.map((item) => `${item.key}:${item.title}`).join(';');
-    setMenus({ ...menus, selected });
-  };
+const columns: ProColumns<TableListItem>[] = [
+  {
+    title: '名称',
+    width: 120,
+    dataIndex: 'name',
+    render: (_) => <a>{_}</a>,
+  },
+  {
+    title: '路径',
+    hideInSearch: true,
+    dataIndex: 'path',
+  },
+  {
+    title: '调用方法',
+    hideInSearch: true,
+    dataIndex: 'function',
+    render: (_) => (
+      <Typography.Text style={{ whiteSpace: 'pre-wrap' }} type="success" code>
+        {`${_}`}
+      </Typography.Text>
+    ),
+  },
+];
+
+type SizeType = Parameters<typeof Form>[0]['size'];
+
+const CusTagColor = (type: string) => {
+  const colors = [
+    {
+      type: ['POST'],
+      color: '#49cc90',
+    },
+    {
+      type: ['PUT', 'PATCH'],
+      color: '#fca130',
+    },
+    {
+      type: ['GET', 'HEAD'],
+      color: '#61affe',
+    },
+    {
+      type: ['DELETE'],
+      color: '#f93e3e',
+    },
+  ];
+  return colors.filter((item) => item.type.indexOf(type) != -1)[0].color || '';
+};
+
+const expandedRowRender = ({ lists = [], name }: Unlimit, setSubForm: any, setFormModal: any) => {
+  return (
+    <div style={{ marginBlockEnd: '20px', width: 'calc(100% - 40px)' }}>
+      <ProTable
+        request={() => {
+          return Promise.resolve({
+            data: lists,
+            success: true,
+          });
+        }}
+        columns={[
+          { title: '主函数名称', dataIndex: 'key', key: 'key' },
+          {
+            title: '类型',
+            dataIndex: 'type',
+            key: 'type',
+            render: (_: any, record: Unlimit) => (
+              <Tag color={CusTagColor(record.type.toUpperCase())}>{record.type}</Tag>
+            ),
+          },
+          { title: '接口地址', dataIndex: 'url', key: 'url' },
+          {
+            title: '操作',
+            width: 140,
+            valueType: 'option',
+            key: 'option',
+            render: (_text: any, record: any) => [
+              <a
+                key="editable"
+                onClick={() => {
+                  setSubForm({ ...record, parentName: name });
+                  setFormModal(true);
+                }}
+              >
+                {/* @ts-ignore */}
+                {<RadarChartOutlined style={{ marginInlineEnd: '5px' }} />}
+                测试
+              </a>,
+            ],
+          },
+        ]}
+        rowKey={'key'}
+        headerTitle={false}
+        search={false}
+        options={false}
+        pagination={false}
+        toolBarRender={false}
+      />
+    </div>
+  );
+};
+
+export default () => {
+  const [subForm, setSubForm] = useState<Record<string, any>>({});
+  const [formModal, setFormModal] = useState<boolean>(false);
 
   useEffect(() => {
-    onLoadTreeData();
-  }, []);
+    console.log(subForm);
+  }, [subForm]);
 
   return (
     <>
@@ -44,108 +154,44 @@ const ApiList: React.FC<Props> = () => {
         showIcon
       />
 
-      <Row style={{ width: '100%', height: 'calc(100% - 75px)' }} gutter={16}>
-        <Col
-          style={{ width: '100%', height: '100%', overflow: 'auto' }}
-          className="gutter-row"
-          span={12}
-        >
-          <div style={{ width: '400px', height: '140px', marginBlockEnd: '20px' }}>
-            <Descriptions title="下拉选择框">
-              <Descriptions.Item>
-                <Typography.Text style={{ whiteSpace: 'pre-wrap' }} type="success" code>
-                  {`下拉树控件:model={'select'}`}
-                </Typography.Text>
-              </Descriptions.Item>
-            </Descriptions>
-            <TreeSelect
-              treeDefaultExpandedKeys={[PLATFORMID]}
-              platforId={PLATFORMID}
-              flat={true}
-              onChange={(v: string) => console.log(v)}
-              model={'select'}
-              treeNodes={treeNodes}
-              rootStyle={{ maxHeight: 320, overflow: 'auto' }}
-              expandAll={true}
-            />
-          </div>
-          <div style={{ width: '400px', height: '370px' }}>
-            <Descriptions title="树选择">
-              <Descriptions.Item>
-                <Typography.Text style={{ whiteSpace: 'pre-wrap' }} type="success" code>
-                  {`树控件:model={'tree'}
- onChange: (nodes:TreeDataNode[])=>void 
- 返回的是当前节点的原始数据 false代表取消选择
-`}
-                </Typography.Text>
-              </Descriptions.Item>
-            </Descriptions>
-            <div style={{ display: 'flex', marginBlockEnd: '10px' }}>
-              <Typography.Title style={{ width: '80px' }} level={5}>
-                已选中:
-              </Typography.Title>
-              <Input value={menus.selected} disabled defaultValue="Hello, antd!" />
-            </div>
-            <TreeSelect
-              treeDefaultExpandedKeys={[PLATFORMID]}
-              platforId={PLATFORMID}
-              flat={true}
-              onChange={getSelectedNodes}
-              model={'tree'}
-              treeNodes={treeNodes}
-              rootStyle={{ maxHeight: 320, overflow: 'auto' }}
-              serach={true}
-            />
-          </div>
-        </Col>
-        <Col
-          style={{ width: '100%', height: '100%', overflow: 'auto' }}
-          className="gutter-row"
-          span={12}
-        >
-          <Typography.Paragraph style={{ whiteSpace: 'pre-wrap' }} code={true} strong={true}>
-            <Typography.Text type="success" code>
-              {`import { TreeSelect } from 'components';`}
-            </Typography.Text>
-          </Typography.Paragraph>
-          <Typography.Paragraph style={{ whiteSpace: 'pre-wrap' }} code={true} strong={true}>
-            {`<TreeSelect
-  treeDefaultExpandedKeys={[PLATFORMID]}
-  platforId={PLATFORMID}
-  flat={true}
-  onChange={getSelectedNodes}
-  model={'tree'}
-  treeNodes={treeNodes}
-  rootStyle={{ maxHeight: 320, overflow: 'auto' }}
-  serach={true}
-/>`}
-          </Typography.Paragraph>
-          <Typography.Paragraph style={{ whiteSpace: 'pre-wrap' }} code={true} strong={true}>
-            {`参数设置：
- {
-  /** 数据源 */
-  treeNodes?: TreeDataNode[];
-  /** 是否开启搜索 */
-  serach?: boolean;
-  /** 显示模式  */
-  model?: 'tree' | 'select';
-  /** 结构数据 是否为ree结构还是扁平数据 */
-  flat?: boolean;
-  /** 显示指定的数据 源ID*/
-  platforId?: string | number;
-  /**  */
-  treeDefaultExpandedKeys?: string[];
-  /** Tree 最外层的 style */
-  rootStyle?: CSSProperties;
-  /** 是否全部展开 */
-  expandAll?: boolean;
-  /** 高亮占据整行 */
-  blockNode?: boolean;
- }`}
-          </Typography.Paragraph>
-        </Col>
-      </Row>
+      <ProTable
+        columns={columns}
+        request={({ name }: Unlimit) => {
+          let tableList = tableListDataSource;
+            if (name && name != '') {
+              let k = name.toLocaleLowerCase() as string;
+              tableList = tableListDataSource.filter(({ lists }) => {
+                const isExsit = lists.filter(({ description = '', key: itemk, url: u }) => {
+                  return (
+                    description.indexOf(k) != -1 ||
+                    itemk.toLocaleLowerCase().indexOf(k) != -1 ||
+                    u.toLocaleLowerCase().indexOf(k) != -1
+                  );
+                });
+                return isExsit.length;
+              });
+            }
+          return Promise.resolve({
+            data: tableList,
+            success: true,
+          });
+        }}
+        rowKey="name"
+        expandable={{
+          expandedRowRender: (record: any) => expandedRowRender(record, setSubForm, setFormModal),
+        }}
+        dateFormatter="string"
+        headerTitle={false}
+        options={false}
+        search={true}
+        pagination={false}
+        scroll={{ y: 'auto' }}
+        columnsState={{
+          persistenceKey: 'pro-table-api-list',
+          persistenceType: 'localStorage',
+          onChange(_: any) {},
+        }}
+      />
     </>
   );
 };
-export default ApiList;
