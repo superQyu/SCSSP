@@ -6,20 +6,28 @@ import dayjs from 'dayjs';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import DictSelect from '@/components/DictSelect';
 
+import type { ModesApi } from './model';
 type ParamsType = Record<string, any>;
 
-type MenusPropsType = {
-  server?: ParamsType;
-};
+interface MenusPropsType extends ModesApi.ParamsType {
+  server?: ModesApi.ParamsType;
+}
 
 export interface ColumnsParamsProps extends ParamsType {
   id: number;
-  name: string;
-  ico: string;
-  orderNum: number;
-  roleKey: number | string;
-  filepath: string;
-  isDelete: '0' | '1';
+  nickname: string;
+  remark: string;
+  deptId: any;
+  deptName: string;
+  postIds: number[];
+  email: string;
+  mobile: string;
+  sex: number;
+  avatar: string;
+  status: number;
+  loginIp: string;
+  loginDate: string;
+  createTime: string;
 }
 
 export default (_: MenusPropsType) => {
@@ -33,50 +41,39 @@ export default (_: MenusPropsType) => {
       title: '编号',
       editable: false,
       dataIndex: 'id',
+      sorter: (a, b) => a.id - b.id,
     },
     {
-      title: '角色名称',
-      dataIndex: 'name',
+      title: '用户名称',
+      editable: false,
+      dataIndex: 'username',
       ellipsis: true,
       formItemProps: {
         rules: [
           {
             required: true,
-            message: '请输入角色名称',
+            message: '请输入用户名称',
           },
         ],
       },
     },
     {
-      title: '角色类型',
+      title: '用户昵称',
       hideInSearch: true,
-      width: 80,
-      dataIndex: 'type',
+      dataIndex: 'nickname',
+      ellipsis: true,
     },
     {
       hideInSearch: true,
-      title: '角色标识',
-      dataIndex: 'code',
+      ellipsis: true,
+      title: '部门',
+      editable: false,
+      dataIndex: 'deptName',
     },
     {
-      width: 120,
-      hideInSearch: true,
-      title: '显示排序',
-      valueType: 'digit',
-      dataIndex: 'sort',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '请输入排序',
-          },
-        ],
-      },
-    },
-    {
-      hideInSearch: true,
-      title: '备注',
-      dataIndex: 'remark',
+      ellipsis: true,
+      title: '手机号码',
+      dataIndex: 'mobile',
     },
     {
       width: 120,
@@ -93,6 +90,7 @@ export default (_: MenusPropsType) => {
             '0': {
               text: (
                 <>
+                  {/* @ts-ignore  */}
                   <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
                   开启
                 </>
@@ -101,13 +99,14 @@ export default (_: MenusPropsType) => {
             '1': {
               text: (
                 <>
+                  {/* @ts-ignore */}
                   <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
                   关闭
                 </>
               ),
             },
           },
-        } as ParamsType;
+        } as ModesApi.ParamsType;
         return <DictSelect {...p} />;
       },
       render: (_, record) => (

@@ -1,4 +1,4 @@
-import { createElement, cloneElement, useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Button, message, Modal, Alert } from 'antd';
 
 import { SearchOutlined } from '@ant-design/icons';
@@ -52,17 +52,17 @@ export default () => {
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}
-
         // toolBarRender={() => [
         //   // <Button
         //   //   key="button"
-        //   //   icon={createElement(PlusOutlined)}
+        //   //   icon={PlusOutlined}
         //   //   onClick={() => setFormModal('addRole')}
         //   //   type="primary"
         //   // >
         //   //   新建
         //   // </Button>,
         // ]}
+
         search={{
           labelWidth: 'auto',
           optionRender: ({ searchText }: any, { form }: any, dom: any) => {
@@ -71,7 +71,8 @@ export default () => {
               <Button
                 type="primary"
                 key="sub"
-                icon={createElement(SearchOutlined)}
+                // @ts-ignore
+                icon={<SearchOutlined />}
                 onClick={() => form?.submit()}
               >
                 {searchText}

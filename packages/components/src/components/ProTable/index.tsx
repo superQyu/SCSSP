@@ -15,7 +15,7 @@ export default (props: any) => {
   const onSave = async (...args: any[]) => {
     const [C, id, n, a, b] = args;
 
-    const onSaveRes = await props.editable.onSave({ ...n }).then(async () => {
+    const onSaveRes = await props.editable.onSave({ ...n }, a).then(async () => {
       message.success('更新成功！');
       await (props.actionRef || actionRef).current?.reload();
     });
@@ -104,13 +104,15 @@ export default (props: any) => {
         }}
         rowKey={props.rowKey || 'id'}
         search={
-          {
-            ...props.search,
-            onCollapse: (v) => initSrcollY(),
-          } || {
-            labelWidth: 'auto',
-            onCollapse: (v) => initSrcollY(),
-          }
+          props.search
+            ? {
+                ...props.search,
+                onCollapse: (v) => initSrcollY(),
+              } || {
+                labelWidth: 'auto',
+                onCollapse: (v) => initSrcollY(),
+              }
+            : false
         }
         options={
           props.options || {
@@ -141,6 +143,7 @@ export default (props: any) => {
         dateFormatter="string"
         headerTitle={props.headerTitle}
         scroll={{ ...scroll() }}
+        expandable={props.expandable}
       />
     </div>
   );

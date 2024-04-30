@@ -1,4 +1,4 @@
-import React, { createElement, useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Divider, Input, Select, Space, Button, Spin, Empty } from 'antd';
 import type { InputRef } from 'antd';
@@ -56,10 +56,10 @@ const DictSelect: React.FC<Props> = (
   const loadData = async () => {
     const isExsit = dictionary.get(dictKey);
     setItems(isExsit as SelectOption[]);
-    if (type === 'text') {
-      let curItem = (isExsit as SelectOption[]).filter((item) => item.value == value);
-      setShowLabel(curItem[0]?.label || '');
-    }
+    const curItem = (isExsit as SelectOption[]).filter((item) => item.value == value);
+    const label = curItem[0]?.label || '';
+
+    if (type === 'text') setShowLabel(label);
   };
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +80,7 @@ const DictSelect: React.FC<Props> = (
 
   useEffect(() => {
     loadData();
-  }, [value]);
+  }, []);
 
   useEffect(() => {
     onLoadingStatus && onLoadingStatus(loading);
@@ -92,7 +92,7 @@ const DictSelect: React.FC<Props> = (
         <>{showLabel}</>
       ) : (
         <Select
-          value={value}
+          defaultValue={value}
           style={{ width: '100%' }}
           allowClear
           placeholder="请选择"
@@ -132,7 +132,8 @@ const DictSelect: React.FC<Props> = (
                       <Button
                         disabled={loading}
                         type="primary"
-                        icon={createElement(PlusOutlined)}
+                        // @ts-ignore
+                        icon={<PlusOutlined />}
                         onClick={addItem}
                       >
                         新增

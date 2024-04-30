@@ -136,6 +136,8 @@ const AddMenus: React.FC<Props> = () => {
   rootStyle?: CSSProperties;
   /** 是否全部展开 */
   expandAll?: boolean;
+  /** 高亮占据整行 */
+  blockNode?: boolean;
  }`}
           </Typography.Paragraph>
         </Col>

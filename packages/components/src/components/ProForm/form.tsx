@@ -23,13 +23,14 @@ export interface FornPropsTypes extends FieldType {
   initialValues?: FieldType;
   loading?: boolean;
   labelAlign?: 'left';
+  layoutStyle?: any;
   columns?: FormColumnsTypes[];
-
+  layout?: 'horizontal' | 'vertical' | 'inline';
   onFormChange?: (_: FieldType) => void;
   formRef: React.RefObject<FormInstance<any>>;
 }
 
-const layout = {
+const _layoutStyle = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18, flex: 1 },
 };
@@ -37,6 +38,8 @@ const layout = {
 const AdForm: React.FC<FornPropsTypes> = forwardRef(
   (
     {
+      layout = 'horizontal',
+      layoutStyle = {},
       loadingTitle = '提交中...',
       labelAlign = 'left',
       loading = false,
@@ -80,7 +83,10 @@ const AdForm: React.FC<FornPropsTypes> = forwardRef(
     return (
       <Spin spinning={loading} tip={loadingTitle}>
         <Form
-          {...layout}
+          key={`${JSON.stringify(initialValues)}`}
+          {..._layoutStyle}
+          {...layoutStyle}
+          layout={layout}
           ref={formRef}
           name="control-ref-antd-form"
           labelAlign={labelAlign}

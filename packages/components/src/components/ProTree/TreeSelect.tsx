@@ -30,6 +30,8 @@ interface Props extends MenusType {
   rootStyle?: CSSProperties;
   /** 是否全部展开 */
   expandAll?: boolean;
+  /** 高亮占据整行 */
+  blockNode?: boolean;
 }
 type DefaultOptionType = GetProp<TreeSelectProps, 'treeData'>[number];
 
@@ -45,6 +47,7 @@ const ProTreeSelect: React.FC<Props> = forwardRef(
       treeNodes = [],
       rootStyle = { maxHeight: 480, overflow: 'auto' },
       expandAll,
+      blockNode,
     }: Props,
     ref
   ) => {
@@ -146,6 +149,7 @@ const ProTreeSelect: React.FC<Props> = forwardRef(
               <></>
             )}
             <Tree
+              blockNode={blockNode}
               key={treeData.length}
               rootStyle={{ ...rootStyle }}
               defaultExpandedKeys={[...treeDefaultExpandedKeys]}
