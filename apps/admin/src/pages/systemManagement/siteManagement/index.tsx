@@ -4,15 +4,14 @@ import type { FormInstance } from 'antd/es/form';
 import styles from './index.module.scss';
 import siteModel from './modes/info.model';
 import type { ModesApi } from './modes/model';
-import { AdForm } from 'components';
+import { AdForm, ProUpload } from 'components';
 import FunctionCom from './components/function';
-import UploadFileCom from './components/uploadFile';
+
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 export default () => {
   const { server } = useBasicConfiguration();
   const [loading, setLoading] = useState<boolean>(false);
-  const { infoColumns, entryColumns, workTypeColumns } = siteModel();
 
   const infoRef = useRef<FormInstance>(null);
   const entryRef = useRef<FormInstance>(null);
@@ -20,7 +19,9 @@ export default () => {
   const imgsRef = useRef<FormInstance>(null);
   const functionRef = useRef<FormInstance>(null);
 
-  const { person: P } = server;
+  const { infoColumns, entryColumns, workTypeColumns } = siteModel({ entryRef });
+
+  const { person: P, file: F } = server;
   const [otherInfo, setOtherInfo] = useState<any>({});
   const [certificate, setCertificates] = useState<ModesApi.PersonnelCertificateSaveReqVO[]>([]);
 
@@ -31,13 +32,13 @@ export default () => {
       workTypeRef.current?.validateFields(),
       entryRef.current?.validateFields(),
     ]);
-    // setLoading(true);
-    console.log('参数', {
-      personnelInfoSaveReqVO: { ...infoValue, ...workTypeValue, ...otherInfo },
-      personnelCertificateSaveReqVOS: certificate,
-      entryInfoSaveReqVO: entfyValue,
-    });
-    return 
+    setLoading(true);
+    // console.log('canshu', {
+    //   personnelInfoSaveReqVO: { ...infoValue, ...workTypeValue, ...otherInfo },
+    //   personnelCertificateSaveReqVOS: certificate,
+    //   entryInfoSaveReqVO: entfyValue,
+    // });
+
     try {
       await P.createFullPersonInfo({
         personnelInfoSaveReqVO: { ...infoValue, ...workTypeValue, ...otherInfo },
@@ -84,21 +85,24 @@ export default () => {
   };
 
   return (
-    <div className="px-10 bg-#fff">
+    <div className="h-full px-20px overflow-y-auto overflow-x-hidden bg-#fff">
       <div className={styles.infoTitle}>基本信息</div>
       <Row gutter={16}>
         <Col className="gutter-row" span={4}>
           <Flex justify="center" align="center" className="h-full">
             <div>
-              <UploadFileCom
-                ref={imgsRef}
-                maxNo={1}
-                callback={(url: string) =>
+              <ProUpload
+                fileType={['image/jpeg', 'image/png']}
+                onRequest={async (params: any) => await F.fileUpload(params)}
+                onUploadSuccess={(res) => {
+                  const { url } = Object.values(res)[0] as { url: string };
                   setOtherInfo({
                     ...otherInfo,
                     passportPhoto: url,
-                  })
-                }
+                  });
+                }}
+                maxCount={1}
+                showUploadList={true}
               />
             </div>
           </Flex>
