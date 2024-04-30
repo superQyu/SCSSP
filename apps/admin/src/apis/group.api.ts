@@ -1,4 +1,5 @@
 import { ApiItem } from '@spms/web-request';
+
 const ADMIN_API = import.meta.env.VITE_APP_ADMIN_API;
 
 const group: ApiItem[] = [
@@ -13,8 +14,8 @@ const group: ApiItem[] = [
       { key: 'realName', cn: '班组长名' },
       { key: 'GroupType', cn: '分包单位' },
       { key: 'GroupType', cn: '劳务工种' },
-      {key: 'current', targetKey: 'pageNo'}, 
-      {key: 'pageSize'}, 
+      { key: 'current', targetKey: 'pageNo' },
+      { key: 'pageSize' },
     ],
   },
   {

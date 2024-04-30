@@ -50,11 +50,12 @@ export default (props: MenusPropsType) => {
     //   dataIndex: 'path',
     // },
     {
-      width: 60,
+      width: 80,
       hideInSearch: true,
       title: 'ID编号',
       editable: false,
       dataIndex: 'id',
+      sorter: (a, b) => a.id - b.id,
     },
     {
       title: '图标',
@@ -72,6 +73,7 @@ export default (props: MenusPropsType) => {
       title: '排序',
       valueType: 'digit',
       dataIndex: 'sort',
+      sorter: (a, b) => a.sort - b.sort,
       formItemProps: {
         rules: [
           {
@@ -111,6 +113,7 @@ export default (props: MenusPropsType) => {
             '0': {
               text: (
                 <>
+                  {/* @ts-ignore  */}
                   <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
                   显示
                 </>
@@ -119,6 +122,7 @@ export default (props: MenusPropsType) => {
             '1': {
               text: (
                 <>
+                  {/* @ts-ignore  */}
                   <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
                   隐藏
                 </>

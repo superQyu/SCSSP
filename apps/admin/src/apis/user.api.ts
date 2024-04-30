@@ -15,8 +15,8 @@ const user: ApiItem[] = [
     key: 'loginOut',
     url: `${ADMIN_API}/system/auth/logout`,
     type: 'GET',
-    name: '推出登录',
-    description: '推出登录'
+    name: '退出登录',
+    description: '退出登录'
   },
 
   {

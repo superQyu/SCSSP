@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { createElement, useState, useRef, useEffect, useContext } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Divider, Input, Select, Space, Button, Spin, Empty } from 'antd';
 import type { InputRef } from 'antd';
@@ -12,8 +12,8 @@ interface Props {
   onLoadingStatus?: (state: boolean) => void;
   /** 新增选项 */
   afterAddItem?: (state: any) => void;
-  /** 字典key */
-  dictkey?: string;
+  /** 拉下菜单获取 */
+  asyncData?: Function;
   /** 格式化下拉菜单样式 */
   valueEnum?: Record<string, any>;
   /** 绑定tree dom */
@@ -30,10 +30,11 @@ interface SelectOption {
   [key: string]: any;
 }
 
-const DictSelect: React.FC<Props> = (
+const AsyncSelect: React.FC<Props> = (
   {
     value,
-    dictKey,
+    asyncData,
+
     dropdownExtend,
     onLoadingStatus,
     afterAddItem,
@@ -43,25 +44,20 @@ const DictSelect: React.FC<Props> = (
   }: Props,
   ref
 ) => {
-  const {
-    common: { dictionary },
-  } = useAppSelector((state) => state) as { common: { dictionary: Record<string, any> } };
-
+ 
   const [items, setItems] = useState<SelectOption[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState('');
   const inputRef = useRef<InputRef>(null);
   const [showLabel, setShowLabel] = useState<string>('');
-  // 表单绑定项
-  const [formValue, setFormValue] = useState<string | undefined>(undefined);
 
   const loadData = async () => {
-    const isExsit = dictionary.get(dictKey);
-    setItems(isExsit as SelectOption[]);
-    const curItem = (isExsit as SelectOption[]).filter((item) => item.value == value);
-    const label = curItem[0]?.label || '';
-
-    if (type === 'text') setShowLabel(label);
+    const list = await asyncData();
+    setItems(list as SelectOption[]);
+    if (type === 'text') {
+      let curItem = (isExsit as SelectOption[]).filter((item) => item.value == value);
+      setShowLabel(curItem[0]?.label || '');
+    }
   };
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,7 +78,7 @@ const DictSelect: React.FC<Props> = (
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [value]);
 
   useEffect(() => {
     onLoadingStatus && onLoadingStatus(loading);
@@ -94,7 +90,7 @@ const DictSelect: React.FC<Props> = (
         <>{showLabel}</>
       ) : (
         <Select
-          defaultValue={value}
+          value={value}
           style={{ width: '100%' }}
           allowClear
           placeholder="请选择"
@@ -134,8 +130,7 @@ const DictSelect: React.FC<Props> = (
                       <Button
                         disabled={loading}
                         type="primary"
-                        // @ts-ignore
-                        icon={<PlusOutlined />}
+                        icon={createElement(PlusOutlined)}
                         onClick={addItem}
                       >
                         新增
@@ -168,4 +163,4 @@ const DictSelect: React.FC<Props> = (
   );
 };
 
-export default DictSelect;
+export default AsyncSelect;

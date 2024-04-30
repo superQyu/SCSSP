@@ -9,10 +9,8 @@ import { IconSelect } from 'ui';
 // TreeSelect
 import { AdForm, FormColumnsTypes } from 'components';
 
-import { url2key, RebuildTree, flattenArray, sortMenu } from 'utils';
+import { RebuildTree, flattenArray, sortMenu } from 'utils';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-
-// import DictSelect from '@/components/DictSelect';
 
 interface Props {
   /** 控制 Modal 是否显示 */
@@ -55,6 +53,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     if (typeof tips === 'string') tips = [tips];
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {/* @ts-ignore  */}
         <ExclamationCircleTwoTone style={{ color: '#1677ff', marginRight: '5px' }} />
         <div style={{ display: 'inline-block' }}>
           {tips.map((item, index) => (
@@ -138,11 +137,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
   useEffect(() => {
     setOpen(openModal);
     if (openModal) {
-      if (!Object.entries(subForm).length) {
-        setMenus({ ..._DefParams });
-      } else {
-        setMenus({ ..._DefParams, ...subForm });
-      }
+      setMenus({ ..._DefParams, ...(!Object.entries(subForm).length ? {} : subForm) });
       onLoadTreeData();
     } else {
       formRef.current?.resetFields();
