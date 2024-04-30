@@ -4,7 +4,6 @@ import { FormColumnsTypes } from 'components';
 import { Select, Radio, DatePicker, Input, InputNumber } from 'antd';
 
 import DictSelect from '@/components/DictSelect';
-import ImageUpload from '@/components/ImageUpload';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
@@ -160,7 +159,7 @@ export default (subFormRef: any) => {
       label: '图片上传',
       dataIndex: 'picture',
       colNum: 12,
-      formItem: <ImageUpload />,
+      // formItem: <ImageUpload />,
     },
   ];
 
