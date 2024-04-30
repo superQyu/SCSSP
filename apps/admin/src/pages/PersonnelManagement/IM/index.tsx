@@ -1,4 +1,4 @@
-import { createElement, cloneElement, useRef, useState, useEffect } from 'react';
+import { cloneElement, useRef, useState, useEffect } from 'react';
 
 import { ProTable } from 'components';
 // import { ProTable } from '@ant-design/pro-components';
@@ -119,8 +119,8 @@ export default () => {
         form={{
           syncToUrl: (values: any, _: string) => ({ ...values }),
         }}
-        // 
-        editable={{  onSave }}
+        //
+        editable={{ onSave }}
         search={{
           labelWidth: 'auto',
           optionRender: ({ searchText }: any, { form }: any, dom: any) => {
@@ -129,7 +129,8 @@ export default () => {
               <Button
                 type="primary"
                 key="sub"
-                icon={createElement(SearchOutlined)}
+                // @ts-ignore
+                icon={<SearchOutlined />}
                 onClick={() => form?.submit()}
               >
                 {searchText}
@@ -140,7 +141,8 @@ export default () => {
         toolBarRender={() => [
           <Button
             key="button"
-            icon={createElement(PlusOutlined)}
+            // @ts-ignore
+            icon={<PlusOutlined />}
             onClick={() => {
               console.log(dictionary);
             }}

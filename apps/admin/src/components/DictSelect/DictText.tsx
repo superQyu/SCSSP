@@ -1,4 +1,4 @@
-import React, { createElement, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppSelector } from 'hooks';
 
 import { EllipsisOutlined } from '@ant-design/icons';
@@ -35,6 +35,15 @@ const DictText: React.FC<Props> = ({ value, dictKey }: Props) => {
     loadData();
   }, []);
 
-  return <>{showLabel != '' ? showLabel : createElement(EllipsisOutlined)}</>;
+  return (
+    <>
+      {showLabel != '' ? (
+        showLabel
+      ) : (
+        // @ts-ignore
+        <EllipsisOutlined />
+      )}
+    </>
+  );
 };
 export default DictText;

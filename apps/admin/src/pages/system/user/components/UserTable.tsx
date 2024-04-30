@@ -1,16 +1,23 @@
-import { lazy, useRef, useState, useEffect, Suspense } from 'react';
-import { Button, message, Modal, Alert } from 'antd';
+import { useRef, useState, useEffect, Suspense, lazy } from 'react';
+import { Button, message, Modal } from 'antd';
 import { TableDropdown } from '@ant-design/pro-components';
 import {
   PlusOutlined,
-  LoadingOutlined,
+  EditOutlined,
   SearchOutlined,
   ExclamationCircleFilled,
+  DoubleRightOutlined,
+  DeleteOutlined,
+  KeyOutlined,
+  CheckCircleOutlined,
+  InfoOutlined,
+  LoadingOutlined,
 } from '@ant-design/icons';
+
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
 
-const compLists = import.meta.glob('./components/role/*.tsx');
+const compLists = import.meta.glob('./user/*.tsx');
 const menuLists = Object.entries(compLists).map(([key, val]) => {
   let keyName = key.split('/').slice(-1)[0].split('.')[0];
   if (keyName === 'index') keyName = key.split('/').slice(-2)[0];
@@ -21,30 +28,36 @@ const menuLists = Object.entries(compLists).map(([key, val]) => {
 }) as { key: string; Component: React.LazyExoticComponent<React.ComponentType<any>> }[];
 
 // 站点表格模型
-import type { ModesApi } from './modes/model';
-import siteModel, { type ColumnsParamsProps } from './modes/menu.model';
+import type { ModesApi } from '../modes/model';
+import siteModel, { type ColumnsParamsProps } from '../modes/menu.model';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-export default () => {
+interface Props {
+  queryParams?: Record<string, any>;
+}
+export default ({ queryParams = {} }: Props) => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
 
-  const [subForm, setsubForm] = useState<Record<string, any>>({});
+  const [subForm, setSubForm] = useState<Record<string, any>>({});
   const [formModal, setFormModal] = useState<string | false>(false);
 
   //  api server
-  const { menus: M, systemRole: SR } = server;
+  const { systemUser: SU } = server;
 
   const DynamicComp = () => {
     const isExsit = menuLists.filter((item) => item.key == formModal);
     if (!formModal || !isExsit[0]) return <></>;
     const Comp = isExsit[0].Component;
-    return <Comp subForm={subForm} openModal={!!formModal} onStateChange={GetModalStateChange} />;
+    return (
+      <Comp subForm={subForm} openModal={!!formModal} onStateChange={handleModalStateChange} />
+    );
   };
 
   // 修改状态
-  const GetModalStateChange = async (state: string | false) => {
+  const handleModalStateChange = async (state: string | false) => {
+    setSubForm({});
     setFormModal(state);
     await actionRef.current?.reload();
   };
@@ -54,7 +67,7 @@ export default () => {
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await SR.deleteRole({ id }).then(async () => {
+    const res = await SU.deleteUser({ id }).then(async () => {
       message.success('操作成功!');
     });
     return res;
@@ -62,29 +75,37 @@ export default () => {
 
   // 保存save
   const onSave = async (params: any) => {
-    const res = await SR.updateRole(
+    const res = await SU.updateUser(
       JSON.parse(JSON.stringify({ ...params })) as ColumnsParamsProps
     );
     return res;
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    actionRef.current?.reload();
+  }, [queryParams]);
 
   return (
     <>
       <ProTable
-        headerTitle="角色列表"
+        headerTitle="用户列表"
         request={async (params: ModesApi.ParamsType) => {
-          const res = await SR.roleList({ ...params, pageNo: params?.current || 0 });
-          // 指定字段类型转换
+          const res = await SU.userList({
+            ...params,
+            pageNo: params?.current || 0,
+            ...queryParams,
+          });
           res['list'] = res?.list.map((item: ModesApi.ParamsType) => {
-            return { ...item, status: `${item.status}`, dataScope: `${item.dataScope}` };
+            return { ...item, status: `${item.status}`, sex: `${item.sex}` };
           });
           return {
             ...params,
             data: res?.list || [],
             total: res?.totlal || 0,
           } as unknown as ModesApi.pageItemType;
+        }}
+        pagination={{
+          pageSize: 30,
         }}
         onSubmit={async (params: {}) => {
           console.log(params);
@@ -127,11 +148,12 @@ export default () => {
             ];
           },
         }}
+        scroll={{ y: 'auto' }}
         columns={[
           ...initColumns,
           {
             title: '操作',
-            width: 200,
+            width: 140,
             valueType: 'option',
             key: 'option',
             render: (_text: any, record: any, _: any, action: any) => [
@@ -141,26 +163,9 @@ export default () => {
                   action?.startEditable?.(record.id);
                 }}
               >
+                {/* @ts-ignore  */}
+                <EditOutlined style={{ marginInlineEnd: '5px' }} />
                 编辑
-              </a>,
-              <a
-                key="menuRole"
-                onClick={async () => {
-                  const res = await SR.listRoleMenus({ roleId: record.id });
-                  setFormModal('menuRole');
-                  setsubForm({ ...record, menuIds: res });
-                }}
-              >
-                菜单权限
-              </a>,
-              <a
-                key="dataRole"
-                onClick={async () => {
-                  setFormModal('dataRole');
-                  setsubForm({ ...record });
-                }}
-              >
-                数据权限
               </a>,
               <TableDropdown
                 key="actionGroup"
@@ -171,21 +176,68 @@ export default () => {
                         title: `删除操作`,
                         // @ts-ignore
                         icon: <ExclamationCircleFilled />,
-                        content: `确定删除角色 [${record.name}]?`,
+                        content: `确定删除用户 [${record.username}]?`,
                         okText: '删除',
                         okType: 'danger',
                         cancelText: '取消',
                         onOk: async () => {
-                          await SR.deleteRole({ id: record.id });
+                          await SU.deleteUser({ id: record.id });
                           action.reload();
                         },
                         onCancel() {},
                       });
                     } catch (errorInfo) {}
+                  } else if (key === 'detail') {
+                    setSubForm({ ...record });
+                    setFormModal('structural');
+                  } else if (key === 'resetPassword') {
+                    setSubForm({ ...record });
+                    setFormModal('resetPassword');
                   }
                 }}
-                menus={[{ key: 'delete', name: '删除' }]}
-              />,
+                menus={[
+                  {
+                    key: 'detail',
+                    name: (
+                      <>
+                        {/* @ts-ignore */}
+                        <InfoOutlined /> 详情
+                      </>
+                    ),
+                  },
+                  {
+                    key: 'resetPassword',
+                    name: (
+                      <>
+                        {/* @ts-ignore */}
+                        <KeyOutlined /> 重置密码
+                      </>
+                    ),
+                  },
+                  {
+                    key: 'assignRoles',
+                    name: (
+                      <>
+                        {/* @ts-ignore */}
+                        <CheckCircleOutlined /> 分配角色
+                      </>
+                    ),
+                  },
+                  {
+                    key: 'delete',
+                    name: (
+                      <>
+                        {/* @ts-ignore */}
+                        <DeleteOutlined /> 删除
+                      </>
+                    ),
+                  },
+                ]}
+              >
+                {/* @ts-ignore  */}
+                <DoubleRightOutlined />
+                更多
+              </TableDropdown>,
             ],
           },
         ]}

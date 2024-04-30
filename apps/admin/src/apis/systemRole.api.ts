@@ -1,7 +1,7 @@
 import { ApiItem } from '@spms/web-request';
 const ADMIN_API = import.meta.env.VITE_APP_ADMIN_API;
 
-const menus: ApiItem[] = [
+const ApiLists: ApiItem[] = [
     {
         key: 'createRole',
         url: `${ADMIN_API}/system/role/create`,
@@ -58,8 +58,8 @@ const menus: ApiItem[] = [
         key: 'assignRoleMenu',
         url: `${ADMIN_API}/system/permission/assign-role-menu`,
         type: 'POST',
-        name: '数据权限',
-        description: '修改角色的数据权限',
+        name: '菜单权限',
+        description: '修改角色的菜单权限',
         params: [{ key: 'Authorization', location: 'header' }, { key: 'roleId' }, { key: 'menuIds' }],
     },
     {
@@ -69,27 +69,6 @@ const menus: ApiItem[] = [
         name: '数据权限',
         description: '修改角色的数据权限',
         params: [{ key: 'Authorization', location: 'header' }, { key: 'roleId' }, { key: 'dataScope' }, { key: 'dataScopeDeptIds' }],
-    },
-    {
-        key: 'createMenu',
-        url: `${ADMIN_API}/system/menu/create`,
-        type: 'POST',
-        name: '新建菜单',
-        description: '新建菜单',
-        params: [
-            { key: 'Authorization', location: 'header' },
-            { key: 'parentId', cn: '上级菜单' },
-            { key: 'name', cn: '菜单名称' },
-            { key: 'componentName', cn: '组件名称' },
-            { key: 'component', cn: '组件地址' },
-            { key: 'path', cn: '路由地址' },
-            { key: 'sort', cn: '排序' },
-            { key: 'status', cn: '菜单状态' },
-            { key: 'icon', cn: '图标' },
-            { key: 'description', cn: '菜单描述' },
-            { key: 'type', cn: '菜单类型' },
-            { key: 'permission', cn: '权限' },
-        ],
     },
     {
         key: 'updateRole',
@@ -111,4 +90,4 @@ const menus: ApiItem[] = [
         ],
     },
 ];
-export default menus;
+export default ApiLists;

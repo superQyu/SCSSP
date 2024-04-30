@@ -63,6 +63,7 @@ const AddMenus: React.FC<Props> = () => {
               model={'select'}
               treeNodes={treeNodes}
               rootStyle={{ maxHeight: 320, overflow: 'auto' }}
+              expandAll={true}
             />
           </div>
           <div style={{ width: '400px', height: '370px' }}>
@@ -133,6 +134,10 @@ const AddMenus: React.FC<Props> = () => {
   treeDefaultExpandedKeys?: string[];
   /** Tree 最外层的 style */
   rootStyle?: CSSProperties;
+  /** 是否全部展开 */
+  expandAll?: boolean;
+  /** 高亮占据整行 */
+  blockNode?: boolean;
  }`}
           </Typography.Paragraph>
         </Col>

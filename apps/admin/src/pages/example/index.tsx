@@ -73,7 +73,7 @@ export default function ComponentDoc() {
             <StyledTab label={item.label} {...a11yProps(idx)} key={idx} />
           ))}
         </Tabs>
-        <Box sx={{ width: '100%', height: '100%', padding: '0 2rem' }}>
+        <Box sx={{ width: '100%', height: '100%', padding: '10px 2rem 0' }}>
           <Suspense fallback={<CircularProgress size={20} />}>
             <DynamicComp />
           </Suspense>

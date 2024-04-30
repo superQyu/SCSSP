@@ -1,6 +1,12 @@
-import { createElement, cloneElement, useRef, useState, useEffect } from 'react';
-import { Button, message, Alert, Modal } from 'antd';
-import { PlusOutlined, SearchOutlined, ExclamationCircleFilled } from '@ant-design/icons';
+import { useRef, useState, useEffect } from 'react';
+import { Button, message, Modal } from 'antd';
+import {
+  PlusOutlined,
+  EditOutlined,
+  SearchOutlined,
+  DoubleRightOutlined,
+  ExclamationCircleFilled,
+} from '@ant-design/icons';
 
 import { TableDropdown, type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
@@ -99,6 +105,8 @@ export default () => {
                   action?.startEditable?.(record.id);
                 }}
               >
+                {/* @ts-ignore */}
+                {<EditOutlined />}
                 编辑
               </a>,
               <TableDropdown
@@ -109,7 +117,8 @@ export default () => {
                       try {
                         Modal.confirm({
                           title: `删除操作`,
-                          icon: createElement(ExclamationCircleFilled),
+                          // @ts-ignore
+                          icon: <ExclamationCircleFilled />,
                           content: `确定删除菜单 [${record.name}]?`,
                           okText: '删除',
                           okType: 'danger',
@@ -132,14 +141,6 @@ export default () => {
                       type: `${record.type}`,
                     });
                     setFormModal(true);
-                    try {
-                      // M.deleteMenus({ id: record.id })
-                      //   .then(() => {
-                      //     message.success('操作成功!');
-                      //     action?.reload();
-                      //   })
-                      //   .catch(() => {});
-                    } catch (errorInfo) {}
                   }
                 }}
                 menus={[
@@ -147,7 +148,10 @@ export default () => {
                   { key: 'delete', name: '删除' },
                   // { key: 'copy', name: '复制' },
                 ]}
-              />,
+              >
+                {/* @ts-ignore */}
+                {<DoubleRightOutlined />}更多
+              </TableDropdown>,
             ],
           },
         ]}
@@ -167,7 +171,8 @@ export default () => {
         toolBarRender={() => [
           <Button
             key="button"
-            icon={createElement(PlusOutlined)}
+            //@ts-ignore
+            icon={<PlusOutlined />}
             onClick={() => setFormModal(true)}
             type="primary"
           >
@@ -183,7 +188,8 @@ export default () => {
               <Button
                 type="primary"
                 key="sub"
-                icon={createElement(SearchOutlined)}
+                // @ts-ignore
+                icon={<SearchOutlined />}
                 onClick={() => form?.submit()}
               >
                 {searchText}
