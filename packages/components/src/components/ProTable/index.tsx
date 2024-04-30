@@ -15,7 +15,7 @@ export default (props: any) => {
   const onSave = async (...args: any[]) => {
     const [C, id, n, a, b] = args;
 
-    const onSaveRes = await props.editable.onSave({ ...n }).then(async () => {
+    const onSaveRes = await props.editable.onSave({ ...n }, a).then(async () => {
       message.success('更新成功！');
       await (props.actionRef || actionRef).current?.reload();
     });

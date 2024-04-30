@@ -6,9 +6,12 @@ import type { TreeDataNode } from 'antd';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
+import ApiListSummary from '@/apis'
+
+console.log(ApiListSummary)
 interface Props {}
 
-const AddMenus: React.FC<Props> = () => {
+const ApiList: React.FC<Props> = () => {
   const { server, config } = useBasicConfiguration();
   //  api server
   const { sites: S } = server;
@@ -35,7 +38,7 @@ const AddMenus: React.FC<Props> = () => {
   return (
     <>
       <Alert
-        message={<>树形控件选择器:{`<TreeSelect/>`}</>}
+        message={'Api 接口列表汇总'}
         type="success"
         style={{ marginBlockEnd: '25px' }}
         showIcon
@@ -145,4 +148,4 @@ const AddMenus: React.FC<Props> = () => {
     </>
   );
 };
-export default AddMenus;
+export default ApiList;

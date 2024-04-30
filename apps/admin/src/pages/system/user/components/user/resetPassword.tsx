@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button, InputNumber, Input, message, Modal } from 'antd';
-
+import { Button, Input, message, Modal } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 
+// TreeSelect
 import { AdForm, FormColumnsTypes } from 'components';
 
-import { url2key, RebuildTree, flattenArray, sortMenu } from 'utils';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-import DictSelect from '@/components/DictSelect';
+// import DictSelect from '@/components/DictSelect';
 
 interface Props {
   /** 控制 Modal 是否显示 */
@@ -16,34 +15,26 @@ interface Props {
   /** 表单初始化 */
   subForm: {};
   /** 监听Modal状态变化 */
-  onStateChange: (state: string | false) => void;
+  onStateChange: (state: boolean) => void;
 }
 
 type MenusType = {
   [key: string]: any;
 };
 
-const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) => {
-  const { server, config: C } = useBasicConfiguration();
-
+const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) => {
+  const { server, config } = useBasicConfiguration();
   //  api server
-  const { systemRole: SR } = server;
-  const { COMMON_STATUS } = C?.DICT_TYPE || {};
-
+  const { systemUser: SU } = server;
+  const [passwordVisible, setPasswordVisible] = useState(false);
   // 字段提示
+
   const formRef = useRef<FormInstance>(null);
-  const [title] = useState<string>('新增角色');
+  const inputRef = useRef(null);
+  const [title] = useState<string>('温馨提示');
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(openModal);
-  const [menus, setMenus] = useState<MenusType>({
-    id: '',
-    name: '',
-    code: '',
-    sort: null,
-    status: 0,
-    type: '',
-    remark: '',
-  });
+  const [menus, setMenus] = useState<MenusType>({ username: '-' });
 
   const onReset = () => {
     if (loading) {
@@ -57,9 +48,10 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
       const values: MenusType = await formRef.current?.validateFields();
       setLoading(true);
 
-      SR.createRole(JSON.parse(JSON.stringify({ ...values })))
+      let params = values;
+      SU.updateUserPassword(JSON.parse(JSON.stringify({ ...menus, ...params })))
         .then(() => {
-          message.success('操作成功！');
+          message.success('修改成功！');
           setLoading(false);
           onStateChange(false);
           onReset();
@@ -82,54 +74,33 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
 
   useEffect(() => {
     setOpen(openModal);
+    if (openModal) {
+      setMenus({ ...subForm });
+    } else {
+      formRef.current?.resetFields();
+    }
   }, [openModal]);
 
+  useEffect(() => {}, [subForm]);
+
   useEffect(() => {
-    setMenus({ ...menus, ...subForm });
-  }, [subForm]);
+    inputRef.current?.focus();
+  }, []);
 
   const columns: FormColumnsTypes[] = [
     {
-      label: '角色名称',
-      dataIndex: 'name',
+      label: `请输入“${menus.username}”的新密码`,
+      dataIndex: 'password',
       formItemProps: {
-        rules: [{ required: true, message: '请输入角色名称' }],
+        rules: [{ required: true, message: '请输入新密码' }],
       },
-    },
-    {
-      label: '角色标识',
-      dataIndex: 'code',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入角色标识' }],
-      },
-    },
-    {
-      label: '显示排序',
-      dataIndex: 'sort',
-      formItem: <InputNumber min={0} />,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入排序' }],
-      },
-    },
-    {
-      label: '状态',
-      dataIndex: 'status',
       formItem: (
-        <DictSelect
-          dictKey={`${COMMON_STATUS}`}
-          initValue={`${menus.status}`}
-          dropdownExtend={false}
-          onChange={(val) => console.log(val)}
+        <Input.Password
+          ref={inputRef}
+          placeholder="请输入密码"
+          visibilityToggle={{ visible: passwordVisible, onVisibleChange: setPasswordVisible }}
         />
       ),
-      formItemProps: {
-        rules: [{ required: true, message: '请选中状态' }],
-      },
-    },
-    {
-      label: '备注',
-      formItem: <Input.TextArea />,
-      dataIndex: 'remark',
     },
   ];
 
@@ -148,11 +119,14 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
           重置
         </Button>,
         <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
-          提交
+          修改
         </Button>,
       ]}
+      width={'420px'}
     >
       <AdForm
+        layout="vertical"
+        key={`${JSON.stringify(subForm)}`}
         loadingTitle="提交中..."
         formRef={formRef}
         initialValues={{ ...menus }}
@@ -160,8 +134,12 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
         labelAlign="left"
         onFormChange={onFormChange}
         columns={columns}
+        layoutStyle={{
+          labelCol: { span: 24 },
+          wrapperCol: { span: 24, flex: 1 },
+        }}
       />
     </Modal>
   );
 };
-export default AddMenus;
+export default AddUser;

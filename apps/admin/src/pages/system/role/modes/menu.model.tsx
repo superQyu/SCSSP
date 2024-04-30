@@ -77,6 +77,7 @@ export default (_: MenusPropsType) => {
       hideInSearch: true,
       title: '备注',
       dataIndex: 'remark',
+      ellipsis: true,
     },
     {
       width: 120,

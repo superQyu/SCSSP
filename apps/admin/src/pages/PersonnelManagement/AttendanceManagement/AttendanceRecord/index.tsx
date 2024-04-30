@@ -1,4 +1,4 @@
-import { createElement, cloneElement, useRef, useState, useEffect } from 'react';
+import { cloneElement, useRef, useState, useEffect } from 'react';
 import { Button, message, Modal, Alert } from 'antd';
 
 import { SearchOutlined } from '@ant-design/icons';
@@ -56,7 +56,7 @@ export default () => {
         // toolBarRender={() => [
         //   // <Button
         //   //   key="button"
-        //   //   icon={createElement(PlusOutlined)}
+        //   //   icon={PlusOutlined}
         //   //   onClick={() => setFormModal('addRole')}
         //   //   type="primary"
         //   // >
@@ -71,7 +71,8 @@ export default () => {
               <Button
                 type="primary"
                 key="sub"
-                icon={createElement(SearchOutlined)}
+                // @ts-ignore
+                icon={<SearchOutlined/>}
                 onClick={() => form?.submit()}
               >
                 {searchText}

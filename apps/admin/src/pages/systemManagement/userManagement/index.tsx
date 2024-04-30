@@ -87,7 +87,8 @@ export default () => {
         toolBarRender={() => [
           <Button
             key="button"
-            // icon={React.createElement(PlusOutlined)}
+            // @ts-ignore
+            icon={<PlusOutlined />}
             onClick={() => setFormModal(true)}
             type="primary"
           >
@@ -115,7 +116,10 @@ export default () => {
               ],
             }}
           >
-            <Button>{React.createElement(EllipsisOutlined)}</Button>
+            <Button>
+              {/* @ts-ignore */}
+              {<EllipsisOutlined />}
+            </Button>
           </Dropdown>,
         ]}
       />

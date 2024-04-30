@@ -7,6 +7,7 @@ import { type ActionType } from '@ant-design/pro-components';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 import DeptTree from './components/DeptTree';
+import UserTable from './components/UserTable';
 
 const StyledRow = styled(Row)`
   height: 100%;
@@ -17,7 +18,8 @@ export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
 
-  const [colWidth, _] = useState<string>('320px');
+  const [colWidth, _] = useState<string>('280px');
+  const [deptId, setDeptId] = useState<number | string>('');
 
   useEffect(() => {}, []);
 
@@ -36,16 +38,16 @@ export default () => {
         >
           <Col
             style={{
-              width:'100vh',
+              width: '100vh',
               backgroundColor: '#fff',
               height: '100%',
             }}
           >
-            <DeptTree />
+            <DeptTree onChange={(deptId: string | number) => setDeptId(deptId)} />
           </Col>
         </Col>
         <Col className="gutter-row" style={{ width: `calc(100% - ${colWidth})` }}>
-          <Alert message="未开放" type="warning" showIcon />
+          <UserTable queryParams={{ deptId }} />
         </Col>
       </StyledRow>
     </>

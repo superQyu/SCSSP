@@ -57,6 +57,7 @@ export default ({ children }: any) => {
   // 获取字典列表
   const getDictList = async () => {
     await B.getDictList().then((res: any) => {
+      // console.log(res.filter((item) => item.label == '项目经理'));
       const dictDataMap = new Map<string, any>();
       res.forEach((dictData: ModesApi.DictTypeVO) => {
         const enumObj = dictDataMap.get(dictData.dictType);

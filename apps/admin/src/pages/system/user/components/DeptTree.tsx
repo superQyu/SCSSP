@@ -4,10 +4,12 @@ import type { TreeDataNode } from 'antd';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-interface Props {}
+interface Props {
+  onChange?: (deptId: number | string) => void;
+}
 
-const AddMenus: React.FC<Props> = () => {
-  const { server, config } = useBasicConfiguration();
+const AddMenus: React.FC<Props> = ({ onChange }) => {
+  const { server } = useBasicConfiguration();
   //  api server
   const { systemRole: SR } = server;
 
@@ -20,10 +22,9 @@ const AddMenus: React.FC<Props> = () => {
   };
 
   const getSelectedNodes = (node: TreeDataNode[]) => {
-    console.log(node[0]['key']);
-    // let selected = '';
-    // if (node) selected = node.map((item) => `${item.key}:${item.title}`).join(';');
-    // setMenus({ ...menus, selected });
+    let deptId = '';
+    if (node) deptId = node[0].key as string;
+    onChange && onChange(deptId);
   };
 
   useEffect(() => {
@@ -38,6 +39,7 @@ const AddMenus: React.FC<Props> = () => {
       treeNodes={treeNodes}
       rootStyle={{ maxHeight: 'calc(100% - 42px)', overflow: 'auto' }}
       serach={true}
+      blockNode 
       expandAll={true}
     />
   );
