@@ -5,11 +5,13 @@ import type { GetProp, UploadFile, UploadProps } from 'antd';
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
-export type RequestData<T> = {
-  data: T[] | undefined;
-  success?: boolean;
-  total?: number;
-} & Record<string, any>;
+export type RequestData<T> =
+  | ({
+      data: T[] | undefined;
+      success?: boolean;
+      total?: number;
+    } & Record<string, any>)
+  | string;
 
 interface Props {
   /** 自定义上传按钮  */
@@ -30,6 +32,10 @@ interface Props {
   maxCount?: number | false;
   /** 是否显示上传列表 */
   showUploadList?: boolean;
+  // 预先已有的图片列表
+  defaultFileList?: (UploadFile & { url?: string })[];
+  // 文件列表发生改变，取代上传成功和删除
+  onListChange?: (params: any) => void;
 }
 
 const getBase64 = (file: FileType): Promise<string> =>
@@ -50,13 +56,20 @@ const ProUpload: React.FC<Props> = ({
   fileSize = 20,
   maxCount = 8,
   showUploadList = true,
+  defaultFileList = [],
+  onListChange,
 }: Props) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [fileList, setFileList] = useState<(UploadFile & { url?: string })[]>([]);
+  const [fileList, setFileList] = useState<(UploadFile & { url?: string })[]>(defaultFileList);
 
   const [tempFileUid, setTempFileUid] = useState<string>('');
+
+  useEffect(() => {
+    // console.log('新的文件列表', fileList);
+    onListChange && onListChange(fileList);
+  }, [fileList]);
 
   const customRequest = async ({ file, onSuccess, onError }: Record<string, any>) => {
     if (onRequest) {
@@ -65,6 +78,7 @@ const ProUpload: React.FC<Props> = ({
         formData.append('file', file as FileType);
 
         const res = await onRequest(formData);
+
         onUploadSuccess &&
           onUploadSuccess({
             [file.uid]: {
@@ -72,6 +86,13 @@ const ProUpload: React.FC<Props> = ({
               name: file.name,
             },
           });
+        // 修改 fileList, 统一走 useEffect
+        const newFile: UploadFile & { url?: string } = {
+          uid: file.uid,
+          name: file.name,
+          url: res as string,
+        };
+        setFileList([...fileList, newFile]);
 
         message.success('上传成功！');
         onSuccess();
@@ -111,7 +132,7 @@ const ProUpload: React.FC<Props> = ({
   };
 
   const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
+    // setFileList(newFileList);
   };
 
   const onRemove = (file: UploadFile) => {
