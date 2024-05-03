@@ -6,7 +6,7 @@ import { ExclamationCircleTwoTone } from '@ant-design/icons';
 import type { FormInstance } from 'antd/es/form';
 
 import { IconSelect } from 'ui';
-// TreeSelect
+
 import { AdForm, FormColumnsTypes } from 'components';
 
 import { RebuildTree, flattenArray, sortMenu } from 'utils';

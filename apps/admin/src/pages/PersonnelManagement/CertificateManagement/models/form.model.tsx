@@ -30,6 +30,7 @@ export default (subFormRef: any) => {
   // 通过接口获取隶属人员下拉框的内容
   const getPersonSelect = async () => {
     const res = await file.getPersonInfoList;
+    console.log('人员列表', res.list);
     // const list = res.list.map((item: any) => {
     //   label: item.label;
     // });

@@ -13,7 +13,6 @@ const AddMenus: React.FC<Props> = ({ onChange }) => {
   //  api server
   const { systemRole: SR } = server;
 
-  const [menus, setMenus] = useState({ selected: '' });
   const [treeNodes, SetTreeNodes] = useState<any[]>([]);
 
   const onLoadTreeData = async () => {
