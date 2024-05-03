@@ -121,7 +121,6 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
       formItem: (
         <TreeSelect
           flat={true}
-          // onChange={(v: string) => console.log(v)}
           model={'select'}
           treeNodes={treeData as any}
           rootStyle={{ maxHeight: 320, overflow: 'auto' }}
@@ -173,7 +172,7 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
       label: '岗位',
       dataIndex: 'postIds',
       colNum: 12,
-      formItem: <DictSelect dictKey={'pm_job_category'} />,
+      formItem: <DictSelect mode='multiple' dictKey={'pm_job_category'} />,
     },
     {
       label: '备注',

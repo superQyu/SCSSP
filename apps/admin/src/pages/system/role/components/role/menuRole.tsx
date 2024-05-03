@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Col, Row, Switch, Space, Tag, Button, message, Modal, Tree } from 'antd';
-import type { TreeDataNode, TreeProps } from 'antd';
+import { Tag, Button, message, Modal } from 'antd';
 
 import type { FormInstance } from 'antd/es/form';
 
 import { AdForm, FormColumnsTypes, ProTree } from 'components';
 
-import { RebuildTree, flattenArray, sortMenu } from 'utils';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 interface Props {
@@ -114,56 +112,10 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
           treeNodes={treeNodes}
           topToolBar={true}
           defSelected={subForm.menuIds}
-          onStateChange={(checked: (string | number)[]) => handlerChange('menuIds', checked)}
-          //
+          onChange={(checked: (string | number)[]) => handlerChange('menuIds', checked)}
         />
       ),
     },
-    // {
-    //   label: '菜单权限',
-    //   dataIndex: 'menuIds',
-    //   formItem: (
-    //     <Row>
-    //       <Col span={12}>
-    //         <Space>
-    //           全选/全不选
-    //           <Switch
-    //             checkedChildren="是"
-    //             unCheckedChildren="否"
-    //             value={radiorCheck}
-    //             onChange={(checked: boolean) => handerRadioCheck(checked)}
-    //           />
-    //         </Space>
-    //       </Col>
-    //       <Col span={12}>
-    //         <Space>
-    //           全部展开/折叠
-    //           <Switch
-    //             checkedChildren="展开"
-    //             unCheckedChildren="折叠"
-    //             value={radiorExpand}
-    //             onChange={(checked: boolean) => handerExpandCheck(checked)}
-    //           />
-    //         </Space>
-    //       </Col>
-    //       <Col span={24} style={{ marginTop: '10px' }}>
-    //         <Tree
-    //           checkable
-    //           onExpand={onExpand}
-    //           expandedKeys={expandedKeys}
-    //           autoExpandParent={autoExpandParent}
-    //           onCheck={onCheck}
-    //           checkedKeys={checkedKeys}
-    //           // checkStrictly={true}
-    //           onSelect={onSelect}
-    //           selectedKeys={selectedKeys}
-    //           treeData={treeData}
-    //           height={350}
-    //         />
-    //       </Col>
-    //     </Row>
-    //   ),
-    // },
   ];
 
   return (

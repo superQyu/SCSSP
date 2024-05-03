@@ -61,7 +61,6 @@ const columns: ProColumns<TableListItem>[] = [
   },
 ];
 
-type SizeType = Parameters<typeof Form>[0]['size'];
 
 const CusTagColor = (type: string) => {
   const colors = [
@@ -106,6 +105,7 @@ const expandedRowRender = ({ lists = [], name }: Unlimit, setSubForm: any, setFo
             ),
           },
           { title: '接口地址', dataIndex: 'url', key: 'url' },
+          { title: '描述', dataIndex: 'description', key: 'description' },
           {
             title: '操作',
             width: 140,
@@ -141,9 +141,7 @@ export default () => {
   const [subForm, setSubForm] = useState<Record<string, any>>({});
   const [formModal, setFormModal] = useState<boolean>(false);
 
-  useEffect(() => {
-    console.log(subForm);
-  }, [subForm]);
+  useEffect(() => {}, [subForm]);
 
   return (
     <>
@@ -153,11 +151,11 @@ export default () => {
         style={{ marginBlockEnd: '25px' }}
         showIcon
       />
-
-      <ProTable
-        columns={columns}
-        request={({ name }: Unlimit) => {
-          let tableList = tableListDataSource;
+      <div style={{ height: 'calc(100% - 65px)' }}>
+        <ProTable
+          columns={columns}
+          request={({ name }: Unlimit) => {
+            let tableList = tableListDataSource;
             if (name && name != '') {
               let k = name.toLocaleLowerCase() as string;
               tableList = tableListDataSource.filter(({ lists }) => {
@@ -171,27 +169,29 @@ export default () => {
                 return isExsit.length;
               });
             }
-          return Promise.resolve({
-            data: tableList,
-            success: true,
-          });
-        }}
-        rowKey="name"
-        expandable={{
-          expandedRowRender: (record: any) => expandedRowRender(record, setSubForm, setFormModal),
-        }}
-        dateFormatter="string"
-        headerTitle={false}
-        options={false}
-        search={true}
-        pagination={false}
-        scroll={{ y: 'auto' }}
-        columnsState={{
-          persistenceKey: 'pro-table-api-list',
-          persistenceType: 'localStorage',
-          onChange(_: any) {},
-        }}
-      />
+            return Promise.resolve({
+              data: tableList,
+              success: true,
+            });
+          }}
+          rowKey="name"
+          expandable={{
+            expandedRowRender: (record: any) => expandedRowRender(record, setSubForm, setFormModal),
+          }}
+          dateFormatter="string"
+          headerTitle={false}
+          options={false}
+          search={true}
+          pagination={false}
+          scroll={{ y: 'auto' }}
+          columnsState={{
+            persistenceKey: 'pro-table-api-list',
+            persistenceType: 'localStorage',
+            onChange(_: any) {},
+          }}
+          toolBarRender={false}
+        />
+      </div>
     </>
   );
 };

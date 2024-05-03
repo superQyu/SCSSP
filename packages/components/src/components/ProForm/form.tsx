@@ -83,7 +83,7 @@ const AdForm: React.FC<FornPropsTypes> = forwardRef(
     return (
       <Spin spinning={loading} tip={loadingTitle}>
         <Form
-          key={`${JSON.stringify(initialValues)}`}
+          key={`${Object.entries(initialValues || {}).length}`}
           {..._layoutStyle}
           {...layoutStyle}
           layout={layout}
