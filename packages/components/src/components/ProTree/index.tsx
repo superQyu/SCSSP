@@ -87,7 +87,7 @@ const ProTree: React.FC<Props> = forwardRef(
     const changeAllRadioStatus = (checked: CheckedsType) => {
       const rootKays = treeData.map((item) => item.key);
       const filteredArray = rootKays.filter((item) =>
-        (checked as (string | number)[]).includes(item as string)
+        ((checked as (string | number)[]) || []).includes(item as string)
       );
       setRadiorCheck(filteredArray.length === rootKays.length);
     };

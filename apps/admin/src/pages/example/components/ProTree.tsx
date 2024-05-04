@@ -27,10 +27,6 @@ const AddMenus: React.FC<Props> = () => {
     onLoadTreeData();
   }, []);
 
-  useEffect(() => {
-    console.log(menus);
-  }, [menus]);
-
   return (
     <>
       <Alert
