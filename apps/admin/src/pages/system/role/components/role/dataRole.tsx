@@ -121,7 +121,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
       ),
     },
     {
-      show: menus.dataScope == '4',
+      show: menus.dataScope == '2',
       label: '具体范围',
       dataIndex: 'dataScopeDeptIds',
       formItem: (
@@ -131,7 +131,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
           // flat={true}
           topToolBar={true}
           defSelected={subForm.dataScopeDeptIds}
-          expandAll={true}
+          // expandAll={true}
           onStateChange={(checked: (string | number)[]) =>
             handlerChange('dataScopeDeptIds', checked)
           }
