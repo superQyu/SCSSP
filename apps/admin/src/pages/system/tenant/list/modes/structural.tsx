@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button, Input, message, Modal } from 'antd';
+import { Radio, Button, Input, message, Modal, DatePicker, InputNumber } from 'antd';
 import type { GetProp, TreeSelectProps } from 'antd';
+import dayjs from 'dayjs';
 
-import { ExclamationCircleTwoTone } from '@ant-design/icons';
 import type { FormInstance } from 'antd/es/form';
 
-import DictSelect from '@/components/DictSelect';
-import { TreeSelect } from 'components';
+import { ProSelect } from 'components';
 
 import { AdForm, FormColumnsTypes } from 'components';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
@@ -32,19 +31,17 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
   const { server, config: C } = useBasicConfiguration();
 
   //  api server
-  const { systemUser: SU, systemRole: SR } = server;
+  const { systemTenant: ST, systemUser: SU, systemRole: SR } = server;
   const [passwordVisible, setPasswordVisible] = React.useState(false);
   const { SYSTEM_DATA_SCOPE } = C?.DICT_TYPE || {};
 
-  const _DefParams = {};
-  // 字段提示
-
-  // const [formKey,setFormKey] = useState<string>('新建菜单');
+  const _DefParams = {
+    status: '0',
+  };
   const formRef = useRef<FormInstance>(null);
   const [title] = useState<string>('用户');
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(openModal);
-  const [treeData, setTreeData] = useState<Omit<DefaultOptionType, 'label'>[]>([]);
   const [menus, setMenus] = useState<MenusType>({ ..._DefParams });
   const [isCreate, setIsCreate] = useState<boolean>(false);
 
@@ -55,6 +52,7 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
     }
     formRef.current?.resetFields();
   };
+
   const handleOk = async () => {
     try {
       const values: MenusType = await formRef.current?.validateFields();
@@ -62,8 +60,9 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
 
       let params = values;
       if (menus.id) params = { ...menus, ...values };
+      params['expireTime'] = dayjs(params.expireTime).valueOf();
 
-      SU[isCreate ? 'createUser' : 'updateUser'](JSON.parse(JSON.stringify({ ...params })))
+      ST[isCreate ? 'createTenant' : 'updateTenant'](JSON.parse(JSON.stringify({ ...params })))
         .then(() => {
           message.success('操作成功！');
           setLoading(false);
@@ -80,20 +79,14 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
       message.warning(`数据提交中,请稍等...`);
       return;
     }
+    onStateChange(false);
     setOpen(false);
     onReset();
-    onStateChange(false);
   };
-  const onLoadTreeData = async () => {
-    const res = await SR.deptSimpleList();
-    setTreeData([...res]);
-  };
-
   useEffect(() => {
     setOpen(openModal);
     if (openModal) {
       setMenus({ ..._DefParams, ...(!Object.entries(subForm).length ? {} : subForm) });
-      onLoadTreeData();
     } else {
       formRef.current?.resetFields();
     }
@@ -107,35 +100,41 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
 
   const columns: FormColumnsTypes[] = [
     {
-      label: '用户昵称',
-      dataIndex: 'nickname',
+      label: '租户名',
+      dataIndex: 'name',
       colNum: 12,
       formItemProps: {
-        rules: [{ required: true, message: '请输入用户名称' }],
+        rules: [{ required: true, message: '请输入租户名' }],
       },
     },
     {
-      label: '归属部门',
-      dataIndex: 'deptId', //deptName
+      label: '租户套餐',
+      dataIndex: 'packageId',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请选择租户套餐' }],
+      },
       formItem: (
-        <TreeSelect
-          flat={true}
-          model={'select'}
-          treeNodes={treeData as any}
-          rootStyle={{ maxHeight: 320, overflow: 'auto' }}
-          expandAll={true}
+        <ProSelect
+          asyncData={() => ST.tenantPackageList()}
+          transform={{
+            formatter: (res: MenusType[]) =>
+              res.map((item) => ({ label: item.name, value: item.id })),
+          }}
         />
       ),
     },
     {
-      label: '手机号码',
-      dataIndex: 'mobile',
+      label: '联系人',
+      dataIndex: 'contactName',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入联系人' }],
+      },
     },
     {
-      label: '邮箱',
-      dataIndex: 'email',
+      label: '联系手机',
+      dataIndex: 'contactMobile',
       colNum: 12,
     },
     {
@@ -163,34 +162,45 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
       ),
     },
     {
-      label: '用户性别',
-      dataIndex: 'sex',
+      label: '账号额度',
+      dataIndex: 'accountCount',
       colNum: 12,
-      formItem: <DictSelect dictKey={'system_user_sex'} />,
-    },
-    {
-      label: '岗位',
-      dataIndex: 'postIds',
-      colNum: 12,
-      formItem: <DictSelect mode='multiple' dictKey={'pm_job_category'} />,
-    },
-    {
-      label: '备注',
-      colNum: 24,
-      dataIndex: 'remark',
-      formItem: <Input.TextArea placeholder="备注" autoSize={{ minRows: 4 }} allowClear />,
+      formItem: <InputNumber placeholder="请输入账号余额" className="w-full" />,
       formItemProps: {
-        labelCol: {
-          span: 3,
-        },
+        rules: [{ required: true, message: '请输入用户名称' }],
       },
+    },
+    {
+      label: '过期时间',
+      dataIndex: 'expireTime',
+      colNum: 12,
+      formItem: <DatePicker format="YYYY-MM-DD" className="w-full" />,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入用户名称' }],
+      },
+    },
+    {
+      label: '绑定域名',
+      colNum: 12,
+      dataIndex: 'website',
+    },
+    {
+      label: '租户状态',
+      colNum: 12,
+      dataIndex: 'status',
+      formItem: (
+        <Radio.Group>
+          <Radio value={'0'}>显示</Radio>
+          <Radio value={'1'}>隐藏</Radio>
+        </Radio.Group>
+      ),
     },
   ];
 
   return (
     <Modal
       open={open}
-      title={`${isCreate ? '新建' : '更新'}${title}`}
+      title={`${isCreate ? '新增' : '更新'}${title}`}
       onOk={handleOk}
       onCancel={handleCancel}
       maskClosable={false}
