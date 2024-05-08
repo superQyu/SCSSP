@@ -23,62 +23,59 @@ export interface ColumnsParamsProps extends ParamsType {
 }
 
 export default (_: MenusPropsType) => {
-  const { config: C } = useBasicConfiguration();
-  const { COMMON_STATUS } = C?.DICT_TYPE || {};
+  const { config: C, server } = useBasicConfiguration();
 
+  const { COMMON_STATUS } = C?.DICT_TYPE || {};
   const columns: ProColumns[] = [
     {
-      width: 60,
+      width: 90,
       hideInSearch: true,
-      title: '编号',
+      title: '租户编号',
       editable: false,
       dataIndex: 'id',
       sorter: (a, b) => a.id - b.id,
     },
     {
-      title: '角色名称',
+      title: '租户名',
+      width: 140,
       dataIndex: 'name',
       ellipsis: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '请输入角色名称',
-          },
-        ],
-      },
     },
     {
-      title: '角色类型',
+      title: '租户套餐',
       hideInSearch: true,
       width: 80,
-      dataIndex: 'type',
+      dataIndex: 'packageId',
     },
     {
-      hideInSearch: true,
-      title: '角色标识',
-      dataIndex: 'code',
+      title: '联系人',
+      width: 90,
+      dataIndex: 'contactName',
     },
     {
-      width: 120,
+      title: '联系手机',
+      width: 160,
+      dataIndex: 'contactMobile',
+    },
+    {
+      title: '账号额度',
       hideInSearch: true,
-      title: '显示排序',
+      dataIndex: 'accountCount',
       valueType: 'digit',
-      dataIndex: 'sort',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '请输入排序',
-          },
-        ],
-      },
+      sorter: (a, b) => a.sort - b.sort,
+    },
+    {
+      title: '过期时间',
+      hideInSearch: true,
+      width: 180,
+      dataIndex: 'expireTime',
+      ellipsis: true,
+      render: (_, record) => <>{dayjs(record.expireTime).format('YYYY-MM-DD hh:mm:ss')}</>,
     },
     {
       hideInSearch: true,
-      title: '备注',
-      dataIndex: 'remark',
-      ellipsis: true,
+      title: '绑定域名',
+      dataIndex: 'website',
     },
     {
       width: 120,
@@ -86,17 +83,20 @@ export default (_: MenusPropsType) => {
       title: '状态',
       dataIndex: 'status',
       valueType: 'select',
-      renderFormItem: (...args: any[]) => {
-        let p = {
-          dropdownExtend: false,
-          dictKey: `${COMMON_STATUS}`,
-          valueEnum: {
+      render: (_, record) => (
+        <>{record.status == '0' ? <Tag color="green">开启</Tag> : <Tag color="red">关闭</Tag>}</>
+      ),
+      renderFormItem: () => (
+        <DictSelect
+          dictKey={`${COMMON_STATUS}`}
+          dropdownExtend={false}
+          valueEnum={{
             '0': {
               text: (
                 <>
                   {/* @ts-ignore  */}
                   <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
-                  开启
+                  显示
                 </>
               ),
             },
@@ -105,20 +105,13 @@ export default (_: MenusPropsType) => {
                 <>
                   {/* @ts-ignore  */}
                   <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
-                  关闭
+                  隐藏
                 </>
               ),
             },
-          },
-        } as ParamsType;
-        return <DictSelect dictKey={`${COMMON_STATUS}`} {...p} />;
-      },
-      render: (_, record) => (
-        <>{record.status == '0' ? <Tag color="green">开启</Tag> : <Tag color="red">关闭</Tag>}</>
+          }}
+        />
       ),
-      formItemProps: {
-        rules: [{ required: true, message: '请选择状态' }],
-      },
     },
     {
       title: '创建时间',

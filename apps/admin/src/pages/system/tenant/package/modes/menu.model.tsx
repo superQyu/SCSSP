@@ -1,4 +1,6 @@
 import { StarTwoTone, StopTwoTone } from '@ant-design/icons';
+import { DatePicker } from 'antd';
+
 import { type ProColumns } from '@ant-design/pro-components';
 import { Tag } from 'antd';
 import dayjs from 'dayjs';
@@ -24,79 +26,41 @@ export interface ColumnsParamsProps extends ParamsType {
 
 export default (_: MenusPropsType) => {
   const { config: C } = useBasicConfiguration();
-  const { COMMON_STATUS } = C?.DICT_TYPE || {};
 
+  const { COMMON_STATUS } = C?.DICT_TYPE || {};
   const columns: ProColumns[] = [
     {
-      width: 60,
+      width: 120,
       hideInSearch: true,
-      title: '编号',
+      title: '租户编号',
       editable: false,
       dataIndex: 'id',
       sorter: (a, b) => a.id - b.id,
     },
     {
-      title: '角色名称',
+      title: '套餐名',
       dataIndex: 'name',
       ellipsis: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '请输入角色名称',
-          },
-        ],
-      },
     },
     {
-      title: '角色类型',
-      hideInSearch: true,
-      width: 80,
-      dataIndex: 'type',
-    },
-    {
-      hideInSearch: true,
-      title: '角色标识',
-      dataIndex: 'code',
-    },
-    {
-      width: 120,
-      hideInSearch: true,
-      title: '显示排序',
-      valueType: 'digit',
-      dataIndex: 'sort',
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '请输入排序',
-          },
-        ],
-      },
-    },
-    {
-      hideInSearch: true,
-      title: '备注',
-      dataIndex: 'remark',
-      ellipsis: true,
-    },
-    {
-      width: 120,
       filters: true,
       title: '状态',
       dataIndex: 'status',
       valueType: 'select',
-      renderFormItem: (...args: any[]) => {
-        let p = {
-          dropdownExtend: false,
-          dictKey: `${COMMON_STATUS}`,
-          valueEnum: {
+      render: (_, record) => (
+        <>{record.status == '0' ? <Tag color="green">开启</Tag> : <Tag color="red">关闭</Tag>}</>
+      ),
+      renderFormItem: () => (
+        <DictSelect
+          dictKey={`${COMMON_STATUS}`}
+          dropdownExtend={false}
+          valueEnum={{
             '0': {
               text: (
                 <>
                   {/* @ts-ignore  */}
                   <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
-                  开启
+                  显示
                 </>
               ),
             },
@@ -105,29 +69,27 @@ export default (_: MenusPropsType) => {
                 <>
                   {/* @ts-ignore  */}
                   <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
-                  关闭
+                  隐藏
                 </>
               ),
             },
-          },
-        } as ParamsType;
-        return <DictSelect dictKey={`${COMMON_STATUS}`} {...p} />;
-      },
-      render: (_, record) => (
-        <>{record.status == '0' ? <Tag color="green">开启</Tag> : <Tag color="red">关闭</Tag>}</>
+          }}
+        />
       ),
-      formItemProps: {
-        rules: [{ required: true, message: '请选择状态' }],
-      },
+    },
+    {
+      title: '备注',
+      hideInSearch: true,
+      dataIndex: 'remark',
     },
     {
       title: '创建时间',
-      hideInSearch: true,
       width: 180,
       editable: false,
       dataIndex: 'createTime',
       ellipsis: true,
       render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD hh:mm:ss')}</>,
+      renderFormItem: () => <DatePicker.RangePicker />,
     },
   ];
 
