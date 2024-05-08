@@ -8,7 +8,7 @@ import DictSelect from '@/components/DictSelect';
 export default (subFormRef: any) => {
   const getNameSpell = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value: inputValue } = e.target;
-    console.log('input改变', inputValue);
+    // console.log('input改变', inputValue);
     subFormRef.current.setFieldsValue({ nameSpell: inputValue });
   };
 

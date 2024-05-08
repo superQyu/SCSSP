@@ -75,12 +75,13 @@ export default () => {
                 编辑
               </a>,
               <Popconfirm
+                key="delete"
                 title="删除此项"
                 onConfirm={() => onDelete(record.id)}
                 okText="确认"
                 cancelText="取消"
               >
-                <a key="delete">删除</a>
+                <a>删除</a>
               </Popconfirm>,
             ],
           },

@@ -33,11 +33,7 @@ const columns: FormColumnsTypes[] = [
   {
     label: '是否特殊工种',
     dataIndex: 'isSpecialWorkType',
-    formItem: (
-      <DictSelect
-        dictKey={'is_conformity'}
-      />
-    ),
+    formItem: <DictSelect dictKey={'is_conformity'} />,
   },
 ];
 

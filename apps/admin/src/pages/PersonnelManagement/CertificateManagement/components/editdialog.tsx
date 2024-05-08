@@ -8,65 +8,52 @@ import initColumns from '../models/form.model';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
+// 代表任意对象
+type MenusType = {
+  [key: string]: any;
+};
 interface Props {
   /** 控制 Modal 是否显示 */
   openModal: boolean;
   /** 监听 Modal 状态变化 */
   onStateChange: (state: boolean) => void;
+  // 当为详情表单时, 有该属性
+  detail: MenusType;
+  type: string
 }
 
-type MenusType = {
-  [key: string]: any;
-};
-
-export default ({ openModal, onStateChange }: Props) => {
+export default ({ openModal, onStateChange, detail, type }: Props) => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { subContractor } = server;
+  const { certificate } = server;
 
   const [open, setOpen] = useState<boolean>(openModal);
-  const [title] = useState<string>('添加分包商信息');
+  const [title] = useState<string>('添加证件信息');
   const [loading, setLoading] = useState<boolean>(false);
 
-  const subFormRef = useRef<FormInstance>(null);
-  const addressFormRef = useRef<FormInstance>(null);
+  const formRef = useRef<FormInstance>(null);
 
   // 表单项配置
-  const { subColumns, addressColumns } = initColumns(subFormRef);
+  // 只能放在外面, 因为调用该方法中使用 hook, 只能放在函数式组件的外部
+  // 传入表单的DOM 和 两个图片列表的默认值
+  const { picture } = detail;
+  const { basicColumns, certificateColumns } = initColumns(formRef, picture, type);
 
   // 分包商信息表单的默认值
-  const [subInitialValues] = useState<MenusType>({
-    realName: '',
-    shortName: '',
-    subcontractorType: undefined,
-    province: '',
-    city: '',
-    district: '',
-    corpType: undefined,
-    overallMerit: undefined,
-    isConformity: undefined,
-    unitAddress: '',
-    legalRepresentative: '',
-    legalRepresentativePhone: '',
-    registeredCapital: '',
-    regDate: '',
-    principal: '',
-    principalTel: '',
-    idCard: '',
-    quality: '',
-    nameSpell: '',
-    corpCode: '',
-  });
-  // 注册地信息表单的默认值
-  const [addressInitialValues] = useState<MenusType>({
-    buildComplaintCall: '',
-    societyComplaintCall: '',
-    companyScore: '',
-    companySummary: '',
-  });
+  const [formData, setFormData] = useState<MenusType>({});
 
   useEffect(() => {
     setOpen(openModal);
+    if (openModal) {
+      // 如果打开弹窗
+      if (!Object.entries(detail).length) {
+        setFormData({});
+      } else {
+        setFormData(detail);
+      }
+    } else {
+      formRef.current?.resetFields();
+    }
   }, [openModal]);
 
   // 点击重置
@@ -75,20 +62,18 @@ export default ({ openModal, onStateChange }: Props) => {
       message.warning(`数据提交中,请稍等...`);
       return;
     }
-    subFormRef.current?.resetFields();
-    addressFormRef.current?.resetFields();
+    formRef.current?.resetFields();
   };
 
   // 点击保存
   const handleOk = async () => {
     try {
-      const subFormValues: MenusType = await subFormRef.current?.validateFields();
-      const addressFormValues: MenusType = await addressFormRef.current?.validateFields();
+      const values: MenusType = await formRef.current?.validateFields();
+      values.picture = values.picture?.join('@');
+      values.id = detail.id;
+      // console.log('表单提交时的数据', values);
       setLoading(true);
-      const params = { ...subFormValues, ...addressFormValues }
-      // console.log('创建分包商的请求参数', params)
-      subContractor
-        .createSubContractor(params)
+      certificate[detail.id ? 'updateCertificate' : 'createCertificate'](values)
         .then(() => {
           message.success('操作成功！');
           setLoading(false);
@@ -129,27 +114,29 @@ export default ({ openModal, onStateChange }: Props) => {
             重置
           </Button>,
           <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
-            提交
+            {detail.id ? '更新' : '提交'}
           </Button>,
         ]}
       >
         <div>基本信息</div>
         <AdForm
+          key={formData.userId}
           loadingTitle="提交中..."
-          formRef={subFormRef}
-          initialValues={subInitialValues}
+          formRef={formRef}
+          initialValues={formData}
           loading={loading}
           labelAlign="left"
-          columns={subColumns}
+          columns={basicColumns}
         />
         <div>证件信息</div>
         <AdForm
+          key={JSON.stringify(formData)}
           loadingTitle="提交中..."
-          formRef={addressFormRef}
-          initialValues={addressInitialValues}
+          formRef={formRef}
+          initialValues={formData}
           loading={loading}
           labelAlign="left"
-          columns={addressColumns}
+          columns={certificateColumns}
         />
       </Modal>
     </>

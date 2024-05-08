@@ -44,8 +44,7 @@ const DictSelect: React.FC<Props> = (
     onChange,
     valueEnum,
     type,
-    mode,
-    maxTagCount = 1,
+    disabled
   }: Props,
   ref
 ) => {
@@ -58,8 +57,6 @@ const DictSelect: React.FC<Props> = (
   const [name, setName] = useState('');
   const inputRef = useRef<InputRef>(null);
   const [showLabel, setShowLabel] = useState<string>('');
-  // 表单绑定项
-  const [formValue, setFormValue] = useState<string | undefined>(undefined);
 
   const loadData = async () => {
     const isExsit = dictionary.get(dictKey);
@@ -104,6 +101,7 @@ const DictSelect: React.FC<Props> = (
           mode={mode}
           maxTagCount={maxTagCount}
           style={{ width: '100%' }}
+          disabled={disabled}
           allowClear
           placeholder="请选择"
           notFoundContent={
