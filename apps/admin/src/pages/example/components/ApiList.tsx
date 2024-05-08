@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { EditOutlined, RadarChartOutlined } from '@ant-design/icons';
+import { RadarChartOutlined } from '@ant-design/icons';
 import type { ProColumns } from '@ant-design/pro-components';
-import { ProTable } from 'components';
-import { Button, Tag, Form, Input, Radio, Alert, Typography, Collapse } from 'antd';
-import type { CollapseProps } from 'antd';
+import { Button, Tag, Modal, message, Input, Alert, Typography } from 'antd';
 
-import { AdForm } from 'components';
+import { JsonEditor } from 'ui';
+import { ProTable, AdForm, FormColumnsTypes } from 'components';
+import type { FormInstance } from 'antd/es/form';
 
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import ApiListSummary from '@/apis';
 
 interface Unlimit {
@@ -32,7 +33,7 @@ const tableListDataSource: TableListItem[] = Object.entries(ApiListSummary).map(
   return {
     name,
     path: `@/apis/${name}.api.ts`,
-    function: `await ${name}[key]() /  ${name}[key]().then().catch()`,
+    function: `await ${name}[key]()|${name}[key]().then().catch()`,
     lists: _lists,
   };
 });
@@ -61,8 +62,6 @@ const columns: ProColumns<TableListItem>[] = [
   },
 ];
 
-type SizeType = Parameters<typeof Form>[0]['size'];
-
 const CusTagColor = (type: string) => {
   const colors = [
     {
@@ -85,7 +84,7 @@ const CusTagColor = (type: string) => {
   return colors.filter((item) => item.type.indexOf(type) != -1)[0].color || '';
 };
 
-const expandedRowRender = ({ lists = [], name }: Unlimit, setSubForm: any, setFormModal: any) => {
+const expandedRowRender = ({ lists = [], name }: Unlimit, setSubForm: any, setOpen: any) => {
   return (
     <div style={{ marginBlockEnd: '20px', width: 'calc(100% - 40px)' }}>
       <ProTable
@@ -106,6 +105,7 @@ const expandedRowRender = ({ lists = [], name }: Unlimit, setSubForm: any, setFo
             ),
           },
           { title: '接口地址', dataIndex: 'url', key: 'url' },
+          { title: '描述', dataIndex: 'description', key: 'description' },
           {
             title: '操作',
             width: 140,
@@ -116,7 +116,7 @@ const expandedRowRender = ({ lists = [], name }: Unlimit, setSubForm: any, setFo
                 key="editable"
                 onClick={() => {
                   setSubForm({ ...record, parentName: name });
-                  setFormModal(true);
+                  setOpen(true);
                 }}
               >
                 {/* @ts-ignore */}
@@ -137,13 +137,112 @@ const expandedRowRender = ({ lists = [], name }: Unlimit, setSubForm: any, setFo
   );
 };
 
+const GetDefaultParams = (params: Unlimit[]) => {
+  return params.reduce((acc, cur: Unlimit) => {
+    const flag = Object.hasOwnProperty.call(cur, 'location');
+    if (!flag || cur.location === 'query') {
+      return { ...acc, [cur.key]: '' };
+    }
+    return acc;
+  }, {});
+};
+
 export default () => {
+  const { server } = useBasicConfiguration();
+  const formRef = useRef<FormInstance>(null);
+
+  const [title] = useState<string>('接口测试');
+
   const [subForm, setSubForm] = useState<Record<string, any>>({});
-  const [formModal, setFormModal] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+
+  const [testParams, setTestParams] = useState<Unlimit>({});
+  const [testResult, setTestResult] = useState<Unlimit>({});
+
+  const [columnsForm, setColumnsForm] = useState<FormColumnsTypes[]>([]);
+
+  const onReset = () => {
+    if (loading) {
+      message.warning(`数据提交中,请稍等...`);
+      return;
+    }
+    formRef.current?.resetFields();
+    setTestResult({});
+  };
+  const handleOk = async () => {
+    try {
+      const { parentName, key } = subForm;
+      setLoading(true);
+      server[parentName][key](JSON.parse(JSON.stringify({ ...testParams })))
+        .then((res: any) => {
+          message.success('操作成功！');
+          setLoading(false);
+          setTestResult(res);
+        })
+        .catch((err: any) => {
+          setTestResult({ msg: err.message });
+          setLoading(false);
+        });
+    } catch (errorInfo) {}
+  };
+  const handleCancel = () => {
+    if (loading) {
+      message.warning(`数据提交中,请稍等...`);
+      return;
+    }
+    setOpen(false);
+    onReset();
+  };
+  const onFormChange = (_: Unlimit) => {};
 
   useEffect(() => {
-    console.log(subForm);
+    if (Object.entries(subForm).length) {
+      const ncloumns = [
+        {
+          label: '接口地址',
+          dataIndex: 'url',
+          formItem: (
+            <Input
+              disabled
+              addonBefore={
+                <Tag color={CusTagColor(subForm.type.toUpperCase())}>{subForm.type}</Tag>
+              }
+            />
+          ),
+        },
+        {
+          label: '参数',
+          dataIndex: 'params',
+          columns: 12,
+          formItem: (
+            <JsonEditor
+              onChange={(params: any) => setTestParams(params)}
+              defaultParams={GetDefaultParams(subForm.params || [])}
+            />
+          ),
+        },
+        {
+          label: '结果',
+          dataIndex: `result-${new Date().getTime()}`,
+          columns: 12,
+          formItem: <JsonEditor disabled defaultParams={testResult} />,
+        },
+      ];
+      setColumnsForm(ncloumns);
+    }
   }, [subForm]);
+
+  useEffect(() => {
+    const ncloumns = [...columnsForm];
+    ncloumns[2] = {
+      label: '结果',
+      dataIndex: `result-${new Date().getTime()}`,
+      columns: 12,
+      formItem: <JsonEditor disabled defaultParams={testResult} />,
+    };
+    setColumnsForm(ncloumns);
+  }, [testResult]);
 
   return (
     <>
@@ -153,11 +252,11 @@ export default () => {
         style={{ marginBlockEnd: '25px' }}
         showIcon
       />
-
-      <ProTable
-        columns={columns}
-        request={({ name }: Unlimit) => {
-          let tableList = tableListDataSource;
+      <div style={{ height: 'calc(100% - 65px)' }}>
+        <ProTable
+          columns={columns}
+          request={({ name }: Unlimit) => {
+            let tableList = tableListDataSource;
             if (name && name != '') {
               let k = name.toLocaleLowerCase() as string;
               tableList = tableListDataSource.filter(({ lists }) => {
@@ -171,27 +270,65 @@ export default () => {
                 return isExsit.length;
               });
             }
-          return Promise.resolve({
-            data: tableList,
-            success: true,
-          });
-        }}
-        rowKey="name"
-        expandable={{
-          expandedRowRender: (record: any) => expandedRowRender(record, setSubForm, setFormModal),
-        }}
-        dateFormatter="string"
-        headerTitle={false}
-        options={false}
-        search={true}
-        pagination={false}
-        scroll={{ y: 'auto' }}
-        columnsState={{
-          persistenceKey: 'pro-table-api-list',
-          persistenceType: 'localStorage',
-          onChange(_: any) {},
-        }}
-      />
+            return Promise.resolve({
+              data: tableList,
+              success: true,
+            });
+          }}
+          rowKey="name"
+          expandable={{
+            expandedRowRender: (record: any) => expandedRowRender(record, setSubForm, setOpen),
+          }}
+          dateFormatter="string"
+          headerTitle={false}
+          options={false}
+          search={true}
+          pagination={false}
+          scroll={{ y: 'auto' }}
+          columnsState={{
+            persistenceKey: 'pro-table-api-list',
+            persistenceType: 'localStorage',
+            onChange(_: any) {},
+          }}
+          toolBarRender={false}
+        />
+      </div>
+
+      <Modal
+        open={open}
+        title={title}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        maskClosable={false}
+        footer={[
+          <Button key="back" onClick={handleCancel} disabled={loading}>
+            取消
+          </Button>,
+          <Button key="reset" htmlType="reset" onClick={onReset} disabled={loading}>
+            重置
+          </Button>,
+          <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
+            提交
+          </Button>,
+        ]}
+        width={'50%'}
+      >
+        <AdForm
+          key={`${JSON.stringify(subForm)}`}
+          loadingTitle="提交中..."
+          formRef={formRef}
+          initialValues={{ ...subForm }}
+          loading={loading}
+          labelAlign="left"
+          layout="vertical"
+          onFormChange={onFormChange}
+          columns={columnsForm}
+          layoutStyle={{
+            labelCol: { span: 24 },
+            wrapperCol: { span: 24, flex: 1 },
+          }}
+        />
+      </Modal>
     </>
   );
 };

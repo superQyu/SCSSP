@@ -41,7 +41,7 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
 
   // const [formKey,setFormKey] = useState<string>('新建菜单');
   const formRef = useRef<FormInstance>(null);
-  const [title] = useState<string>('新建用户');
+  const [title] = useState<string>('用户');
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(openModal);
   const [treeData, setTreeData] = useState<Omit<DefaultOptionType, 'label'>[]>([]);
@@ -121,7 +121,6 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
       formItem: (
         <TreeSelect
           flat={true}
-          // onChange={(v: string) => console.log(v)}
           model={'select'}
           treeNodes={treeData as any}
           rootStyle={{ maxHeight: 320, overflow: 'auto' }}
@@ -173,7 +172,7 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
       label: '岗位',
       dataIndex: 'postIds',
       colNum: 12,
-      formItem: <DictSelect dictKey={'pm_job_category'} />,
+      formItem: <DictSelect mode='multiple' dictKey={'pm_job_category'} />,
     },
     {
       label: '备注',
@@ -191,7 +190,7 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
   return (
     <Modal
       open={open}
-      title={title}
+      title={`${isCreate ? '新建' : '更新'}${title}`}
       onOk={handleOk}
       onCancel={handleCancel}
       maskClosable={false}

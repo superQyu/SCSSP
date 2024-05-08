@@ -49,7 +49,7 @@ const AddMenus: React.FC<Props> = () => {
               treeNodes={treeNodes}
               topToolBar={true}
               defSelected={menus.menuIds}
-              onStateChange={(checked: (string | number)[]) => handlerChange('menuIds', checked)}
+              onChange={(checked: (string | number)[]) => handlerChange('menuIds', checked)}
             />
           </div>
         </Col>

@@ -16,6 +16,8 @@ import ProUpload from './components/ProUpload';
 
 import ProTree, { TreeNodes, CheckedsType } from './components/ProTree';
 import TreeSelect from './components/ProTree/TreeSelect';
+
+import ProSelect from './components/ProSelect';
 export {
   Header,
   OutletLayoutRouter,
@@ -29,7 +31,8 @@ export {
   TabCom,
   ProTree,
   TreeSelect,
-  ProUpload
+  ProUpload,
+  ProSelect
 };
 // 组件通用类型
 export type { MenuItem, FormColumnsTypes, FornPropsTypes };

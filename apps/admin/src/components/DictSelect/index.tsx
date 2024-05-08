@@ -6,6 +6,10 @@ import type { InputRef } from 'antd';
 import { useAppSelector } from 'hooks';
 
 interface Props {
+  /** 设置 Select 的模式为多选或标签	multiple | tags */
+  mode?: undefined | 'multiple' | 'tags';
+  /** 最多显示多少个 tag，响应式模式会对性能产生损耗 */
+  maxTagCount?: number;
   /** 监听值状态变化 */
   onChange?: (state: any) => void;
   /** 监听loading状态变化 */
@@ -40,7 +44,9 @@ const DictSelect: React.FC<Props> = (
     onChange,
     valueEnum,
     type,
-    disabled
+    disabled,
+    mode,
+    maxTagCount = 1,
   }: Props,
   ref
 ) => {
@@ -94,6 +100,8 @@ const DictSelect: React.FC<Props> = (
       ) : (
         <Select
           defaultValue={value}
+          mode={mode}
+          maxTagCount={maxTagCount}
           style={{ width: '100%' }}
           disabled={disabled}
           allowClear

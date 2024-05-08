@@ -26,6 +26,7 @@ export default (_: MenusPropsType) => {
       valueType: 'indexBorder',
     },
     {
+
       title: '分包单位',
       dataIndex: 'name',
       ellipsis: true,

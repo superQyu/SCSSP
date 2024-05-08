@@ -54,7 +54,22 @@ export default () => {
             导入
           </Button>,
         ]}
-   
+        search={{
+          labelWidth: 'auto',
+          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+            return [
+              dom[0],
+              <Button
+                type="primary"
+                key="sub"
+                icon={<SearchOutlined />}
+                onClick={() => form?.submit()}
+              >
+                {searchText}
+              </Button>,
+            ];
+          },
+        }}
         scroll={{ x: 'auto', y: 'auto' }}
         columns={[...initColumns]}
       ></ProTable>

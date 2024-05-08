@@ -13,7 +13,7 @@ type MenusType = {
   [key: string]: any;
 };
 
-interface Props {
+interface Props extends MenusType {
   /** tree结构数据  */
   treeNodes: TreeNodes[];
   /** 结构数据 是否为ree结构还是扁平数据 */
@@ -26,8 +26,6 @@ interface Props {
   topToolBar?: boolean;
   /** 表单初始化 */
   subForm?: Record<string, any>;
-  /** 监听Modal状态变化 */
-  onStateChange?: (state: CheckedsType) => void;
   /** 绑定tree dom */
   ref?: any;
 }
@@ -46,10 +44,7 @@ export const GetRealSelectedKeys = (tree: TreeDataNode[], selected: number[]) =>
 };
 
 const ProTree: React.FC<Props> = forwardRef(
-  (
-    { treeNodes = [], flat = true, expandAll, defSelected, topToolBar, onStateChange }: Props,
-    ref
-  ) => {
+  ({ treeNodes = [], flat = true, expandAll, defSelected, topToolBar, onChange }: Props, ref) => {
     const [treeData, setTreeData] = useState<TreeNodes[]>([]);
     const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
     const [checkedKeys, setCheckedKeys] = useState<number[]>([]);
@@ -92,7 +87,7 @@ const ProTree: React.FC<Props> = forwardRef(
     const changeAllRadioStatus = (checked: CheckedsType) => {
       const rootKays = treeData.map((item) => item.key);
       const filteredArray = rootKays.filter((item) =>
-        (checked as (string | number)[]).includes(item as string)
+        ((checked as (string | number)[]) || []).includes(item as string)
       );
       setRadiorCheck(filteredArray.length === rootKays.length);
     };
@@ -143,9 +138,12 @@ const ProTree: React.FC<Props> = forwardRef(
       handerExpandCheck(!!expandAll);
       if (typeof defSelected == 'object') {
         changeAllRadioStatus(defSelected);
-        setCheckedKeys(
-          CheckRealSelectedKeys((defSelected as any) || [], treeNodes, flattenArray(treeData))
+        const RealCheckedKeys = CheckRealSelectedKeys(
+          (defSelected as any) || [],
+          treeNodes,
+          flattenArray(treeData)
         );
+        setCheckedKeys(RealCheckedKeys);
       } else {
         handerRadioCheck(!!defSelected);
       }
@@ -173,14 +171,13 @@ const ProTree: React.FC<Props> = forwardRef(
     }, [treeNodes]);
 
     useEffect(() => {
-      onReset();
+      if (treeData.length > 0) onReset();
     }, [treeData]);
 
     useEffect(() => {
       const checkeds = GetRealSelectedKeys(flattenArray(treeData), checkedKeys);
-      onStateChange && onStateChange(checkeds);
+      onChange && onChange(checkeds);
     }, [checkedKeys]);
-
 
     // 暴露API
     useImperativeHandle(ref, () => ({
@@ -220,16 +217,19 @@ const ProTree: React.FC<Props> = forwardRef(
           )}
           <Col span={24} style={{ marginTop: '10px' }}>
             <Tree
+              key={treeData.length}
               checkable
-              onExpand={onExpand}
-              defaultExpandAll={true}
-              expandedKeys={expandedKeys}
               autoExpandParent={autoExpandParent}
-              onCheck={onCheck}
-              checkedKeys={checkedKeys}
-              onSelect={onSelect}
-              selectedKeys={selectedKeys}
+              expandedKeys={expandedKeys}
+              checkedKeys={[...checkedKeys]}
+              defaultExpandedKeys={[2584]}
               treeData={treeData}
+              onSelect={onSelect}
+              onCheck={onCheck}
+              onExpand={onExpand}
+              // defaultExpandedKeys={[2583]}
+              // selectedKeys={selectedKeys}
+              // defaultExpandAll={true}
               height={350}
             />
           </Col>

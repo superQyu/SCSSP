@@ -6,7 +6,7 @@ import { ExclamationCircleTwoTone } from '@ant-design/icons';
 import type { FormInstance } from 'antd/es/form';
 
 import { IconSelect } from 'ui';
-// TreeSelect
+
 import { AdForm, FormColumnsTypes } from 'components';
 
 import { RebuildTree, flattenArray, sortMenu } from 'utils';
@@ -42,7 +42,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
 
   // const [formKey,setFormKey] = useState<string>('新建菜单');
   const formRef = useRef<FormInstance>(null);
-  const [title] = useState<string>('新建菜单');
+  const [title, setTitle] = useState<string>('菜单');
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(openModal);
   const [treeData, setTreeData] = useState<Omit<DefaultOptionType, 'label'>[]>([]);
@@ -265,7 +265,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
   return (
     <Modal
       open={open}
-      title={title}
+      title={`${isCreate ? '新建' : '更新'}${title}`}
       onOk={handleOk}
       onCancel={handleCancel}
       maskClosable={false}

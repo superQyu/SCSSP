@@ -6,4 +6,7 @@ import CusSkeleton from './components/Skeleton';
 import IconSelect from './components/IconSelect';
 import IconShow from './components/IconSelect/IconShow';
 
-export { Button, CusSkeleton, IconSelect, IconShow };
+
+import JsonEditor from './components/JsonEditor';
+
+export { Button, CusSkeleton, IconSelect, IconShow, JsonEditor };
