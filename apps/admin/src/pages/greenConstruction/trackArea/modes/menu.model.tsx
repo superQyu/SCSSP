@@ -17,6 +17,7 @@ export interface ColumnsParamsProps extends ParamsType {
 }
 
 export default (_: MenusPropsType) => {
+
   const columns: ProColumns[] = [
     {
       width: 60,
@@ -24,55 +25,50 @@ export default (_: MenusPropsType) => {
       title: '序号',
       dataIndex: 'index',
       valueType: 'indexBorder',
+      align: 'center',
     },
     {
-
-      title: '分包单位',
+      title: '区域名称',
       dataIndex: 'name',
       ellipsis: true,
+      align: 'center',
     },
     {
-      title: '劳务工种',
-      dataIndex: 'type',
-    },
-    {
-      title: '班组名称',
-      dataIndex: 'code',
-    },
-    {
-      title: '年月',
-      valueType: 'dateRange',
-      dataIndex: 'createTime',
       hideInTable: true,
+      title: '时间范围',
+      valueType: 'dateRange',
       search: {
-        transform: (value) => {
-          return {
-            startTime: value[0],
-            endTime: value[1],
-          };
-        },
+        transform: (value: any) => ({
+          startTime: value[0],
+          endTime: value[1],
+        }),
       },
     },
     {
       hideInSearch: true,
-      title: '年月',
-      dataIndex: 'createTime',
-      render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM')}</>,
-    },
-    {
-      hideInSearch: true,
-      title: '人数',
-      dataIndex: 'remark',
-    },
-    {
-      title: '总出勤',
-      hideInSearch: true,
-      dataIndex: 'createTime',
-    },
-    {
-      title: '总工时',
+      title: '坐标',
       dataIndex: 'type',
+      align: 'center',
+    },
+    {
       hideInSearch: true,
+      title: '车型',
+      dataIndex: 'code',
+      align: 'center',
+    },
+    {
+      hideInSearch: true,
+      title: '创建时间',
+      dataIndex: 'createTime',
+      render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD hh:mm:ss')}</>,
+      align: 'center',
+    },
+
+    {
+      hideInSearch: true,
+      title: '创建人',
+      dataIndex: 'workerType',
+      align: 'center',
     },
   ];
 
