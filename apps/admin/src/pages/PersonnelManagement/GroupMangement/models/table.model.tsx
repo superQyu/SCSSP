@@ -62,9 +62,15 @@ export default ({ server }: MenusPropsType) => {
       hideInSearch: true,
     },
     {
-      title: '班组长名',
-      dataIndex: 'userName',
+      title: '班组长',
+      dataIndex: 'userId',
       ellipsis: true,
+      render: (_, record) => {
+        return <span>{record.userName}</span>;
+      },
+      renderFormItem: () => {
+        return <Select placeholder="请选择班组长" options={personInfoList} />;
+      },
     },
     {
       title: '身份证号',
@@ -74,18 +80,18 @@ export default ({ server }: MenusPropsType) => {
     },
     {
       title: '分包单位名称',
-      dataIndex: 'subcontractorName',
+      dataIndex: 'subcontractorId',
       ellipsis: true,
-      // render: (_, record) => {
-      //   return <div>{record.}</div>;
-      // },
+      render: (_, record) => {
+        return <span>{record.subcontractorName}</span>;
+      },
       renderFormItem: () => {
         return <Select placeholder="请选择分包单位" options={subcontractorList} />;
       },
     },
     {
       title: '劳务工种',
-      dataIndex: 'workerTypeName',
+      dataIndex: 'workTypeName',
       ellipsis: true,
       editable: false
     },

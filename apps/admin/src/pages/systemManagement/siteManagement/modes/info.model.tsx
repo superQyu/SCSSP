@@ -286,7 +286,7 @@ export default (props) => {
         <AsyncSelect
           dropdownExtend={true}
           asyncData={async () => {
-            const { list } = await G.groupList();
+            const { list } = await G.getGroupList();
             return list.map((item: { teamName: string; id: number }) => {
               return {
                 label: item.teamName,
@@ -303,7 +303,7 @@ export default (props) => {
                 teamId: null,
               });
             } else {
-              const { list } = await G.groupList();
+              const { list } = await G.getGroupList();
               const name = list.find(
                 (item: { label: string; value: number }) => item.value == val
               )?.label;
