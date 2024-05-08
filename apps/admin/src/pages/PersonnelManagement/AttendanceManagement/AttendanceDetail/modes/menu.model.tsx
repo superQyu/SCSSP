@@ -1,42 +1,35 @@
 import { type ProColumns } from '@ant-design/pro-components';
-import { Space } from 'antd';
 import dayjs from 'dayjs';
 type ParamsType = Record<string, any>;
 
 type MenusPropsType = {
   server?: ParamsType;
+  month?: Date;
 };
 
-export interface ColumnsParamsProps extends ParamsType {
-  id: number;
-  name: string;
-  ico: string;
-  orderNum: number;
-  roleKey: number | string;
-  filepath: string;
-  isDelete: '0' | '1';
-}
-
-export default (_: MenusPropsType) => {
-  const startOfMonth = dayjs().startOf('month');
-  const endOfMonth = dayjs().endOf('month');
+export default ({ month = new Date() }: MenusPropsType) => {
+  const startOfMonth = dayjs(month).startOf('month');
+  const endOfMonth = dayjs(month).endOf('month');
   const daysInMonth = endOfMonth.diff(startOfMonth, 'days') + 1;
   const days: ProColumns[] = [...Array(daysInMonth).keys()].map((i: number) => {
+    const day = i + 1;
     return {
-      width:i ==0 ? 70: 50,
+      width: day == 1 ? 70 : 50,
       hideInSearch: true,
-      title: i ==0 ?  '日期/00' :i.toString().padStart(2, '0'),
+      title: day == 1 ? '日期/01' : day.toString().padStart(2, '0'),
       dataIndex: 'workerType',
       align: 'center',
       render: (dom) =>
         dom == 1 ? (
           <span>{dom}</span>
         ) : (
-          <span className="inline-block color-#FF0000 w-30px h-30px line-height-30px bg-#ffcccc rd-50%">{dom}</span>
+          <span className="inline-block color-#FF0000 w-30px h-30px line-height-30px bg-#ffcccc rd-50%">
+            {dom}
+          </span>
         ),
     };
   });
-  console.log(daysInMonth); // 输出当前月份的天数
+  /* 接口还需配传参 */
   const columns: ProColumns[] = [
     {
       width: 60,
@@ -47,26 +40,46 @@ export default (_: MenusPropsType) => {
       fixed: 'left',
       align: 'center',
     },
-
     {
-      width: 120,
+      hideInTable: true,
+      title: '分包单位',
+      dataIndex: 'creditCode',
+    },
+    {
+      hideInTable: true,
+      title: '劳务工种',
+      dataIndex: 'gender',
+    },
+    {
+      hideInTable: true,
+      title: '班组名称',
+      dataIndex: 'companyName',
+    },
+    {
+      hideInTable: true,
+      title: '年月',
+      valueType: 'dateMonth',
+      dataIndex: 'createTime',
+    },
+    {
+      width: 100,
       title: '人员名称',
       dataIndex: 'name',
       fixed: 'left',
       align: 'center',
     },
     {
-      width: 120,
+      width: 100,
       hideInSearch: true,
       title: '出勤(天)',
-      dataIndex: 'remark',
+      dataIndex: 'gender',
       fixed: 'left',
       align: 'center',
     },
     {
       title: '工日(天)',
       hideInSearch: true,
-      dataIndex: 'createTime',
+      dataIndex: 'id',
       fixed: 'left',
       align: 'center',
     },
