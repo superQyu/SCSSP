@@ -42,19 +42,22 @@ export default () => {
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}
-        toolBarRender={() => [
-          <Button
-            key="button"
-            icon={<DownloadOutlined />}
-            onClick={() => {
-              console.log('导入数据');
-            }}
-            type="primary"
-          >
-            导入
-          </Button>,
-        ]}
-   
+        search={{
+          labelWidth: 'auto',
+          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+            return [
+              dom[0],
+              <Button
+                type="primary"
+                key="sub"
+                icon={<SearchOutlined />}
+                onClick={() => form?.submit()}
+              >
+                {searchText}
+              </Button>,
+            ];
+          },
+        }}
         scroll={{ x: 'auto', y: 'auto' }}
         columns={[...initColumns]}
       ></ProTable>

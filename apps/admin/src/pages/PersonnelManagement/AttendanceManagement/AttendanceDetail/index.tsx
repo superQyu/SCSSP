@@ -1,4 +1,4 @@
-import { createElement, useRef, useEffect } from 'react';
+import { createElement, useRef, useEffect, useState } from 'react';
 import { Button } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { SearchOutlined } from '@ant-design/icons';
@@ -13,11 +13,11 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
-
+  const [month, setMonth] = useState<Date>();
   const { attendance: A } = server;
 
   // 初始化 表格列表项
-  const initColumns = siteModel({ server });
+  const initColumns = siteModel({ server, month });
 
   useEffect(() => {}, []);
 
@@ -42,22 +42,29 @@ export default () => {
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}
-        toolBarRender={() => [
-          <Button
-            key="button"
-            icon={<DownloadOutlined />}
-            onClick={() => {
-              console.log('导入数据');
-            }}
-            type="primary"
-          >
-            导入
-          </Button>,
-        ]}
-   
+        search={{
+          labelWidth: 'auto',
+          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+            return [
+              dom[0],
+              <Button
+                type="primary"
+                key="sub"
+                icon={<SearchOutlined />}
+                onClick={() => {
+                  const { createTime } = form.getFieldsValue();
+                  createTime && setMonth(createTime.format('YYYY-MM'));
+                  form?.submit();
+                }}
+              >
+                {searchText}
+              </Button>,
+            ];
+          },
+        }}
         scroll={{ x: 1500, y: 'auto' }}
         columns={[...initColumns]}
-      ></ProTable>
+      ></ProTable>  
     </>
   );
 };
