@@ -17,14 +17,14 @@ export default ({ month = new Date() }: MenusPropsType) => {
       width: day == 1 ? 70 : 50,
       hideInSearch: true,
       title: day == 1 ? '日期/01' : day.toString().padStart(2, '0'),
-      dataIndex: 'workerType',
+      dataIndex: 'worker1',
       align: 'center',
       render: (dom) =>
         dom == 1 ? (
           <span>{dom}</span>
         ) : (
           <span className="inline-block color-#FF0000 w-30px h-30px line-height-30px bg-#ffcccc rd-50%">
-            {dom}
+            0
           </span>
         ),
     };
