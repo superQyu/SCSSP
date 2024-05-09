@@ -79,7 +79,7 @@ class AutoInterface {
           required: jsonObject[] = [];
 
         const isFormData = args instanceof FormData;
-        const { key, url, type, params = [] } = item;
+        const { key, url, type, params = [], cusParmas = {} } = item;
 
         for (let i = 0, j = params.length; i < j; i++) {
           // 校验主参数
@@ -151,7 +151,7 @@ class AutoInterface {
               }
             };
           };
-          return service[xhrType](url, verifyed.params, verifyed.config, _this.cusParmas, headerParams);
+          return service[xhrType](url, verifyed.params, verifyed.config, { ..._this.cusParmas, ...cusParmas }, headerParams);
         };
         return _this.errorMethod(`请填写正确的请求类型!`);
 

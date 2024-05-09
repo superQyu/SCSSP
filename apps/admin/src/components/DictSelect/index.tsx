@@ -44,9 +44,7 @@ const DictSelect: React.FC<Props> = (
     onChange,
     valueEnum,
     type,
-    disabled,
-    mode,
-    maxTagCount = 1,
+    disabled
   }: Props,
   ref
 ) => {
