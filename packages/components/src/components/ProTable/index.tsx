@@ -79,9 +79,13 @@ export default (props: any) => {
   return (
     <div ref={domRef} style={{ width: '100%', height: '100%' }}>
       <ProTable<Record<string, any>>
+        className={props.className}
+        showHeader={props.showHeader}
         columns={props.columns || initColumns}
+        params={props.params || {}}
         request={props.request || false}
         actionRef={props.actionRef || actionRef}
+        toolbar={props.toolBar || {}}
         toolBarRender={props.toolBarRender}
         cardBordered
         editable={{
@@ -95,9 +99,11 @@ export default (props: any) => {
                 onSave: onSave.bind(null, config),
               }),
               defaultDom.cancel,
-              cloneElement(defaultDom.delete as React.ReactElement, {
-                onDelete: onDelete.bind(null, config),
-              }),
+              // 只有在传入 onDelete 时，才会渲染删除按钮
+              props.editable.onDelete &&
+                cloneElement(defaultDom.delete as React.ReactElement, {
+                  onDelete: onDelete.bind(null, config),
+                }),
               // defaultDom.delete,
             ];
           },
@@ -144,6 +150,7 @@ export default (props: any) => {
         headerTitle={props.headerTitle}
         scroll={{ ...scroll() }}
         expandable={props.expandable}
+        onRow={props.onRow}
       />
     </div>
   );

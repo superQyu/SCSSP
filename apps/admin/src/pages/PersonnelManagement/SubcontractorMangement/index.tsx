@@ -60,8 +60,9 @@ export default () => {
         request={async (params = {}) => {
           const res = await subContractor.getSubContractorList(params);
           // console.log('分包商列表', res.list);
+          res.list.forEach((item: any) => (item.subcontractorType = item.subcontractorType || `${item.subcontractorType}`));
           return {
-            ...params,
+            // ...params,
             data: res.list,
             total: res.total,
           } as unknown as ModesApi.pageItemType;

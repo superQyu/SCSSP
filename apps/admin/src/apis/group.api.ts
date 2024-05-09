@@ -11,9 +11,9 @@ const group: ApiItem[] = [
     description: '获取班组列表',
     params: [
       { key: 'Authorization', location: 'header' },
-      { key: 'realName', cn: '班组长名' },
-      { key: 'GroupType', cn: '分包单位' },
-      { key: 'GroupType', cn: '劳务工种' },
+      { key: 'userId', cn: '班组长名' },
+      { key: 'subcontractorId', cn: '分包单位' },
+      { key: 'workTypeName', cn: '劳务工种' },
       { key: 'current', targetKey: 'pageNo' },
       { key: 'pageSize' },
     ],

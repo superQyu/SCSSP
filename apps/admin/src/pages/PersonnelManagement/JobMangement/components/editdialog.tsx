@@ -33,7 +33,7 @@ export default ({ openModal, onStateChange }: Props) => {
   // 表单的默认值
   const [initialValues] = useState<MenusType>({
     sort: 0,
-    isSpecialWorkType: 0,
+    isSpecialWorkType: '0',
   });
 
   useEffect(() => {
@@ -53,17 +53,17 @@ export default ({ openModal, onStateChange }: Props) => {
   const handleOk = async () => {
     try {
       const values: MenusType = await formRef.current?.validateFields();
-      console.log('保存时的值', values);
-      // setLoading(true);
-      // job
-      //   .createJob(values)
-      //   .then(() => {
-      //     onStateChange(false);
-      //     message.success('站点创建成功！');
-      //   })
-      //   .catch(() => {
-      //     setLoading(false);
-      //   });
+      // console.log('保存时的值', values);
+      setLoading(true);
+      job
+        .createJob(values)
+        .then(() => {
+          onStateChange(false);
+          message.success('站点创建成功！');
+        })
+        .catch(() => {
+          setLoading(false);
+        });
     } catch (errorInfo) {}
   };
 
