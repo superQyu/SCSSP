@@ -41,6 +41,7 @@ const request = (url: string, setting: any) => {
   return new Promise((resolve, reject) => {
     fetch(url, opts)
       .then(async (res) => {
+
         const resObject =
           dataType === 'text'
             ? await res.text()

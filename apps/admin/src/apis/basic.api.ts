@@ -78,5 +78,16 @@ const user: ApiItem[] = [
       { key: 'file:', cn: '文件信息' },
     ],
   },
+  {
+    key: 'exportCarDispatchRecord',
+    url: `${ADMIN_API}/wisdom/car-info/export-form`,
+    type: 'GET',
+    name: '车辆模板导出',
+    description: '车辆模板导出',
+    cusParmas: {
+      dataType: 'blob'
+    },
+    params: [{ key: 'Authorization', location: "header" }]
+  },
 ];
 export default user;

@@ -34,11 +34,6 @@ export default function ComponentDoc() {
     setValue(newValue);
   };
 
-  const CompNme = () => {
-    const label = menuList[value].label;
-    return `<${label} />`;
-  };
-
   const DynamicComp = () => {
     const Comp = menuList[value].Component;
     return <Comp />;

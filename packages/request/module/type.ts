@@ -26,4 +26,5 @@ export interface ApiItem {
   type: Method; //接口类型;（必填）
   config?: Record<string, any>; //server 其他的参数配置
   params?: paramsItem[]; // 参数配置
+  cusParmas?: Record<string, any>; //自定义参与 用于接口层面的参数设置
 }

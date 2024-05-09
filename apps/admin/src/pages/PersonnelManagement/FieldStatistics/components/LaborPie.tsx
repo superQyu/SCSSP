@@ -54,8 +54,6 @@ const MyChartComponent = () => {
         center: ['50%', '50%'],
       },
       series: [
-        // 极坐标系下柱状图
-        // 实际值
         {
           type: 'bar',
           data: [value],
@@ -78,6 +76,14 @@ const MyChartComponent = () => {
               color: '#099dc2',
             },
           ]),
+          label: {
+            show: true,
+            position: 'right',
+          },
+          labelLine: {
+            show: true,
+            lineStyle: {},
+          },
         },
         // 背景图形
         {
@@ -90,6 +96,14 @@ const MyChartComponent = () => {
           roundCap: true,
           color: '#26ff00',
           barGap: '-100%',
+          label: {
+            show: true,
+            position: 'left',
+          },
+          labelLine: {
+            show: true,
+            lineStyle: {},
+          },
         },
         // 尾端小圆点 饼图
         {
