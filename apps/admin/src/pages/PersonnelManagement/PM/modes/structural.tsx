@@ -54,7 +54,9 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
       message.warning(`数据提交中,请稍等...`);
       return;
     }
-    // formRef.current?.resetFields();
+    Object.entries(formRef.current).map(async ([_, funs]) => {
+      funs?.resetFields();
+    });
   };
 
   const handleOk = async () => {

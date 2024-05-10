@@ -44,13 +44,15 @@ const DictSelect: React.FC<Props> = (
     onChange,
     valueEnum,
     type,
-    disabled
+    disabled,
+    mode,
+    maxTagCount,
   }: Props,
   ref
 ) => {
   const {
     common: { dictionary },
-  } = useAppSelector((state) => state) as { common: { dictionary: Record<string, any> } };
+  } = useAppSelector((state: any) => state) as { common: { dictionary: Record<string, any> } };
 
   const [items, setItems] = useState<SelectOption[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
