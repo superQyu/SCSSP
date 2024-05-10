@@ -23,27 +23,17 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
 
   const formRef = useRef<FormInstance>(null);
   const [menus, setMenus] = useState<MenusType>({});
-  const [formKey, _] = useState<string>('projectBankInfoSaveReqVO');
+  const [formKey, _] = useState<string>('projectInfoSaveReqVO');
 
   const columns: FormColumnsTypes[] = [
     {
-      label: '对公账号开户银行',
-      dataIndex: 'bankName',
+      label: 'WGS84经度',
+      dataIndex: 'xcoordinate',
       colNum: 8,
     },
     {
-      label: '对公账号号码',
-      dataIndex: 'bankAccountNo',
-      colNum: 8,
-    },
-    {
-      label: '代发工资银行',
-      dataIndex: 'salaryBankName',
-      colNum: 8,
-    },
-    {
-      label: '代发工资银行账号',
-      dataIndex: 'salaryBankAccountNo',
+      label: 'WGS84纬度',
+      dataIndex: 'ycoordinate',
       colNum: 8,
     },
   ];
@@ -55,10 +45,10 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
 
   return (
     <>
-      <SingleTitle label={'银行信息'} />
+      <SingleTitle label={'位置信息'} />
       <AdForm
-        key={`${formKey}`}
-        name={`${formKey}`}
+        key={`LocationInfor`}
+        name={`LocationInfor`}
         formRef={formRef}
         initialValues={{ ...menus }}
         labelAlign="right"

@@ -21,7 +21,7 @@ type MenusType = {
   [key: string]: any;
 };
 type FormRefProps = {
-  [key: string]: FormInstance | null;
+  [key: string]: FormInstance | null | any;
 };
 
 interface Props extends MenusType {
@@ -62,37 +62,50 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
   const handleOk = async () => {
     try {
       setLoading(true);
-      Object.entries(formRef.current).map(async ([_, funs], index) => {
-        funs
+      let params: MenusType = {};
+      let len = FormList.length;
+      Object.entries(formRef.current).map(([_, funs]) => {
+        const { key, form } = funs || {};
+        form
           ?.validateFields()
-          .then((value) => {
-            console.log(funs);
+          .then((value: MenusType) => {
+            !key || key == ''
+              ? (params = { ...params, ...value })
+              : (params[key] = { ...(params[key] || {}), ...value });
+            len--;
+            if (len === 0) SubmitEvent(params);
           })
           .catch(() => {
             setLoading(false);
           });
       });
-      //   const values: MenusType = {}; //await formRef.current?.validateFields();
-      //   setLoading(true);
-
-      //   let params = values;
-      //   if (menus.id) params = { ...menus, ...values };
-      //   params['expireTime'] = dayjs(params.expireTime).valueOf();
-
-      //   ST[isCreate ? 'createTenant' : 'updateTenant'](JSON.parse(JSON.stringify({ ...params })))
-      //     .then(() => {
-      //       message.success('操作成功！');
-      //       setLoading(false);
-      //       onStateChange(false);
-      //       onReset();
-      //     })
-      //     .catch(() => {
-      //       setLoading(false);
-      //     });
     } catch (errorInfo) {
       setLoading(false);
     }
   };
+
+  const SubmitEvent = (params: MenusType) => {
+    console.log(params);
+
+    //   const values: MenusType = {}; //await formRef.current?.validateFields();
+    //   setLoading(true);
+
+    //   let params = values;
+    //   if (menus.id) params = { ...menus, ...values };
+    //   params['expireTime'] = dayjs(params.expireTime).valueOf();
+
+    //   ST[isCreate ? 'createTenant' : 'updateTenant'](JSON.parse(JSON.stringify({ ...params })))
+    //     .then(() => {
+    //       message.success('操作成功！');
+    //       setLoading(false);
+    //       onStateChange(false);
+    //       onReset();
+    //     })
+    //     .catch(() => {
+    //       setLoading(false);
+    //     });
+  };
+
   const handleCancel = () => {
     if (loading) {
       message.warning(`数据提交中,请稍等...`);
@@ -137,7 +150,7 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
           {isCreate ? '提交' : '更新'}
         </Button>,
       ]}
-      width={'55%'}
+      width={'75%'}
     >
       <Spin tip="提交中..." spinning={loading}>
         {FormList.map((Item) => (
@@ -156,10 +169,7 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
             }
             key={Item.label}
           >
-            <Item.Component
-              ref={(el: any) => (formRef.current[Item.label] = el)}
-              loading={loading}
-            />
+            <Item.Component ref={(el: any) => (formRef.current[Item.label] = el)} />
           </Suspense>
         ))}
       </Spin>
