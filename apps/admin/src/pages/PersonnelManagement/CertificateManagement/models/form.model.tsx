@@ -80,6 +80,9 @@ export default (subFormRef: any, picture: [] = [], type: string) => {
       label: '隶属人员',
       dataIndex: 'userId',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请选择隶属人员' }],
+      },
       formItem: (
         <Select placeholder="请选择隶属人员" options={personInfoList} onChange={getPersonInfo} />
       ),

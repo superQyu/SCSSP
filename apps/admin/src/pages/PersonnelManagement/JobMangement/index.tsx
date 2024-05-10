@@ -98,7 +98,7 @@ export default () => {
           pageSize: 10,
         }}
       ></ProTable>
-      <EditDialog openModal={dialogVisible} onStateChange={handleModalStateChange} />
+      <EditDialog key={`${dialogVisible}`} openModal={dialogVisible} onStateChange={handleModalStateChange} />
     </>
   );
 };

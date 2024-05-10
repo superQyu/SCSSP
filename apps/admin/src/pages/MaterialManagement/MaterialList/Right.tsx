@@ -9,9 +9,10 @@ import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
 import siteModel from './models/table.model';
+import { stringify } from 'querystring';
 
 export default ({ code }: any) => {
-  console.log('当前第三类别码', code);
+  // console.log('当前第三类别码', code);
 
   // api 相关
   const { server } = useBasicConfiguration();
@@ -23,7 +24,11 @@ export default ({ code }: any) => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    const res = await materialList.updateMaterial(params).then(async () => {
+    console.log('params', params);
+    // id 为 string 时表示新增
+    const res = await materialList[
+      typeof params.id == 'string' ? 'createMaterial' : 'updateMaterial'
+    ](params).then(async () => {
       message.success('信息更新成功！');
       await actionRef.current?.reload();
     });
@@ -33,6 +38,7 @@ export default ({ code }: any) => {
   return (
     <ProTable
       // rowKey="second"
+      actionRef={actionRef}
       className="w-full"
       params={{ thirdLevelCode: code }}
       request={async (params = { thirdLevelCode: undefined }) => {
@@ -80,7 +86,28 @@ export default ({ code }: any) => {
       pagination={{
         pageSize: 10,
       }}
-      toolBarRender={false}
+      scroll={{ y: 'auto' }}
+      toolBarRender={() => [
+        <Button
+          icon={<PlusOutlined />}
+          onClick={() => {
+            if (!code) message.warning('请先选择所属层级类别');
+            else {
+              actionRef.current?.addEditRecord?.(
+                {
+                  id: (Math.random() * 1000000).toFixed(0),
+                  thirdLevelCode: code
+                  // title: '新的一行',
+                },
+                { position: 'top' }
+              );
+            }
+          }}
+          type="primary"
+        >
+          新建
+        </Button>,
+      ]}
     />
   );
 };
