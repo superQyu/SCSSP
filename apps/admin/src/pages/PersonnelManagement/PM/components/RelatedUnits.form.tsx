@@ -23,27 +23,52 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
 
   const formRef = useRef<FormInstance>(null);
   const [menus, setMenus] = useState<MenusType>({});
-  const [formKey, _] = useState<string>('projectBankInfoSaveReqVO');
+  const [formKey, _] = useState<string>('projectRelatedUnitsSaveReqVO');
 
   const columns: FormColumnsTypes[] = [
     {
-      label: '对公账号开户银行',
-      dataIndex: 'bankName',
+      label: '监理单位',
+      dataIndex: 'supervisionCompany',
       colNum: 8,
     },
     {
-      label: '对公账号号码',
-      dataIndex: 'bankAccountNo',
+      label: '设计单位',
+      dataIndex: 'designCompany',
       colNum: 8,
     },
     {
-      label: '代发工资银行',
-      dataIndex: 'salaryBankName',
+      label: '勘察单位',
+      dataIndex: 'surveyCompany',
       colNum: 8,
     },
     {
-      label: '代发工资银行账号',
-      dataIndex: 'salaryBankAccountNo',
+      label: '工程所在地人社部投诉电话',
+      dataIndex: 'localHumanResourcesComplaintsPhone',
+      colNum: 8,
+    },
+    {
+      label: '甲方人社部投诉电话',
+      dataIndex: 'partyAHumanResourcesComplaintsPhone',
+      colNum: 8,
+    },
+    {
+      label: '工程所在地住建部投诉电话',
+      dataIndex: 'localConstructionDepartmentComplaintsPhone',
+      colNum: 8,
+    },
+    {
+      label: '甲方住建部投诉电话',
+      dataIndex: 'partyAConstructionDepartmentComplaintsPhone',
+      colNum: 8,
+    },
+    {
+      label: '劳务分包',
+      dataIndex: 'laborSubcontract',
+      colNum: 8,
+    },
+    {
+      label: '专业分包',
+      dataIndex: 'specialtySubcontract',
       colNum: 8,
     },
   ];
@@ -55,7 +80,7 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
 
   return (
     <>
-      <SingleTitle label={'银行信息'} />
+      <SingleTitle label={'相关单位'} />
       <AdForm
         key={`${formKey}`}
         name={`${formKey}`}

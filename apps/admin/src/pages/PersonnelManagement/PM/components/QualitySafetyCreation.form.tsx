@@ -23,27 +23,32 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
 
   const formRef = useRef<FormInstance>(null);
   const [menus, setMenus] = useState<MenusType>({});
-  const [formKey, _] = useState<string>('projectBankInfoSaveReqVO');
+  const [formKey, _] = useState<string>('projectQualitySafetySaveReqVO');
 
   const columns: FormColumnsTypes[] = [
     {
-      label: '对公账号开户银行',
-      dataIndex: 'bankName',
+      label: '质量目标',
+      dataIndex: 'qualityGoal',
       colNum: 8,
     },
     {
-      label: '对公账号号码',
-      dataIndex: 'bankAccountNo',
+      label: '安全目标',
+      dataIndex: 'safetyGoal',
       colNum: 8,
     },
     {
-      label: '代发工资银行',
-      dataIndex: 'salaryBankName',
+      label: '创建市优质结构',
+      dataIndex: 'cityQualityStructure',
       colNum: 8,
     },
     {
-      label: '代发工资银行账号',
-      dataIndex: 'salaryBankAccountNo',
+      label: '观感质量等级目标',
+      dataIndex: 'sensoryQualityLevelGoal',
+      colNum: 8,
+    },
+    {
+      label: '优良面积(㎡)',
+      dataIndex: 'excellentArea',
       colNum: 8,
     },
   ];
@@ -55,7 +60,7 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
 
   return (
     <>
-      <SingleTitle label={'银行信息'} />
+      <SingleTitle label={'质量安全精品创建'} />
       <AdForm
         key={`${formKey}`}
         name={`${formKey}`}

@@ -8,7 +8,7 @@
   "scripts": {
     "bootstrap": "pnpm install",
     "dev": "turbo run dev",
-    "app": "node ./plugin/startup.js --name",
+    "app": "node ./plugin/startup.js --name --mode",
     "build": "turbo run build",
     "clean": "turbo run clean",
     "reinstall": "pnpm run clean && rm -rf node_modules && rm -rf pnpm-lock.yaml && pnpm run bootstrap",

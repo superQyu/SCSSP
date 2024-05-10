@@ -22,8 +22,9 @@ export interface FornPropsTypes extends FieldType {
   loadingTitle?: string;
   initialValues?: FieldType;
   loading?: boolean;
-  labelAlign?: 'left';
+  labelAlign?: 'right' | 'left';
   layoutStyle?: any;
+  name?: string;
   columns?: FormColumnsTypes[];
   layout?: 'horizontal' | 'vertical' | 'inline';
   onFormChange?: (_: FieldType) => void;
@@ -44,6 +45,7 @@ const AdForm: React.FC<FornPropsTypes> = forwardRef(
       labelAlign = 'left',
       loading = false,
       initialValues,
+      name = 'control-ref-antd-form',
       columns = [
         {
           label: '菜单1',
@@ -88,7 +90,7 @@ const AdForm: React.FC<FornPropsTypes> = forwardRef(
           {...layoutStyle}
           layout={layout}
           ref={formRef}
-          name="control-ref-antd-form"
+          name={name}
           labelAlign={labelAlign}
           onValuesChange={onFormChange}
           colon={false}
