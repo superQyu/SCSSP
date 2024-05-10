@@ -32,7 +32,7 @@ export default (_: MenusPropsType) => {
     },
     {
       title: '车牌号',
-      dataIndex: 'name',
+      dataIndex: 'carNo',
       ellipsis: true,
       align: 'center',
     },
@@ -50,18 +50,19 @@ export default (_: MenusPropsType) => {
     {
       hideInSearch: true,
       title: '车辆颜色',
-      dataIndex: 'type',
+      dataIndex: 'plateColor',
       align: 'center',
     },
     {
       hideInSearch: true,
       title: '车型',
-      dataIndex: 'code',
+      dataIndex: 'carType',
       align: 'center',
     },
     {
       hideInSearch: true,
       title: '抓拍图片',
+      dataIndex: 'attachment',
       align: 'center',
       render: (_, record) => {
         return (
@@ -110,7 +111,7 @@ export default (_: MenusPropsType) => {
     {
       hideInSearch: true,
       title: '方向',
-      dataIndex: 'workerType',
+      dataIndex: 'direction',
       align: 'center',
       valueEnum: {
         '1': { text: '进场' },
@@ -120,10 +121,11 @@ export default (_: MenusPropsType) => {
     {
       hideInSearch: true,
       title: '进出时间',
-      dataIndex: 'createTime',
+      dataIndex: 'enterTime',
       render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD hh:mm:ss')}</>,
       align: 'center',
     },
+
   ];
 
   return columns;

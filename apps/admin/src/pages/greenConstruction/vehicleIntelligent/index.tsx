@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { Button } from 'antd';
+
 import { SearchOutlined } from '@ant-design/icons';
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
@@ -12,10 +13,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
-
-  const { attendance: A } = server;
-
-  // 初始化 表格列表项
+  const { vehicle: V } = server;
   const initColumns = siteModel({ server });
 
   useEffect(() => {}, []);
@@ -23,17 +21,18 @@ export default () => {
   return (
     <>
       <ProTable
-        headerTitle="考勤汇总"
+        headerTitle="车辆进出记录"
         request={async (params: ModesApi.ParamsType) => {
-          const { list, totlal } = await A.attendanceList(params);
+          const res = await V.vehicleIntelligentList({ ...params, pageNo: params?.current || 0 });
+          console.log('RE', res);
+          res['list'] = res?.list.map((item: ModesApi.ParamsType) => {
+            return { ...item, status: `${item.status}` };
+          });
           return {
             ...params,
-            data:
-              list.map((item: any, index: number) => {
-                return { ...item, id: index };
-              }) || [],
-            total: totlal || 0,
-          };
+            data: res?.list || [],
+            total: res?.totlal || 0,
+          } as unknown as ModesApi.pageItemType;
         }}
         actionRef={actionRef}
         columnsState={{
@@ -41,9 +40,8 @@ export default () => {
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}
-        pagination={{
-          pageSize: 30,
-        }}
+        scroll={{ x: 'auto', y: 'auto' }}
+        columns={[...initColumns]}
         search={{
           labelWidth: 'auto',
           optionRender: ({ searchText }: any, { form }: any, dom: any) => {
@@ -60,8 +58,6 @@ export default () => {
             ];
           },
         }}
-        scroll={{ x: '1500', y: 'auto' }}
-        columns={[...initColumns]}
       ></ProTable>
     </>
   );

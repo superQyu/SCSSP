@@ -26,44 +26,14 @@ type MenusType = {
   [key: string]: any;
 };
 
-type DefaultOptionType = GetProp<TreeSelectProps, 'treeData'>[number];
-
 const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) => {
-  const { server, config } = useBasicConfiguration();
-
-  //  api server
-  const { user: U, menus: M, sites: S } = server;
-  const { PLATFORMID } = config as Record<string, any>;
-  const _DefParams = {
-    status: '0',
-    parentId: `${PLATFORMID}`,
-    type: '1',
-  };
-  // 字段提示
-
-  // const [formKey,setFormKey] = useState<string>('新建菜单');
+  const { server } = useBasicConfiguration();
+  const { vehicle: V } = server;
   const formRef = useRef<FormInstance>(null);
   const [title] = useState<string>('车辆信息');
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(openModal);
-  const [treeData, setTreeData] = useState<Omit<DefaultOptionType, 'label'>[]>([]);
-  const [menus, setMenus] = useState<MenusType>({ ..._DefParams });
-  const [isCreate, setIsCreate] = useState<boolean>(false);
 
-  const ItemTooltip = (tips: string | Array<string>) => {
-    if (typeof tips === 'string') tips = [tips];
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {/* @ts-ignore  */}
-        <ExclamationCircleTwoTone style={{ color: '#1677ff', marginRight: '5px' }} />
-        <div style={{ display: 'inline-block' }}>
-          {tips.map((item, index) => (
-            <p key={index}>{item}</p>
-          ))}
-        </div>
-      </div>
-    );
-  };
   const onReset = () => {
     if (loading) {
       message.warning(`数据提交中,请稍等...`);
@@ -71,15 +41,13 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     }
     formRef.current?.resetFields();
   };
+
   const handleOk = async () => {
     try {
       const values: MenusType = await formRef.current?.validateFields();
       setLoading(true);
 
-      let params = values;
-      if (menus.id) params = { ...menus, ...values };
-
-      M[isCreate ? 'createMenu' : 'updateMenu'](JSON.parse(JSON.stringify({ ...params })))
+      V.vehicleApproveAdd(values)
         .then(() => {
           message.success('操作成功！');
           setLoading(false);
@@ -102,56 +70,15 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
   };
   const onFormChange = (_: MenusType) => {};
 
-
-
-  const onLoadTreeData = async () => {
-    const res = await S.menuList();
-    // * 筛选出 华光智慧监管 平台 id:2583  相关菜单表
-    const M =
-      RebuildTree(res, {
-        intercept: (item: { [key: string]: string }) => ({ ...item, children: item.routes }),
-      }).filter((item) => item.id === PLATFORMID)[0] || {};
-    const roorId = M[0]?.id || 0;
-    const menus = RebuildTree(flattenArray([M]), {
-      delEmptyRoutes: true,
-      intercept: (item: { [key: string]: string }) => {
-        return {
-          ...item,
-          children: item.routes,
-          key: item.id,
-          value: item.id,
-          title: item.name,
-        };
-      },
-      _rootId: roorId,
-    });
-    setTreeData([...sortMenu(menus)]);
-  };
-
   useEffect(() => {
     setOpen(openModal);
-    if (openModal) {
-      setMenus({ ..._DefParams, ...(!Object.entries(subForm).length ? {} : subForm) });
-      onLoadTreeData();
-    } else {
-      formRef.current?.resetFields();
-    }
   }, [openModal]);
-
-  useEffect(() => {
-    setIsCreate(!(menus.id || menus.id === 0));
-  }, [menus]);
-
   useEffect(() => {}, [subForm]);
-
-  useEffect(() => {
-    formRef.current?.resetFields(['component']);
-  }, [menus.type]);
 
   const columns: FormColumnsTypes[] = [
     {
       label: '车牌号',
-      dataIndex: 'parentId',
+      dataIndex: 'carNo',
       formItemProps: {
         rules: [{ required: true, message: '请输入车牌号' }],
       },
@@ -159,32 +86,32 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     },
     {
       label: '行驶证号',
-      dataIndex: 'name',
+      dataIndex: 'carLicense',
       formItemProps: {
         rules: [{ required: true, message: '请输入行驶证号' }],
       },
       colNum: 12,
     },
     {
-      label: '品牌',
-      dataIndex: 'name',
+      label: '车辆品牌',
+      dataIndex: 'carBrand',
       formItemProps: {
-        rules: [{ required: true, message: '请输入品牌' }],
+        rules: [{ required: true, message: '请输入车辆品牌' }],
       },
       colNum: 12,
     },
     {
-      label: '型号',
-      dataIndex: 'name',
+      label: '车辆型号',
+      dataIndex: 'carModel',
       formItemProps: {
-        rules: [{ required: true, message: '请输入型号' }],
+        rules: [{ required: true, message: '请输入车辆型号' }],
       },
       colNum: 12,
     },
     {
       label: '车型',
-      dataIndex: 'type',
-      formItem: <DictSelect dictKey={'pm_educational'} />,
+      dataIndex: 'carType',
+      formItem: <DictSelect dictKey={'cm_car_type'} />,
       formItemProps: {
         rules: [{ required: true, message: '请选择车型' }],
       },
@@ -192,7 +119,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     },
     {
       label: '车辆颜色',
-      dataIndex: 'type',
+      dataIndex: 'carColor',
       formItemProps: {
         rules: [{ required: true, message: '请输入车辆颜色' }],
       },
@@ -201,7 +128,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
 
     {
       label: '车辆识别代号/车架号',
-      dataIndex: 'sort',
+      dataIndex: 'frameNo',
 
       formItemProps: {
         rules: [{ required: true, message: '请输入车辆识别代号/车架号' }],
@@ -210,7 +137,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     },
     {
       label: '发动机号',
-      dataIndex: 'sort',
+      dataIndex: 'engineNo',
 
       formItemProps: {
         rules: [{ required: true, message: '请输入发动机号' }],
@@ -219,8 +146,8 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     },
     {
       label: '能源种类',
-      dataIndex: 'sort',
-
+      dataIndex: 'energyType',
+      formItem: <DictSelect dictKey={'cm_energy_type'} />,
       formItemProps: {
         rules: [{ required: true, message: '请输入能源种类' }],
       },
@@ -228,8 +155,8 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     },
     {
       label: '核定载客',
-      dataIndex: 'sort222',
-      formItem: <InputNumber min={1} style={{ width: '100%' }} />,
+      dataIndex: 'approvalSeats',
+      formItem: <InputNumber min={1} style={{ width: '100%' }} placeholder="请输入核定载荷" />,
       formItemProps: {
         rules: [{ required: true, message: '请输入核定载客' }],
       },
@@ -237,7 +164,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     },
     {
       label: '年审时间',
-      dataIndex: 'expiressEnd',
+      dataIndex: 'examinedDate',
       formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
@@ -250,7 +177,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     },
     {
       label: '保险时间',
-      dataIndex: 'expiressEnd',
+      dataIndex: 'insuranceDate',
       formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
@@ -279,7 +206,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
           重置
         </Button>,
         <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
-          {isCreate ? '提交' : '更新'}
+          提交
         </Button>,
       ]}
     >
@@ -287,7 +214,6 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
         key={`${JSON.stringify(subForm)}`}
         loadingTitle="提交中..."
         formRef={formRef}
-        initialValues={{ ...menus }}
         loading={loading}
         labelAlign="left"
         onFormChange={onFormChange}
