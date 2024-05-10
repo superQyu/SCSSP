@@ -1,8 +1,8 @@
+import { useState } from 'react';
 import { type ProColumns } from '@ant-design/pro-components';
-import { Button, Image } from 'antd';
-import { EyeOutlined } from '@ant-design/icons';
-import React, { useState } from 'react';
 import dayjs from 'dayjs';
+
+import DictSelect from '@/components/DictSelect';
 type ParamsType = Record<string, any>;
 
 type MenusPropsType = {
@@ -20,7 +20,6 @@ export interface ColumnsParamsProps extends ParamsType {
 }
 
 export default (_: MenusPropsType) => {
-  const [visible, setVisible] = useState(false);
   const columns: ProColumns[] = [
     {
       width: 60,
@@ -28,88 +27,76 @@ export default (_: MenusPropsType) => {
       title: '序号',
       dataIndex: 'index',
       valueType: 'indexBorder',
-      align: 'center',
     },
     {
       title: '车牌号',
-      dataIndex: 'name',
+      dataIndex: 'carNo',
       ellipsis: true,
-      align: 'center',
     },
     {
       hideInSearch: true,
       width: 120,
       title: '行驶证号',
-      dataIndex: 'type',
-      align: 'center',
+      dataIndex: 'carLicense',
     },
     {
       title: '车辆品牌',
       width: 120,
-      dataIndex: 'type',
-      align: 'center',
+      dataIndex: 'carBrand',
     },
     {
       hideInSearch: true,
       width: 120,
       title: '型号',
-      dataIndex: 'type',
-      align: 'center',
+      dataIndex: 'carModel',
     },
     {
+
       title: '车型',
       width: 120,
-      dataIndex: 'type',
-      align: 'center',
+      dataIndex: 'carType',
+      render: (_, record) => <DictSelect type={"text"} value={record + ''} dictKey={'cm_car_type'} />,
+      // render: (_, record) => {record},
+      // valueEnum: 
     },
     {
       hideInSearch: true,
       width: 120,
       title: '车辆颜色',
-      dataIndex: 'type',
-      align: 'center',
+      dataIndex: 'carColor',
     },
     {
       hideInSearch: true,
       width: 180,
       title: '车辆识别代号/车架号',
-      dataIndex: 'code',
-      align: 'center',
+      dataIndex: 'frameNo',
     },
     {
       hideInSearch: true,
       width: 120,
       title: '发动机号',
-      align: 'center',
+      dataIndex: 'engineNo',
     },
-    {
-      hideInSearch: true,
-      width: 120,
-      title: '能源种类',
-      align: 'center',
-    },
+
     {
       hideInSearch: true,
       width: 120,
       title: '核定载客',
-      dataIndex: 'workerType',
-      align: 'center',
+      dataIndex: 'approvalSeats',
     },
     {
       hideInSearch: true,
       width: 120,
       title: '年审时间',
-      dataIndex: 'createTime',
+      dataIndex: 'examinedDate',
       render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD')}</>,
-      align: 'center',
     },
     {
       hideInSearch: true,
       width: 120,
       title: '保险时间',
-      dataIndex: 'createTime',
+      dataIndex: 'insuranceDate',
       render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD')}</>,
-      align: 'center',
     },
   ];
 

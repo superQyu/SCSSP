@@ -14,9 +14,8 @@ import AddMenus from './components/menus/structural';
 export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
-  const { attendance: A, menus: M } = server;
+  const { vehicle: V } = server;
   const initColumns = siteModel({ server });
-
   const [subForm, setSubForm] = useState<Record<string, any>>({});
   const [formModal, setFormModal] = useState<boolean>(false);
 
@@ -47,9 +46,11 @@ export default () => {
   return (
     <>
       <ProTable
-        headerTitle="车辆进出记录"
+        headerTitle="车辆进出场备案审批"
         request={async (params: ModesApi.ParamsType) => {
-          const res = await A.attendanceList({ ...params, pageNo: params?.current || 0 });
+          console.log('params',params );
+          const res = await V.vehicleApproveList({ ...params, pageNo: params?.current || 0 });
+          console.log('res', res);
           res['list'] = res?.list.map((item: ModesApi.ParamsType) => {
             return { ...item, status: `${item.status}` };
           });
