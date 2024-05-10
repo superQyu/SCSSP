@@ -1,6 +1,5 @@
-import { createElement, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import { Button } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
 import { SearchOutlined } from '@ant-design/icons';
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
@@ -13,10 +12,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
-
   const { attendance: A } = server;
-
-  // 初始化 表格列表项
   const initColumns = siteModel({ server });
 
   useEffect(() => {}, []);
@@ -26,21 +22,24 @@ export default () => {
       <ProTable
         headerTitle="考勤记录"
         request={async (params: ModesApi.ParamsType) => {
-          const res = await A.attendanceList({ ...params, pageNo: params?.current || 0 });
-          res['list'] = res?.list.map((item: ModesApi.ParamsType) => {
-            return { ...item, status: `${item.status}` };
-          });
+          const { list, total } = await A.attendanceRecordList(params);
           return {
             ...params,
-            data: res?.list || [],
-            total: res?.totlal || 0,
-          } as unknown as ModesApi.pageItemType;
+            total: total || 0,
+            data:
+              list.map((item: any, index: number) => {
+                return { ...item, id: index };
+              }) || [],
+          };
         }}
         actionRef={actionRef}
         columnsState={{
           persistenceKey: 'pro-table-singe-role',
           persistenceType: 'localStorage',
           onChange(_: any) {},
+        }}
+        pagination={{
+          pageSize: 20,
         }}
         search={{
           labelWidth: 'auto',
@@ -58,7 +57,7 @@ export default () => {
             ];
           },
         }}
-        scroll={{ x: 'auto', y: 'auto' }}
+        scroll={{ x: '1000px', y: 'auto' }}
         columns={[...initColumns]}
       ></ProTable>
     </>

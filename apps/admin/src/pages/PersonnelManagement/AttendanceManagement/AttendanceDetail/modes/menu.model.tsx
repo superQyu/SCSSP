@@ -1,13 +1,51 @@
+import { useState, useEffect } from 'react';
+import { Select } from 'antd';
 import { type ProColumns } from '@ant-design/pro-components';
 import dayjs from 'dayjs';
-type ParamsType = Record<string, any>;
 
 type MenusPropsType = {
-  server?: ParamsType;
+  server?: any;
   month?: Date;
 };
 
-export default ({ month = new Date() }: MenusPropsType) => {
+export default ({ month = new Date(), server }: MenusPropsType) => {
+  const { subContractor: S, person: P, group: G } = server;
+
+  const [subcontractorList, setSubcontractorList] = useState([]);
+  const [laborList, setLaborList] = useState([]);
+  const [groupList, setGroupList] = useState([]);
+
+  const init = async () => {
+    const res1 = await S.getAllSubContractor();
+    const list1 = res1.map((item: any) => {
+      return { label: item.realName, value: item.id };
+    });
+    setSubcontractorList(list1);
+
+    const { list } = await P.workType();
+    const options = list.map((item: any) => {
+      return {
+        label: item.name,
+        value: item.id,
+      };
+    });
+    setLaborList(options);
+
+    const res2 = await G.getGroupList();
+
+    const list2 = res2.list.map((item: any) => {
+      return {
+        label: item.teamName,
+        value: item.id,
+      };
+    });
+    setGroupList(list2);
+  };
+
+  useEffect(() => {
+    init();
+  }, []);
+
   const startOfMonth = dayjs(month).startOf('month');
   const endOfMonth = dayjs(month).endOf('month');
   const daysInMonth = endOfMonth.diff(startOfMonth, 'days') + 1;
@@ -17,7 +55,7 @@ export default ({ month = new Date() }: MenusPropsType) => {
       width: day == 1 ? 70 : 50,
       hideInSearch: true,
       title: day == 1 ? '日期/01' : day.toString().padStart(2, '0'),
-      dataIndex: 'worker1',
+      dataIndex: day.toString().padStart(2, '0'),
       align: 'center',
       render: (dom) =>
         dom == 1 ? (
@@ -29,7 +67,7 @@ export default ({ month = new Date() }: MenusPropsType) => {
         ),
     };
   });
-  /* 接口还需配传参 */
+
   const columns: ProColumns[] = [
     {
       width: 60,
@@ -43,28 +81,43 @@ export default ({ month = new Date() }: MenusPropsType) => {
     {
       hideInTable: true,
       title: '分包单位',
-      dataIndex: 'creditCode',
+      dataIndex: 'subcontractorId',
+      renderFormItem: () => {
+        return <Select placeholder="请选择分包单位" options={subcontractorList} allowClear />;
+      },
     },
     {
+
       hideInTable: true,
       title: '劳务工种',
-      dataIndex: 'gender',
+      dataIndex: 'workTypeId',
+      render: (text: any) => {
+        const obj = Object.fromEntries(laborList.map(({ value, label }) => [value, label]));
+        return <span>{obj[text] || '-'}</span>;
+      },
+      renderFormItem: () => {
+        return <Select placeholder="请选择劳务工种" options={laborList} allowClear />;
+      },
     },
     {
+
       hideInTable: true,
       title: '班组名称',
-      dataIndex: 'companyName',
+      dataIndex: 'groupId',
+      renderFormItem: () => {
+        return <Select placeholder="请选择班组名称" options={groupList} allowClear />;
+      },
     },
     {
       hideInTable: true,
       title: '年月',
       valueType: 'dateMonth',
-      dataIndex: 'createTime',
+      dataIndex: 'yearAndMonth',
     },
     {
       width: 100,
       title: '人员名称',
-      dataIndex: 'name',
+      dataIndex: 'username',
       fixed: 'left',
       align: 'center',
     },
@@ -72,14 +125,15 @@ export default ({ month = new Date() }: MenusPropsType) => {
       width: 100,
       hideInSearch: true,
       title: '出勤(天)',
-      dataIndex: 'gender',
+      dataIndex: 'attendanceDays',
       fixed: 'left',
       align: 'center',
     },
     {
+      width: 100,
       title: '工日(天)',
       hideInSearch: true,
-      dataIndex: 'id',
+      dataIndex: 'workingHours',
       fixed: 'left',
       align: 'center',
     },

@@ -1,0 +1,79 @@
+import { ApiItem } from '@spms/web-request';
+
+const ADMIN_API = import.meta.env.VITE_APP_ADMIN_API;
+
+const vehicle: ApiItem[] = [
+  {
+    key: 'vehicleIntelligentList',
+    url: `${ADMIN_API}/wisdom/car-intelligent-analysis/page`,
+    type: 'GET',
+    name: '智能分析列表',
+    description: '智能分析列表',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      // { key: 'carId', cn: '车牌号' },
+    ],
+  },
+  {
+    key: 'vehicleRecord',
+    url: `${ADMIN_API}/wisdom/car-in-out-record/page`,
+    type: 'GET',
+    name: '车辆进出场记录列表',
+    description: '车辆进出场记录列表',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'carId', cn: '车牌号' },
+    ],
+  },
+  {
+    key: 'vehicleApproveList',
+    url: `${ADMIN_API}/wisdom/car-info/page`,
+    type: 'GET',
+    name: '车辆进出审批列表',
+    description: '车辆进出审批列表',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'carNo', cn: '车牌号' },
+      { key: 'carBrand', cn: '车辆品牌' },
+      { key: 'carType', cn: '车辆类型' },
+      { key: 'pageNo', cn: '页码' },
+      { key: 'pageSize', cn: '每页条数' },
+    ],
+  },
+  {
+    key: 'vehicleApproveAdd',
+    url: `${ADMIN_API}/wisdom/car-info/create`,
+    type: 'POST',
+    name: '车辆进出审批新增',
+    description: '车辆进出审批新增',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'carNo', cn: '车牌号' },
+      { key: 'carLicense', cn: '行驶证号' },
+      { key: 'carBrand', cn: '车辆品牌' },
+      { key: 'carModel', cn: '车辆型号' },
+      { key: 'carType', cn: '车型' },
+      { key: 'carColor', cn: '车车辆颜色牌号' },
+      { key: 'frameNo', cn: '车牌车辆识别代号号' },
+      { key: 'engineNo', cn: '发动机号' },
+      { key: 'energyType', cn: '能源种类' },
+      { key: 'approvalSeats', cn: '核定载客' },
+      { key: 'examinedDate', cn: '年审时间' },
+      { key: 'insuranceDate', cn: '保险时间' },
+    ],
+  },
+  {
+    key: 'vehicleTrackList',
+    url: `${ADMIN_API}/wisdom/car-district-track-info/page`,
+    type: 'GET',
+    name: '轨迹区域列表',
+    description: '轨迹区域列表',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'name', cn: '区域名称' },
+      { key: 'pageNo', cn: '页码' },
+      { key: 'pageSize', cn: '每页条数' },
+    ],
+  },
+];
+export default vehicle;

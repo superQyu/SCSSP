@@ -13,7 +13,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
-  const { attendance: A } = server;
+  const { vehicle: V } = server;
   const initColumns = siteModel({ server });
 
   useEffect(() => {}, []);
@@ -21,9 +21,10 @@ export default () => {
   return (
     <>
       <ProTable
-        headerTitle="车辆进出记录"
+        headerTitle="轨迹区域管理"
         request={async (params: ModesApi.ParamsType) => {
-          const res = await A.attendanceList({ ...params, pageNo: params?.current || 0 });
+          const res = await V.vehicleTrackList({ ...params, pageNo: params?.current || 0 });
+          console.log('list', res);
           res['list'] = res?.list.map((item: ModesApi.ParamsType) => {
             return { ...item, status: `${item.status}` };
           });

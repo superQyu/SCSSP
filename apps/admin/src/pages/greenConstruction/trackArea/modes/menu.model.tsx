@@ -17,7 +17,6 @@ export interface ColumnsParamsProps extends ParamsType {
 }
 
 export default (_: MenusPropsType) => {
-
   const columns: ProColumns[] = [
     {
       width: 60,
@@ -25,13 +24,11 @@ export default (_: MenusPropsType) => {
       title: '序号',
       dataIndex: 'index',
       valueType: 'indexBorder',
-      align: 'center',
     },
     {
       title: '区域名称',
       dataIndex: 'name',
       ellipsis: true,
-      align: 'center',
     },
     {
       hideInTable: true,
@@ -47,28 +44,24 @@ export default (_: MenusPropsType) => {
     {
       hideInSearch: true,
       title: '坐标',
-      dataIndex: 'type',
-      align: 'center',
+      dataIndex: 'points',
     },
     {
       hideInSearch: true,
       title: '车型',
       dataIndex: 'code',
-      align: 'center',
     },
     {
       hideInSearch: true,
       title: '创建时间',
       dataIndex: 'createTime',
       render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD hh:mm:ss')}</>,
-      align: 'center',
     },
 
     {
       hideInSearch: true,
       title: '创建人',
       dataIndex: 'workerType',
-      align: 'center',
     },
   ];
 
