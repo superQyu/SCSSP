@@ -24,7 +24,7 @@ export default () => {
         headerTitle="轨迹区域管理"
         request={async (params: ModesApi.ParamsType) => {
           const res = await V.vehicleTrackList({ ...params, pageNo: params?.current || 0 });
-          console.log('list', res);
+          console.log('list', res);
           res['list'] = res?.list.map((item: ModesApi.ParamsType) => {
             return { ...item, status: `${item.status}` };
           });
@@ -40,8 +40,11 @@ export default () => {
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}
-        scroll={{ x: 'auto', y: 'auto' }}
+        scroll={{  y: 'auto' }}
         columns={[...initColumns]}
+        pagination={{
+          pageSize: 30,
+        }}
         search={{
           labelWidth: 'auto',
           optionRender: ({ searchText }: any, { form }: any, dom: any) => {

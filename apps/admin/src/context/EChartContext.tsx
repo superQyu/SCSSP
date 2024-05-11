@@ -9,7 +9,6 @@ interface ConfigurationType {
 
 export const EChartsContext = createContext<ConfigurationType>({
   echarts: echarts,
-
   getEChartsInstance: () => {},
   getLinearGradient: () => {},
 });

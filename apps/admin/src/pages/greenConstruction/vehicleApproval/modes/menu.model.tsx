@@ -51,17 +51,19 @@ export default (_: MenusPropsType) => {
       dataIndex: 'carModel',
     },
     {
-
       title: '车型',
       width: 120,
       dataIndex: 'carType',
-      render: (_, record) => <DictSelect type={"text"} value={record + ''} dictKey={'cm_car_type'} />,
-      // render: (_, record) => {record},
-      // valueEnum: 
+      render: (_, record) => (
+        <DictSelect type={'text'} value={record.carType} dictKey={'cm_car_type'} />
+      ),
+      renderFormItem: () => {
+        return <DictSelect dictKey={'cm_car_type'} />;
+      },
     },
     {
       hideInSearch: true,
-      width: 120,
+
       title: '车辆颜色',
       dataIndex: 'carColor',
     },
@@ -73,30 +75,29 @@ export default (_: MenusPropsType) => {
     },
     {
       hideInSearch: true,
-      width: 120,
+
       title: '发动机号',
       dataIndex: 'engineNo',
     },
 
     {
       hideInSearch: true,
-      width: 120,
       title: '核定载客',
       dataIndex: 'approvalSeats',
     },
     {
       hideInSearch: true,
-      width: 120,
+      width: 100,
       title: '年审时间',
       dataIndex: 'examinedDate',
-      render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD')}</>,
+      render: (_, record) => <>{dayjs(record.examinedDate).format('YYYY-MM-DD')}</>,
     },
     {
       hideInSearch: true,
-      width: 120,
+      width: 100,
       title: '保险时间',
       dataIndex: 'insuranceDate',
-      render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD')}</>,
+      render: (_, record) => <>{dayjs(record.insuranceDate).format('YYYY-MM-DD')}</>,
     },
   ];
 

@@ -1,13 +1,9 @@
 import { useRef, useEffect } from 'react';
 import { Button } from 'antd';
-
 import { SearchOutlined } from '@ant-design/icons';
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
-
-import type { ModesApi } from './modes/model';
 import siteModel from './modes/menu.model';
-
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 export default () => {
@@ -16,23 +12,17 @@ export default () => {
   const { vehicle: V } = server;
   const initColumns = siteModel({ server });
 
-  useEffect(() => {}, []);
-
   return (
     <>
       <ProTable
         headerTitle="车辆进出记录"
-        request={async (params: ModesApi.ParamsType) => {
-          const res = await V.vehicleRecord({ ...params, pageNo: params?.current || 0 });
-          console.log('RE', res);
-          res['list'] = res?.list.map((item: ModesApi.ParamsType) => {
-            return { ...item, status: `${item.status}` };
-          });
+        request={async (params: any) => {
+          const { list, total } = await V.vehicleRecord(params);
           return {
             ...params,
-            data: res?.list || [],
-            total: res?.totlal || 0,
-          } as unknown as ModesApi.pageItemType;
+            data: list || [],
+            total: total || 0,
+          };
         }}
         actionRef={actionRef}
         columnsState={{
@@ -42,6 +32,9 @@ export default () => {
         }}
         scroll={{ x: 'auto', y: 'auto' }}
         columns={[...initColumns]}
+        pagination={{
+          pageSize: 30,
+        }}
         search={{
           labelWidth: 'auto',
           optionRender: ({ searchText }: any, { form }: any, dom: any) => {
