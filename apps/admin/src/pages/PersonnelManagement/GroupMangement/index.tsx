@@ -131,6 +131,7 @@ export default () => {
         }}
       ></ProTable>
       <EditDialog
+        key={`${dialogVisible}`}
         detail={detail}
         openModal={dialogVisible}
         onStateChange={handleModalStateChange}
