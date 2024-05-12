@@ -6,16 +6,17 @@ import { SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
 
-import type { ModesApi } from './modes/model';
 import siteModel from './modes/menu.model';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-import AddMenus from './components/menus/structural';
+import AddForm from './components/addForm';
+
 export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
   const { vehicle: V } = server;
   const initColumns = siteModel({ server });
+
   const [subForm, setSubForm] = useState<Record<string, any>>({});
   const [formModal, setFormModal] = useState<boolean>(false);
 
@@ -28,7 +29,7 @@ export default () => {
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await M.deleteMenus({ id: id }).then(async () => {
+    const res = await V.vehicleApproveDel({ id: id }).then(async () => {
       message.success('操作成功!');
       await actionRef.current?.reload();
     });
@@ -37,7 +38,7 @@ export default () => {
 
   // 保存
   const onSave = async (params: any) => {
-    const res = await M.updateMenu(JSON.parse(JSON.stringify({ ...params })));
+    const res = await V.vehicleApproveUpdate(JSON.parse(JSON.stringify(params)));
     return res;
   };
 
@@ -47,18 +48,19 @@ export default () => {
     <>
       <ProTable
         headerTitle="车辆进出场备案审批"
-        request={async (params: ModesApi.ParamsType) => {
-          console.log('params',params );
-          const res = await V.vehicleApproveList({ ...params, pageNo: params?.current || 0 });
-          console.log('res', res);
-          res['list'] = res?.list.map((item: ModesApi.ParamsType) => {
-            return { ...item, status: `${item.status}` };
+        request={async (params: any) => {
+          const { list, total } = await V.vehicleApproveList(params);
+          const res = list.map((item: any) => {
+            return {
+              ...item,
+              carType: `${item.carType}`,
+            };
           });
           return {
             ...params,
-            data: res?.list || [],
-            total: res?.totlal || 0,
-          } as unknown as ModesApi.pageItemType;
+            data: res || [],
+            total: total || 0,
+          };
         }}
         actionRef={actionRef}
         columnsState={{
@@ -89,7 +91,7 @@ export default () => {
               <a
                 key="delete"
                 onClick={() => {
-                  // action?.startEditable?.(record.id);
+                  onDelete(record.id);
                 }}
               >
                 <DeleteOutlined />
@@ -109,6 +111,9 @@ export default () => {
             新建
           </Button>,
         ]}
+        pagination={{
+          pageSize: 30,
+        }}
         search={{
           labelWidth: 'auto',
           optionRender: ({ searchText }: any, { form }: any, dom: any) => {
@@ -126,7 +131,7 @@ export default () => {
           },
         }}
       ></ProTable>
-      <AddMenus subForm={subForm} openModal={formModal} onStateChange={handleModalStateChange} />
+      <AddForm subForm={subForm} openModal={formModal} onStateChange={handleModalStateChange} />
     </>
   );
 };

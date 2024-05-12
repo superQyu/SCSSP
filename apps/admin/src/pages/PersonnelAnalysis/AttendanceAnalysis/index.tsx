@@ -1,16 +1,14 @@
-import React, { useEffect } from 'react';
-import * as echarts from 'echarts';
-console.log('echarts', echarts);
+import { useEffect, useRef } from 'react';
 
-const MyChartComponent = () => {
-  let myChart: any;
+import { useECharts } from '@/context/EChartContext';
+
+const SomeChartComponent = () => {
+  const { getEChartsInstance, getLinearGradient } = useECharts();
+  const chartRef = useRef(null);
   const xAxis = ['木工', '建筑电工', '起重信号工', '钢筋工', '混凝土工', '除尘工'];
   const data = [30, 26, 13, 13, 12, 15, 20, 30, 12, 15, 20, 30];
-  const init = () => {
-    const chartDom = document.getElementById('myChart1');
-    myChart = echarts.init(chartDom);
-    setOptions();
-  };
+
+  let chartInstance: any = null;
 
   const setOptions = () => {
     const option = {
@@ -74,7 +72,7 @@ const MyChartComponent = () => {
           itemStyle: {
             normal: {
               borderRadius: [12, 12, 0, 0],
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              color: getLinearGradient(0, 0, 0, 1, [
                 {
                   offset: 1,
                   color: 'rgba(125, 188, 255, 0)',
@@ -96,17 +94,25 @@ const MyChartComponent = () => {
         },
       ],
     };
-    myChart.setOption(option);
+    chartInstance.setOption(option);
   };
 
+  const resizeChart = () => chartInstance.resize();
+
   useEffect(() => {
-    init();
+    chartInstance = getEChartsInstance(chartRef);
+    setOptions();
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', resizeChart);
     return () => {
-      myChart.dispose();
+      chartInstance.dispose();
+      window.removeEventListener('resize', resizeChart);
     };
   }, []);
 
-  return <div id="myChart1" className="w-full h-full" />;
+  return <div ref={chartRef} className="w-full h-full"></div>;
 };
 
-export default MyChartComponent;
+export default SomeChartComponent;

@@ -1,5 +1,7 @@
 export declare namespace ModesApi {
-  type ParamsType = Record<string, any>;
+  type ParamsType = {
+    
+  };
 
   type GithubIssueItem = {
     url: string;

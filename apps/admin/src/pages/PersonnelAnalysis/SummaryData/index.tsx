@@ -45,17 +45,53 @@ export default () => {
 
   return (
     <Flex gap="middle" vertical justify="space-between" className="h-full">
-      <div>{time}</div>
-      <div>
-        现场实施人数
-        <span>0 人</span>
+      <div
+        className="m-auto color-#6b9ce8 bg-#e0ecfe mt-[-10px] px-30px py-5px font-700"
+        style={{ clipPath: 'polygon(0 0, 100% 0 , calc(100% - 20px) 100%, 20px 100%)' }}
+      >
+        {time}
       </div>
-      <div>劳务总人数 0 人 </div>
-      <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-3 h-full bg-#fff" >
+      <Flex align="center">
+        现场实施人数
+        <span
+          className="ml-4 mr-1 px-10px  font-size-30px color-#6b9ce8 font-700 "
+          style={{ border: '1px solid #e0ecfe' }}
+        >
+          0
+        </span>
+        人
+      </Flex>
+      <Flex align="center">
+        劳务总人数
+        <span
+          className="ml-4 mr-1 px-10px  font-size-30px color-#6b9ce8 font-700 "
+          style={{ border: '1px solid #e0ecfe' }}
+        >
+          1
+        </span>
+        <span
+          className="ml-4 mr-1 px-10px  font-size-30px color-#6b9ce8 font-700 "
+          style={{ border: '1px solid #e0ecfe' }}
+        >
+          4
+        </span>
+        人
+      </Flex>
+
+      <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-3 h-full bg-#fff">
         {list.map((item, i: number) => {
           return (
-            <Flex align="center" className="px-3 h-full font-size-14px color-#333" style={{border: '1px solid #ecf0f6'}} key={item.key}>
-              {i % 2 ? <ScheduleTwoTone className='font-size-24px'/> : <UserOutlined className='color-#5597fd font-size-24px'/>}
+            <Flex
+              align="center"
+              className="px-3 h-full font-size-14px color-#333"
+              style={{ border: '1px solid #ecf0f6' }}
+              key={item.key}
+            >
+              {i % 2 ? (
+                <ScheduleTwoTone className="font-size-24px" />
+              ) : (
+                <UserOutlined className="color-#5597fd font-size-24px" />
+              )}
               <div className="flex-1 ml-2">{item.label}</div>
               <div className="font-size-24px font-700 color-orange">
                 {item.key}
