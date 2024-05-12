@@ -112,20 +112,16 @@ export default (_: MenusPropsType) => {
       hideInSearch: true,
       title: '方向',
       dataIndex: 'direction',
-      align: 'center',
-      valueEnum: {
-        '1': { text: '进场' },
-        '2': { text: '出场' },
-      },
+      render: (_, record) => (record.enterTime ? '出场' : '进场'),
     },
     {
       hideInSearch: true,
       title: '进出时间',
-      dataIndex: 'enterTime',
-      render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD hh:mm:ss')}</>,
+      render: (_, record) => (
+        <>{dayjs(record.enterTime || record.outTime).format('YYYY-MM-DD hh:mm:ss')}</>
+      ),
       align: 'center',
     },
-
   ];
 
   return columns;

@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Flex, Row, Col, Tag } from 'antd';
+import { Flex, Row, Col, Tag, Image } from 'antd';
 import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-
-import TextItem from '../components/TextItem';
 
 export default () => {
   let timer: any;
@@ -68,36 +66,43 @@ export default () => {
   }, []);
 
   return (
-    <div className="position-relative h-full">
-      <Row gutter={10} className="position-absolute overflow-y-auto">
+    <div className="position-relative h-full overflow-y-auto overflow-x-hidden">
+      <Row gutter={10} className="position-absolute ">
         {list.map((item) => {
           return (
             <Col span={24} xxl={12} className="mb-2">
-              <Row gutter={2} className="p-2 h-150px bg-#e6f7ff border-rd-2">
-                <Col span={12} className="h-full">
-                  照片
-                </Col>
-                <Col span={12} className="h-full">
-                  <Flex vertical justify="space-between" className="h-full">
-                    <div>{item.companyName}</div>
-                    <div> {item.jobCategory}</div>
-                    <div> {item.personName}</div>
-                    <div className="color-#ff9c00 font-family-ds-digit font-size-16px">
-                      {' '}
-                      {item.receiveTime}
-                    </div>
-                    {item.inAndOutType == '0' ? (
-                      <Tag icon={<LoginOutlined />} color="#ff9c00">
-                        进场
-                      </Tag>
-                    ) : (
-                      <Tag icon={<LogoutOutlined />} color="#55acee">
-                        出场
-                      </Tag>
-                    )}
-                  </Flex>
-                </Col>
-              </Row>
+              <div style={{ border: '1px solid #ecf0f6', borderRadius: '5px' }}>
+                <Row gutter={10} className="p-2 h-150px  border-rd-2">
+                  <Col span={12} className="h-full">
+                    <Flex justify="center" align="center" className="w-full h-full">
+                      <Image
+                        className="w-full h-full"
+                        src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                      />
+                    </Flex>
+                  </Col>
+                  <Col span={12} className="h-full">
+                    <Flex vertical justify="space-between" className="h-full">
+                      <div>{item.companyName}</div>
+                      <div> {item.jobCategory}</div>
+                      <div> {item.personName}</div>
+                      <div className="color-#ff9c00 font-family-ds-digit font-size-16px">
+                        {' '}
+                        {item.receiveTime}
+                      </div>
+                      {item.inAndOutType == '0' ? (
+                        <Tag icon={<LoginOutlined />} color="#ff9c00">
+                          进场
+                        </Tag>
+                      ) : (
+                        <Tag icon={<LogoutOutlined />} color="#55acee">
+                          出场
+                        </Tag>
+                      )}
+                    </Flex>
+                  </Col>
+                </Row>
+              </div>
             </Col>
           );
         })}

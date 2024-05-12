@@ -1,7 +1,8 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from 'antd';
 
-import { SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
+
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
 
@@ -9,30 +10,27 @@ import type { ModesApi } from './modes/model';
 import siteModel from './modes/menu.model';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-
+import DetailForm from './components/detail';
 export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
   const { vehicle: V } = server;
   const initColumns = siteModel({ server });
-
-  useEffect(() => {}, []);
+  const [subForm, setSubForm] = useState<Record<string, any>>({});
+  const [formModal, setFormModal] = useState<boolean>(false);
 
   return (
     <>
       <ProTable
-        headerTitle="车辆进出记录"
+        headerTitle="车辆智能分析"
         request={async (params: ModesApi.ParamsType) => {
-          const res = await V.vehicleIntelligentList({ ...params, pageNo: params?.current || 0 });
-          console.log('RE', res);
-          res['list'] = res?.list.map((item: ModesApi.ParamsType) => {
-            return { ...item, status: `${item.status}` };
-          });
+          const { list, total } = await V.vehicleIntelligentList(params);
+
           return {
             ...params,
-            data: res?.list || [],
-            total: res?.totlal || 0,
-          } as unknown as ModesApi.pageItemType;
+            data: list || [],
+            total: total || 0,
+          };
         }}
         actionRef={actionRef}
         columnsState={{
@@ -40,8 +38,31 @@ export default () => {
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}
-        scroll={{ x: 'auto', y: 'auto' }}
-        columns={[...initColumns]}
+        scroll={{ y: 'auto' }}
+        columns={[
+          ...initColumns,
+          {
+            title: '操作',
+            key: 'option',
+            width: 120,
+            valueType: 'option',
+            render: (_text: any, record: any, _: any, action: any) => [
+              <a
+                key="editable"
+                onClick={() => {
+                  setSubForm(record);
+                  setFormModal(true);
+                }}
+              >
+                <EyeOutlined />
+                详情
+              </a>,
+            ],
+          },
+        ]}
+        pagination={{
+          pageSize: 30,
+        }}
         search={{
           labelWidth: 'auto',
           optionRender: ({ searchText }: any, { form }: any, dom: any) => {
@@ -59,6 +80,7 @@ export default () => {
           },
         }}
       ></ProTable>
+      <DetailForm subForm={subForm} openModal={formModal} />
     </>
   );
 };

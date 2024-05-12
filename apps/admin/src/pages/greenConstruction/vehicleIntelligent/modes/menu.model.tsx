@@ -1,26 +1,13 @@
 import { type ProColumns } from '@ant-design/pro-components';
-import { Button, Image } from 'antd';
-import { EyeOutlined } from '@ant-design/icons';
-import React, { useState } from 'react';
 import dayjs from 'dayjs';
+import DictSelect from '@/components/DictSelect';
 type ParamsType = Record<string, any>;
 
 type MenusPropsType = {
   server?: ParamsType;
 };
 
-export interface ColumnsParamsProps extends ParamsType {
-  id: number;
-  name: string;
-  ico: string;
-  orderNum: number;
-  roleKey: number | string;
-  filepath: string;
-  isDelete: '0' | '1';
-}
-
 export default (_: MenusPropsType) => {
-  const [visible, setVisible] = useState(false);
   const columns: ProColumns[] = [
     {
       width: 60,
@@ -30,29 +17,50 @@ export default (_: MenusPropsType) => {
       valueType: 'indexBorder',
     },
     {
+      hideInSearch: true,
+      title: '编号',
+      dataIndex: 'id',
+    },
+    {
+      hideInSearch: true,
       title: '车牌号',
       dataIndex: 'carNo',
-      ellipsis: true,
     },
     {
       hideInSearch: true,
       title: '车辆颜色',
-      dataIndex: 'plateColor',
+      dataIndex: 'carColor',
     },
     {
       hideInSearch: true,
       title: '车型',
       dataIndex: 'carType',
+      render: (_, record) => (
+        <DictSelect type={'text'} value={record.carType} dictKey={'cm_car_type'} />
+      ),
     },
     {
       hideInSearch: true,
+      title: '行驶证号',
+      dataIndex: 'carLicense',
+    },
+    { hideInSearch: true, title: '车辆品牌', width: 120, dataIndex: 'carBrand' },
+    {
+      hideInSearch: true,
+      title: '型号',
+      dataIndex: 'carModel',
+    },
+    {
+      hideInSearch: true,
+      width: 150,
       title: '报警时间',
-      dataIndex: 'alarmTime',
+      render: (_, record) => <>{dayjs(record.alarmTime).format('YYYY-MM-DD hh:mm:ss')}</>,
     },
     {
-      hideInSearch: true,
       title: '报警类型',
-      dataIndex: 'alarmType',
+      render: (_, record) => (
+        <DictSelect type={'text'} value={record.alarmType + ''} dictKey={'alarm_type'} />
+      ),
     },
     {
       hideInSearch: true,
@@ -62,19 +70,31 @@ export default (_: MenusPropsType) => {
     {
       hideInSearch: true,
       title: '处理人',
-      dataIndex: 'disposeUserId',
+      dataIndex: 'disposeUserName',
     },
     {
       hideInSearch: true,
+      width: 150,
       title: '处理内容',
       dataIndex: 'disposeContent',
     },
     {
       hideInSearch: true,
+      width: 150,
       title: '处理时间',
-      dataIndex: 'disposeTime',
-      render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD hh:mm:ss')}</>,
+      render: (_, record) => <>{dayjs(record.disposeTime).format('YYYY-MM-DD hh:mm:ss')}</>,
     },
+    // {
+    //   hideInTable: true,
+    //   title: '报警时间',
+    //   valueType: 'dateRange',
+    //   search: {
+    //     transform: (value: any) => ({
+    //       startTime: value[0],
+    //       endTime: value[1],
+    //     }),
+    //   },
+    // },
   ];
 
   return columns;

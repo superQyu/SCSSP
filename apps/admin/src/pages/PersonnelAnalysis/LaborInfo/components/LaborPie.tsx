@@ -1,14 +1,9 @@
-import React, { useEffect } from 'react';
-import * as echarts from 'echarts';
+import { useEffect, useRef } from 'react';
+import { useECharts } from '@/context/EChartContext';
 
-const MyChartComponent = () => {
-  let myChart: any;
-
-  var chartData = {
-    value: 30,
-    total: 100,
-  };
-
+const SomeChartComponent = () => {
+  const { getEChartsInstance, getLinearGradient } = useECharts();
+  const chartRef = useRef(null);
   const data1 = [
     { value: 20, name: '本科' },
     { value: 30, name: '高中' },
@@ -23,13 +18,7 @@ const MyChartComponent = () => {
     { value: 10, name: '60岁以上' },
   ];
 
-  let max = chartData.total;
-  let value = chartData.value;
-  const init = () => {
-    const chartDom = document.getElementById('myChart3');
-    myChart = echarts.init(chartDom);
-    setOptions();
-  };
+  let chartInstance: any = null;
 
   const setOptions = () => {
     const option = {
@@ -48,7 +37,7 @@ const MyChartComponent = () => {
           align: 'left',
           verticalAlign: 'middle',
         },
-        data: data2.map(item => item.name),
+        data: data2.map((item) => item.name),
       },
       series: [
         {
@@ -58,7 +47,7 @@ const MyChartComponent = () => {
           label: {
             position: 'inner',
             fontSize: 12,
-            color: '#fff'
+            color: '#fff',
           },
           labelLine: {
             show: false,
@@ -76,17 +65,25 @@ const MyChartComponent = () => {
         },
       ],
     };
-    myChart.setOption(option);
+    chartInstance.setOption(option);
   };
 
+  const resizeChart = () => chartInstance.resize();
+
   useEffect(() => {
-    init();
+    chartInstance = getEChartsInstance(chartRef);
+    setOptions();
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', resizeChart);
     return () => {
-      myChart.dispose();
+      chartInstance.dispose();
+      window.removeEventListener('resize', resizeChart);
     };
   }, []);
 
-  return <div id="myChart3" className="w-full h-full" />;
+  return <div ref={chartRef} className="w-full h-full"></div>;
 };
 
-export default MyChartComponent;
+export default SomeChartComponent;
