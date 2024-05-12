@@ -129,7 +129,7 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
       dataIndex: 'contactName',
       colNum: 12,
       formItemProps: {
-        rules: [{ required: true, message: '请输入联系人' }],
+        rules: [{ required: true }],
       },
     },
     {
@@ -143,7 +143,7 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
       dataIndex: 'username',
       colNum: 12,
       formItemProps: {
-        rules: [{ required: true, message: '请输入用户名称' }],
+        rules: [{ required: true }],
       },
     },
     {
@@ -152,7 +152,7 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
       dataIndex: 'password',
       colNum: 12,
       formItemProps: {
-        rules: [{ required: true, message: '请输入用户密码' }],
+        rules: [{ required: true }],
       },
       formItem: (
         <Input.Password
@@ -167,7 +167,7 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
       colNum: 12,
       formItem: <InputNumber placeholder="请输入账号余额" className="w-full" />,
       formItemProps: {
-        rules: [{ required: true, message: '请输入用户名称' }],
+        rules: [{ required: true }],
       },
     },
     {
@@ -176,7 +176,7 @@ const AddUser: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) 
       colNum: 12,
       formItem: <DatePicker format="YYYY-MM-DD" className="w-full" />,
       formItemProps: {
-        rules: [{ required: true, message: '请输入用户名称' }],
+        rules: [{ required: true }],
       },
     },
     {

@@ -46,8 +46,6 @@ cli/libturbo.h
 go-artifacts
 rust-artifacts
 
-pnpm-lock.yaml
-
 # Logs
 logs
 *.log

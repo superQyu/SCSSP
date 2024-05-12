@@ -65,7 +65,7 @@ export default () => {
           const res = await ST.tenantList({ ...params, pageNo: params?.current || 0 });
           // 指定字段类型转换
           res['list'] = res?.list.map((item: ModesApi.ParamsType) => {
-            return { ...item, status: `${item.status}`, expireTime: dayjs(item.expireTime) };
+            return { ...item, status: `${item.status}`,packageId:`${item.packageId}`, expireTime: dayjs(item.expireTime) };
           });
           return {
             ...params,

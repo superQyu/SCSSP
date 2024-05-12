@@ -34,6 +34,16 @@ const user: ApiItem[] = [
     description: '查询字典列表',
     params: [{ key: 'Authorization', location: "header" }]
   },
+  // /system/area/tree
+  // 地区查询
+  {
+    key: 'getAreaList',
+    url: `${ADMIN_API}/system/area/tree`,
+    type: 'GET',
+    name: '地区查询',
+    description: '查询地区列表',
+    params: [{ key: 'Authorization', location: "header" }]
+  },
   // {
   //   key: 'getDictType',
   //   url: `${ADMIN_API}/system/dict-type/get`,
