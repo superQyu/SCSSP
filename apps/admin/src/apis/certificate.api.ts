@@ -93,6 +93,17 @@ const certificate: ApiItem[] = [
     ],
   },
   {
+    key: 'getCertificateDetail',
+    url: `${ADMIN_API}/wisdom/personnel-certificate/get`,
+    type: 'GET',
+    name: '证件列表',
+    description: '获取证件详情',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: '数据库主键' },
+    ],
+  },
+  {
     key: 'deleteCertificate',
     url: `${ADMIN_API}/wisdom/personnel-certificate/delete`,
     type: 'GET',
