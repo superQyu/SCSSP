@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { Button } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { type ActionType } from '@ant-design/pro-components';

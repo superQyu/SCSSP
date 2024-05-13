@@ -13,6 +13,7 @@ const vehicle: ApiItem[] = [
       { key: 'Authorization', location: 'header' },
       { key: 'current', targetKey: 'pageNo', cn: '页码' },
       { key: 'pageSize', cn: '每页条数' },
+      { key: 'alarmType', cn: '报警类型' },
     ],
   },
   {
@@ -110,6 +111,30 @@ const vehicle: ApiItem[] = [
       { key: 'name', cn: '区域名称' },
       { key: 'pageNo', cn: '页码' },
       { key: 'pageSize', cn: '每页条数' },
+    ],
+  },
+  {
+    key: 'approve',
+    url: `${ADMIN_API}/bpm/task/approve`,
+    type: 'PUT',
+    name: '通过任务',
+    description: '通过任务',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: 'id号' },
+      { key: 'reason', cn: '理由' },
+    ],
+  },
+  {
+    key: 'reject',
+    url: `${ADMIN_API}/bpm/task/reject`,
+    type: 'PUT',
+    name: '不通过任务',
+    description: '不通过任务',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: 'id号' },
+      { key: 'reason', cn: '理由' },
     ],
   },
 ];

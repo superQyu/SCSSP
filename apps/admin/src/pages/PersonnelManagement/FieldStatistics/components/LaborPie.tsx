@@ -76,10 +76,6 @@ const SomeChartComponent = () => {
             show: true,
             position: 'right',
           },
-          labelLine: {
-            show: true,
-            lineStyle: {},
-          },
         },
         // 背景图形
         {
@@ -96,10 +92,7 @@ const SomeChartComponent = () => {
             show: true,
             position: 'left',
           },
-          labelLine: {
-            show: true,
-            lineStyle: {},
-          },
+   
         },
         // 尾端小圆点 饼图
         {
@@ -145,7 +138,6 @@ const SomeChartComponent = () => {
   useEffect(() => {
     chartInstance = getEChartsInstance(chartRef);
     setOptions();
-
   }, []);
 
   useEffect(() => {
