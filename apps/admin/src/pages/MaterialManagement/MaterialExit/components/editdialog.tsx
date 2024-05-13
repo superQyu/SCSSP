@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Modal, Button, message } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import { AdForm } from 'components';
-import dayjs from 'dayjs';
 
 import initColumns from '../models/form.model';
 
@@ -36,23 +35,24 @@ export default ({ openModal, onStateChange, detail }: Props) => {
   // 表单项配置
   // 只能放在外面, 因为调用该方法中使用 hook, 只能放在函数式组件的外部
   // 传入表单的DOM 和 两个图片列表的默认值
-  const { entryAttachments, exitAttachments } = detail;
+  const {entryAttachments, exitAttachments} = detail
   const formColumns = initColumns(formRef, entryAttachments, exitAttachments);
 
-  // 班组信息表单的默认值
-  const [formData] = useState<MenusType>({
-    teamName: detail.teamName,
-    subcontractorId: detail.subcontractorId,
-    userId: detail.userId,
-    workTypeName: detail.workTypeName,
-    identityCard: detail.identityCard,
-    phone: detail.phone,
-    entryDate: detail.entryDate && dayjs(detail.entryDate),
-    exitDate: detail.exitDate && dayjs(detail.exitDate),
-  });
+  // 分包商信息表单的默认值
+  const [formData, setFormData] = useState<MenusType>();
 
   useEffect(() => {
     setOpen(openModal);
+    if (openModal) {
+      // 如果打开弹窗
+      if (!Object.entries(detail).length) {
+        setFormData({});
+      } else {
+        setFormData(detail);
+      }
+    } else {
+      formRef.current?.resetFields();
+    }
   }, [openModal]);
 
   // 点击重置
@@ -70,8 +70,8 @@ export default ({ openModal, onStateChange, detail }: Props) => {
       const values: MenusType = await formRef.current?.validateFields();
       values.entryAttachments = values.entryAttachments?.join('@');
       values.exitAttachments = values.exitAttachments?.join('@');
-      values.id = detail.id;
-      console.log('表单提交时的数据', values);
+      values.id = detail.id
+      // console.log('表单提交时的数据', values);
       setLoading(true);
       group[detail.id ? 'updateGroup' : 'createGroup'](values)
         .then(() => {

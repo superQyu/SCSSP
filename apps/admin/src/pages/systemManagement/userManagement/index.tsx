@@ -87,7 +87,7 @@ export default () => {
         toolBarRender={() => [
           <Button
             key="button"
-            // @ts-ignore
+            
             icon={<PlusOutlined />}
             onClick={() => setFormModal(true)}
             type="primary"

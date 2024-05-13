@@ -72,31 +72,7 @@ export default ({ server }: MenusPropsType) => {
       // width: 48,
       hideInSearch: true,
     },
-    {
-      title: '操作',
-      width: 140,
-      valueType: 'option',
-      dataIndex: 'option',
-      render: (_text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            // console.log('点击了编辑')
-            action?.startEditable?.(record.id);
-          }}
-        >
-          编辑
-        </a>,
-        <a
-          key="delete"
-          onClick={() => {
-            // action?.startEditable?.(record.id);
-          }}
-        >
-          删除
-        </a>,
-      ],
-    },
+    
   ];
 
   return columns;

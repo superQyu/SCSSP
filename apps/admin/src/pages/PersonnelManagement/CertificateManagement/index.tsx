@@ -106,9 +106,11 @@ export default () => {
           const res = await certificate.getCertificateList(params);
           res.list = res.list.map((item: any) => {
             item.picture = item.picture?.split('@');
+            item.workerType = item.workerType && `${item.workerType}`
+            item.jobCategory = item.jobCategory && `${item.jobCategory}`
             return item;
           });
-          console.log('证件列表', res);
+          // console.log('证件列表', res);
           return {
             // ...params,
             // success: true,
@@ -147,6 +149,7 @@ export default () => {
         }}
       ></ProTable>
       <EditDialog
+        key={`${dialogVisible}`}
         type={type}
         detail={detail}
         openModal={dialogVisible}
