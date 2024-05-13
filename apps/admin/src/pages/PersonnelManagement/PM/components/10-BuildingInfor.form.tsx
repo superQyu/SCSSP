@@ -23,7 +23,7 @@ interface MenusPropsType extends MenusType {
   /** 控制 Modal 是否显示 */
   openModal: boolean;
   /** 表单初始化 */
-    subForm: MenusType;
+  subForm: MenusType;
   /** 监听Modal状态变化 */
   onStateChange: (state: boolean) => void;
 }
@@ -33,6 +33,7 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
 
   const [menus, setMenus] = useState<MenusType>({});
   const [formKey, _] = useState<string>('projectBuildingInfoSaveReqVOList');
+  const [getFormKey] = useState<string>('projectBuildingInfoRespVOList');
 
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<readonly DataSourceType[]>([]);
@@ -112,6 +113,7 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
 
   useImperativeHandle(ref, () => ({
     key: formKey,
+    sourceKey: getFormKey,
     form: {
       validateFields: () => {
         return new Promise((resolve, _) => {

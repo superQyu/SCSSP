@@ -31,7 +31,8 @@ const menus: ApiItem[] = [
         description: '项目管理',
         params: [
             { key: 'Authorization', location: 'header' },
-            { key: 'current', targetKey: 'pageNo' }, { key: 'pageSize' }, { key: 'name' }
+            { key: 'current', targetKey: 'pageNo' }, { key: 'pageSize' },
+            { key: 'projectName' }, { key: 'projectStatus' }
         ],
     },
     {

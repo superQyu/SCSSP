@@ -68,6 +68,7 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
 
   useImperativeHandle(ref, () => ({
     key: formKey,
+    sourceKey: getFormKey,
     form: formRef.current,
   }));
 
@@ -75,7 +76,7 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
     <>
       <SingleTitle label={'质量安全精品创建'} />
       <AdForm
-        key={`${formKey}`}
+        key={`${JSON.stringify(menus)}`}
         name={`${formKey}`}
         formRef={formRef}
         initialValues={{ ...menus }}

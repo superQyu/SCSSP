@@ -169,22 +169,23 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
 
   useImperativeHandle(ref, () => ({
     key: formKey,
+    sourceKey: getFormKey,
     form: formRef.current,
-    transform: (value: MenusType) => {
-      return {
-        ...value,
-        bidDate: dayjs(value.bidDate).valueOf(),
-        bidStartDate: dayjs(value.bidStartDate).valueOf(),
-        bidCompletionDate: dayjs(value.bidCompletionDate).valueOf(),
-      };
-    },
+    // transform: (value: MenusType) => {
+    //   return {
+    //     ...value,
+    //     bidDate: dayjs(value.bidDate).valueOf(),
+    //     bidStartDate: dayjs(value.bidStartDate).valueOf(),
+    //     bidCompletionDate: dayjs(value.bidCompletionDate).valueOf(),
+    //   };
+    // },
   }));
 
   return (
     <>
       <SingleTitle label={'中标信息'} />
       <AdForm
-        key={`${formKey}`}
+        key={`${JSON.stringify(menus)}`}
         name={`${formKey}`}
         formRef={formRef}
         initialValues={{ ...menus }}

@@ -13,7 +13,7 @@ interface MenusPropsType extends MenusType {
   /** 控制 Modal 是否显示 */
   openModal: boolean;
   /** 表单初始化 */
-    subForm: MenusType;
+  subForm: MenusType;
   /** 监听表单字段状态变化 */
   onFormChange: () => void;
 }
@@ -46,6 +46,7 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
 
   useImperativeHandle(ref, () => ({
     key: formKey,
+    sourceKey: getFormKey,
     form: formRef.current,
   }));
 
@@ -53,7 +54,7 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
     <>
       <SingleTitle label={'位置信息'} />
       <AdForm
-        key={`LocationInfor`}
+        key={`${JSON.stringify(menus)}`}
         name={`LocationInfor`}
         formRef={formRef}
         initialValues={{ ...menus }}

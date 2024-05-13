@@ -13,7 +13,7 @@ interface MenusPropsType extends MenusType {
   /** 控制 Modal 是否显示 */
   openModal: boolean;
   /** 表单初始化 */
-    subForm: MenusType;
+  subForm: MenusType;
   /** 监听表单字段状态变化 */
   onFormChange: () => void;
 }
@@ -23,9 +23,8 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
 
   const formRef = useRef<FormInstance>(null);
   const [menus, setMenus] = useState<MenusType>({});
-  const [formKey, _] = useState<string>('projectManagementSystemSaveReqVO'); 
-   const [getFormKey] = useState<string>('projectManagementSystemRespVO');
-
+  const [formKey, _] = useState<string>('projectManagementSystemSaveReqVO');
+  const [getFormKey] = useState<string>('projectManagementSystemRespVO');
 
   const columns: FormColumnsTypes[] = [
     {
@@ -117,6 +116,7 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
 
   useImperativeHandle(ref, () => ({
     key: formKey,
+    sourceKey: getFormKey,
     form: formRef.current,
   }));
 
@@ -124,7 +124,7 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
     <>
       <SingleTitle label={'项目管理体系'} />
       <AdForm
-        key={`${formKey}`}
+        key={`${JSON.stringify(menus)}`}
         name={`${formKey}`}
         formRef={formRef}
         initialValues={{ ...menus }}

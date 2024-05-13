@@ -152,23 +152,24 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
 
   useImperativeHandle(ref, () => ({
     key: formKey,
+    sourceKey: getFormKey,
     form: formRef.current,
-    transform: (value: MenusType) => {
-      return {
-        ...value,
-        contractStartDate: dayjs(value.contractStartDate).valueOf(),
-        contractCompletionDate: dayjs(value.contractCompletionDate).valueOf(),
-        startOrderDate: dayjs(value.startOrderDate).valueOf(),
-        plannedCompletionDate: dayjs(value.plannedCompletionDate).valueOf(),
-      };
-    },
+    // transform: (value: MenusType) => {
+    //   return {
+    //     ...value,
+    //     contractStartDate: dayjs(value.contractStartDate).valueOf(),
+    //     contractCompletionDate: dayjs(value.contractCompletionDate).valueOf(),
+    //     startOrderDate: dayjs(value.startOrderDate).valueOf(),
+    //     plannedCompletionDate: dayjs(value.plannedCompletionDate).valueOf(),
+    //   };
+    // },
   }));
 
   return (
     <>
       <SingleTitle label={'工程信息'} />
       <AdForm
-        key={`${formKey}`}
+        key={`${JSON.stringify(menus)}`}
         name={`${formKey}`}
         formRef={formRef}
         initialValues={{ ...menus }}

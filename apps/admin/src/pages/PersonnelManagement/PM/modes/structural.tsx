@@ -1,6 +1,5 @@
 import React, { lazy, Suspense, useState, useEffect, useRef } from 'react';
 import { Button, message, Modal, Row, Col, Spin } from 'antd';
-import dayjs from 'dayjs';
 
 import type { FormInstance } from 'antd/es/form';
 
@@ -42,6 +41,7 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
   // 定义状态用于跟踪表单是否被修改
   const [isFormChanged, setIsFormChanged] = useState(false);
 
+  const rowRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<FormRefProps>({});
   const [title] = useState<string>('项目');
   const [loading, setLoading] = useState<boolean>(false);
@@ -57,6 +57,8 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
     Object.entries(formRef.current).map(async ([_, funs]) => {
       await (funs?.form?.resetFields && funs.form.resetFields());
     });
+
+    rowRef.current && (rowRef.current.scrollTop = 0);
   };
 
   const handleOk = async () => {
@@ -66,17 +68,24 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
       let len = FormList.length;
       let isError = false;
       Object.entries(formRef.current).map(([_, funs]) => {
-        const { key, form, transform } = funs || {};
+        const { key, sourceKey, form, transform } = funs || {};
         form
           ?.validateFields()
           .then((value: MenusType | MenusType[]) => {
             let v = transform ? transform(value) : value;
             if (Array.isArray(v)) {
               !key || key == '' ? (params = v) : (params[key] = v);
+              if (sourceKey && menus.hasOwnProperty(sourceKey)) {
+                // params[key] = [...menus[sourceKey], ...params[key]];
+              }
             } else {
               !key || key == ''
                 ? (params = { ...params, ...v })
                 : (params[key] = { ...(params[key] || {}), ...v });
+
+              if (sourceKey && menus.hasOwnProperty(sourceKey)) {
+                params[key] = { ...menus[sourceKey], ...params[key] };
+              }
             }
 
             len--;
@@ -95,14 +104,12 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
   };
 
   const SubmitEvent = (params: MenusType) => {
-    P[isCreate ? 'createProjectUnity' : 'updateProjectUnity'](
-      JSON.parse(JSON.stringify({ ...params }))
-    )
+    P[isCreate ? 'createProjectUnity' : 'updateProjectUnity']({ ...params })
       .then(() => {
         message.success('操作成功！');
         setLoading(false);
         onStateChange(false);
-        onReset();
+        setTimeout(onReset, 250);
       })
       .catch(() => {
         setLoading(false);
@@ -129,7 +136,7 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
   }, [openModal]);
 
   useEffect(() => {
-    setIsCreate(!!Object.entries(menus).length);
+    setIsCreate(!Object.entries(menus).length);
   }, [menus]);
 
   useEffect(() => {
@@ -181,7 +188,10 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
       width={'78%'}
     >
       <Spin tip="数据提交中..." spinning={loading}>
-        <Row style={{ maxHeight: '70vh', overflow: 'hidden auto', paddingInlineEnd: '15px' }}>
+        <Row
+          ref={rowRef}
+          style={{ maxHeight: '70vh', overflow: 'hidden auto', paddingInlineEnd: '15px' }}
+        >
           {FormList.map((Item) => (
             <Col span={24} key={Item.label}>
               <Suspense

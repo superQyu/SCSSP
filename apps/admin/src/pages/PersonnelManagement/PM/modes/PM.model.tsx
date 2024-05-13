@@ -101,6 +101,7 @@ export default ({ server }: MenusPropsType) => {
           dropdownExtend={false}
         />
       ),
+      renderFormItem: () => <DictSelect dictKey={`structure_type`} dropdownExtend={false} />,
     },
   ];
 
