@@ -54,7 +54,7 @@ export default () => {
         <CustomCard>
           <SummaryData />
         </CustomCard>
-        <CustomCard title={<CustomTitle>劳务信息111</CustomTitle>}>
+        <CustomCard title={<CustomTitle>劳务信息33333</CustomTitle>}>
           <LaborInfo />
         </CustomCard>
         <CustomCard title={<CustomTitle>考勤分析</CustomTitle>}>
