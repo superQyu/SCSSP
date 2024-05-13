@@ -1,15 +1,9 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 
 import { ProTable } from 'components';
-// import { ProTable } from '@ant-design/pro-components';
-import type { ProColumns, ActionType } from '@ant-design/pro-components';
-import { Button, message, DatePicker, Space, Table, Alert } from 'antd';
-
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-
-import { useAppSelector } from 'hooks';
-
-const { RangePicker } = DatePicker;
+import type { ActionType } from '@ant-design/pro-components';
+import { Button, message, Modal } from 'antd';
+import { ExclamationCircleFilled, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
@@ -20,9 +14,6 @@ import type { ModesApi } from './modes/model';
 import PMmodel, { type ColumnsParamsProps } from './modes/PM.model';
 
 export default () => {
-  const {
-    common: { dictionary },
-  } = useAppSelector((state: any) => state) as { common: { dictionary: Record<string, any> } };
   const { server } = useBasicConfiguration();
   //  api server
   const { PMPM: P, menus: M } = server;
@@ -71,6 +62,7 @@ export default () => {
             total: res.total,
           } as unknown as ModesApi.pageItemType;
         }}
+        actionRef={actionRef}
         scroll={{ x: 1900, y: 'auto' }}
         onSubmit={async (params: {}) => {}}
         pagination={{
@@ -96,7 +88,6 @@ export default () => {
               <Button
                 type="primary"
                 key="sub"
-                // @ts-ignore
                 icon={<SearchOutlined />}
                 onClick={() => form?.submit()}
               >
@@ -108,9 +99,11 @@ export default () => {
         toolBarRender={() => [
           <Button
             key="button"
-            // @ts-ignore
             icon={<PlusOutlined />}
-            onClick={() => setFormModal(true)}
+            onClick={() => {
+              setSubForm({});
+              setFormModal(true);
+            }}
             type="primary"
           >
             新建
@@ -127,8 +120,10 @@ export default () => {
             render: (_text: any, record: any, _: any, action: any) => [
               <a
                 key="editable"
-                onClick={() => {
-                  // action?.startEditable?.(record.id);
+                onClick={async () => {
+                  const res = await P.getProjectUnity({ id: record.id });
+                  setSubForm({ ...res });
+                  setFormModal(true);
                 }}
               >
                 编辑
@@ -136,7 +131,22 @@ export default () => {
               <a
                 key="delete"
                 onClick={() => {
-                  // action?.startEditable?.(record.id);
+                  try {
+                    Modal.confirm({
+                      title: `删除操作`,
+
+                      icon: <ExclamationCircleFilled />,
+                      content: `确定删除项目 [${record.projectName}]?`,
+                      okText: '删除',
+                      okType: 'danger',
+                      cancelText: '取消',
+                      onOk: async () => {
+                        await P.deleteProjectUnity({ id: record.id });
+                        action.reload();
+                      },
+                      onCancel() {},
+                    });
+                  } catch (errorInfo) {}
                 }}
               >
                 删除

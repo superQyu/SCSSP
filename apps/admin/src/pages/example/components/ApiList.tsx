@@ -119,7 +119,6 @@ const expandedRowRender = ({ lists = [], name }: Unlimit, setSubForm: any, setOp
                   setOpen(true);
                 }}
               >
-                {/* @ts-ignore */}
                 {<RadarChartOutlined style={{ marginInlineEnd: '5px' }} />}
                 测试
               </a>,

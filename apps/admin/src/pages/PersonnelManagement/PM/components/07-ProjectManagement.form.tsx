@@ -1,4 +1,4 @@
-import { forwardRef, useState, useRef, useImperativeHandle } from 'react';
+import { useEffect, forwardRef, useState, useRef, useImperativeHandle } from 'react';
 import { AdForm, FormColumnsTypes } from 'components';
 
 import type { FormInstance } from 'antd/es/form';
@@ -13,17 +13,18 @@ interface MenusPropsType extends MenusType {
   /** 控制 Modal 是否显示 */
   openModal: boolean;
   /** 表单初始化 */
-  subForm: {};
-  /** 监听Modal状态变化 */
-  onStateChange: (state: boolean) => void;
+  subForm: MenusType;
+  /** 监听表单字段状态变化 */
+  onFormChange: () => void;
 }
 
-const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
+const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange }, ref) => {
   //   const { server, config: C } = useBasicConfiguration();
 
   const formRef = useRef<FormInstance>(null);
   const [menus, setMenus] = useState<MenusType>({});
   const [formKey, _] = useState<string>('projectManagementSystemSaveReqVO');
+  const [getFormKey] = useState<string>('projectManagementSystemRespVO');
 
   const columns: FormColumnsTypes[] = [
     {
@@ -108,8 +109,14 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
     },
   ];
 
+  useEffect(() => {
+    const isEmpty = !!Object.entries(subForm).length;
+    setMenus(isEmpty && subForm.hasOwnProperty(getFormKey) ? { ...subForm[getFormKey] } : subForm);
+  }, [subForm]);
+
   useImperativeHandle(ref, () => ({
     key: formKey,
+    sourceKey: getFormKey,
     form: formRef.current,
   }));
 
@@ -117,17 +124,17 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
     <>
       <SingleTitle label={'项目管理体系'} />
       <AdForm
-        key={`${formKey}`}
+        key={`${JSON.stringify(menus)}`}
         name={`${formKey}`}
         formRef={formRef}
         initialValues={{ ...menus }}
         labelAlign="right"
         columns={columns}
         layoutStyle={{
-          labelCol: { span: 8 },
+          labelCol: { span: 10 },
           wrapperCol: { span: 16, flex: 1 },
         }}
-        // onFormChange={onFormChange}
+        onFormChange={onFormChange}
         // loadingTitle="提交中..."
         // loading={loading}
       />
