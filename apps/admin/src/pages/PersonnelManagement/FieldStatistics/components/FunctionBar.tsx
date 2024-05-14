@@ -4,14 +4,7 @@ import { useECharts } from '@/context/EChartContext';
 const SomeChartComponent = () => {
   const { getEChartsInstance, getLinearGradient } = useECharts();
   const chartRef = useRef(null);
-  const xAxis = [
-    '木工【王积国】',
-    '建筑电工【宋德国】',
-    '起重信号工【李清然】',
-    '钢筋工【钱莱】',
-    '混凝土工【孙祥】',
-    '除尘工【赵三清】',
-  ];
+  const xAxis = ['木工', '建筑电工', '起重信号工', '钢筋工', '混凝土工', '除尘工'];
   const data = [30, 26, 13, 13, 12, 15, 20, 30, 12, 15, 20, 30];
 
   let chartInstance: any = null;
@@ -32,8 +25,8 @@ const SomeChartComponent = () => {
       grid: {
         left: '8%',
         right: '8%',
-        top: '10%',
-        bottom: '10%',
+        top: '13%',
+        bottom: '15%',
       },
       xAxis: [
         {
@@ -46,11 +39,16 @@ const SomeChartComponent = () => {
             color: '#606266',
             interval: 0,
             margin: 10,
-            align: 'center',
+            rotate: -25,
           },
         },
       ],
       yAxis: {
+        name: '(单位:人)',
+        nameGap: 20,
+        nameTextStyle: {
+          color: '#454545',
+        },
         axisLine: {
           show: false,
         },
@@ -108,7 +106,6 @@ const SomeChartComponent = () => {
   useEffect(() => {
     chartInstance = getEChartsInstance(chartRef);
     setOptions();
-
   }, []);
 
   useEffect(() => {
