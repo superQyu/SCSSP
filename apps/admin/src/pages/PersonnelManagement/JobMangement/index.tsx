@@ -1,8 +1,8 @@
-import { useRef, cloneElement, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 import { ProTable } from 'components';
 import { type ActionType } from '@ant-design/pro-components';
-import { Button, message } from 'antd';
+import { Button, message, Popconfirm } from 'antd';
 import { PlusOutlined, UploadOutlined, SearchOutlined } from '@ant-design/icons';
 
 import EditDialog from './components/editdialog';
@@ -53,12 +53,43 @@ export default () => {
       <ProTable
         actionRef={actionRef}
         headerTitle="工种列表"
-        columns={initColumns}
+        columns={[
+          ...initColumns,
+          {
+            title: '操作',
+            width: 140,
+            valueType: 'option',
+            dataIndex: 'option',
+            render: (_text: any, record: any, _: any, action: any) => [
+              <a
+                key="editable"
+                onClick={() => {
+                  // console.log('点击了编辑')
+                  action?.startEditable?.(record.id);
+                }}
+              >
+                编辑
+              </a>,
+              <Popconfirm
+                key="delete"
+                title="删除此项"
+                onConfirm={() => onDelete(record.id)}
+                okText="确认"
+                cancelText="取消"
+              >
+                <a>删除</a>
+              </Popconfirm>,
+            ],
+          },
+        ]}
         request={async (params = {}) => {
           // console.log('请求工种列表的参数', params)
           const res = await job.getJobList(params);
           // console.log('工种列表', res.list);
-          res.list.forEach((item: any) => (item.isSpecialWorkType = item.isSpecialWorkType || `${item.isSpecialWorkType}`));
+          res.list.forEach(
+            (item: any) =>
+              (item.isSpecialWorkType = item.isSpecialWorkType || `${item.isSpecialWorkType}`)
+          );
           return {
             ...params,
             data: res.list,
@@ -89,16 +120,20 @@ export default () => {
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
           </Button>,
-          <Button icon={<UploadOutlined />} onClick={() => console.log('导出')} type="primary">
-            导出
-          </Button>,
+          // <Button icon={<UploadOutlined />} onClick={() => console.log('导出')} type="primary">
+          //   导出
+          // </Button>,
         ]}
-        editable={{ onDelete, onSave }}
+        editable={{ onSave }}
         pagination={{
           pageSize: 10,
         }}
       ></ProTable>
-      <EditDialog openModal={dialogVisible} onStateChange={handleModalStateChange} />
+      <EditDialog
+        key={`${dialogVisible}`}
+        openModal={dialogVisible}
+        onStateChange={handleModalStateChange}
+      />
     </>
   );
 };

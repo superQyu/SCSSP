@@ -33,8 +33,10 @@ export default (subFormRef: any, picture: [] = [], type: string) => {
 
   useEffect(() => {
     getSelectOptions();
-    if (type == '2') setShowSpecial(true);
   }, []);
+  useEffect(() => {
+    if (type == '2') setShowSpecial(true);
+  }, [type]);
 
   // 表单交互相关
   // 选择人员后，带出人员相关信息
@@ -80,6 +82,9 @@ export default (subFormRef: any, picture: [] = [], type: string) => {
       label: '隶属人员',
       dataIndex: 'userId',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请选择隶属人员' }],
+      },
       formItem: (
         <Select placeholder="请选择隶属人员" options={personInfoList} onChange={getPersonInfo} />
       ),
@@ -88,7 +93,7 @@ export default (subFormRef: any, picture: [] = [], type: string) => {
       label: '分包单位',
       dataIndex: 'subcontractorId',
       colNum: 12,
-      formItem: <Select placeholder="请选择隶属人员" options={subcontractorList} disabled/>,
+      formItem: <Select placeholder="请选择隶属人员" options={subcontractorList} disabled />,
     },
     {
       label: '人员类型',
@@ -148,12 +153,18 @@ export default (subFormRef: any, picture: [] = [], type: string) => {
       label: '证书种类',
       dataIndex: 'certificateType',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请选择隶属人员' }],
+      },
       formItem: <DictSelect dictKey={'pm_certificate_type'} />,
     },
     {
       label: '证书类型',
       dataIndex: 'certificateCategory',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请选择隶属人员' }],
+      },
       formItem: <DictSelect dictKey={'pm_credential_classification'} />,
     },
     {

@@ -16,7 +16,7 @@ import siteModel, { type ColumnsParamsProps } from './models/table.model';
 export default () => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { subContractor } = server;
+  const { group } = server;
 
   // 初始化表格列
   const initColumns = siteModel({ server });
@@ -34,19 +34,16 @@ export default () => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    // console.log('编辑分包商时的参数', params);
-    const res = await subContractor
-      .updateSubContractor(params as ColumnsParamsProps)
-      .then(async () => {
-        message.success('信息更新成功！');
-        await actionRef.current?.reload();
-      });
+    const res = await group.updateGroup(params as ColumnsParamsProps).then(async () => {
+      message.success('信息更新成功！');
+      await actionRef.current?.reload();
+    });
     return res;
   };
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await subContractor.deleteSubContractor({ id }).then(async () => {
+    const res = await group.deleteGroup({ id }).then(async () => {
       message.success('信息删除成功！');
       await actionRef.current?.reload();
     });
@@ -57,7 +54,7 @@ export default () => {
     <>
       <ProTable
         actionRef={actionRef}
-        headerTitle="分包商列表"
+        headerTitle="班组列表"
         columns={[
           ...initColumns,
           {
@@ -70,8 +67,8 @@ export default () => {
                 key="editable"
                 onClick={() => {
                   // console.log('点击了编辑')
+                  handleModalStateChange(true);
                   // action?.startEditable?.(record.id);
-                  setDialogVisible(true);
                   setDetail(record);
                 }}
               >
@@ -90,14 +87,15 @@ export default () => {
           },
         ]}
         request={async (params = {}) => {
-          const res = await subContractor.getSubContractorList(params);
-          // console.log('分包商列表', res.list);
-          res.list.forEach(
-            (item: any) =>
-              (item.subcontractorType = item.subcontractorType || `${item.subcontractorType}`)
-          );
+          const res = await group.getGroupList(params);
+          res.list = res.list.map((item: any) => {
+            item.entryAttachments = item.entryAttachments?.split('@');
+            item.exitAttachments = item.exitAttachments?.split('@');
+            return item;
+          });
+          // console.log('工种列表', res);
           return {
-            // ...params,
+            ...params,
             data: res.list,
             total: res.total,
           } as unknown as ModesApi.pageItemType;
@@ -127,13 +125,12 @@ export default () => {
             新建
           </Button>,
         ]}
-        editable={{ onSave }}
+        editable={{ onDelete, onSave }}
         pagination={{
           pageSize: 10,
         }}
       ></ProTable>
       <EditDialog
-        key={`${dialogVisible}`}
         detail={detail}
         openModal={dialogVisible}
         onStateChange={handleModalStateChange}

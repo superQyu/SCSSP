@@ -2,7 +2,7 @@ import { ApiItem } from '@spms/web-request';
 
 const ADMIN_API = import.meta.env.VITE_APP_ADMIN_API;
 
-const materialList: ApiItem[] = [
+const materialEnter: ApiItem[] = [
   {
     key: 'getFirstList',
     url: `${ADMIN_API}/wisdom/materials-first-inventory/page`,
@@ -139,7 +139,7 @@ const materialList: ApiItem[] = [
     ],
   },
   {
-    key: 'getMaterialList',
+    key: 'getmaterialEnter',
     url: `${ADMIN_API}/wisdom/materials-inventory/page`,
     type: 'GET',
     name: '物料清单列表',
@@ -194,4 +194,4 @@ const materialList: ApiItem[] = [
     ],
   },
 ];
-export default materialList;
+export default materialEnter;

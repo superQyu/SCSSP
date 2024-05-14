@@ -1,50 +1,77 @@
-import { useState, useRef } from 'react';
-import { Col, Row, Flex, Button, message } from 'antd';
+import { useState, lazy, Suspense, useRef, } from 'react';
+import { Flex, Button, message } from 'antd';
 import type { FormInstance } from 'antd/es/form';
-import styles from './index.module.scss';
-import siteModel from './modes/info.model';
-import type { ModesApi } from './modes/model';
-import { AdForm, ProUpload } from 'components';
-import FunctionCom from './components/function';
-
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
+import WorkerCom from './components/WorkerCom';
+
+type FormRefProps = {
+  [key: string]: FormInstance | null | any;
+};
+
+type MenusType = {
+  [key: string]: any;
+};
+
+const list = import.meta.glob('./components/**/*.form.tsx');
+const FormList = Object.entries(list).map(([key, val]) => {
+  const reg = /\.\/components\/(\d+)-(?<label>\w+)\.form\.tsx/;
+  const { label } = key.match(reg)?.groups as { label: string };
+  return {
+    label,
+    Component: lazy(val),
+  };
+});
+
 export default () => {
-  const { server } = useBasicConfiguration();
+  const server = useBasicConfiguration();
+
+  const [formModal, setFormModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const infoRef = useRef<FormInstance>(null);
-  const entryRef = useRef<FormInstance>(null);
-  const workTypeRef = useRef<FormInstance>(null);
-  const imgsRef = useRef<FormInstance>(null);
-  const functionRef = useRef<FormInstance>(null);
-
-  const { infoColumns, entryColumns, workTypeColumns } = siteModel({ entryRef });
-
-  const { person: P, file: F } = server;
-  const [otherInfo, setOtherInfo] = useState<any>({});
-  const [certificate, setCertificates] = useState<ModesApi.PersonnelCertificateSaveReqVO[]>([]);
+  const formRef = useRef<FormRefProps>({});
+  const { person: P } = server;
 
   // 点击确定按钮提交信息
   const handleOk = async () => {
-    const [infoValue, workTypeValue, entfyValue] = await Promise.all([
-      infoRef.current?.validateFields(),
-      workTypeRef.current?.validateFields(),
-      entryRef.current?.validateFields(),
-    ]);
+    let params: MenusType = {};
+    let len = FormList.length;
+    setLoading(true);
+    Object.entries(formRef.current).map(([_, funs]) => {
+      const { key, form } = funs || {};
+      form
+        ?.validateFields()
+        .then((value: MenusType) => {
+          !key || key == ''
+            ? (params = { ...params, ...value })
+            : (params[key] = { ...(params[key] || {}), ...value });
+          len--;
+        
+          if (len === 0) {
+            console.log('params',params);
+          };
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    });
+
+    return;
+    // const [infoValue, workTypeValue, entfyValue] = await Promise.all([
+    //   infoRef.current?.validateFields(),
+    //   workTypeRef.current?.validateFields(),
+    //   entryRef.current?.validateFields(),
+    // ]);
     setLoading(true);
     // console.log('canshu', {
     //   personnelInfoSaveReqVO: { ...infoValue, ...workTypeValue, ...otherInfo },
     //   personnelCertificateSaveReqVOS: certificate,
     //   entryInfoSaveReqVO: entfyValue,
     // });
+  };
 
+  const SubmitEvent = async (params: MenusType) => {
     try {
-      await P.createFullPersonInfo({
-        personnelInfoSaveReqVO: { ...infoValue, ...workTypeValue, ...otherInfo },
-        personnelCertificateSaveReqVOS: certificate,
-        entryInfoSaveReqVO: entfyValue,
-      });
+      await P.createFullPersonInfo(params);
       message.success('信息采集成功');
       resetForm();
     } catch {
@@ -52,12 +79,23 @@ export default () => {
     } finally {
       setLoading(false);
     }
-  };
+    //   const values: MenusType = {}; //await formRef.current?.validateFields();
+    //   setLoading(true);
 
-  //接收证书信息
-  const onSubmitCertificate = (data: ModesApi.PersonnelCertificateSaveReqVO[]) => {
-    setCertificates(data);
-    functionRef.current?.setFormModal(false);
+    //   let params = values;
+    //   if (menus.id) params = { ...menus, ...values };
+    //   params['expireTime'] = dayjs(params.expireTime).valueOf();
+
+    //   ST[isCreate ? 'createTenant' : 'updateTenant'](JSON.parse(JSON.stringify({ ...params })))
+    //     .then(() => {
+    //       message.success('操作成功！');
+    //       setLoading(false);
+    //       onStateChange(false);
+    //       onReset();
+    //     })
+    //     .catch(() => {
+    //       setLoading(false);
+    //     });
   };
 
   // 点击重置按钮
@@ -71,87 +109,23 @@ export default () => {
 
   //重置表单
   const resetForm = () => {
-    infoRef.current?.resetFields();
-    workTypeRef.current?.resetFields();
-    entryRef.current?.resetFields();
-    imgsRef?.current?.resetAll();
-    functionRef.current?.resetAll();
-    setOtherInfo({});
-  };
-
-  // 修改所属工种
-  const handleModalStateChange = (any) => {
-    setOtherInfo({ ...otherInfo, ...any });
+    // infoRef.current?.resetFields();
+    // workTypeRef.current?.resetFields();
+    // entryRef.current?.resetFields();
+    // imgsRef?.current?.resetAll();
+    // functionRef.current?.resetAll();
+    // setOtherInfo({});
   };
 
   return (
     <div className="h-full px-20px overflow-y-auto overflow-x-hidden bg-#fff">
-      <div className={styles.infoTitle}>基本信息</div>
-      <Row gutter={16}>
-        <Col className="gutter-row" span={4}>
-          <Flex justify="center" align="center" className="h-full">
-            <div>
-              <ProUpload
-                fileType={['image/jpeg', 'image/png']}
-                onRequest={async (params: any) => await F.fileUpload(params)}
-                onUploadSuccess={(res) => {
-                  const { url } = Object.values(res)[0] as { url: string };
-                  setOtherInfo({
-                    ...otherInfo,
-                    passportPhoto: url,
-                  });
-                }}
-                maxCount={1}
-                showUploadList={true}
-              />
-            </div>
-          </Flex>
-        </Col>
-        <Col className="gutter-row" span={20}>
-          <AdForm layout="horizontal" formRef={infoRef} columns={infoColumns} />
-        </Col>
-      </Row>
-
-      <div className={styles.infoTitle}>
-        所属工种
-        <span className={styles.tip}>红色为特殊工种，需要维护证件信息</span>
-      </div>
-      <Row gutter={8}>
-        <Col className="gutter-row" span={8}>
-          <AdForm
-            layout="horizontal"
-            formRef={workTypeRef}
-            columns={workTypeColumns}
-            onFormChange={(changedValues) => {
-              setOtherInfo({
-                ...otherInfo,
-                ...changedValues,
-              });
-            }}
-          />
-        </Col>
-        <Col className="gutter-row" span={16}>
-          <Button
-            className="pos-absolute"
-            type="link"
-            onClick={() => {
-              if (!otherInfo.workerType) {
-                message.warning('请先选择工人类型');
-              } else {
-                functionRef.current?.setFormModal(true);
-              }
-            }}
-          >
-            修改信息
-          </Button>
-        </Col>
-      </Row>
-
-      <div className={styles.infoTitle}>
-        进场信息
-        <span className={styles.tip}>首先录入班组长（是否班组长选【是】），再录入其他工人</span>
-      </div>
-      <AdForm layout="horizontal" formRef={entryRef} columns={entryColumns} />
+      {FormList.map((Item) => {
+        return (
+          <Suspense fallback={<div>Loading...</div>}>
+            <Item.Component ref={(el: any) => (formRef.current[Item.label] = el)} />
+          </Suspense>
+        );
+      })}
 
       <Flex gap="middle" justify="center" className="py-10">
         <Button size="large" key="submit" type="primary" loading={loading} onClick={handleOk}>
@@ -162,12 +136,7 @@ export default () => {
         </Button>
       </Flex>
 
-      <FunctionCom
-        ref={functionRef}
-        subForm={otherInfo}
-        onStateChange={handleModalStateChange}
-        onSubmit={(data) => onSubmitCertificate(data)}
-      />
+      <WorkerCom subForm={{}} />
     </div>
   );
 };

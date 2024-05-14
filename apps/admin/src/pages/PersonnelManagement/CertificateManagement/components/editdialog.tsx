@@ -2,7 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { Modal, Button, message } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import { AdForm } from 'components';
+import dayjs from 'dayjs';
 
+import SingleTitle from '@/components/SingleTitle';
 import initColumns from '../models/form.model';
 
 // api 相关
@@ -19,7 +21,7 @@ interface Props {
   onStateChange: (state: boolean) => void;
   // 当为详情表单时, 有该属性
   detail: MenusType;
-  type: string
+  type: string;
 }
 
 export default ({ openModal, onStateChange, detail, type }: Props) => {
@@ -31,28 +33,52 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
   const [title] = useState<string>('添加证件信息');
   const [loading, setLoading] = useState<boolean>(false);
 
-  const formRef = useRef<FormInstance>(null);
+  const basicFormRef = useRef<FormInstance>(null);
+  const certificateFormRef = useRef<FormInstance>(null);
 
   // 表单项配置
   // 只能放在外面, 因为调用该方法中使用 hook, 只能放在函数式组件的外部
   // 传入表单的DOM 和 两个图片列表的默认值
   const { picture } = detail;
-  const { basicColumns, certificateColumns } = initColumns(formRef, picture, type);
+  const { basicColumns, certificateColumns } = initColumns(basicFormRef, picture, type);
 
-  // 分包商信息表单的默认值
-  const [formData, setFormData] = useState<MenusType>({});
+  // 基础信息表单的默认值
+  const [basicFormData] = useState<MenusType>({
+    userId: detail.userId,
+    subcontractorId: detail.subcontractorId,
+    workerType: detail.workerType,
+    workTypeName: detail.workTypeName,
+    jobCategory: detail.jobCategory,
+    identityCard: detail.identityCard,
+    workYears: detail.workYears,
+  });
+  // 证件信息表单的默认值
+  const [certificateFormData, setCertificateFormData] = useState<MenusType>({});
+
+  // 根据 id 获取证件管理的详情
+  const getDetail = async () => {
+    const res = await certificate.getCertificateDetail({ id: detail.id });
+    const { personnelCertificateRespVO: certificateData } = res;
+    setCertificateFormData({
+      ...certificateData,
+      certificateType: certificateData.certificateType && `${certificateData.certificateType}`,
+      certificateCategory:
+        certificateData.certificateCategory && `${certificateData.certificateCategory}`,
+      firstIssuedDate: certificateData.firstIssuedDate && dayjs(certificateData.firstIssuedDate),
+      validityStartDate:
+        certificateData.validityStartDate && dayjs(certificateData.validityStartDate),
+      validityEndDate: certificateData.validityEndDate && dayjs(certificateData.validityEndDate),
+      reviewDate: certificateData.reviewDate && dayjs(certificateData.reviewDate),
+      certificateDateSpecialWork:
+        certificateData.certificateDateSpecialWork &&
+        dayjs(certificateData.certificateDateSpecialWork),
+    });
+  };
 
   useEffect(() => {
     setOpen(openModal);
-    if (openModal) {
-      // 如果打开弹窗
-      if (!Object.entries(detail).length) {
-        setFormData({});
-      } else {
-        setFormData(detail);
-      }
-    } else {
-      formRef.current?.resetFields();
+    if (openModal && detail.id) {
+      getDetail();
     }
   }, [openModal]);
 
@@ -62,15 +88,17 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
       message.warning(`数据提交中,请稍等...`);
       return;
     }
-    formRef.current?.resetFields();
+    basicFormRef.current?.resetFields();
+    certificateFormRef.current?.resetFields();
   };
 
   // 点击保存
   const handleOk = async () => {
     try {
-      const values: MenusType = await formRef.current?.validateFields();
-      values.picture = values.picture?.join('@');
-      values.id = detail.id;
+      const basicValues: MenusType = await basicFormRef.current?.validateFields();
+      const certificateValues: MenusType = await certificateFormRef.current?.validateFields();
+      certificateValues.picture = certificateValues.picture?.join('@');
+      const values = { id: detail.id, ...basicValues, ...certificateValues };
       // console.log('表单提交时的数据', values);
       setLoading(true);
       certificate[detail.id ? 'updateCertificate' : 'createCertificate'](values)
@@ -118,22 +146,20 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
           </Button>,
         ]}
       >
-        <div>基本信息</div>
+        <SingleTitle label="基本信息" />
         <AdForm
-          key={formData.userId}
           loadingTitle="提交中..."
-          formRef={formRef}
-          initialValues={formData}
+          formRef={basicFormRef}
+          initialValues={basicFormData}
           loading={loading}
           labelAlign="left"
           columns={basicColumns}
         />
-        <div>证件信息</div>
+        <SingleTitle label="证件信息" />
         <AdForm
-          key={JSON.stringify(formData)}
           loadingTitle="提交中..."
-          formRef={formRef}
-          initialValues={formData}
+          formRef={certificateFormRef}
+          initialValues={certificateFormData}
           loading={loading}
           labelAlign="left"
           columns={certificateColumns}
