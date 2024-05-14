@@ -9,6 +9,7 @@ import { FormColumnsTypes } from 'components';
 import AsyncSelect from '@/components/DictSelect/AsyncSelect';
 import SingleTitle from '@/components/SingleTitle';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import dayjs from 'dayjs';
 
 interface Props {
   /** 表单初始化 */
@@ -25,9 +26,9 @@ const CustomsDiv = styled.div`
   }
 `;
 
-const EntryCom: React.FC<Props> = ({ subForm }: Props, ref) => {
-  const server = useBasicConfiguration();
-  const { file: F } = server;
+const EntryCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
+  const { server } = useBasicConfiguration();
+  const { group: G } = server;
   const formRef = useRef<FormInstance>(null);
   const [formKey, _] = useState<string>('entryInfoSaveReqVO');
 
@@ -61,10 +62,10 @@ const EntryCom: React.FC<Props> = ({ subForm }: Props, ref) => {
           }}
           onChange={async (val) => {
             if (typeof val == 'string') {
-              props?.entryRef.current?.setFieldsValue({
+              formRef.current?.setFieldsValue({
                 teamName: val,
               });
-              props?.entryRef.current?.setFieldsValue({
+              formRef.current?.setFieldsValue({
                 teamId: null,
               });
             } else {
@@ -72,10 +73,10 @@ const EntryCom: React.FC<Props> = ({ subForm }: Props, ref) => {
               const name = list.find(
                 (item: { label: string; value: number }) => item.value == val
               )?.label;
-              props?.entryRef.current?.setFieldsValue({
+              formRef.current?.setFieldsValue({
                 teamId: val,
               });
-              props?.entryRef.current?.setFieldsValue({
+              formRef.current?.setFieldsValue({
                 teamName: name,
               });
             }
@@ -225,5 +226,5 @@ const EntryCom: React.FC<Props> = ({ subForm }: Props, ref) => {
       />
     </>
   );
-};
-export default forwardRef(EntryCom);
+});
+export default EntryCom;

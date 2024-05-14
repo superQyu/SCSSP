@@ -1,10 +1,11 @@
 import React, { useRef, forwardRef, useImperativeHandle, useState } from 'react';
 import { DatePicker, Col, Row, Flex } from 'antd';
+import type { UploadFile } from 'antd';
 import DictSelect from '@/components/DictSelect';
 import type { FormInstance } from 'antd/es/form';
-import { AdForm, ProUpload } from 'components';
+import dayjs from 'dayjs';
 
-import { FormColumnsTypes } from 'components';
+import { AdForm, ProUpload, FormColumnsTypes } from 'components';
 import SingleTitle from '@/components/SingleTitle';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
@@ -13,12 +14,13 @@ interface Props {
   subForm: Record<string, any>;
 }
 
-const InfoCom: React.FC<Props> = ({ subForm }: Props, ref) => {
+const InfoCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
   const { server } = useBasicConfiguration();
   const { file: F } = server;
 
   const formRef = useRef<FormInstance>(null);
   const [formKey, _] = useState<string>('personnelInfoSaveReqVO');
+  const [defaultUrl, setDefaultUrl] = useState<(UploadFile & { url?: string })[]>([]);
 
   const columns: FormColumnsTypes[] = [
     {
@@ -104,13 +106,11 @@ const InfoCom: React.FC<Props> = ({ subForm }: Props, ref) => {
     {
       label: '政治面貌',
       dataIndex: 'policitalStatus',
-
       colNum: 8,
     },
     {
       label: '户口所在地',
       dataIndex: 'registeredPlace',
-
       colNum: 8,
     },
     {
@@ -127,7 +127,7 @@ const InfoCom: React.FC<Props> = ({ subForm }: Props, ref) => {
           { required: true, message: '请输入身份证号' },
           {
             pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
-            message: '请输入正确的联系电话',
+            message: '请输入正确的身份证号',
           },
         ],
       },
@@ -274,12 +274,22 @@ const InfoCom: React.FC<Props> = ({ subForm }: Props, ref) => {
       },
       colNum: 8,
     },
+    {
+      label: '',
+      dataIndex: 'passportPhoto',
+      formItem: <div className="hidden"></div>,
+      colNum: 8,
+    },
   ];
 
   useImperativeHandle(ref, () => ({
     key: formKey,
     form: formRef.current,
+    resetAll: () => {
+      setDefaultUrl([]);
+    },
   }));
+
   return (
     <>
       <SingleTitle label="基础信息" />
@@ -288,12 +298,13 @@ const InfoCom: React.FC<Props> = ({ subForm }: Props, ref) => {
           <Flex justify="center" align="center" className="h-full">
             <div>
               <ProUpload
+                key={JSON.stringify(defaultUrl)}
+                defaultFileList={defaultUrl}
                 onRequest={async (params: any) => await F.fileUpload(params)}
-                onUploadSuccess={(res) => {
+                onUploadSuccess={async (res) => {
                   const { url } = Object.values(res)[0] as { url: string };
+                  setDefaultUrl([...defaultUrl, { url: url }]);
                   formRef.current?.setFieldValue('passportPhoto', url);
-                  console.log('url', url);
-
                 }}
                 maxCount={1}
                 showUploadList={true}
@@ -303,7 +314,7 @@ const InfoCom: React.FC<Props> = ({ subForm }: Props, ref) => {
         </Col>
         <Col className="gutter-row" span={20}>
           <AdForm
-            loadingTitle="提交中..."
+            name={formKey}
             initialValues={subForm}
             formRef={formRef}
             labelAlign="right"
@@ -313,5 +324,5 @@ const InfoCom: React.FC<Props> = ({ subForm }: Props, ref) => {
       </Row>
     </>
   );
-};
-export default forwardRef(InfoCom);
+});
+export default InfoCom;

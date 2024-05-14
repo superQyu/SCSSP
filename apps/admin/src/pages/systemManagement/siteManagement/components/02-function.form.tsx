@@ -11,6 +11,7 @@ import SingleTitle from '@/components/SingleTitle';
 interface Props {
   /** 表单初始化 */
   subForm: Record<string, any>;
+  openModel: Function;
 }
 
 const CustomsDiv = styled.div`
@@ -23,9 +24,8 @@ const CustomsDiv = styled.div`
   }
 `;
 
-const FunctionCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
+const FunctionCom: React.FC<Props> = forwardRef(({ subForm, openModel }: Props, ref) => {
   const formRef = useRef<FormInstance>(null);
-  const workerRef = useRef<FormInstance>(null);
   const [formKey, _] = useState<string>('personnelInfoSaveReqVO');
   const columns: FormColumnsTypes[] = [
     {
@@ -52,7 +52,13 @@ const FunctionCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
       />
       <Row gutter={8}>
         <Col className="gutter-row" span={8}>
-          <AdForm initialValues={subForm} formRef={formRef} labelAlign="right" columns={columns} />
+          <AdForm
+            initialValues={subForm}
+            formRef={formRef}
+            labelAlign="right"
+            columns={columns}
+            name={formKey}
+          />
         </Col>
         <Col className="gutter-row" span={16}>
           <Button
@@ -63,6 +69,7 @@ const FunctionCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
               if (!val) {
                 message.warning('请先选择工人类型');
               } else {
+                openModel(val);
               }
             }}
           >

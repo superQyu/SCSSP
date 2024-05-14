@@ -3,7 +3,7 @@ import { Button, message, Modal, Collapse, Upload, Flex, Select } from 'antd';
 import { LeftOutlined, DeleteOutlined, AuditOutlined } from '@ant-design/icons';
 import type { FormInstance } from 'antd/es/form';
 
-import { AdForm, FormColumnsTypes } from 'components';
+import { AdForm, FormColumnsTypes, ProUpload } from 'components';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import siteModel from '../modes/info.model';
 import styles from '../index.module.scss';
@@ -14,7 +14,7 @@ interface Props {
   /** 表单初始化 */
   subForm: Record<string, any>;
   /** 监听Modal状态变化 */
-  onStateChange: (any) => void;
+  onStateChange?: (any) => void;
   /** 监听确定按钮提交 */
   onSubmit: (state: ModesApi.PersonnelCertificateSaveReqVO[]) => void;
 }
@@ -31,16 +31,11 @@ interface workTypeItem {
   [key: string]: string;
 }
 
-interface FormData {
-  jobCategory?: string;
-  workTypeId?: string;
-}
-
 type MenusType = {
   [key: string]: any;
 };
 
-const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Props, ref) => {
+const FunctionCom: React.FC<Props> = forwardRef(({ subForm, onSubmit }: Props, ref) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
 
@@ -51,7 +46,7 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
   const [columns, setColumns] = useState<FormColumnsTypes[]>([]);
   const [options, setOptions] = useState([]);
 
-  const [formData, setFormData] = useState<FormData>({});
+  const [curVal, setCurVal] = useState<string>('');
   const [ifcertificate, setIfcertificate] = useState<boolean>(false);
   const [collapseItem, setCollapseItem] = useState<ModesApi.PersonnelCertificateSaveReqVO[]>([]);
   const [fileList, setFileList] = useState<FileItem[]>([]);
@@ -59,10 +54,9 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
   const [functionKey, setFunctionKey] = useState<'jobCategory' | 'workTypeId'>('jobCategory');
   const certificateRef = useRef<FormInstance[]>([]);
   const [activeKey, setActiveKey] = useState('');
-  //  api server
-  const { user: U, basic: B, person: P } = server;
+  const { file: F, basic: B, person: P } = server;
 
-  const { certificateColumns } = siteModel();
+  const { certificateColumns } = siteModel({ server });
 
   const init = async () => {
     let options = [];
@@ -102,40 +96,9 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
 
   // 选择工种
   const workTypeClick = ({ value, danger = false }) => {
-    const otherInfo = {
-      ...formData,
-      [functionKey]: value,
-    };
-    setFormData(otherInfo);
-    onStateChange(otherInfo);
+    setCurVal(value);
     setIfcertificate(danger);
-    formRef.current?.setFieldsValue({
-      [functionKey]: value,
-    });
-  };
-
-  // 上传证书
-  const uploadFile = (info: any) => {
-    const formData = new FormData();
-    formData.append('file', info.file);
-    fetch('http://192.168.10.77:48081/admin-api/infra/file/upload', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        Authorization: 'Bearer 4249f7ebad4e4015a44bd4be6a1b8d69',
-      },
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        setFileList([
-          ...fileList,
-          {
-            uid: info.file.uid,
-            name: info.file.name,
-            url: res.data,
-          },
-        ]);
-      });
+    formRef.current?.setFieldValue([functionKey], value);
   };
 
   const handleAddItem = () => {
@@ -150,7 +113,7 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
           <>
             <AdForm
               layout="horizontal"
-              formRef={(el) => (certificateRef.current[collapseItemIdx] = el)}
+              formRef={(el: any) => (certificateRef.current[collapseItemIdx] = el)}
               columns={certificateColumns}
             />
             <Flex justify="flex-end">
@@ -158,7 +121,9 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
                 type="primary"
                 icon={<DeleteOutlined />}
                 danger
-                onClick={() => delIconClick(collapseItemIdx)}
+                onClick={() => {
+                  delIconClick(collapseItemIdx);
+                }}
               >
                 删除
               </Button>
@@ -179,10 +144,7 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
 
   // 点击删除按钮
   const delIconClick = (index: number) => {
-    const newList = [...fileList];
-    newList.splice(index, 1);
     setDelIndex(index);
-    setFileList(newList);
   };
 
   // 点击确定按钮
@@ -194,14 +156,15 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
       message.warning(`该${label}需上传证书信息`);
       return;
     }
+
     if (refs.length) {
       refs.forEach(async (el, index) => {
         if (el) {
           const elValue: MenusType = await el.validateFields();
           arr.push({ ...elValue, picture: fileList[index].url });
-          onSubmit(arr);
-          setOpen(false);
         }
+        onSubmit(arr);
+        setOpen(false);
       });
     } else {
       setOpen(false);
@@ -219,7 +182,7 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
   // 重置所有
   const resetAll = () => {
     formRef.current?.resetFields();
-    setFormData({});
+    setCurVal('');
     setIfcertificate(false);
     setCollapseItem([]);
   };
@@ -233,6 +196,12 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
       handleDelItem();
     }
   }, [fileList]);
+
+  useEffect(() => {
+    const newList = [...fileList];
+    newList.splice(delIndex, 1);
+    setFileList(newList);
+  }, [delIndex]);
 
   useEffect(() => {
     const key = subForm.workerType == '2' ? 'jobCategory' : 'workTypeId';
@@ -262,13 +231,7 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
       ]}
       width={'50%'}
     >
-      <AdForm
-        loadingTitle="提交中..."
-        formRef={formRef}
-        loading={loading}
-        labelAlign="left"
-        columns={columns}
-      />
+      <AdForm formRef={formRef} labelAlign="right" columns={columns} />
       <Flex wrap="wrap" gap="middle">
         {options.map((item: workTypeItem) => {
           return (
@@ -277,7 +240,7 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
               type="default"
               danger={item.danger || false}
               style={
-                formData[functionKey] == item.value
+                curVal == item.value
                   ? { color: '#379E04', background: 'rgba(103,194,58,0.2', border: 'none' }
                   : {}
               }
@@ -291,12 +254,29 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
 
       <div className={styles.infoTitle}>
         <Flex justify={'space-between'} align={'center'} className="w-full">
-          证书信息
-          <Upload name="file" showUploadList={false} customRequest={(info) => uploadFile(info)}>
-            <Button icon={<AuditOutlined />} className="bg-#67c23a color-#fff" size="large">
-              上传证书
-            </Button>
-          </Upload>
+          证书信息{fileList.length}
+          <ProUpload
+            buttonRender={
+              <Button icon={<AuditOutlined />} className="bg-#67c23a color-#fff" size="large">
+                上传证书
+              </Button>
+            }
+            onRequest={async (params: any) => await F.fileUpload(params)}
+            onUploadSuccess={async (res) => {
+              const uid = Object.keys(res)[0];
+              const { name, url } = Object.values(res)[0] as { name: string; url: string };
+              setFileList([
+                ...fileList,
+                {
+                  uid,
+                  name,
+                  url,
+                },
+              ]);
+            }}
+            maxCount={false}
+            showUploadList={false}
+          />
         </Flex>
       </div>
 
@@ -318,5 +298,5 @@ const FunctionCom: React.FC<Props> = ({ onStateChange, subForm, onSubmit }: Prop
       />
     </Modal>
   );
-};
-export default forwardRef(FunctionCom);
+});
+export default FunctionCom;
