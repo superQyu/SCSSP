@@ -3,7 +3,6 @@ import { Flex } from 'antd';
 import { UserOutlined, ScheduleTwoTone } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
-import TextItem from '../components/TextItem';
 
 export default () => {
   let timer: any;
