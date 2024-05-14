@@ -64,7 +64,7 @@ const DictSelect: React.FC<Props> = (
     const isExsit = dictionary.get(dictKey);
     setItems(isExsit as SelectOption[]);
     const curItem = (isExsit as SelectOption[]).filter((item) => item.value == value);
-    const label = curItem[0]?.label || '';
+    const label = curItem[0]?.label || '-';
 
     if (type === 'text') setShowLabel(label);
   };

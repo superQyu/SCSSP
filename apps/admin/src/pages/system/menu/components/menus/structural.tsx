@@ -53,7 +53,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     if (typeof tips === 'string') tips = [tips];
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {/* @ts-ignore  */}
+        
         <ExclamationCircleTwoTone style={{ color: '#1677ff', marginRight: '5px' }} />
         <div style={{ display: 'inline-block' }}>
           {tips.map((item, index) => (

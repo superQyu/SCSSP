@@ -123,7 +123,7 @@ export default ({ queryParams = {} }: Props) => {
         toolBarRender={() => [
           <Button
             key="button"
-            // @ts-ignore
+            
             icon={<PlusOutlined />}
             onClick={() => setFormModal('structural')}
             type="primary"
@@ -139,7 +139,7 @@ export default ({ queryParams = {} }: Props) => {
               <Button
                 type="primary"
                 key="sub"
-                // @ts-ignore
+                
                 icon={<SearchOutlined />}
                 onClick={() => form?.submit()}
               >
@@ -163,7 +163,7 @@ export default ({ queryParams = {} }: Props) => {
                   action?.startEditable?.(record.id);
                 }}
               >
-                {/* @ts-ignore  */}
+                
                 <EditOutlined style={{ marginInlineEnd: '5px' }} />
                 编辑
               </a>,
@@ -174,7 +174,7 @@ export default ({ queryParams = {} }: Props) => {
                     try {
                       Modal.confirm({
                         title: `删除操作`,
-                        // @ts-ignore
+                        
                         icon: <ExclamationCircleFilled />,
                         content: `确定删除用户 [${record.username}]?`,
                         okText: '删除',
@@ -234,7 +234,7 @@ export default ({ queryParams = {} }: Props) => {
                   },
                 ]}
               >
-                {/* @ts-ignore  */}
+                
                 <DoubleRightOutlined />
                 更多
               </TableDropdown>,

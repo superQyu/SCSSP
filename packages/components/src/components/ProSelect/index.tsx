@@ -5,7 +5,7 @@ import type { InputRef } from 'antd';
 
 interface Props {
   /** 监听值状态变化 */
-  onChange?: (state: any) => void;
+  onChange?: (state: any, options: any) => void;
   /** 监听loading状态变化 */
   onLoadingStatus?: (state: boolean) => void;
   /** 新增选项 */
@@ -93,6 +93,7 @@ const AsyncSelect: React.FC<Props> = (
         <>{showLabel}</>
       ) : (
         <Select
+          // key={`${value}`}
           value={value}
           style={{ width: '100%' }}
           allowClear

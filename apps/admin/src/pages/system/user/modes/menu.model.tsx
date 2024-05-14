@@ -90,7 +90,7 @@ export default (_: MenusPropsType) => {
             '0': {
               text: (
                 <>
-                  {/* @ts-ignore  */}
+                  
                   <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
                   开启
                 </>
