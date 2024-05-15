@@ -14,7 +14,6 @@ const defaultRoutes: any = [
     element: <Layout />,
     errorElement: <ErrorPage />,
     children: [
-      { path: '/', element: <Navigate to="dashboard" /> },
       { path: '/*', element: <PreventRouteLoss /> },
     ],
   },

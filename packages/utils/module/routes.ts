@@ -25,3 +25,16 @@ export const filterRoutes = (routes: any, key?: string, v?: string) => {
     }
   );
 };
+
+export const GetFirstPath = (arr: any[], route = ''): string => {
+  if (arr.length > 0) {
+    const firstItem = arr[0];
+    if (firstItem.children && firstItem.children.length > 0) {
+      return GetFirstPath(firstItem.children, `${route}/${firstItem.path}`);
+    } else {
+      return `${route}/${firstItem.path}`;
+    }
+  } else {
+    return route;
+  }
+};
