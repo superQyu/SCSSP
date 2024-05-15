@@ -12,13 +12,11 @@ export interface MenuItem {
  * @description sleep
  * @param {number} time
  */
-const sleep = (time: number | undefined) =>
-  // @ts-ignore
-  new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, time);
-  });
+// @ts-ignore
+const sleep = (time: number = 100) => {
+  return new Promise<void>(resolve => setTimeout(resolve, time));
+};
+
 
 const timeList = ['早上好', '上午好', '中午好', '下午好', '晚上好'];
 const currentTimeRange = () => {

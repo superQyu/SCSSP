@@ -20,6 +20,7 @@ import TreeSelect from './components/ProTree/TreeSelect';
 
 import ProSelect from './components/ProSelect';
 import SearchSelect from './components/ProSelect/SearchSelect';
+
 export {
   Header,
   OutletLayoutRouter,
@@ -36,8 +37,10 @@ export {
   TreeSelect,
   ProUpload,
   ProSelect,
-  SearchSelect
+  SearchSelect,
 };
+
+
 // 组件通用类型
 export type { MenuItem, FormColumnsTypes, FornPropsTypes };
 export type { TreeNodes, CheckedsType };

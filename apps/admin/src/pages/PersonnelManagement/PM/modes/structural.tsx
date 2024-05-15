@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useState, useEffect, useRef } from 'react';
 import { Button, message, Modal, Row, Col, Spin } from 'antd';
 
 import type { FormInstance } from 'antd/es/form';
+import { sleep } from 'utils';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
@@ -49,21 +50,20 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
   const [menus, setMenus] = useState<MenusType>({});
   const [isCreate, setIsCreate] = useState<boolean>(false);
 
-  const onReset = () => {
+  const onReset = (isCancel?: boolean) => {
     if (loading) {
       message.warning(`数据提交中,请稍等...`);
       return;
     }
     Object.entries(formRef.current).map(async ([_, funs]) => {
-      await (funs?.form?.resetFields && funs.form.resetFields());
+      funs.form?.resetTables && funs.form.resetTables(!!isCancel);
+      await (funs.form?.resetFields && funs.form.resetFields());
     });
-
-    rowRef.current && (rowRef.current.scrollTop = 0);
   };
 
   const handleOk = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       let params: MenusType = {};
       let len = FormList.length;
       let isError = false;
@@ -105,11 +105,14 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
 
   const SubmitEvent = (params: MenusType) => {
     P[isCreate ? 'createProjectUnity' : 'updateProjectUnity']({ ...params })
-      .then(() => {
+      .then(async () => {
         message.success('操作成功！');
-        setLoading(false);
+        onReset();
+
         onStateChange(false);
-        setTimeout(onReset, 250);
+        await sleep(480);
+        setLoading(false);
+        resetScroll();
       })
       .catch(() => {
         setLoading(false);
@@ -121,9 +124,15 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
       message.warning(`数据提交中,请稍等...`);
       return;
     }
+    resetScroll();
+
     onStateChange(false);
     setOpen(false);
-    onReset();
+    onReset(true);
+  };
+
+  const resetScroll = () => {
+    rowRef.current && (rowRef.current.scrollTop = 0);
   };
 
   useEffect(() => {
@@ -154,9 +163,7 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
         return confirmationMessage; // 兼容不同浏览器的提示信息
       }
     };
-    const handleUnload = (event: any) => {
-      setIsFormChanged(false);
-    };
+    const handleUnload = () => setIsFormChanged(false);
 
     window.addEventListener('beforeunload', handleBeforeUnload);
     window.addEventListener('unload', handleUnload);
@@ -178,7 +185,7 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
         <Button key="back" onClick={handleCancel} disabled={loading}>
           取消
         </Button>,
-        <Button key="reset" htmlType="reset" onClick={onReset} disabled={loading}>
+        <Button key="reset" htmlType="reset" onClick={() => onReset()} disabled={loading}>
           重置
         </Button>,
         <Button key="submit" type="primary" loading={loading} onClick={handleOk}>

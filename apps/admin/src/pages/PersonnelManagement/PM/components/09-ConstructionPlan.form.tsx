@@ -5,6 +5,8 @@ import type { FormInstance } from 'antd/es/form';
 
 import { ProUpload } from 'components';
 
+import { UploadFile } from 'antd';
+
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import SingleTitle from '@/components/SingleTitle';
 
@@ -30,6 +32,8 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
   const [formKey, _] = useState<string>('projectInfoSaveReqVO');
   const [getFormKey] = useState<string>('projectInfoRespVO');
 
+  const [tempFileList, setTempFileList] = useState<UploadFile[]>([]);
+
   const columns: FormColumnsTypes[] = [
     {
       label: '施工平面图',
@@ -37,16 +41,9 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
       formItem: (
         <div style={{ paddingInlineStart: '13px' }}>
           <ProUpload
+            defaultFileList={[...tempFileList]}
             onRequest={async (params: any) => await F.fileUpload(params)}
-            onUploadSuccess={(res: any) => {
-              console.log('上传成功:', res);
-            }}
-            onUploadError={(err: any) => {
-              console.log('上传失败');
-            }}
-            onDeleted={(uid: string) => {
-              console.log('文件ID:', uid);
-            }}
+            onListChange={(list) => setTempFileList([...list])}
           />
         </div>
       ),
@@ -76,13 +73,33 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
 
   useEffect(() => {
     const isEmpty = !!Object.entries(subForm).length;
+    const { constructionPlanImage } = subForm[getFormKey] || {};
     setMenus(isEmpty && subForm.hasOwnProperty(getFormKey) ? { ...subForm[getFormKey] } : subForm);
+    if (!isEmpty) {
+      setTempFileList([]);
+    } else {
+      if (constructionPlanImage) {
+        const lists = (constructionPlanImage || '').split('@');
+        setTempFileList([
+          ...lists.map((url: string, index: number) => ({
+            url,
+            id: lists.length - index,
+          })),
+        ]);
+      }
+    }
   }, [subForm]);
 
   useImperativeHandle(ref, () => ({
     key: formKey,
     sourceKey: getFormKey,
     form: formRef.current,
+    transform: (value: MenusType) => {
+      return {
+        ...value,
+        constructionPlanImage: tempFileList.map((item) => item.url).join('@'),
+      };
+    },
   }));
 
   return (

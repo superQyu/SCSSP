@@ -14,9 +14,9 @@ const files: ApiItem[] = [
     {
         key: 'fileDelete',
         url: `${ADMIN_API}/infra/file/delete`,
-        type: 'POST',
-        name: '文件上传',
-        description: '文件上传',
+        type: 'DELETE',
+        name: '文件删除',
+        description: '文件删除',
         params: [{ key: 'Authorization', location: 'header' }, { key: 'id' }],
     }
 ];

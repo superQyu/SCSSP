@@ -2,18 +2,19 @@ import { useEffect, forwardRef, useState, useRef, useImperativeHandle } from 're
 
 import SingleTitle from '@/components/SingleTitle';
 
-import { InputNumber } from 'antd';
+import { InputNumber, Modal } from 'antd';
+import { ExclamationCircleFilled } from '@ant-design/icons';
 
 import { EditableProTable } from '@ant-design/pro-components';
-import type { ProColumns, ProFormInstance } from '@ant-design/pro-components';
+import type { ProColumns, ActionType } from '@ant-design/pro-components';
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 import DictSelect from '@/components/DictSelect';
 
 type DataSourceType = {
   _id: React.Key;
+  [key: string]: any;
 };
-
-const defaultData: DataSourceType[] = [];
 
 type MenusType = {
   [key: string]: any;
@@ -29,16 +30,18 @@ interface MenusPropsType extends MenusType {
 }
 
 const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
-  //   const { server, config: C } = useBasicConfiguration();
+  const { server } = useBasicConfiguration();
+  //  api server
+  const { PMPM: P } = server;
 
-  const [menus, setMenus] = useState<MenusType>({});
   const [formKey, _] = useState<string>('projectBuildingInfoSaveReqVOList');
   const [getFormKey] = useState<string>('projectBuildingInfoRespVOList');
 
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<readonly DataSourceType[]>([]);
+  const [defaultData, setDefaultData] = useState<readonly DataSourceType[]>([]);
 
-  const formRef = useRef<ProFormInstance<any>>();
+  const actionRef = useRef<ActionType>();
   const columns: ProColumns<DataSourceType>[] = [
     {
       title: '楼座',
@@ -65,12 +68,18 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
       dataIndex: 'isPublic',
       valueType: 'select',
       renderFormItem: () => <DictSelect dictKey={`is_public`} dropdownExtend={false} />,
+      render: (_, { isPublic }) => (
+        <DictSelect type={'text'} value={isPublic} dictKey={`is_public`} dropdownExtend={false} />
+      ),
     },
     {
       title: '类型',
       dataIndex: 'typeCode',
       valueType: 'select',
       renderFormItem: () => <DictSelect dictKey={`type_name`} dropdownExtend={false} />,
+      render: (_, { typeCode }) => (
+        <DictSelect type={'text'} value={typeCode} dictKey={`type_name`} dropdownExtend={false} />
+      ),
     },
     {
       title: '排序',
@@ -85,13 +94,13 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
     {
       title: '操作',
       valueType: 'option',
-      width: 120,
+      width: 140,
       fixed: 'right',
       render: (text, record, _, action) => [
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.id);
+            action?.startEditable?.(record._id);
           }}
         >
           编辑
@@ -99,10 +108,21 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
         <a
           key="delete"
           onClick={() => {
-            const tableDataSource = formRef.current?.getFieldValue('table') as DataSourceType[];
-            formRef.current?.setFieldsValue({
-              table: tableDataSource.filter((item) => item.id !== record.id),
-            });
+            try {
+              Modal.confirm({
+                title: `删除操作`,
+                icon: <ExclamationCircleFilled />,
+                content: `确定删除项目 [${record.buildingName}]?`,
+                okText: '删除',
+                okType: 'danger',
+                cancelText: '取消',
+                onOk: async () => {
+                  if (record.id || record.id === 0) await P.deleteBuildingInfo({ id: record.id });
+                  setDataSource(dataSource.filter((item) => item.id !== record.id));
+                },
+                onCancel() {},
+              });
+            } catch (errorInfo) {}
           }}
         >
           删除
@@ -110,6 +130,20 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
       ],
     },
   ];
+
+  useEffect(() => {
+    const isEmpty = !!Object.entries(subForm).length;
+    const records =
+      isEmpty && subForm.hasOwnProperty(getFormKey) ? [...(subForm[getFormKey] || [])] : [];
+    const transRecords = records.map((item: any) => ({
+      ...item,
+      _id: item.id,
+      isPublic: `${item.isPublic ? '1' : '0'}`,
+      typeCode: `${item.typeCode}`,
+    }));
+    setDataSource(transRecords);
+    setDefaultData(transRecords);
+  }, [subForm]);
 
   useImperativeHandle(ref, () => ({
     key: formKey,
@@ -120,6 +154,16 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
           resolve(dataSource);
         });
       },
+      resetTables: (isCancel: boolean) => {
+        setDataSource(isCancel ? [] : defaultData);
+      },
+    },
+    transform: (data: DataSourceType[]) => {
+      return data.map((item) => ({
+        ...item,
+        isPublic: item.isPublic * 1,
+        typeCode: item.typeCode * 1,
+      }));
     },
   }));
 
@@ -128,6 +172,7 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
       <SingleTitle label={'单位楼座信息'} />
       <EditableProTable<DataSourceType>
         rowKey="_id"
+        actionRef={actionRef}
         recordCreatorProps={{
           position: 'bottom',
           record: () => ({ _id: Date.now() }),
@@ -137,23 +182,14 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
         loading={false}
         toolBarRender={false}
         columns={columns}
-        request={async () => ({
-          data: defaultData,
-          total: 3,
-          success: true,
-        })}
         value={dataSource}
         onChange={setDataSource}
         editable={{
           type: 'multiple',
           editableKeys,
-          // onSave: async (rowKey, data, row) => {
-          //   console.log(rowKey, data, row);
-          // },
           onChange: setEditableRowKeys,
           onlyAddOneLineAlertMessage: '请先结束上次操作！',
         }}
-        // maxLength={5}
         scroll={{
           x: 1200,
         }}

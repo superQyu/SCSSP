@@ -63,10 +63,10 @@ export default ({ server }: MenusPropsType) => {
       width: 180,
       hideInSearch: true,
       title: '开工日期',
-      dataIndex: 'expectedStartTime',
-      render: (_, { expectedStartTime }) => {
-        if (!expectedStartTime || expectedStartTime === null) return '-';
-        return <>{dayjs(expectedStartTime).format('YYYY-MM-DD')}</>;
+      dataIndex: 'contractStartDate',
+      render: (_, { contractStartDate }) => {
+        if (!contractStartDate || contractStartDate === null) return '-';
+        return <>{dayjs(contractStartDate).format('YYYY-MM-DD')}</>;
       },
     },
     {
@@ -83,10 +83,10 @@ export default ({ server }: MenusPropsType) => {
       width: 180,
       hideInSearch: true,
       title: '计划竣工日期',
-      dataIndex: 'expectedEndTime',
-      render: (_, { expectedEndTime }) => {
-        if (!expectedEndTime || expectedEndTime === null) return '-';
-        return <>{dayjs(expectedEndTime).format('YYYY-MM-DD')}</>;
+      dataIndex: 'contractEndDate',
+      render: (_, { contractEndDate }) => {
+        if (!contractEndDate || contractEndDate === null) return '-';
+        return <>{dayjs(contractEndDate).format('YYYY-MM-DD')}</>;
       },
     },
     {

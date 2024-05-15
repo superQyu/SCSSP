@@ -1,7 +1,7 @@
 import { useEffect, forwardRef, useState, useRef, useImperativeHandle } from 'react';
 import { AdForm, FormColumnsTypes } from 'components';
 
-import { InputNumber, DatePicker, Input, Select } from 'antd';
+import { InputNumber, DatePicker, Input, Select, UploadFile } from 'antd';
 
 import type { FormInstance } from 'antd/es/form';
 import dayjs from 'dayjs';
@@ -37,6 +37,8 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
   const [provinceList, setProvinceList] = useState<MenusType[]>([]);
   const [cityList, setCtyList] = useState<MenusType[]>([]);
   const [districtList, setDistrictList] = useState<MenusType[]>([]);
+
+  const [tempFileList, setTempFileList] = useState<UploadFile[]>([]);
 
   const columns: FormColumnsTypes[] = [
     {
@@ -257,16 +259,9 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
       formItem: (
         <div style={{ paddingInlineStart: '13px' }}>
           <ProUpload
+            defaultFileList={[...tempFileList]}
             onRequest={async (params: any) => await F.fileUpload(params)}
-            onUploadSuccess={(res: any) => {
-              console.log('上传成功:', res);
-            }}
-            onUploadError={(err: any) => {
-              console.log('上传失败');
-            }}
-            onDeleted={(uid: string) => {
-              console.log('文件ID:', uid);
-            }}
+            onListChange={(list) => setTempFileList([...list])}
           />
         </div>
       ),
@@ -294,7 +289,7 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
 
   useEffect(() => {
     const isEmpty = !!Object.entries(subForm).length;
-    const { actualStartTime, actualEndTime } = subForm[getFormKey] || {};
+    const { actualStartTime, actualEndTime, projectImage } = subForm[getFormKey] || {};
     setMenus(
       isEmpty && subForm.hasOwnProperty(getFormKey)
         ? {
@@ -306,6 +301,19 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
           }
         : subForm
     );
+    if (!isEmpty) {
+      setTempFileList([]);
+    } else {
+      if (projectImage) {
+        const lists = (projectImage || '').split('@');
+        setTempFileList([
+          ...lists.map((url: string, index: number) => ({
+            url,
+            id: lists.length - index,
+          })),
+        ]);
+      }
+    }
   }, [subForm]);
 
   useEffect(() => {
@@ -316,13 +324,12 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
     key: formKey,
     sourceKey: getFormKey,
     form: formRef.current,
-    // transform: (value: MenusType) => {
-    //   return {
-    //     ...value,
-    //     actualStartTime: dayjs(value.actualStartTime).format('YYYY-MM-DD'),
-    //     actualEndTime: dayjs(value.actualEndTime).format('YYYY-MM-DD'),
-    //   };
-    // },
+    transform: (value: MenusType) => {
+      return {
+        ...value,
+        projectImage: tempFileList.map((item) => item.url).join('@'),
+      };
+    },
   }));
 
   return (
