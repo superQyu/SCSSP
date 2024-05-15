@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
-    "antd": "5.15.3"
+    "antd": "5.15.3",
+    "dayjs": "^1.11.10"
   }
 }

@@ -93,7 +93,6 @@ export default () => {
                   action?.startEditable?.(record.id);
                 }}
               >
-                {/* @ts-ignore */}
                 {<EditOutlined />}
                 编辑
               </a>,

@@ -4,16 +4,19 @@ import { ProTable } from 'components';
 import { type ActionType } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import EditDialog from './components/editdialog';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
 import siteModel from './models/table.model';
 
-const ThirdTable = (props: any) => {
+const ThirdTable = (props: any, firstTableRef: any) => {
   // console.log('当前行数据', record);
 
-  const { record, server, firstTableRef, onChange } = props;
+  // const thirdTableRef = useRef<ActionType>();
+
+  const { record, server, onChange } = props;
 
   // api 相关
   const { materialList } = server;
@@ -23,7 +26,7 @@ const ThirdTable = (props: any) => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    const res = await materialList.updateSecond(params).then(async () => {
+    const res = await materialList.updateThird(params).then(async () => {
       message.success('信息更新成功！');
       await firstTableRef.current?.reload();
     });
@@ -73,10 +76,10 @@ const ThirdTable = (props: any) => {
   );
 };
 
-const SecondTable = (props: any) => {
+const SecondTable = (props: any, firstTableRef: any) => {
   // console.log('当前行数据', record);
 
-  const { record, server, firstTableRef, onChange } = props;
+  const { record, server, onChange } = props;
 
   // api 相关
   const { materialList } = server;
@@ -89,6 +92,7 @@ const SecondTable = (props: any) => {
     const res = await materialList.updateSecond(params).then(async () => {
       message.success('信息更新成功！');
       await firstTableRef.current?.reload();
+      console.log('firstTableRef', firstTableRef);
     });
     return res;
   };
@@ -120,7 +124,7 @@ const SecondTable = (props: any) => {
       options={false}
       editable={{ onSave }}
       expandable={{
-        expandedRowRender: (record: any) => ThirdTable({ record, server, firstTableRef, onChange }),
+        expandedRowRender: (record: any) => ThirdTable({ record, server, onChange }, firstTableRef),
       }}
       pagination={{
         pageSize: 5,
@@ -130,7 +134,7 @@ const SecondTable = (props: any) => {
   );
 };
 
-export default ({onChange}: any) => {
+export default ({ onChange }: any) => {
   // api 相关
   const { server } = useBasicConfiguration();
   const { materialList } = server;
@@ -140,19 +144,12 @@ export default ({onChange}: any) => {
 
   // 表格的受控 DOM
   const firstTableRef = useRef<ActionType>();
-  const secondTableRef = useRef<ActionType>();
-  const thirdTableRef = useRef<ActionType>();
 
   // 控制弹窗的打开与关闭
   const [dialogVisible, setDialogVisible] = useState<boolean>(false);
-  // 控制详情弹窗的内容
-  const [detail, setDetail] = useState({});
-  // 控制传入子表格的行id
-  const [expandId, setExpandId] = useState();
 
   // 修改表单打开关闭状态
   const handleModalStateChange = async (state: boolean) => {
-    setDetail({});
     setDialogVisible(state);
     await firstTableRef.current?.reload();
   };
@@ -200,18 +197,18 @@ export default ({onChange}: any) => {
         ]}
         editable={{ onSave }}
         expandable={{
-          expandedRowRender: (record: any) => SecondTable({ record, server, firstTableRef, onChange }),
+          expandedRowRender: (record: any) =>
+            SecondTable({ record, server, onChange }, firstTableRef),
         }}
         pagination={{
           pageSize: 10,
         }}
       ></ProTable>
-      {/* <EditDialog
-        type={type}
-        detail={detail}
+      <EditDialog
+        key={`${dialogVisible}`}
         openModal={dialogVisible}
         onStateChange={handleModalStateChange}
-      /> */}
+      />
     </>
   );
 };

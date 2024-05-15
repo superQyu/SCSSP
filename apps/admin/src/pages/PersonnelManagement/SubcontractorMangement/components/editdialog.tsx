@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { Modal, Button, message } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import { AdForm } from 'components';
+import SingleTitle from '@/components/SingleTitle';
+import dayjs from 'dayjs';
 
 import initColumns from '../models/form.model';
 
@@ -13,13 +15,17 @@ interface Props {
   openModal: boolean;
   /** 监听 Modal 状态变化 */
   onStateChange: (state: boolean) => void;
+  /** 编辑表单携带的数据 */
+  detail: any;
 }
 
 type MenusType = {
   [key: string]: any;
 };
 
-export default ({ openModal, onStateChange }: Props) => {
+export default (props: Props) => {
+  const { openModal, onStateChange, detail } = props;
+
   // api 相关
   const { server } = useBasicConfiguration();
   const { subContractor } = server;
@@ -36,17 +42,33 @@ export default ({ openModal, onStateChange }: Props) => {
 
   // 分包商信息表单的默认值
   const [subInitialValues] = useState<MenusType>({
-    // subcontractorType: undefined,
-    // corpType: undefined,
-    // overallMerit: undefined,
-    // isConformity: undefined,
+    realName: detail.realName,
+    shortName: detail.shortName,
+    subcontractorType: detail.subcontractorType,
+    province: detail.province,
+    city: detail.city,
+    district: detail.district,
+    corpType: detail.corpType,
+    overallMerit: detail.overallMerit,
+    isConformity: detail.isConformity,
+    unitAddress: detail.unitAddress,
+    legalRepresentative: detail.legalRepresentative,
+    legalRepresentativePhone: detail.legalRepresentativePhone,
+    registeredCapital: detail.registeredCapital,
+    regDate: detail.regDate && dayjs(detail.regDate),
+    principal: detail.principal,
+    principalTel: detail.principalTel,
+    idCard: detail.idCard,
+    quality: detail.quality,
+    nameSpell: detail.nameSpell,
+    corpCode: detail.corpCode,
   });
   // 注册地信息表单的默认值
   const [addressInitialValues] = useState<MenusType>({
-    // buildComplaintCall: '',
-    // societyComplaintCall: '',
-    // companyScore: '',
-    // companySummary: '',
+    buildComplaintCall: detail.buildComplaintCall,
+    societyComplaintCall: detail.societyComplaintCall,
+    companyScore: detail.companyScore,
+    companySummary: detail.companySummary,
   });
 
   useEffect(() => {
@@ -69,10 +91,9 @@ export default ({ openModal, onStateChange }: Props) => {
       const subFormValues: MenusType = await subFormRef.current?.validateFields();
       const addressFormValues: MenusType = await addressFormRef.current?.validateFields();
       setLoading(true);
-      const params = { ...subFormValues, ...addressFormValues }
+      const params = { id: detail.id, ...subFormValues, ...addressFormValues };
       // console.log('创建分包商的请求参数', params)
-      subContractor
-        .createSubContractor(params)
+      subContractor[detail.id ? 'updateSubContractor' : 'createSubContractor'](params)
         .then(() => {
           message.success('操作成功！');
           setLoading(false);
@@ -113,7 +134,7 @@ export default ({ openModal, onStateChange }: Props) => {
             重置
           </Button>,
           <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
-            提交
+            {detail.id ? '更新' : '提交'}
           </Button>,
         ]}
       >
@@ -125,7 +146,8 @@ export default ({ openModal, onStateChange }: Props) => {
           labelAlign="left"
           columns={subColumns}
         />
-        <div>注册地</div>
+        <SingleTitle label="注册地" />
+        {/* <div>注册地</div> */}
         <AdForm
           loadingTitle="提交中..."
           formRef={addressFormRef}

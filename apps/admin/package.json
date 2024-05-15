@@ -11,7 +11,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@ant-design/icons": "^4.8.1",
+    "@ant-design/icons": "^5.3.7",
     "@ant-design/pro-components": "^2.6.50",
     "@ant-design/pro-layout": "^7.17.20",
     "@babel/core": "^7.24.0",
@@ -28,6 +28,7 @@
     "clipboard": "^2.0.11",
     "components": "workspace:*",
     "dayjs": "^1.11.10",
+    "echarts": "^5.4.3",
     "hooks": "workspace:*",
     "lodash": "^4.17.21",
     "rc-field-form": "~1.22.1",
@@ -37,7 +38,6 @@
     "react-router-dom": "^6.22.3",
     "react-transition-group": "^4.4.5",
     "sass": "^1.72.0",
-    "echarts": "^5.4.3",
     "store": "workspace:*",
     "ui": "workspace:*",
     "utils": "workspace:*"

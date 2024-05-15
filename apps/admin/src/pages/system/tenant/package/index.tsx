@@ -89,7 +89,7 @@ export default () => {
         toolBarRender={() => [
           <Button
             key="button"
-            // @ts-ignore
+            
             icon={<PlusOutlined />}
             onClick={() => setFormModal(true)}
             type="primary"
@@ -105,7 +105,7 @@ export default () => {
               <Button
                 type="primary"
                 key="sub"
-                // @ts-ignore
+                
                 icon={<SearchOutlined />}
                 onClick={() => form?.submit()}
               >
@@ -140,7 +140,7 @@ export default () => {
                   try {
                     Modal.confirm({
                       title: `删除操作`,
-                      // @ts-ignore
+                      
                       icon: <ExclamationCircleFilled />,
                       content: `确定删除套餐 [${record.name}]?`,
                       okText: '删除',

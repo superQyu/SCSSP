@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 import { ProTable } from 'components';
 import { type ActionType } from '@ant-design/pro-components';
-import { Button, message } from 'antd';
+import { Button, message, Popconfirm } from 'antd';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 
 import EditDialog from './components/editdialog';
@@ -23,9 +23,11 @@ export default () => {
   const actionRef = useRef<ActionType>();
 
   const [dialogVisible, setDialogVisible] = useState<boolean>(false);
+  const [detail, setDetail] = useState({});
 
   // 修改表单打开关闭状态
   const handleModalStateChange = async (state: boolean) => {
+    setDetail({});
     setDialogVisible(state);
     await actionRef.current?.reload();
   };
@@ -56,11 +58,44 @@ export default () => {
       <ProTable
         actionRef={actionRef}
         headerTitle="分包商列表"
-        columns={initColumns}
+        columns={[
+          ...initColumns,
+          {
+            title: '操作',
+            width: 140,
+            valueType: 'option',
+            dataIndex: 'option',
+            render: (_text: any, record: any, _: any, action: any) => [
+              <a
+                key="editable"
+                onClick={() => {
+                  // console.log('点击了编辑')
+                  // action?.startEditable?.(record.id);
+                  setDialogVisible(true);
+                  setDetail(record);
+                }}
+              >
+                编辑
+              </a>,
+              <Popconfirm
+                key="delete"
+                title="删除此项"
+                onConfirm={() => onDelete(record.id)}
+                okText="确认"
+                cancelText="取消"
+              >
+                <a>删除</a>
+              </Popconfirm>,
+            ],
+          },
+        ]}
         request={async (params = {}) => {
           const res = await subContractor.getSubContractorList(params);
           // console.log('分包商列表', res.list);
-          res.list.forEach((item: any) => (item.subcontractorType = item.subcontractorType || `${item.subcontractorType}`));
+          res.list.forEach(
+            (item: any) =>
+              (item.subcontractorType = item.subcontractorType || `${item.subcontractorType}`)
+          );
           return {
             // ...params,
             data: res.list,
@@ -92,12 +127,17 @@ export default () => {
             新建
           </Button>,
         ]}
-        editable={{ onDelete, onSave }}
+        editable={{ onSave }}
         pagination={{
           pageSize: 10,
         }}
       ></ProTable>
-      <EditDialog openModal={dialogVisible} onStateChange={handleModalStateChange} />
+      <EditDialog
+        key={`${dialogVisible}`}
+        detail={detail}
+        openModal={dialogVisible}
+        onStateChange={handleModalStateChange}
+      />
     </>
   );
 };

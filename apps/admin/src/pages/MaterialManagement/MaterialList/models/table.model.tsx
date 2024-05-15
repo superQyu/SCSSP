@@ -1,5 +1,5 @@
 import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
-import { message, Tag } from 'antd';
+import { message, Tag, Input } from 'antd';
 
 import DictSelect from '@/components/DictSelect';
 
@@ -72,7 +72,6 @@ export default ({ server }: MenusPropsType) => {
       >
         编辑
       </a>,
-      
     ],
   };
 
@@ -87,7 +86,7 @@ export default ({ server }: MenusPropsType) => {
       title: '材料编码',
       dataIndex: 'materialCode',
       ellipsis: true,
-      editable: false,
+      // editable: false,
       hideInSearch: true,
       // width: 70,
     },
@@ -153,8 +152,8 @@ export default ({ server }: MenusPropsType) => {
       hideInSearch: true,
       // width: 48,
     },
-    option
-  ]
+    option,
+  ];
 
   return { leftColumns, rightColumns };
 };

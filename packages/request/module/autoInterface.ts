@@ -2,6 +2,8 @@ import { notification } from 'antd';
 import { isArray, isJSON, getToken } from 'utils';
 import { fetchRequest as fetchService } from './fetch';
 import { Method, jsonObject } from './type';
+
+import dayjs from 'dayjs';
 /***
  * title: autoInterface.js
  * Author: qy
@@ -144,6 +146,8 @@ class AutoInterface {
           let headerParams = {}
           if (['post', 'put', 'patch'].indexOf(xhrType) != -1) {
             if (!isFormData) {
+              _this.dayjsZone(verifyed.params);
+
               verifyed.params = JSON.stringify(verifyed.params);
             } else {
               headerParams = {
@@ -175,6 +179,25 @@ class AutoInterface {
     return new Promise((resolve, reject) => {
       reject(`${msg}`);
     });
+  }
+
+  /**
+   * 单独处理 dayjs 数据 解决时区少8小时的问题
+   */
+  dayjsZone(params: jsonObject) {
+    function traverseObject(obj: jsonObject) {
+      for (let key in obj) {
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+          if (dayjs.isDayjs(obj[key])) {
+            // obj[key] = dayjs(obj[key]).format('YYYY-MM-DD hh:mm:ss') 
+            obj[key] = dayjs(obj[key]).valueOf() // 2024-04-03T00:00:000z
+          } else {
+            traverseObject(obj[key]);
+          }
+        }
+      }
+    }
+    traverseObject(params)
   }
 }
 export const autoInterface = (list: jsonObject, platformKey: string, cusParmas: jsonObject) => {
