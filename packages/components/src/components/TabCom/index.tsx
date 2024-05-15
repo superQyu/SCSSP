@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { getToken, setToken } from 'utils';
 import { useAppDispatch, useAppSelector } from 'hooks';
 import { setMenuTab } from 'store';
+import { DownOutlined } from '@ant-design/icons';
 
 import styled from 'styled-components';
 
@@ -21,6 +22,9 @@ const CustomTabs = styled(Tabs)(() => ({
     'border-block-start': '1px solid rgba(0, 0, 0, 0.06)',
     '& .ant-tabs-nav-wrap': {
       padding: '0 10px',
+    },
+    '.ant-tabs-nav-more': {
+      minWidth: '85px',
     },
   },
 }));
@@ -79,8 +83,17 @@ export default () => {
       onChange={onChange}
       activeKey={activeKey}
       onEdit={onEdit}
-      items={menuTab}
+      items={menuTab.map((item: any) => ({ ...item, closable: menuTab.length !== 1 }))}
       hideAdd={true}
+      more={{
+        icon: (
+          <>
+            更多
+            <DownOutlined />
+          </>
+        ),
+        trigger: 'hover',
+      }}
     />
   );
 };

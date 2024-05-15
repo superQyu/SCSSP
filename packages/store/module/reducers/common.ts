@@ -20,7 +20,7 @@ export const commonSlice: any = createSlice({
       state.data = action.payload;
     },
     setMenuTab: (state, action) => {
-      state.menuTab = action.payload;
+      state.menuTab = action.payload;;
     },
     setDict: (state, action) => {
       state.dictionary = action.payload;
