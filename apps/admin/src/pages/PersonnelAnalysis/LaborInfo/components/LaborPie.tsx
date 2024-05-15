@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useECharts } from '@/context/EChartContext';
 
 const SomeChartComponent = () => {
-  const { getEChartsInstance, getLinearGradient } = useECharts();
+  const { getEChartsInstance } = useECharts();
   const chartRef = useRef(null);
   const data1 = [
     { value: 20, name: '本科' },
