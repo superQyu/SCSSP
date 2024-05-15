@@ -56,5 +56,16 @@ const menus: ApiItem[] = [
             { key: 'id', cn: '数据ID集' },
         ],
     },
+    {
+        key: 'deleteBuildingInfo',
+        url: `${ADMIN_API}/wisdom/project-unity/deleteBuildingInfo`,
+        type: 'DELETE',
+        name: '删除楼座',
+        description: '删除楼座',
+        params: [
+            { key: 'Authorization', location: 'header' },
+            { key: 'id', cn: '数据ID集' },
+        ],
+    },
 ];
 export default menus;

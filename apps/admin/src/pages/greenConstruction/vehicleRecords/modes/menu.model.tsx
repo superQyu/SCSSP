@@ -122,7 +122,6 @@ export default (_: MenusPropsType) => {
       ),
       align: 'center',
     },
-
   ];
 
   return columns;

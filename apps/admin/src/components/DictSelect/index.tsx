@@ -87,7 +87,7 @@ const DictSelect: React.FC<Props> = (
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [value]);
 
   useEffect(() => {
     onLoadingStatus && onLoadingStatus(loading);
@@ -96,7 +96,7 @@ const DictSelect: React.FC<Props> = (
   return (
     <>
       {type && type === 'text' ? (
-        <>{showLabel}</>
+        <span>{showLabel}</span>
       ) : (
         <Select
           defaultValue={value}

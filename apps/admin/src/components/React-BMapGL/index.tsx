@@ -45,7 +45,7 @@ export default ({
     <>
       <MapServer.Map
         style={style || {}}
-        center={center || { lng: 116.404, lat: 39.915 }}
+        center={center || { lng: 120.31224857818925, lat: 31.495985112865068 }}
         zoom={zoom || 13}
         enableScrollWheelZoom
         onClick={handleMapClick}

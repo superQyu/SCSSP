@@ -170,7 +170,7 @@ export default withWebSocket(({ socket }) => {
               }}
               DrawingManager={{
                 //鼠标绘制工具
-                show: false,
+                show: true,
                 drawingMode: '',
                 isOpen: false,
                 enableCalculate: false, //	 绘制是否进行测距(画线时候)、测面积(画圆、多边形、矩形)
