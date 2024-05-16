@@ -20,7 +20,7 @@ const FormList = Object.entries(list).map(([key, val]) => {
   const { label } = key.match(reg)?.groups as { label: string };
   return {
     label,
-    Component: lazy(val),
+    Component: lazy(val as () => Promise<any>),
   };
 });
 
@@ -37,6 +37,7 @@ export default () => {
   const handleOk = async () => {
     let params: MenusType = {};
     let len = FormList.length;
+    let isError = false;
     setLoading(true);
     Object.entries(formRef.current).map(([_, funs]) => {
       const { key, form } = funs || {};
@@ -52,6 +53,8 @@ export default () => {
         })
         .catch(() => {
           setLoading(false);
+          !isError && message.warning(`数据填写不完整,请完善!`);
+          isError = true;
         });
     });
   };
@@ -98,7 +101,7 @@ export default () => {
   };
 
   return (
-    <div className="h-full px-20px overflow-y-auto overflow-x-hidden bg-#fff">
+    <div className="h-full pl-20px pr-100px overflow-y-auto overflow-x-hidden bg-#fff">
       {FormList.map((Item) => {
         return (
           <Suspense fallback={<div>Loading...</div>} key={Item.label}>

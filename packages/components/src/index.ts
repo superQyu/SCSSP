@@ -21,6 +21,7 @@ import TreeSelect from './components/ProTree/TreeSelect';
 import ProSelect from './components/ProSelect';
 import SearchSelect from './components/ProSelect/SearchSelect';
 
+import ProDescriptions from'./components/ProDescriptions'
 export {
   Header,
   OutletLayoutRouter,
@@ -38,6 +39,7 @@ export {
   ProUpload,
   ProSelect,
   SearchSelect,
+  ProDescriptions
 };
 
 

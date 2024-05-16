@@ -14,6 +14,7 @@ const vehicle: ApiItem[] = [
       { key: 'current', targetKey: 'pageNo', cn: '页码' },
       { key: 'pageSize', cn: '每页条数' },
       { key: 'alarmType', cn: '报警类型' },
+      { key: 'alarmTime', cn: '报警类时间' },
     ],
   },
   {
@@ -114,6 +115,17 @@ const vehicle: ApiItem[] = [
     ],
   },
   {
+    key: 'delVehicleTrack',
+    url: `${ADMIN_API}/wisdom/car-district-track-info/delete`,
+    type: 'DELETE',
+    name: '删除轨迹区域',
+    description: '删除轨迹区域',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: 'id号' },
+    ],
+  },
+  {
     key: 'approve',
     url: `${ADMIN_API}/bpm/task/approve`,
     type: 'PUT',
@@ -135,6 +147,17 @@ const vehicle: ApiItem[] = [
       { key: 'Authorization', location: 'header' },
       { key: 'id', cn: 'id号' },
       { key: 'reason', cn: '理由' },
+    ],
+  },
+  {
+    key: 'check',
+    url: `${ADMIN_API}/wisdom/car-info/check`,
+    type: 'POST',
+    name: '提交审核',
+    description: '提交审核',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: 'id号' },
     ],
   },
 ];

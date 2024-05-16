@@ -15,11 +15,12 @@ export default (_: MenusPropsType) => {
       title: '序号',
       dataIndex: 'index',
       valueType: 'indexBorder',
+      fixed: 'left',
     },
     {
       hideInSearch: true,
       title: '编号',
-      dataIndex: 'id',
+      dataIndex: 'carId',
     },
     {
       hideInSearch: true,
@@ -88,17 +89,12 @@ export default (_: MenusPropsType) => {
       title: '处理时间',
       render: (_, record) => <>{dayjs(record.disposeTime).format('YYYY-MM-DD hh:mm:ss')}</>,
     },
-    // {
-    //   hideInTable: true,
-    //   title: '报警时间',
-    //   valueType: 'dateRange',
-    //   search: {
-    //     transform: (value: any) => ({
-    //       startTime: value[0],
-    //       endTime: value[1],
-    //     }),
-    //   },
-    // },
+    {
+      hideInTable: true,
+      title: '报警时间',
+      valueType: 'dateTimeRange',
+      dataIndex: 'alarmTime',
+    },
   ];
 
   return columns;

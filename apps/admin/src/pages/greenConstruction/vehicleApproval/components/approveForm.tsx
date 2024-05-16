@@ -92,14 +92,14 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
       formItemProps: {
         rules: [{ required: true, message: '请输入理由' }],
       },
-      formItem: <TextArea />,
+      formItem: <TextArea autoSize={{ minRows: 3, maxRows: 5 }} />,
       colNum: 24,
     },
   ];
 
   return (
     <Modal
-      width={'50%'}
+      width={'500px'}
       open={open}
       title={title}
       onOk={handleOk}
@@ -125,6 +125,10 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
         labelAlign="left"
         onFormChange={onFormChange}
         columns={columns}
+        layoutStyle={{
+          labelCol: { span: 5 },
+          wrapperCol: { span: 19, flex: 1 },
+        }}
       />
     </Modal>
   );

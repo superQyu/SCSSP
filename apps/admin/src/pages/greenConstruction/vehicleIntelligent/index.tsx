@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 
 import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
 
@@ -17,7 +17,7 @@ export default () => {
   const { vehicle: V } = server;
   const initColumns = siteModel({ server });
   const [subForm, setSubForm] = useState<Record<string, any>>({});
-  const [formModal, setFormModal] = useState<boolean>(false);
+  const detailModal = useRef();
 
   return (
     <>
@@ -37,7 +37,7 @@ export default () => {
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}
-        scroll={{ y: 'auto' }}
+        scroll={{ x: '1800px', y: 'auto' }}
         columns={[
           ...initColumns,
           {
@@ -45,12 +45,13 @@ export default () => {
             key: 'option',
             width: 120,
             valueType: 'option',
-            render: (_text: any, record: any, _: any, action: any) => [
+            fixed: 'right',
+            render: (_text: any, record: any, _: any) => [
               <a
                 key="editable"
                 onClick={() => {
                   setSubForm(record);
-                  setFormModal(true);
+                  detailModal.current?.openModal(true);
                 }}
               >
                 <EyeOutlined />
@@ -79,7 +80,7 @@ export default () => {
           },
         }}
       ></ProTable>
-      <DetailForm subForm={subForm} openModal={formModal} />
+      <DetailForm subForm={subForm} ref={detailModal} />
     </>
   );
 };
