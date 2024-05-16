@@ -4,7 +4,7 @@ import {
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
-import { Col, Row, Avatar, Divider, Form, message, Space, Tabs } from 'antd';
+import { Col, Row, Avatar, Divider, Form, message, Space, Tabs, Button } from 'antd';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,7 +13,7 @@ import { logo, title, describe } from '@/config';
 
 // Current usage CSS stylesheet
 // import styles from './index.module.scss';
-import { LoginContainer,MyInput,  FormOther, FormOtherTips, OtherItem, PageImg } from './Styled';
+import { LoginContainer, FormOther, FormOtherTips, OtherItem, PageImg } from './Styled';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
@@ -111,32 +111,38 @@ const Login: React.FC = () => {
         title="您好，欢迎登录！"
         // subTitle={describe}
         loading={loading ? true : undefined}
-        // actions={
-        //   <FormOther>
-        //     <Divider plain>
-        //       <FormOtherTips>其他登录方式</FormOtherTips>
-        //     </Divider>
-        //     <Space align="center" size={24}>
-        //       <OtherItem />
-        //       <OtherItem />
-        //       <OtherItem />
-        //     </Space>
-        //   </FormOther>
-        // }
+        actions={
+          <Button className='mt-4 w-full h-40px' ghost>数据大屏</Button>
+          // <FormOther>
+          //   <Divider plain>
+          //     <FormOtherTips>其他登录方式</FormOtherTips>
+          //   </Divider>
+          //   <Space align="center" size={24}>
+          //     <OtherItem />
+          //     <OtherItem />
+          //     <OtherItem />
+          //   </Space>
+          // </FormOther>
+        }
       >
         <Tabs
           centered
           activeKey={loginType}
-          onChange={(activeKey) => handlerTabsChange(activeKey as LoginType)}
+          onChange={(activeKey: any) => handlerTabsChange(activeKey as LoginType)}
           items={items}
         ></Tabs>
         {loginType === 'account' && (
           <>
-            <MyInput
+            <ProFormText
               name="username"
               fieldProps={{
                 size: 'large',
-                prefix: <img color='black' src={new URL('@/assets/login/user.svg', import.meta.url).href} />,
+                prefix: (
+                  <img
+                    color="black"
+                    src={new URL('@/assets/login/user.svg', import.meta.url).href}
+                  />
+                ),
               }}
               placeholder={'用户名'}
               rules={[{ required: true, message: '请输入用户名!' }]}
@@ -210,11 +216,11 @@ const Login: React.FC = () => {
             />
           </>
         )}
-        <div style={{ marginBlockEnd: 24 }}>
+        <div className='bottom' style={{ marginBlockEnd: 24 }}>
           <ProFormCheckbox noStyle name="autoLogin" disabled={loading} valuePropName="checked">
             记住密码
           </ProFormCheckbox>
-          <a style={{ float: 'right' }}> 忘记密码</a>
+          <a style={{ float: 'right', color: 'white' }}> 忘记密码</a>
         </div>
       </LoginFormPage>
     </LoginContainer>
