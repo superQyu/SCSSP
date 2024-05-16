@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { FormColumnsTypes, ProUpload, SearchSelect } from 'components';
 import { Select, Button, Input, Radio, message } from 'antd';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import type { RefSelectProps } from 'antd';
 
 import DictSelect from '@/components/DictSelect';
 
@@ -18,6 +19,8 @@ export default (formRef: any) => {
   const [type, setType] = useState('1');
   // 一级分类的值
   const [firstLevelCode, setFirstLevelCode] = useState();
+
+  const firstSelect = useRef<any>();
 
   useEffect(() => {
     // getSelectOptions(type);
@@ -43,9 +46,12 @@ export default (formRef: any) => {
       show: type != '1',
       formItemProps: {
         rules: [{ required: true, message: '请选择一级类别' }],
+        validateStatus: 'validating',
+        extra: '请输入关键字进行搜索'
       },
       formItem: (
         <SearchSelect
+          ref={firstSelect}
           placeholder="请选择一级类别"
           request={async (input) => {
             const res = await materialList.getAllFirstList({
@@ -55,14 +61,14 @@ export default (formRef: any) => {
             const options = res.map((item: any) => {
               return {
                 label: item.firstLevelName,
-                value: item.firstLevelCode
-              }
-            })
-            return options
+                value: item.firstLevelCode,
+              };
+            });
+            return options;
           }}
           onChange={(select: any) => {
             // console.log('当前选项', select)
-            setFirstLevelCode(select)
+            setFirstLevelCode(select);
           }}
         />
       ),
@@ -73,6 +79,8 @@ export default (formRef: any) => {
       show: type == '3',
       formItemProps: {
         rules: [{ required: true, message: '请选择二级类别' }],
+        validateStatus: 'validating',
+        extra: '请输入关键字进行搜索'
       },
       formItem: (
         <SearchSelect
@@ -86,10 +94,18 @@ export default (formRef: any) => {
             const options = res.map((item: any) => {
               return {
                 label: item.secondLevelName,
-                value: item.secondLevelCode
-              }
-            })
-            return options
+                value: item.secondLevelCode,
+              };
+            });
+            return options;
+          }}
+          onFocus={(e: any) => {
+            if (!formRef.current?.getFieldValue('firstLevelCode')) {
+              message.warning('请先选择一级类别');
+              // console.log('事件对象', e, firstSelect);
+              e.target.blur();
+              firstSelect.current?.focus();
+            }
           }}
         />
       ),

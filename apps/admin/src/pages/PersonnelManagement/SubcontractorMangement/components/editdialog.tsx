@@ -31,7 +31,6 @@ export default (props: Props) => {
   const { subContractor } = server;
 
   const [open, setOpen] = useState<boolean>(openModal);
-  const [title] = useState<string>('添加分包商信息');
   const [loading, setLoading] = useState<boolean>(false);
 
   const subFormRef = useRef<FormInstance>(null);
@@ -90,15 +89,15 @@ export default (props: Props) => {
     try {
       const subFormValues: MenusType = await subFormRef.current?.validateFields();
       const addressFormValues: MenusType = await addressFormRef.current?.validateFields();
-      setLoading(true);
       const params = { id: detail.id, ...subFormValues, ...addressFormValues };
       // console.log('创建分包商的请求参数', params)
+      setLoading(true);
       subContractor[detail.id ? 'updateSubContractor' : 'createSubContractor'](params)
         .then(() => {
           message.success('操作成功！');
           setLoading(false);
           onStateChange(false);
-          onReset();
+          // onReset();
         })
         .catch(() => {
           setLoading(false);
@@ -121,8 +120,9 @@ export default (props: Props) => {
     <>
       <Modal
         open={open}
-        title={title}
+        title={detail.id ? '编辑' : '新建'}
         width={1000}
+        centered
         onOk={handleOk}
         onCancel={handleCancel}
         maskClosable={false}
@@ -138,24 +138,26 @@ export default (props: Props) => {
           </Button>,
         ]}
       >
-        <AdForm
-          loadingTitle="提交中..."
-          formRef={subFormRef}
-          initialValues={subInitialValues}
-          loading={loading}
-          labelAlign="left"
-          columns={subColumns}
-        />
-        <SingleTitle label="注册地" />
-        {/* <div>注册地</div> */}
-        <AdForm
-          loadingTitle="提交中..."
-          formRef={addressFormRef}
-          initialValues={addressInitialValues}
-          loading={loading}
-          labelAlign="left"
-          columns={addressColumns}
-        />
+        <div className="h-70vh p-inline-4" style={{ overflow: 'hidden auto' }}>
+          <AdForm
+            loadingTitle="提交中..."
+            formRef={subFormRef}
+            initialValues={subInitialValues}
+            loading={loading}
+            labelAlign="left"
+            columns={subColumns}
+          />
+          <SingleTitle label="注册地" />
+          {/* <div>注册地</div> */}
+          <AdForm
+            loadingTitle="提交中..."
+            formRef={addressFormRef}
+            initialValues={addressInitialValues}
+            loading={loading}
+            labelAlign="left"
+            columns={addressColumns}
+          />
+        </div>
       </Modal>
     </>
   );

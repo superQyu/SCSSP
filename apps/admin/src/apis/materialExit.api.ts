@@ -2,10 +2,10 @@ import { ApiItem } from '@spms/web-request';
 
 const ADMIN_API = import.meta.env.VITE_APP_ADMIN_API;
 
-const materialEnter: ApiItem[] = [
+const materialExit: ApiItem[] = [
   {
-    key: 'getEnterList',
-    url: `${ADMIN_API}/wisdom/materials-enter/page`,
+    key: 'getExitList',
+    url: `${ADMIN_API}/wisdom/materials-exit/page`,
     type: 'GET',
     name: '物料进场列表',
     description: '获取物料进场列表(分页)',
@@ -18,32 +18,32 @@ const materialEnter: ApiItem[] = [
     ],
   },
   {
-    key: 'updateEnter',
-    url: `${ADMIN_API}/wisdom/materials-enter/update`,
+    key: 'updateExit',
+    url: `${ADMIN_API}/wisdom/materials-exit/update`,
     type: 'PUT',
     name: '物料进场列表',
     description: '编辑物料进场',
     params: [
       { key: 'Authorization', location: 'header' },
-      { key: 'materialsEnterSaveReqVO', cn: '进场相关信息' },
-      { key: 'materialsEnterDetailsSaveReqVOS', cn: '进场物料相关信息' },
+      { key: 'materialsExitSaveReqVO', cn: '进场相关信息' },
+      { key: 'materialsExitDetailsSaveReqVOS', cn: '进场物料相关信息' },
     ],
   },
   {
-    key: 'createEnter',
-    url: `${ADMIN_API}/wisdom/materials-enter/create`,
+    key: 'createExit',
+    url: `${ADMIN_API}/wisdom/materials-exit/create`,
     type: 'POST',
     name: '物料进场列表',
     description: '新增物料进场',
     params: [
       { key: 'Authorization', location: 'header' },
-      { key: 'materialsEnterSaveReqVO', cn: '进场相关信息' },
-      { key: 'materialsEnterDetailsSaveReqVOS', cn: '进场物料相关信息' },
+      { key: 'materialsExitSaveReqVO', cn: '进场相关信息' },
+      { key: 'materialsExitDetailsSaveReqVOS', cn: '进场物料相关信息' },
     ],
   },
   {
-    key: 'deleteEnter',
-    url: `${ADMIN_API}/wisdom/materials-enter/delete`,
+    key: 'deleteExit',
+    url: `${ADMIN_API}/wisdom/materials-exit/delete`,
     type: 'DELETE',
     name: '物料进场列表',
     description: '删除物料进场',
@@ -53,4 +53,4 @@ const materialEnter: ApiItem[] = [
     ],
   },
 ];
-export default materialEnter;
+export default materialExit;

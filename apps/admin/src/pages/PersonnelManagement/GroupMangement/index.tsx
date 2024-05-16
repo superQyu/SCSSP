@@ -59,7 +59,7 @@ export default () => {
           ...initColumns,
           {
             title: '操作',
-            width: 140,
+            width: 100,
             valueType: 'option',
             dataIndex: 'option',
             render: (_text: any, record: any, _: any, action: any) => [
