@@ -32,10 +32,11 @@ export default () => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    const res = await job.updateJob(params as ColumnsParamsProps).then(async () => {
-      message.success('信息更新成功！');
-      await actionRef.current?.reload();
-    });
+    // const res = await job.updateJob(params as ColumnsParamsProps).then(async () => {
+    //   message.success('信息更新成功！');
+    //   await actionRef.current?.reload();
+    // });
+    const res = await job.updateJob(params as ColumnsParamsProps);
     return res;
   };
 
@@ -57,7 +58,7 @@ export default () => {
           ...initColumns,
           {
             title: '操作',
-            width: 140,
+            width: 100,
             valueType: 'option',
             dataIndex: 'option',
             render: (_text: any, record: any, _: any, action: any) => [
@@ -85,11 +86,11 @@ export default () => {
         request={async (params = {}) => {
           // console.log('请求工种列表的参数', params)
           const res = await job.getJobList(params);
+          res.list.forEach((item: any) => {
+            if (item.isSpecialWorkType != undefined || null)
+              item.isSpecialWorkType = `${item.isSpecialWorkType}`;
+          });
           // console.log('工种列表', res.list);
-          res.list.forEach(
-            (item: any) =>
-              (item.isSpecialWorkType = item.isSpecialWorkType || `${item.isSpecialWorkType}`)
-          );
           return {
             ...params,
             data: res.list,

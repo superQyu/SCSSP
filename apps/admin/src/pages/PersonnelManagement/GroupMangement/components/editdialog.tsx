@@ -28,7 +28,6 @@ export default ({ openModal, onStateChange, detail }: Props) => {
   const { group } = server;
 
   const [open, setOpen] = useState<boolean>(openModal);
-  const [title] = useState<string>('添加班组信息');
   const [loading, setLoading] = useState<boolean>(false);
 
   const formRef = useRef<FormInstance>(null);
@@ -71,7 +70,7 @@ export default ({ openModal, onStateChange, detail }: Props) => {
       values.entryAttachments = values.entryAttachments?.join('@');
       values.exitAttachments = values.exitAttachments?.join('@');
       values.id = detail.id;
-      console.log('表单提交时的数据', values);
+      // console.log('表单提交时的数据', values);
       setLoading(true);
       group[detail.id ? 'updateGroup' : 'createGroup'](values)
         .then(() => {
@@ -101,7 +100,7 @@ export default ({ openModal, onStateChange, detail }: Props) => {
     <>
       <Modal
         open={open}
-        title={title}
+        title={detail.id?'编辑':'新建'}
         width={1000}
         onOk={handleOk}
         onCancel={handleCancel}

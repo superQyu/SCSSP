@@ -48,66 +48,96 @@ export default ({ server }: MenusPropsType) => {
     setPersonInfoList(list2);
   };
 
-  const columns: ProColumns[] = [
+  const fColumns: ProColumns[] = [
     {
       title: '序号',
       valueType: 'indexBorder',
       dataIndex: 'index',
       ellipsis: true,
+      // width: 50
     },
     {
-      title: '班组名称',
-      dataIndex: 'teamName',
+      title: '进场时间',
+      dataIndex: 'enterDate',
       ellipsis: true,
       hideInSearch: true,
     },
     {
-      title: '班组长',
-      dataIndex: 'userId',
-      ellipsis: true,
-      render: (_, record) => {
-        return <span>{record.userName}</span>;
-      },
-      renderFormItem: () => {
-        return <Select placeholder="请选择班组长" options={personInfoList} />;
-      },
-    },
-    {
-      title: '身份证号',
-      dataIndex: 'identityCard',
+      title: '送货人',
+      dataIndex: 'deliveryMan',
       ellipsis: true,
       hideInSearch: true,
     },
     {
-      title: '分包单位名称',
-      dataIndex: 'subcontractorId',
-      ellipsis: true,
-      render: (_, record) => {
-        return <span>{record.subcontractorName}</span>;
-      },
-      renderFormItem: () => {
-        return <Select placeholder="请选择分包单位" options={subcontractorList} />;
-      },
-    },
-    {
-      title: '劳务工种',
-      dataIndex: 'workTypeName',
-      ellipsis: true,
-      editable: false
-    },
-    {
-      title: '公司简称简拼',
-      dataIndex: 'corpCode',
+      title: '材料员',
+      dataIndex: 'materialMan',
       ellipsis: true,
       hideInSearch: true,
     },
     {
-      title: '联系电话',
-      dataIndex: 'phone',
+      title: '供应单位',
+      dataIndex: 'supplierDepartment',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '生产厂家',
+      dataIndex: 'manufacturer',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '购买单位',
+      dataIndex: 'purchaserDepartment',
       ellipsis: true,
       hideInSearch: true,
     },
   ];
 
-  return columns;
+  const cColumns: ProColumns[] = [
+    {
+      title: '物料名称',
+      dataIndex: 'materialName',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '型号',
+      dataIndex: 'materialType',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '计量单位',
+      dataIndex: 'measuringUnit',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '规格',
+      dataIndex: 'specification',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '物料编号',
+      dataIndex: 'materialCode',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '进场数量',
+      dataIndex: 'enterNumber',
+      ellipsis: true,
+      editable: false,
+    },
+    {
+      title: '合格证件',
+      dataIndex: 'attachment',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+  ];
+
+  return { fColumns, cColumns };
 };

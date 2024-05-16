@@ -1,6 +1,6 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, forwardRef } from 'react';
 import { Select, Spin } from 'antd';
-import type { SelectProps } from 'antd';
+import type { SelectProps, RefSelectProps } from 'antd';
 // import debounce from 'lodash/debounce';
 
 export interface DebounceSelectProps<ValueType = any>
@@ -10,47 +10,53 @@ export interface DebounceSelectProps<ValueType = any>
   debounceTimeout?: number;
 }
 
-const DebounceSelect = ({ fetchOptions, debounceTimeout = 800, ...props }: DebounceSelectProps) => {
-  // 只有第一次输入文字后，才会进行选项的加载
-  const [fetching, setFetching] = useState(false);
-  const [options, setOptions] = useState<any>([]);
-  // const fetchRef = useRef(0);
+const DebounceSelect = forwardRef(
+  (
+    { fetchOptions, debounceTimeout = 800, ...props }: DebounceSelectProps,
+    ref: React.Ref<RefSelectProps>
+  ) => {
+    // 只有第一次输入文字后，才会进行选项的加载
+    const [fetching, setFetching] = useState(false);
+    const [options, setOptions] = useState<any>([]);
+    // const fetchRef = useRef(0);
 
-  const debounceFetcher = useMemo(() => {
-    // return debounce(loadOptions, debounceTimeout);
-    // 文本框输入值变化时的回调
+    const debounceFetcher = useMemo(() => {
+      // return debounce(loadOptions, debounceTimeout);
+      // 文本框输入值变化时的回调
 
-    const loadOptions = (value: string) => {
-      // fetchRef.current += 1;
-      // const fetchId = fetchRef.current;
-      setOptions([]);
-      setFetching(true);
+      const loadOptions = (value: string) => {
+        // fetchRef.current += 1;
+        // const fetchId = fetchRef.current;
+        setOptions([]);
+        setFetching(true);
 
-      fetchOptions(value).then((newOptions: any) => {
-        // if (fetchId !== fetchRef.current) {
-        //   // for fetch callback order
-        //   return;
-        // }
+        fetchOptions(value).then((newOptions: any) => {
+          // if (fetchId !== fetchRef.current) {
+          //   // for fetch callback order
+          //   return;
+          // }
 
-        setOptions(newOptions);
-        setFetching(false);
-      });
-    };
-    return loadOptions;
-  }, [fetchOptions, debounceTimeout]);
+          setOptions(newOptions);
+          setFetching(false);
+        });
+      };
+      return loadOptions;
+    }, [fetchOptions, debounceTimeout]);
 
-  return (
-    <Select
-      // labelInValue
-      filterOption={false}
-      showSearch={true}
-      onSearch={debounceFetcher}
-      notFoundContent={fetching ? <Spin size="small" /> : null}
-      {...props}
-      options={options}
-    />
-  );
-};
+    return (
+      <Select
+        // labelInValue
+        ref={ref}
+        filterOption={false}
+        showSearch={true}
+        onSearch={debounceFetcher}
+        notFoundContent={fetching ? <Spin size="small" /> : null}
+        {...props}
+        options={options}
+      />
+    );
+  }
+);
 
 interface SelectOption {
   label: string;
@@ -61,13 +67,17 @@ interface Props {
   value?: any;
   onChange?: any;
   // request: (search: string) => Promise<SelectOption[]>;
+  /* 输入内容发生变化时的回调 */
   request: (search: string) => any;
+  /* 获取输入焦点时的回调 */
+  onFocus?: any;
 }
 
-export default (props: Props) => {
-  const { value, onChange } = props;
+export default forwardRef((props: Props, ref: React.Ref<RefSelectProps>) => {
+  const { value, onChange, onFocus } = props;
   return (
     <DebounceSelect
+      ref={ref}
       // mode="multiple"
       style={{ width: '100%' }}
       placeholder={props.placeholder}
@@ -78,6 +88,7 @@ export default (props: Props) => {
         // setValue(newValue as SelectOption[]);
         onChange(newValue);
       }}
+      onFocus={onFocus}
     />
   );
-};
+});

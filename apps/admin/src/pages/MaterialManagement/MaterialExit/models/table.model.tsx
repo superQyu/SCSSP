@@ -56,13 +56,13 @@ export default ({ server }: MenusPropsType) => {
       ellipsis: true,
     },
     {
-      title: '班组名称',
+      title: '物料编号',
       dataIndex: 'teamName',
       ellipsis: true,
       hideInSearch: true,
     },
     {
-      title: '班组长',
+      title: '物料名称',
       dataIndex: 'userId',
       ellipsis: true,
       render: (_, record) => {
@@ -73,13 +73,19 @@ export default ({ server }: MenusPropsType) => {
       },
     },
     {
-      title: '身份证号',
+      title: '规格',
       dataIndex: 'identityCard',
       ellipsis: true,
       hideInSearch: true,
     },
     {
-      title: '分包单位名称',
+      title: '型号',
+      dataIndex: 'identityCard',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '退场数量',
       dataIndex: 'subcontractorId',
       ellipsis: true,
       render: (_, record) => {
@@ -90,19 +96,49 @@ export default ({ server }: MenusPropsType) => {
       },
     },
     {
-      title: '劳务工种',
+      title: '计量单位',
       dataIndex: 'workTypeName',
       ellipsis: true,
       editable: false
     },
     {
-      title: '公司简称简拼',
+      title: '退场时间',
       dataIndex: 'corpCode',
       ellipsis: true,
       hideInSearch: true,
     },
     {
-      title: '联系电话',
+      title: '退料人员',
+      dataIndex: 'phone',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '见证人员',
+      dataIndex: 'phone',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '生产厂家',
+      dataIndex: 'phone',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '供应单位',
+      dataIndex: 'phone',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '购买单位',
+      dataIndex: 'phone',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '退场原因',
       dataIndex: 'phone',
       ellipsis: true,
       hideInSearch: true,

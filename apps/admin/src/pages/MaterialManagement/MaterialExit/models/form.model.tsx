@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { FormColumnsTypes, ProUpload } from 'components';
 import { Select, DatePicker, Input } from 'antd';
+const { TextArea } = Input;
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
@@ -75,7 +76,7 @@ export default (subFormRef: any, entryAttachments: [] = [], exitAttachments: [] 
 
   const formColumns: FormColumnsTypes[] = [
     {
-      label: '班组名称',
+      label: '物料编号',
       dataIndex: 'teamName',
       colNum: 12,
       formItemProps: {
@@ -83,7 +84,7 @@ export default (subFormRef: any, entryAttachments: [] = [], exitAttachments: [] 
       },
     },
     {
-      label: '分包单位',
+      label: '物料名称',
       dataIndex: 'subcontractorId',
       colNum: 12,
       formItemProps: {
@@ -92,7 +93,7 @@ export default (subFormRef: any, entryAttachments: [] = [], exitAttachments: [] 
       formItem: <Select placeholder="请选择分包单位" options={subcontractorList} />,
     },
     {
-      label: '班组长',
+      label: '规格',
       dataIndex: 'userId',
       colNum: 12,
       formItem: (
@@ -101,72 +102,71 @@ export default (subFormRef: any, entryAttachments: [] = [], exitAttachments: [] 
     },
     {
       // 缺失字段, 信息采集时应当选择来着
-      label: '劳务工种',
+      label: '型号',
       dataIndex: 'workTypeName',
       colNum: 12,
       formItem: <Select placeholder="请选择班组长" disabled />,
     },
     {
-      label: '身份证号',
+      label: '退场数量',
       dataIndex: 'identityCard',
       colNum: 12,
       formItem: <Input placeholder="请选择班组长" disabled />,
     },
     {
-      label: '联系方式',
+      label: '计量单位',
       dataIndex: 'phone',
       colNum: 12,
       formItem: <Input placeholder="请选择班组长" disabled />,
     },
     {
-      label: '进场日期',
-      dataIndex: 'entryDate',
-      colNum: 12,
-      formItem: <DatePicker placeholder="请选择班组长" disabled />,
-    },
-    {
-      label: '退场日期',
+      label: '退场时间',
       dataIndex: 'exitDate',
       colNum: 12,
       formItem: <DatePicker placeholder="请选择班组长" disabled />,
     },
     {
-      label: '进场附件',
-      dataIndex: 'entryAttachments',
+      label: '退料人员',
+      dataIndex: 'phone',
       colNum: 12,
-      formItem: (
-        <ProUpload
-          onRequest={async (params: any) => await file.fileUpload(params)}
-          onListChange={(res: any) => {
-            // console.log('文件列表改变', res);
-            const list = res.map((item: any) => item.url);
-            subFormRef.current.setFieldsValue({
-              // 进场附件
-              entryAttachments: list,
-            });
-          }}
-          defaultFileList={entryFileList}
-        />
-      ),
+      formItem: <Input placeholder="请选择班组长" disabled />,
     },
     {
-      label: '退场附件',
-      dataIndex: 'exitAttachments',
+      label: '见证人员',
+      dataIndex: 'phone',
       colNum: 12,
-      formItem: (
-        <ProUpload
-          onRequest={async (params: any) => await file.fileUpload(params)}
-          onListChange={(res: any) => {
-            // console.log('文件列表改变', res);
-            const list = res.map((item: any) => item.url);
-            subFormRef.current.setFieldsValue({
-              // 进场附件
-              exitAttachments: list,
-            });
-          }}
-          defaultFileList={exitFileList}
-        />
-      ),
+      formItem: <Input placeholder="请选择班组长" disabled />,
+    },
+    {
+      label: '生产厂家',
+      dataIndex: 'phone',
+      colNum: 12,
+      formItem: <Input placeholder="请选择班组长" disabled />,
+    },
+    {
+      label: '供应单位',
+      dataIndex: 'phone',
+      colNum: 12,
+      formItem: <Input placeholder="请选择班组长" disabled />,
+    },
+    {
+      label: '购买单位',
+      dataIndex: 'phone',
+      colNum: 12,
+      formItem: <Input placeholder="请选择班组长" disabled />,
+    },
+    {
+      label: '退场原因',
+      dataIndex: 'phone',
+      formItemProps: {
+        labelCol: {
+          span: 3
+        },
+        wrapperCol: {
+          span: 21
+        }
+      },
+      formItem: <TextArea placeholder="请选择班组长" disabled rows={3} />,
     },
   ];
   return formColumns;
