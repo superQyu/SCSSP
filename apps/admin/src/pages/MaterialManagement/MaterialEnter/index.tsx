@@ -48,7 +48,7 @@ export default ({ onChange }: any) => {
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await materialEnter.deleteJob({ id }).then(async () => {
+    const res = await materialEnter.deleteEnter({ id }).then(async () => {
       message.success('信息删除成功！');
       await firstTableRef.current?.reload();
     });

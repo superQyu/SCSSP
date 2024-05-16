@@ -21,33 +21,6 @@ export interface ColumnsParamsProps extends objJson {
 }
 
 export default ({ server }: MenusPropsType) => {
-  const { subContractor, certificate } = server as objJson;
-
-  // 分包单位选择下拉
-  const [subcontractorList, setSubcontractorList] = useState([]);
-  // 班组长选择下拉
-  const [personInfoList, setPersonInfoList] = useState([]);
-
-  useEffect(() => {
-    getSelectOptions();
-  }, []);
-
-  // 通过接口获取下拉框的内容
-  const getSelectOptions = async () => {
-    const res1 = await subContractor.getAllSubContractor();
-    // console.log('分包商列表', res1);
-    const list1 = res1.map((item: any) => {
-      return { label: item.realName, value: item.id };
-    });
-    setSubcontractorList(list1);
-    const res2 = await certificate.getPersonInfoList();
-    // console.log('班组长列表', res2);
-    const list2 = res2.map((item: any) => {
-      return { label: item.name, value: item.id };
-    });
-    setPersonInfoList(list2);
-  };
-
   const fColumns: ProColumns[] = [
     {
       title: '序号',
