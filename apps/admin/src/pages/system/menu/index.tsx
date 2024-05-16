@@ -117,7 +117,7 @@ export default () => {
                       try {
                         Modal.confirm({
                           title: `删除操作`,
-                          // @ts-ignore
+                          
                           icon: <ExclamationCircleFilled />,
                           content: `确定删除菜单 [${record.name}]?`,
                           okText: '删除',
@@ -188,7 +188,7 @@ export default () => {
               <Button
                 type="primary"
                 key="sub"
-                // @ts-ignore
+                
                 icon={<SearchOutlined />}
                 onClick={() => form?.submit()}
               >

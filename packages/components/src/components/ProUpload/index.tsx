@@ -19,11 +19,11 @@ interface Props {
   /** 上传接口配置  */
   onRequest?: (params: any) => Promise<Partial<RequestData<any>>>;
   /** 上传成功  */
-  onUploadSuccess?: (params: any) => void;
+  onUploadSuccess?: (params: any, path: string) => void;
   /** 上传失败 */
   onUploadError?: (params?: any) => void;
-  /** 文件删除 返回uid */
-  onDeleted?: (uid: string) => void;
+  /** 文件删除 返回file对象 */
+  onDeleted?: (file: any) => void;
   /** 文件上传类型  默认  ['image/jpeg', 'image/png']*/
   fileType?: string[];
   /** 文件上传大限制 默认 20M*/
@@ -79,13 +79,18 @@ const ProUpload: React.FC<Props> = ({
 
         const res = await onRequest(formData);
 
+        console.log('res', res);
+
         onUploadSuccess &&
-          onUploadSuccess({
-            [file.uid]: {
-              url: res,
-              name: file.name,
+          onUploadSuccess(
+            {
+              [file.uid]: {
+                url: res,
+                name: file.name,
+              },
             },
-          });
+            `${res}`
+          );
         // 修改 fileList, 统一走 useEffect
         const newFile: UploadFile & { url?: string } = {
           uid: file.uid,
@@ -140,7 +145,7 @@ const ProUpload: React.FC<Props> = ({
     const newFileList = fileList.slice();
     newFileList.splice(index, 1);
     setFileList(newFileList);
-    onDeleted && onDeleted(file.uid);
+    onDeleted && onDeleted(file);
   };
 
   const delErrorFile = (files: UploadFile[]) => files.map((file: UploadFile) => onRemove(file));

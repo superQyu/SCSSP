@@ -28,7 +28,7 @@ function a11yProps(index: number) {
 }
 
 export default function ComponentDoc() {
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(7);
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -62,7 +62,7 @@ export default function ComponentDoc() {
           value={value}
           onChange={handleChange}
           aria-label="Vertical tabs example"
-          sx={{ borderRight: 1, borderColor: 'divider' }}
+          sx={{ borderRight: 1, borderColor: 'divider', minWidth: '160px' }}
         >
           {menuList.map((item, idx) => (
             <StyledTab label={item.label} {...a11yProps(idx)} key={idx} />

@@ -32,8 +32,8 @@ const SomeChartComponent = () => {
       grid: {
         left: '8%',
         right: '8%',
-        top: '10%',
-        bottom: '10%',
+        top: '13%',
+        bottom: '15%',
       },
       xAxis: [
         {
@@ -46,11 +46,20 @@ const SomeChartComponent = () => {
             color: '#606266',
             interval: 0,
             margin: 10,
-            align: 'center',
+            formatter: function (value: string) {
+              const reg = /(?<name>[^【]+)【(?<group>[^】]+)】/;
+              const { name, group } = value.match(reg)?.groups as { name: string; group: string };
+              return `${name}\n【${group}】`;
+            },
           },
         },
       ],
       yAxis: {
+        name: '(单位:人)',
+        nameGap: 20,
+        nameTextStyle: {
+          color: '#454545',
+        },
         axisLine: {
           show: false,
         },
@@ -108,7 +117,6 @@ const SomeChartComponent = () => {
   useEffect(() => {
     chartInstance = getEChartsInstance(chartRef);
     setOptions();
-
   }, []);
 
   useEffect(() => {

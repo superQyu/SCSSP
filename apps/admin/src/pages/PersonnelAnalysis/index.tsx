@@ -10,8 +10,8 @@ import CertificateWarn from './CertificateWarn';
 
 const CustomSDiv = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1.5fr 1fr;
-  grid-template-rows: 1fr 1.5fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1.5fr);
   gap: 20px;
   padding: 20px;
   height: 100%;

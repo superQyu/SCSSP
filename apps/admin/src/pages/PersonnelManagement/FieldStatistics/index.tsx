@@ -67,7 +67,7 @@ export default () => {
             <Flex gap="middle" vertical justify="space-between" align="center" className="h-full">
               <div className="overflow-hidden grid grid-cols-2 w-80% border-rd-4px">
                 <TitleItem label="女性人数" color="#cf14ef" />
-                <TitleItem label="男性人数" color="##23b10c3" />
+                <TitleItem label="男性人数" color="#6bd0d3" />
               </div>
               <Flex align="flex-end" justify="center">
                 <div className="mr-[-15%]">

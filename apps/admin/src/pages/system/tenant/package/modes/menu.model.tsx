@@ -58,7 +58,7 @@ export default (_: MenusPropsType) => {
             '0': {
               text: (
                 <>
-                  {/* @ts-ignore  */}
+                  
                   <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
                   显示
                 </>
@@ -67,7 +67,7 @@ export default (_: MenusPropsType) => {
             '1': {
               text: (
                 <>
-                  {/* @ts-ignore  */}
+                  
                   <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
                   隐藏
                 </>

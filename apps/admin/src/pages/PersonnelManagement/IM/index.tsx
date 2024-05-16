@@ -129,7 +129,6 @@ export default () => {
               <Button
                 type="primary"
                 key="sub"
-                // @ts-ignore
                 icon={<SearchOutlined />}
                 onClick={() => form?.submit()}
               >
@@ -141,7 +140,6 @@ export default () => {
         toolBarRender={() => [
           <Button
             key="button"
-            // @ts-ignore
             icon={<PlusOutlined />}
             onClick={() => {
               console.log(dictionary);

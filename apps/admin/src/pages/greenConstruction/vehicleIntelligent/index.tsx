@@ -25,7 +25,6 @@ export default () => {
         headerTitle="车辆智能分析"
         request={async (params: ModesApi.ParamsType) => {
           const { list, total } = await V.vehicleIntelligentList(params);
-
           return {
             ...params,
             data: list || [],

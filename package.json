@@ -23,7 +23,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
-    "@mui/material": "^5.15.16",
+    "@mui/material": "^5.15.17",
     "commitizen": "^4.3.0",
     "commitlint-config-cz": "^0.13.3",
     "cz-conventional-changelog": "^3.3.0",
@@ -49,6 +49,6 @@
   },
   "dependencies": {
     "cli-progress": "^3.12.0",
-    "styled-components": "^6.1.10"
+    "styled-components": "^6.1.11"
   }
 }

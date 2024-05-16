@@ -31,9 +31,8 @@ export default defineConfig(({ mode }: ConfigEnv): UserConfig => {
       open: false,
       proxy: {
         [env.VITE_APP_ADMIN_API]: {
-          // target: 'http://192.168.10.77:48081',
           target: 'http://192.168.10.72:48081',
-          // target: 'http://192.168.10.66:48081',
+          // target: 'http://192.168.10.77:48081',
           secure: false,
         },
         [env.VITE_APP_BASE_API]: {

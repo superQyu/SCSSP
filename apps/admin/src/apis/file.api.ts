@@ -10,6 +10,14 @@ const files: ApiItem[] = [
         name: '文件上传',
         description: '文件上传',
         params: [{ key: 'Authorization', location: 'header' }],
+    },
+    {
+        key: 'fileDelete',
+        url: `${ADMIN_API}/infra/file/delete`,
+        type: 'DELETE',
+        name: '文件删除',
+        description: '文件删除',
+        params: [{ key: 'Authorization', location: 'header' }, { key: 'id' }],
     }
 ];
 export default files;

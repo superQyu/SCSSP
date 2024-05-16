@@ -1,14 +1,14 @@
 import React, { lazy, Suspense, useState, useEffect, useRef } from 'react';
-import { Button, message, Modal, Spin } from 'antd';
-import dayjs from 'dayjs';
+import { Button, message, Modal, Row, Col, Spin } from 'antd';
 
 import type { FormInstance } from 'antd/es/form';
+import { sleep } from 'utils';
 
-import { AdForm, FormColumnsTypes } from 'components';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 const FormArray = import.meta.glob('../components/**/*.form.tsx');
-const FormList = Object.entries(FormArray).map(([key, val]) => {
+// [0], Object.entries(FormArray)[1]
+const FormList = [...Object.entries(FormArray)].map(([key, val]) => {
   let label = key.split('/').slice(-1)[0].split('.')[0];
   if (label === 'index') label = key.split('/').slice(-2)[0];
   return {
@@ -34,49 +34,68 @@ interface Props extends MenusType {
 }
 
 const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) => {
-  // const { server, config: C } = useBasicConfiguration();
+  const { server, config: C } = useBasicConfiguration();
   //  api server
-  // const { systemTenant: ST, systemUser: SU, systemRole: SR } = server;
+  const { PMPM: P } = server;
   // const { SYSTEM_DATA_SCOPE } = C?.DICT_TYPE || {};
 
-  const _DefParams = {
-    status: '0',
-  };
+  // 定义状态用于跟踪表单是否被修改
+  const [isFormChanged, setIsFormChanged] = useState(false);
+
+  const rowRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<FormRefProps>({});
   const [title] = useState<string>('项目');
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(openModal);
-  const [menus, setMenus] = useState<MenusType>({ ..._DefParams });
+  const [menus, setMenus] = useState<MenusType>({});
   const [isCreate, setIsCreate] = useState<boolean>(false);
 
-  const onReset = () => {
+  const onReset = (isCancel?: boolean) => {
     if (loading) {
       message.warning(`数据提交中,请稍等...`);
       return;
     }
     Object.entries(formRef.current).map(async ([_, funs]) => {
-      funs?.resetFields();
+      funs.form?.resetTables && funs.form.resetTables(!!isCancel);
+      await (funs.form?.resetFields && funs.form.resetFields());
     });
   };
 
   const handleOk = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       let params: MenusType = {};
       let len = FormList.length;
+      let isError = false;
       Object.entries(formRef.current).map(([_, funs]) => {
-        const { key, form } = funs || {};
+        const { key, sourceKey, form, transform } = funs || {};
         form
           ?.validateFields()
-          .then((value: MenusType) => {
-            !key || key == ''
-              ? (params = { ...params, ...value })
-              : (params[key] = { ...(params[key] || {}), ...value });
+          .then((value: MenusType | MenusType[]) => {
+            let v = transform ? transform(value) : value;
+            if (Array.isArray(v)) {
+              !key || key == '' ? (params = v) : (params[key] = v);
+              if (sourceKey && menus.hasOwnProperty(sourceKey)) {
+                // params[key] = [...menus[sourceKey], ...params[key]];
+              }
+            } else {
+              !key || key == ''
+                ? (params = { ...params, ...v })
+                : (params[key] = { ...(params[key] || {}), ...v });
+
+              if (sourceKey && menus.hasOwnProperty(sourceKey)) {
+                params[key] = { ...menus[sourceKey], ...params[key] };
+              }
+            }
+
             len--;
             if (len === 0) SubmitEvent(params);
           })
           .catch(() => {
             setLoading(false);
+            !isError && message.warning(`数据填写不完整,请完善!`);
+
+            isError = true;
           });
       });
     } catch (errorInfo) {
@@ -85,25 +104,19 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
   };
 
   const SubmitEvent = (params: MenusType) => {
-    console.log(params);
+    P[isCreate ? 'createProjectUnity' : 'updateProjectUnity']({ ...params })
+      .then(async () => {
+        message.success('操作成功！');
+        onReset();
 
-    //   const values: MenusType = {}; //await formRef.current?.validateFields();
-    //   setLoading(true);
-
-    //   let params = values;
-    //   if (menus.id) params = { ...menus, ...values };
-    //   params['expireTime'] = dayjs(params.expireTime).valueOf();
-
-    //   ST[isCreate ? 'createTenant' : 'updateTenant'](JSON.parse(JSON.stringify({ ...params })))
-    //     .then(() => {
-    //       message.success('操作成功！');
-    //       setLoading(false);
-    //       onStateChange(false);
-    //       onReset();
-    //     })
-    //     .catch(() => {
-    //       setLoading(false);
-    //     });
+        onStateChange(false);
+        await sleep(480);
+        setLoading(false);
+        resetScroll();
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   const handleCancel = () => {
@@ -111,26 +124,55 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
       message.warning(`数据提交中,请稍等...`);
       return;
     }
+    resetScroll();
+
     onStateChange(false);
     setOpen(false);
-    onReset();
+    onReset(true);
   };
+
+  const resetScroll = () => {
+    rowRef.current && (rowRef.current.scrollTop = 0);
+  };
+
   useEffect(() => {
     setOpen(openModal);
     if (openModal) {
-      setMenus({ ..._DefParams, ...(!Object.entries(subForm).length ? {} : subForm) });
+      setMenus({ ...(!Object.entries(subForm).length ? {} : subForm) });
     } else {
-      // formRef.current?.resetFields();
+      setIsFormChanged(false);
     }
   }, [openModal]);
 
   useEffect(() => {
-    setIsCreate(!(menus.id || menus.id === 0));
+    setIsCreate(!Object.entries(menus).length);
   }, [menus]);
 
-  useEffect(() => {}, [subForm]);
+  useEffect(() => {
+    setMenus({ ...subForm });
+  }, [subForm]);
 
-  const columns: FormColumnsTypes[] = [];
+  // 监听页面即将卸载事件
+  useEffect(() => {
+    const handleBeforeUnload = (event: any) => {
+      if (isFormChanged) {
+        // 当表单被修改时，提示用户是否需要刷新页面
+        const confirmationMessage = '表单已经修改，确定要离开吗？';
+        event.preventDefault();
+        event.returnValue = confirmationMessage; // 兼容不同浏览器的提示信息
+        return confirmationMessage; // 兼容不同浏览器的提示信息
+      }
+    };
+    const handleUnload = () => setIsFormChanged(false);
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('unload', handleUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('unload', handleUnload);
+    };
+  }, [isFormChanged]);
 
   return (
     <Modal
@@ -143,35 +185,47 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
         <Button key="back" onClick={handleCancel} disabled={loading}>
           取消
         </Button>,
-        <Button key="reset" htmlType="reset" onClick={onReset} disabled={loading}>
+        <Button key="reset" htmlType="reset" onClick={() => onReset()} disabled={loading}>
           重置
         </Button>,
         <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
           {isCreate ? '提交' : '更新'}
         </Button>,
       ]}
-      width={'75%'}
+      width={'78%'}
     >
-      <Spin tip="提交中..." spinning={loading}>
-        {FormList.map((Item) => (
-          <Suspense
-            fallback={
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '50vh', // 视图高度
-                }}
+      <Spin tip="数据提交中..." spinning={loading}>
+        <Row
+          ref={rowRef}
+          style={{ maxHeight: '70vh', overflow: 'hidden auto', paddingInlineEnd: '15px' }}
+        >
+          {FormList.map((Item) => (
+            <Col span={24} key={Item.label}>
+              <Suspense
+                fallback={
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '50vh', // 视图高度
+                    }}
+                  >
+                    <Spin size="large" />
+                  </div>
+                }
               >
-                <Spin size="large" />
-              </div>
-            }
-            key={Item.label}
-          >
-            <Item.Component ref={(el: any) => (formRef.current[Item.label] = el)} />
-          </Suspense>
-        ))}
+                <Item.Component
+                  ref={(el: any) => (formRef.current[Item.label] = el)}
+                  onFormChange={() => {
+                    setIsFormChanged(true);
+                  }}
+                  subForm={{ ...menus }}
+                />
+              </Suspense>
+            </Col>
+          ))}
+        </Row>
       </Spin>
     </Modal>
   );

@@ -58,9 +58,13 @@ export default (_: MenusPropsType) => {
     },
     {
       title: '报警类型',
+      dataIndex: 'alarmType',
       render: (_, record) => (
         <DictSelect type={'text'} value={record.alarmType + ''} dictKey={'alarm_type'} />
       ),
+      renderFormItem: () => {
+        return <DictSelect dictKey={'alarm_type'} />;
+      },
     },
     {
       hideInSearch: true,

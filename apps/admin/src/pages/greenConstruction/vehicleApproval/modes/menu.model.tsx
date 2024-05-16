@@ -41,18 +41,15 @@ export default (_: MenusPropsType) => {
     },
     {
       title: '车辆品牌',
-      width: 120,
       dataIndex: 'carBrand',
     },
     {
       hideInSearch: true,
-      width: 120,
       title: '型号',
       dataIndex: 'carModel',
     },
     {
       title: '车型',
-      width: 120,
       dataIndex: 'carType',
       render: (_, record) => (
         <DictSelect type={'text'} value={record.carType} dictKey={'cm_car_type'} />
