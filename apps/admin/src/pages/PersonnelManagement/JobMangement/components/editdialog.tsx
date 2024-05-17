@@ -25,7 +25,6 @@ export default ({ openModal, onStateChange }: Props) => {
   const { job } = server;
 
   const [open, setOpen] = useState<boolean>(openModal);
-  const [title] = useState<string>('新建工种');
   const [loading, setLoading] = useState<boolean>(false);
 
   const formRef = useRef<FormInstance>(null);
@@ -82,7 +81,7 @@ export default ({ openModal, onStateChange }: Props) => {
     <>
       <Modal
         open={open}
-        title={title}
+        title="新建"
         onOk={handleOk}
         onCancel={handleCancel}
         maskClosable={false}

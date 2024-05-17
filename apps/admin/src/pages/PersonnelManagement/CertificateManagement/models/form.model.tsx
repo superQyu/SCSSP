@@ -2,25 +2,17 @@ import { useState, useEffect } from 'react';
 
 import { FormColumnsTypes, ProUpload } from 'components';
 import { Select, DatePicker, Input } from 'antd';
+import type { UploadFile } from 'antd';
 
 import DictSelect from '@/components/DictSelect';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-export default (subFormRef: any, picture: [] = [], type: string) => {
+export default (basicFormRef: any, certificateFormRef: any, picture: string[], type: string) => {
   // api 相关
   const { server } = useBasicConfiguration();
   const { certificate, file, subContractor } = server;
-
-  // 用来初始化图片列表的初始值
-  const fileList = picture.map((item: string, index: number) => {
-    return {
-      uid: `${index}`,
-      name: item?.split('/')?.slice(-1)[0],
-      url: item,
-    };
-  });
 
   // 隶属人员选择下拉
   const [personInfoList, setPersonInfoList] = useState([]);
@@ -30,6 +22,8 @@ export default (subFormRef: any, picture: [] = [], type: string) => {
   const [jobIndex, setJobIndex] = useState('workTypeName');
   // 控制特殊工种的表单项是否显示
   const [showSpecial, setShowSpecial] = useState(false);
+  // 用来初始化图片列表的初始值
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   useEffect(() => {
     getSelectOptions();
@@ -37,6 +31,17 @@ export default (subFormRef: any, picture: [] = [], type: string) => {
   useEffect(() => {
     if (type == '2') setShowSpecial(true);
   }, [type]);
+  useEffect(() => {
+    const list = picture.map((item: string, index: number) => {
+      return {
+        uid: `${index}`,
+        name: item?.split('/')?.slice(-1)[0],
+        url: item,
+      };
+    });
+    console.log('当前list', list);
+    setFileList(list);
+  }, [picture]);
 
   // 表单交互相关
   // 选择人员后，带出人员相关信息
@@ -44,7 +49,7 @@ export default (subFormRef: any, picture: [] = [], type: string) => {
     // console.log('选择项改变', value);
     const res = await certificate.getPersonInfoDetail({ id: value });
     // console.log('人员信息', res);
-    subFormRef.current.setFieldsValue({
+    basicFormRef.current.setFieldsValue({
       // 分包单位
       subcontractorId: res.entryInfoRespVO.subcontractorId,
       // 人员类型(建筑工人/管理人员)
@@ -225,13 +230,14 @@ export default (subFormRef: any, picture: [] = [], type: string) => {
       colNum: 12,
       formItem: (
         <ProUpload
+          key={fileList.length}
           onRequest={async (params: any) => await file.fileUpload(params)}
           onListChange={(res: any) => {
             // console.log('文件列表改变', res);
             const list = res.map((item: any) => item.url);
-            subFormRef.current.setFieldsValue({
+            certificateFormRef.current.setFieldsValue({
               // 证件图片
-              entryAttachments: list,
+              picture: list,
             });
           }}
           defaultFileList={fileList}

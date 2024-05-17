@@ -1,7 +1,8 @@
 import { Navigate, useLocation } from 'react-router-dom';
 
 import ErrorPage from '@/pages/error-page';
-import Login from '@/pages/login';
+// import Login from '@/pages/login';
+import Login from '@/pages/login/Login';
 
 import Layout from '@/layout';
 

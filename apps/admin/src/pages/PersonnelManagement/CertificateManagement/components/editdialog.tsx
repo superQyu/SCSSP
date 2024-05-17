@@ -30,8 +30,9 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
   const { certificate } = server;
 
   const [open, setOpen] = useState<boolean>(openModal);
-  const [title] = useState<string>('添加证件信息');
   const [loading, setLoading] = useState<boolean>(false);
+  // 对传入的图片进行控制
+  const [picture, setPicture] = useState<string[]>([]);
 
   const basicFormRef = useRef<FormInstance>(null);
   const certificateFormRef = useRef<FormInstance>(null);
@@ -39,8 +40,12 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
   // 表单项配置
   // 只能放在外面, 因为调用该方法中使用 hook, 只能放在函数式组件的外部
   // 传入表单的DOM 和 两个图片列表的默认值
-  const { picture } = detail;
-  const { basicColumns, certificateColumns } = initColumns(basicFormRef, picture, type);
+  const { basicColumns, certificateColumns } = initColumns(
+    basicFormRef,
+    certificateFormRef,
+    picture,
+    type
+  );
 
   // 基础信息表单的默认值
   const [basicFormData] = useState<MenusType>({
@@ -73,6 +78,7 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
         certificateData.certificateDateSpecialWork &&
         dayjs(certificateData.certificateDateSpecialWork),
     });
+    certificateData.picture && setPicture(certificateData.picture?.split('@'));
   };
 
   useEffect(() => {
@@ -94,24 +100,22 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
 
   // 点击保存
   const handleOk = async () => {
-    try {
-      const basicValues: MenusType = await basicFormRef.current?.validateFields();
-      const certificateValues: MenusType = await certificateFormRef.current?.validateFields();
-      certificateValues.picture = certificateValues.picture?.join('@');
-      const values = { id: detail.id, ...basicValues, ...certificateValues };
-      // console.log('表单提交时的数据', values);
-      setLoading(true);
-      certificate[detail.id ? 'updateCertificate' : 'createCertificate'](values)
-        .then(() => {
-          message.success('操作成功！');
-          setLoading(false);
-          onStateChange(false);
-          onReset();
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    } catch (errorInfo) {}
+    const basicValues: MenusType = await basicFormRef.current?.validateFields();
+    const certificateValues: MenusType = await certificateFormRef.current?.validateFields();
+    certificateValues.picture = certificateValues.picture && certificateValues.picture?.join('@');
+    const values = { id: detail.id, ...basicValues, ...certificateValues };
+    // console.log('表单提交时的数据', values);
+    setLoading(true);
+    certificate[detail.id ? 'updateCertificate' : 'createCertificate'](values)
+      .then(() => {
+        message.success('操作成功！');
+        setLoading(false);
+        onStateChange(false);
+        // onReset();
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   };
 
   // 点击取消
@@ -129,8 +133,9 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
     <>
       <Modal
         open={open}
-        title={title}
+        title={detail.id ? '编辑' : '新建'}
         width={1000}
+        centered
         onOk={handleOk}
         onCancel={handleCancel}
         maskClosable={false}
@@ -146,24 +151,26 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
           </Button>,
         ]}
       >
-        <SingleTitle label="基本信息" />
-        <AdForm
-          loadingTitle="提交中..."
-          formRef={basicFormRef}
-          initialValues={basicFormData}
-          loading={loading}
-          labelAlign="left"
-          columns={basicColumns}
-        />
-        <SingleTitle label="证件信息" />
-        <AdForm
-          loadingTitle="提交中..."
-          formRef={certificateFormRef}
-          initialValues={certificateFormData}
-          loading={loading}
-          labelAlign="left"
-          columns={certificateColumns}
-        />
+        <div className="h-70vh p-inline-4" style={{ overflow: 'hidden auto' }}>
+          <SingleTitle label="基本信息" />
+          <AdForm
+            loadingTitle="提交中..."
+            formRef={basicFormRef}
+            initialValues={basicFormData}
+            loading={loading}
+            labelAlign="left"
+            columns={basicColumns}
+          />
+          <SingleTitle label="证件信息" />
+          <AdForm
+            loadingTitle="提交中..."
+            formRef={certificateFormRef}
+            initialValues={certificateFormData}
+            loading={loading}
+            labelAlign="left"
+            columns={certificateColumns}
+          />
+        </div>
       </Modal>
     </>
   );

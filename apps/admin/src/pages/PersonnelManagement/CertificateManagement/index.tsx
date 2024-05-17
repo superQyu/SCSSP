@@ -73,7 +73,7 @@ export default () => {
           ...initColumns[type],
           {
             title: '操作',
-            width: 140,
+            width: 100,
             valueType: 'option',
             dataIndex: 'option',
             render: (_text: any, record: any) => [
@@ -105,7 +105,6 @@ export default () => {
           // console.log('Table 查询参数', params)
           const res = await certificate.getCertificateList(params);
           res.list = res.list.map((item: any) => {
-            item.picture = item.picture?.split('@');
             item.workerType = item.workerType && `${item.workerType}`
             item.jobCategory = item.jobCategory && `${item.jobCategory}`
             return item;

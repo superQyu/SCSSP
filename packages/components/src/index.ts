@@ -9,7 +9,7 @@ import TabCom from './components/TabCom';
 
 import PageContainer from './components/PageContainer';
 import ProTable from './components/ProTable';
-// import TableSelect from './components/ProTable/TableSelect';
+import EditTable from './components/ProTable/EditTable';
 import ProForm from './components/ProForm';
 import AdForm, { FormColumnsTypes, FornPropsTypes } from './components/ProForm/form';
 
@@ -30,6 +30,7 @@ export {
   PageContainer,
   ProTable,
   // TableSelect,
+  EditTable,
   ProForm,
   AdForm,
   Breadcrumb,

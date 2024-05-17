@@ -153,6 +153,29 @@ const materialList: ApiItem[] = [
     ],
   },
   {
+    key: 'getAllMaterialList',
+    url: `${ADMIN_API}/wisdom/materials-inventory/list`,
+    type: 'GET',
+    name: '物料清单列表',
+    description: '获取物料清单列表(不分页)',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'materialName', cn: '材料名称' },
+      { key: 'materialCode', cn: '材料编码' },
+    ],
+  },
+  {
+    key: 'getMaterialDetail',
+    url: `${ADMIN_API}/wisdom/materials-inventory/get`,
+    type: 'GET',
+    name: '物料清单列表',
+    description: '获取物料清单详情',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: '数据库主键' },
+    ],
+  },
+  {
     key: 'updateMaterial',
     url: `${ADMIN_API}/wisdom/materials-inventory/update`,
     type: 'PUT',
