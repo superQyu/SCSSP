@@ -29,8 +29,7 @@ export default (props: any, firstTableRef: any) => {
       params={{ id: record.materialsDetailsWithInventoryRespVOS }}
       request={async (params = {}) => {
         // console.log('Table 查询参数', params)
-        // const res = await materialList.getThirdList(params);
-        // console.log('三级物料列表', res);
+        // record.materialsDetailsWithInventoryRespVOS.forEach
         return {
           // ...params,
           success: true,

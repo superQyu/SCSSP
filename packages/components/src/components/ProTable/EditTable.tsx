@@ -31,7 +31,15 @@ export default forwardRef((props: any, ref: any) => {
   const [srcollY, setSrcollY] = useState<string>('');
 
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
+  const editRow = useRef<React.Key[]>([]);
+  // 涉及闭包变量缓存问题
+  editRow.current = editableKeys;
   const [dataSource, setDataSource] = useState<readonly Record<string, any>[]>([]);
+  const tableData = useRef<readonly Record<string, any>[]>([]);
+  // 涉及闭包变量缓存问题
+  tableData.current = dataSource;
+  // 用来控制当前展开行
+  const [expandedRowKeys, setExpandedRowKeys] = useState<any[]>([]);
 
   // 初始化 表格列表项
   const initColumns = DefModel();
@@ -57,11 +65,19 @@ export default forwardRef((props: any, ref: any) => {
   });
   // 获取所有表格数据
   const getTableData = () => {
-    return dataSource;
+    // console.log('dataSource', dataSource);
+    // console.log('tableData.current', tableData.current);
+    return tableData.current;
   };
   // 获取当前的正在编辑的行
   const getCurrentRow = () => {
-    return editableKeys[0];
+    // console.log('当前所有正在编辑的行', editableKeys);
+    // return editableKeys[0];
+    return editRow.current[0];
+  };
+  // 手动设置展开行
+  const setExpandedRow = (id: any) => {
+    setExpandedRowKeys([...expandedRowKeys, id]);
   };
   // 将删除方法暴露到 外部 ref 上
   useImperativeHandle(ref, () => {
@@ -69,6 +85,7 @@ export default forwardRef((props: any, ref: any) => {
       removeRow,
       getTableData,
       getCurrentRow,
+      setExpandedRow,
     };
   });
 
@@ -89,7 +106,7 @@ export default forwardRef((props: any, ref: any) => {
   }, []);
 
   return (
-    <div ref={domRef} style={{ width: '100%', height: '100%' }}>
+    <div ref={domRef} style={{ width: '100%', height: 'auto' }}>
       <EditableProTable<Record<string, any>>
         className={props.className}
         showHeader={props.showHeader}
@@ -109,7 +126,7 @@ export default forwardRef((props: any, ref: any) => {
           // onSave,
           editableKeys,
           onChange: (keys: any[], rows: any) => {
-            // console.log('rows', keys, rows);
+            // console.log('触发editable的onChange', keys, rows);
             setEditableRowKeys(keys);
           },
           actionRender: (...args: any[]) => {
@@ -122,6 +139,21 @@ export default forwardRef((props: any, ref: any) => {
               defaultDom.cancel,
             ];
           },
+          ...props.editable,
+        }}
+        expandable={{
+          expandedRowKeys: expandedRowKeys,
+          onExpand: (expanded: boolean, record: any) => {
+            console.log('展开了', expanded);
+            if (expanded) {
+              // 展开时的逻辑
+              setExpandedRowKeys([...expandedRowKeys, record.id]);
+            } else {
+              // 取消展开时的逻辑
+              setExpandedRowKeys(expandedRowKeys.filter((k) => k !== record.id));
+            }
+          },
+          ...props.expandable,
         }}
         rowKey={props.rowKey || 'id'}
         search={
@@ -164,7 +196,6 @@ export default forwardRef((props: any, ref: any) => {
         dateFormatter="string"
         headerTitle={props.headerTitle}
         scroll={{ ...scroll() }}
-        expandable={props.expandable}
         onRow={props.onRow}
       />
     </div>

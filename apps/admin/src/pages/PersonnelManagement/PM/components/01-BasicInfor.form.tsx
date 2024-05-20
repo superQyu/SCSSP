@@ -259,7 +259,7 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
       formItem: (
         <div style={{ paddingInlineStart: '13px' }}>
           <ProUpload
-            defaultFileList={[...tempFileList]}
+            defaultFileList={() => [...tempFileList]}
             onRequest={async (params: any) => await F.fileUpload(params)}
             onListChange={(list) => setTempFileList([...list])}
           />

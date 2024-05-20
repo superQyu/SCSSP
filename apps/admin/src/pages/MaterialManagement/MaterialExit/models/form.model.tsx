@@ -7,13 +7,10 @@ import { Select, DatePicker, Input } from 'antd';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-export default (
-  tableRef: any,
-  editableFormRef: any,
-) => {
+export default (tableRef: any, editableFormRef: any) => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { materialList } = server;
+  const { materialList, file } = server;
 
   const formColumns: FormColumnsTypes[] = [
     {
@@ -62,7 +59,7 @@ export default (
       dataIndex: 'materialsInventoryId',
       ellipsis: true,
       hideInSearch: true,
-      hideInTable: true
+      hideInTable: true,
     },
     {
       title: '物料名称',
@@ -97,7 +94,7 @@ export default (
                 materialName: res.materialName,
                 measuringUnit: res.measuringUnit,
                 specification: res.specification,
-                materialCode: res.materialCode
+                materialCode: res.materialCode,
               });
             }}
           />
@@ -161,7 +158,7 @@ export default (
                 materialName: res.materialName,
                 measuringUnit: res.measuringUnit,
                 specification: res.specification,
-                materialCode: res.materialCode
+                materialCode: res.materialCode,
               });
             }}
           />
@@ -171,12 +168,6 @@ export default (
     {
       title: '退场数量',
       dataIndex: 'exitNumber',
-      ellipsis: true,
-      hideInSearch: true,
-    },
-    {
-      title: '相关图片',
-      dataIndex: 'attachment',
       ellipsis: true,
       hideInSearch: true,
     },

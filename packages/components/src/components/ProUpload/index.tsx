@@ -29,13 +29,16 @@ interface Props {
   /** 文件上传大限制 默认 20M*/
   fileSize?: number;
   /** 文件上传个数 默认 上限8个 */
-  maxCount?: number | false;
+  // maxCount?: number | false;
+  maxCount?: number;
   /** 是否显示上传列表 */
   showUploadList?: boolean;
   // 预先已有的图片列表
-  defaultFileList?: (UploadFile & { url?: string })[];
+  defaultFileList?: () => (UploadFile & { url?: string })[];
   // 文件列表发生改变，取代上传成功和删除
   onListChange?: (params: any) => void;
+  /** 是否显示上传按钮 */
+  showUploadButton?: boolean;
 }
 
 const getBase64 = (file: FileType): Promise<string> =>
@@ -56,13 +59,14 @@ const ProUpload: React.FC<Props> = ({
   fileSize = 20,
   maxCount = 8,
   showUploadList = true,
-  defaultFileList = [],
+  showUploadButton = true,
+  defaultFileList = () => [],
   onListChange,
 }: Props) => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [fileList, setFileList] = useState<(UploadFile & { url?: string })[]>(defaultFileList);
+  const [fileList, setFileList] = useState<(UploadFile & { url?: string })[]>(defaultFileList());
 
   const [tempFileUid, setTempFileUid] = useState<string>('');
 
@@ -177,7 +181,11 @@ const ProUpload: React.FC<Props> = ({
   return (
     <>
       <Upload {...props}>
-        {!maxCount ? uploadButton : fileList.length >= maxCount ? null : uploadButton}
+        {!maxCount && showUploadButton
+          ? uploadButton
+          : fileList?.length >= maxCount || !showUploadButton
+          ? null
+          : uploadButton}
       </Upload>
       {previewImage && (
         <Image

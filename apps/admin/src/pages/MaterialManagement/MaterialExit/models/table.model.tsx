@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { type ProColumns } from '@ant-design/pro-components';
-import { Select } from 'antd';
+import { Select, Image } from 'antd';
 
 type objJson = Record<string, any>;
 
@@ -115,6 +115,22 @@ export default ({ server }: MenusPropsType) => {
       dataIndex: 'attachment',
       ellipsis: true,
       hideInSearch: true,
+      render: (text, record) => {
+        // console.log('record', record)
+        const list = record.attachment?.split('@');
+        // console.log('图片列表', list);
+        if (list) {
+          return (
+            <div>
+              <Image.PreviewGroup items={list}>
+                <Image width={30} height={30} src={list[0]} />
+              </Image.PreviewGroup>
+            </div>
+          );
+        } else {
+          return <div className="color-red">暂无图片</div>;
+        }
+      },
     },
   ];
 

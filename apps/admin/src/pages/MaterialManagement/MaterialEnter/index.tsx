@@ -5,7 +5,7 @@ import { type ActionType } from '@ant-design/pro-components';
 import { Button, message, Popconfirm } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import EditDialog from './components/editdialog';
-import CTable from './cTable';
+import ExpandTable from './ExpandTable';
 
 import dayjs from 'dayjs';
 
@@ -119,7 +119,7 @@ export default ({ onChange }: any) => {
         editable={{}}
         expandable={{
           expandedRowRender: (record: any) =>
-            CTable({ record, server, cColumns, onChange }, firstTableRef),
+            ExpandTable({ record, server, cColumns, onChange }, firstTableRef),
         }}
         pagination={{
           pageSize: 10,
