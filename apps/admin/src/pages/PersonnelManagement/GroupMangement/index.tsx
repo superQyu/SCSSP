@@ -60,6 +60,7 @@ export default () => {
           {
             title: '操作',
             width: 100,
+            fixed: 'right',
             valueType: 'option',
             dataIndex: 'option',
             render: (_text: any, record: any, _: any, action: any) => [

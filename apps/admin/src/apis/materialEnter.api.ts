@@ -11,8 +11,8 @@ const materialEnter: ApiItem[] = [
     description: '获取物料进场列表(分页)',
     params: [
       { key: 'Authorization', location: 'header' },
-      // { key: 'firstLevelName', cn: '物料编号' },
-      // { key: 'firstLevelName', cn: '物料名称' },
+      { key: 'deliveryMan', cn: '送货人' },
+      { key: 'supplierDepartment', cn: '供应单位' },
       { key: 'current', targetKey: 'pageNo' },
       { key: 'pageSize' },
     ],

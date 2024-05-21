@@ -71,6 +71,8 @@ interface Props {
   request: (search: string) => any;
   /* 获取输入焦点时的回调 */
   onFocus?: any;
+  /** 选择器最小宽度 */
+  popupMatchSelectWidth?: boolean | number;
 }
 
 export default forwardRef((props: Props, ref: React.Ref<RefSelectProps>) => {
@@ -80,6 +82,7 @@ export default forwardRef((props: Props, ref: React.Ref<RefSelectProps>) => {
       ref={ref}
       // mode="multiple"
       style={{ width: '100%' }}
+      popupMatchSelectWidth={props.popupMatchSelectWidth}
       placeholder={props.placeholder}
       value={value}
       fetchOptions={props.request}

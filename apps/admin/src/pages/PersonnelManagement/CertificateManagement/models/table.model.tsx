@@ -24,6 +24,10 @@ export interface ColumnsParamsProps extends objJson {
 }
 
 export default ({ server }: MenusPropsType) => {
+  const columnWidth0 = 189
+  const columnWidth1 = 170
+  const columnWidth2 = 170
+
   const { subContractor, certificate } = server as objJson;
 
   // 分包单位选择下拉
@@ -57,12 +61,14 @@ export default ({ server }: MenusPropsType) => {
         title: '序号',
         valueType: 'indexBorder',
         dataIndex: 'index',
+        width: columnWidth0,
         ellipsis: true,
       },
       {
         title: '分包单位',
         dataIndex: 'subcontractorId',
         ellipsis: true,
+        width: columnWidth0,
         render: (text, record) => {
           return <span>{record.realName}</span>;
         },
@@ -74,6 +80,7 @@ export default ({ server }: MenusPropsType) => {
         title: '隶属人员',
         dataIndex: 'userId',
         ellipsis: true,
+        width: columnWidth0,
         render: (text, record) => {
           return <span>{record.userName}</span>;
         },
@@ -85,6 +92,7 @@ export default ({ server }: MenusPropsType) => {
         title: '人员类型',
         dataIndex: 'workerType',
         ellipsis: true,
+        width: columnWidth0,
         hideInSearch: true,
         render: (text, record) => {
           return <DictText value={record.workerType} dictKey={'pm_worker_type'} />;
@@ -95,6 +103,7 @@ export default ({ server }: MenusPropsType) => {
         // 管理人员用 jobCategory, 工人用 workTypeName
         dataIndex: 'jobCategory',
         ellipsis: true,
+        width: columnWidth0,
         hideInSearch: true,
         render: (text, record) => {
           return <DictText value={record.jobCategory} dictKey={'pm_job_category'} />;
@@ -104,24 +113,28 @@ export default ({ server }: MenusPropsType) => {
         title: '证书名称',
         dataIndex: 'credentialName',
         ellipsis: true,
+        width: columnWidth0,
         hideInSearch: true,
       },
       {
         title: '证书编号',
         dataIndex: 'credentialNumber',
         ellipsis: true,
+        width: columnWidth0,
         hideInSearch: true,
       },
       {
         title: '有效日期',
         dataIndex: 'validityEndDate',
         ellipsis: true,
+        width: columnWidth0,
         hideInSearch: true,
       },
       {
         title: '备注',
         dataIndex: 'remark',
         ellipsis: true,
+        width: columnWidth0,
         hideInSearch: true,
       },
     ],
@@ -130,12 +143,14 @@ export default ({ server }: MenusPropsType) => {
         title: '序号',
         valueType: 'indexBorder',
         dataIndex: 'index',
+        width: columnWidth1,
         ellipsis: true,
       },
       {
         title: '分包单位',
         dataIndex: 'subcontractorId',
         ellipsis: true,
+        width: columnWidth1,
         render: (text, record) => {
           return <span>{record.realName}</span>;
         },
@@ -147,6 +162,7 @@ export default ({ server }: MenusPropsType) => {
         title: '隶属人员',
         dataIndex: 'userId',
         ellipsis: true,
+        width: columnWidth1,
         render: (text, record) => {
           return <span>{record.userName}</span>;
         },
@@ -158,42 +174,49 @@ export default ({ server }: MenusPropsType) => {
         title: '身份证号',
         dataIndex: 'identityCard',
         ellipsis: true,
+        width: columnWidth1,
         hideInSearch: true,
       },
       {
         title: '工龄',
         dataIndex: 'workYears',
         ellipsis: true,
+        width: columnWidth1,
         hideInSearch: true,
       },
       {
         title: '证书名称',
         dataIndex: 'credentialName',
         ellipsis: true,
+        width: columnWidth1,
         hideInSearch: true,
       },
       {
         title: '证书编号',
         dataIndex: 'credentialNumber',
         ellipsis: true,
+        width: columnWidth1,
         hideInSearch: true,
       },
       {
         title: '证书认证时间',
         dataIndex: 'certificateDate',
         ellipsis: true,
+        width: columnWidth1,
         hideInSearch: true,
       },
       {
         title: '证书发证机关',
         dataIndex: 'issuingAuthority',
         ellipsis: true,
+        width: columnWidth1,
         hideInSearch: true,
       },
       {
         title: '有效日期',
         dataIndex: 'validityEndDate',
         ellipsis: true,
+        width: columnWidth1,
         hideInSearch: true,
       },
     ],
@@ -202,12 +225,14 @@ export default ({ server }: MenusPropsType) => {
         title: '序号',
         valueType: 'indexBorder',
         dataIndex: 'index',
+        width: columnWidth2,
         ellipsis: true,
       },
       {
         title: '分包单位',
         dataIndex: 'subcontractorId',
         ellipsis: true,
+        width: columnWidth2,
         render: (text, record) => {
           return <span>{record.realName}</span>;
         },
@@ -219,6 +244,7 @@ export default ({ server }: MenusPropsType) => {
         title: '隶属人员',
         dataIndex: 'userId',
         ellipsis: true,
+        width: columnWidth2,
         render: (text, record) => {
           return <span>{record.userName}</span>;
         },
@@ -230,6 +256,7 @@ export default ({ server }: MenusPropsType) => {
         title: '身份证号',
         dataIndex: 'identityCard',
         ellipsis: true,
+        width: columnWidth2,
         hideInSearch: true,
       },
       {
@@ -238,6 +265,7 @@ export default ({ server }: MenusPropsType) => {
         title: '特工证证件类别',
         dataIndex: 'workTypeName',
         ellipsis: true,
+        width: columnWidth2,
         hideInSearch: true,
         render: (text: any, record: any, index: number, action: any) => {
           if (record.workTypeId) return <span>{record.workTypeName}</span>;
@@ -248,30 +276,35 @@ export default ({ server }: MenusPropsType) => {
         title: '证号',
         dataIndex: 'credentialNumber',
         ellipsis: true,
+        width: columnWidth2,
         hideInSearch: true,
       },
       {
         title: '开始日期',
         dataIndex: 'validityStartDate',
         ellipsis: true,
+        width: columnWidth2,
         hideInSearch: true,
       },
       {
         title: '终止日期',
         dataIndex: 'validityEndDate',
         ellipsis: true,
+        width: columnWidth2,
         hideInSearch: true,
       },
       {
         title: '复核日期',
         dataIndex: 'reviewDate',
         ellipsis: true,
+        width: columnWidth2,
         hideInSearch: true,
       },
       {
         title: '网络核验日期',
         dataIndex: 'certificateDateSpecialWork',
         ellipsis: true,
+        width: columnWidth2,
         hideInSearch: true,
       },
     ],

@@ -39,7 +39,7 @@ export default ({ server }: MenusPropsType) => {
       title: '送货人',
       dataIndex: 'deliveryMan',
       ellipsis: true,
-      hideInSearch: true,
+      // hideInSearch: true,
     },
     {
       title: '材料员',
@@ -51,7 +51,7 @@ export default ({ server }: MenusPropsType) => {
       title: '供应单位',
       dataIndex: 'supplierDepartment',
       ellipsis: true,
-      hideInSearch: true,
+      // hideInSearch: true,
     },
     {
       title: '生产厂家',

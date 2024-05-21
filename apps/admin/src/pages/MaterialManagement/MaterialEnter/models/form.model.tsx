@@ -64,6 +64,7 @@ export default (tableRef: any, editableFormRef: any) => {
       renderFormItem: () => {
         return (
           <SearchSelect
+            popupMatchSelectWidth={200}
             placeholder="请选择物料名称"
             request={async (input) => {
               const res = await materialList.getAllMaterialList({
