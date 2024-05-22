@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
-import { Button, message, Modal, Collapse, Upload, Flex, Select } from 'antd';
+import { Button, message, Modal, Collapse, Flex, Select } from 'antd';
+import type { CollapseProps } from 'antd';
 import { LeftOutlined, DeleteOutlined, AuditOutlined } from '@ant-design/icons';
 import type { FormInstance } from 'antd/es/form';
 
@@ -48,7 +49,7 @@ const FunctionCom: React.FC<Props> = forwardRef(({ subForm, onSubmit }: Props, r
 
   const [curVal, setCurVal] = useState<string>('');
   const [ifcertificate, setIfcertificate] = useState<boolean>(false);
-  const [collapseItem, setCollapseItem] = useState<ModesApi.PersonnelCertificateSaveReqVO[]>([]);
+  const [collapseItem, setCollapseItem] = useState<CollapseProps['items']>([]);
   const [fileList, setFileList] = useState<FileItem[]>([]);
   const [delIndex, setDelIndex] = useState<number>(-1);
   const [functionKey, setFunctionKey] = useState<'jobCategory' | 'workTypeId'>('jobCategory');
@@ -231,7 +232,15 @@ const FunctionCom: React.FC<Props> = forwardRef(({ subForm, onSubmit }: Props, r
       ]}
       width={'50%'}
     >
-      <AdForm formRef={formRef} labelAlign="right" columns={columns} />
+      <AdForm
+        formRef={formRef}
+        labelAlign="left"
+        columns={columns}
+        layoutStyle={{
+          labelCol: { span: 3 },
+          wrapperCol: { span: 10, flex: 1 },
+        }}
+      />
       <Flex wrap="wrap" gap="middle">
         {options.map((item: workTypeItem) => {
           return (
@@ -254,7 +263,7 @@ const FunctionCom: React.FC<Props> = forwardRef(({ subForm, onSubmit }: Props, r
 
       <div className={styles.infoTitle}>
         <Flex justify={'space-between'} align={'center'} className="w-full">
-          证书信息{fileList.length}
+          证书信息
           <ProUpload
             buttonRender={
               <Button icon={<AuditOutlined />} className="bg-#67c23a color-#fff" size="large">

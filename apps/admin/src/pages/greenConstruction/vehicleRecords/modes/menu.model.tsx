@@ -1,7 +1,5 @@
 import { type ProColumns } from '@ant-design/pro-components';
-import { Button, Image } from 'antd';
-import { EyeOutlined } from '@ant-design/icons';
-import React, { useState } from 'react';
+
 import dayjs from 'dayjs';
 type ParamsType = Record<string, any>;
 
@@ -20,7 +18,6 @@ export interface ColumnsParamsProps extends ParamsType {
 }
 
 export default (_: MenusPropsType) => {
-  const [visible, setVisible] = useState(false);
   const columns: ProColumns[] = [
     {
       width: 60,
@@ -28,13 +25,11 @@ export default (_: MenusPropsType) => {
       title: '序号',
       dataIndex: 'index',
       valueType: 'indexBorder',
-      align: 'center',
     },
     {
       title: '车牌号',
       dataIndex: 'carNo',
       ellipsis: true,
-      align: 'center',
     },
     {
       hideInTable: true,
@@ -51,62 +46,11 @@ export default (_: MenusPropsType) => {
       hideInSearch: true,
       title: '车辆颜色',
       dataIndex: 'plateColor',
-      align: 'center',
     },
     {
       hideInSearch: true,
       title: '车型',
       dataIndex: 'carType',
-      align: 'center',
-    },
-    {
-      hideInSearch: true,
-      title: '抓拍图片',
-      dataIndex: 'attachment',
-      align: 'center',
-      render: (_, record) => {
-        return (
-          <>
-            <Button type="link" onClick={() => setVisible(true)}>
-              预览
-            </Button>
-            <Image
-              style={{ display: 'none' }}
-              preview={{
-                visible,
-                src: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                onVisibleChange: (value) => {
-                  setVisible(value);
-                },
-              }}
-            />
-          </>
-        );
-      },
-    },
-    {
-      hideInSearch: true,
-      title: '轨迹',
-      align: 'center',
-      render: (_, record) => {
-        return (
-          <>
-            <Button type="link" onClick={() => setVisible(true)} icon={<EyeOutlined />}>
-              查看
-            </Button>
-            <Image
-              style={{ display: 'none' }}
-              preview={{
-                visible,
-                src: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                onVisibleChange: (value) => {
-                  setVisible(value);
-                },
-              }}
-            />
-          </>
-        );
-      },
     },
     {
       hideInSearch: true,
@@ -120,7 +64,6 @@ export default (_: MenusPropsType) => {
       render: (_, record) => (
         <>{dayjs(record.enterTime || record.outTime).format('YYYY-MM-DD hh:mm:ss')}</>
       ),
-      align: 'center',
     },
   ];
 

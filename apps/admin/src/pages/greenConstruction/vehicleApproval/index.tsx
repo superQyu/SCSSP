@@ -1,23 +1,19 @@
 import { useRef, useEffect, useState } from 'react';
-import { Button, message, Modal, Input, Form, Radio } from 'antd';
-const { TextArea } = Input;
+import { Button, message } from 'antd';
 import {
   SearchOutlined,
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
   FileDoneOutlined,
-  ExclamationCircleFilled,
 } from '@ant-design/icons';
 
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
-
 import siteModel from './modes/menu.model';
-
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import AddForm from './components/addForm';
-import ApproveForm from './components/approveForm';
+// import ApproveForm from './components/approveForm';
 
 export default () => {
   const { server } = useBasicConfiguration();
@@ -26,9 +22,19 @@ export default () => {
   const initColumns = siteModel({ server });
 
   const [subForm, setSubForm] = useState<Record<string, any>>({});
-  const [subApproveForm, setSubApproveForm] = useState<Record<string, any>>({});
   const [formModal, setFormModal] = useState<boolean>(false);
-  const [approveFormModal, setApproveFormModal] = useState<boolean>(false);
+  // const [approveFormModal, setApproveFormModal] = useState<boolean>(false);
+  // const [subApproveForm, setSubApproveForm] = useState<Record<string, any>>({});
+
+  const checkApprove = async (id: string) => {
+    const res = await V.check({
+      id,
+    });
+    if (res) {
+      message.success('提交成功');
+    }
+    actionRef.current?.reload();
+  };
 
   // 修改状态
   const handleModalStateChange = async (state: boolean) => {
@@ -78,14 +84,15 @@ export default () => {
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}
-        scroll={{ x: '1500', y: 'auto' }}
+        scroll={{ x: '1800px', y: 'auto' }}
         columns={[
           ...initColumns,
           {
             title: '操作',
             key: 'option',
-            width: 180,
+            width: 200,
             valueType: 'option',
+            fixed: 'right',
             render: (_text: any, record: any, _: any, action: any) => [
               <a
                 key="editable"
@@ -106,16 +113,17 @@ export default () => {
                 <DeleteOutlined />
                 删除
               </a>,
-              <a
-                key="approve`."
-                onClick={() => {
-                  setSubApproveForm(record);
-                  setApproveFormModal(true);
-                }}
-              >
-                {<FileDoneOutlined />}
-                审批
-              </a>,
+              !record.result && (
+                <a
+                  key="approve"
+                  onClick={() => {
+                    checkApprove(record.id);
+                  }}
+                >
+                  {<FileDoneOutlined />}
+                  提交审核
+                </a>
+              ),
             ],
           },
         ]}
@@ -151,11 +159,11 @@ export default () => {
         }}
       ></ProTable>
       <AddForm subForm={subForm} openModal={formModal} onStateChange={handleModalStateChange} />
-      <ApproveForm
+      {/* <ApproveForm
         subForm={subApproveForm}
         openModal={approveFormModal}
         onStateChange={handleModalStateChange}
-      />
+      /> */}
     </>
   );
 };

@@ -1,13 +1,12 @@
-import { useRef, useEffect } from 'react';
-import { Button } from 'antd';
-
-import { SearchOutlined } from '@ant-design/icons';
+import { useRef, useState } from 'react';
+import { Button, message } from 'antd';
+import { SearchOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
 
 import type { ModesApi } from './modes/model';
 import siteModel from './modes/menu.model';
-
+import DetailForm from './components/detail';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 export default () => {
@@ -15,8 +14,17 @@ export default () => {
   const actionRef = useRef<ActionType>();
   const { vehicle: V } = server;
   const initColumns = siteModel({ server });
+  const [subForm, setSubForm] = useState<Record<string, any>>({});
+  const detailModal = useRef();
 
-  useEffect(() => {}, []);
+  // 删除行
+  const onDelete = async (id: number) => {
+    const res = await V.delVehicleTrack({ id: id }).then(async () => {
+      message.success('操作成功!');
+      await actionRef.current?.reload();
+    });
+    return res;
+  };
 
   return (
     <>
@@ -40,8 +48,40 @@ export default () => {
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}
-        scroll={{  y: 'auto' }}
-        columns={[...initColumns]}
+        scroll={{ x: '1300px', y: 'auto' }}
+        columns={[
+          ...initColumns,
+          {
+            title: '操作',
+            key: 'option',
+            width: 200,
+            valueType: 'option',
+            fixed: 'right',
+            render: (_text: any, record: any, _: any, action: any) => [
+              <a
+                key="editable"
+                onClick={() => {
+                  setSubForm(record);
+                  detailModal.current?.openModal(true);
+                }}
+              >
+                {<EyeOutlined />}
+                查看
+              </a>,
+
+              ,
+              <a
+                key="delete"
+                onClick={() => {
+                  onDelete(record.id);
+                }}
+              >
+                <DeleteOutlined />
+                删除
+              </a>,
+            ],
+          },
+        ]}
         pagination={{
           pageSize: 30,
         }}
@@ -62,6 +102,7 @@ export default () => {
           },
         }}
       ></ProTable>
+      <DetailForm subForm={subForm} ref={detailModal} />
     </>
   );
 };
