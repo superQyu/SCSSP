@@ -90,6 +90,7 @@ export default () => {
       <div className="flex">
         {list.map(({ label, key }) => (
           <Alert
+            key={key}
             onClick={() => {
               key &&
                 key != '' &&
