@@ -4,8 +4,7 @@ import type { FormInstance } from 'antd/es/form';
 import styled from 'styled-components';
 
 import DictSelect from '@/components/DictSelect';
-import { AdForm } from 'components';
-import { FormColumnsTypes } from 'components';
+import { FormColumnsTypes, AdForm } from 'components';
 import SingleTitle from '@/components/SingleTitle';
 
 interface Props {
@@ -50,7 +49,7 @@ const FunctionCom: React.FC<Props> = forwardRef(({ subForm, openModel }: Props, 
         label="所属工种"
         subLabel={<CustomsDiv>红色为特殊工种，需要维护证件信息</CustomsDiv>}
       />
-      <Row gutter={8}>
+      <Row gutter={8} className='mt-5'>
         <Col className="gutter-row" span={8}>
           <AdForm
             initialValues={subForm}
@@ -58,6 +57,10 @@ const FunctionCom: React.FC<Props> = forwardRef(({ subForm, openModel }: Props, 
             labelAlign="right"
             columns={columns}
             name={formKey}
+            layoutStyle={{
+              labelCol: { span: 12 },
+              wrapperCol: { span: 12, flex: 1 },
+            }}
           />
         </Col>
         <Col className="gutter-row" span={16}>
