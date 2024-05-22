@@ -14,7 +14,7 @@ import type { ModesApi } from './modes/model';
 import PMmodel, { type ColumnsParamsProps } from './modes/PM.model';
 
 export default () => {
-  const { server } = useBasicConfiguration();
+  const { server, setFullLoding } = useBasicConfiguration();
   //  api server
   const { PMPM: P, menus: M } = server;
   const actionRef = useRef<ActionType>();
@@ -121,7 +121,9 @@ export default () => {
               <a
                 key="editable"
                 onClick={async () => {
+                  setFullLoding(true);
                   const res = await P.getProjectUnity({ id: record.id });
+                  setFullLoding(false);
                   setSubForm({ ...res });
                   setFormModal(true);
                 }}

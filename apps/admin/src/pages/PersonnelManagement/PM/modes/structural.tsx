@@ -34,7 +34,7 @@ interface Props extends MenusType {
 }
 
 const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) => {
-  const { server, config: C } = useBasicConfiguration();
+  const { server } = useBasicConfiguration();
   //  api server
   const { PMPM: P } = server;
   // const { SYSTEM_DATA_SCOPE } = C?.DICT_TYPE || {};

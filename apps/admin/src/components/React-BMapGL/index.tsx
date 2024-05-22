@@ -1,6 +1,13 @@
-import { useRef, useState } from 'react';
+import { lazy, useImperativeHandle, forwardRef, Suspense, useRef, useState } from 'react';
+import { Col, Spin } from 'antd';
 
 import * as MapServer from 'react-bmapgl';
+
+import { MapProps } from './model';
+
+interface DrawUtilsListType {
+  [key: string]: React.ComponentType<any>;
+}
 
 interface Unlimit {
   [key: string]: any;
@@ -10,160 +17,118 @@ interface MapProps extends Unlimit {
   children?: React.ReactNode;
 }
 
-const defParams = {
-  map: null,
-};
-export const AutoComplete = (prop: Unlimit) => {
-  return <MapServer.AutoComplete {...prop} />;
-};
-export default ({
-  center,
-  style,
-  Marker,
-  zoom,
-  Polygon = {},
-  Polyline = {},
-  CityListControl = {},
-  MapTypeControl = {},
-  NavigationControl = {},
-  ScaleControl = {},
-  ZoomControl = {},
-  DrawingManager = {},
-  DistanceTool = {},
-  children,
-  onClick,
-}: MapProps) => {
+const DrawUtilsFile = import.meta.glob('./DrawUtils/**/*.tsx');
+const DrawUtilsList: DrawUtilsListType = Object.entries(DrawUtilsFile).reduce((acc, [key, val]) => {
+  let label = key.split('/').slice(-1)[0].split('.')[0];
+  if (label === 'index') label = key.split('/').slice(-2)[0];
+  return { ...acc, [label]: lazy(val as () => Promise<any>) };
+}, {});
+
+export default forwardRef((props: MapProps, ref) => {
+  const {
+    center,
+    style,
+    zoom,
+    enableScrollWheelZoom,
+    AutoComplete = {},
+    tools = {},
+    graphicDraw,
+    DrawingManager = {},
+    children,
+    onClick,
+  } = props;
   const mapRef = useRef(null);
   const [markers, setMarkers] = useState([{ lng: 116.404, lat: 39.915 }]);
+  const [mapCenter, setMapCenter] = useState<MapProps.Position>(
+    center || { lng: 120.31224857818925, lat: 31.495985112865068 }
+  );
+
+  const DynamicComp = (key: string, childProps: Unlimit) => {
+    const _props = typeof childProps === 'boolean' ? {} : childProps;
+    if (DrawUtilsList.hasOwnProperty(key) && childProps) {
+      const DrawUtilsComp = DrawUtilsList[key];
+      return <DrawUtilsComp {..._props} mapRef={mapRef} />;
+    }
+    return <></>;
+  };
 
   const handleMapClick = ({ latlng }: Unlimit) => {
     setMarkers([...markers, { ...latlng }]);
     onClick && onClick({ ...latlng });
   };
 
+  useImperativeHandle(ref, () => mapRef.current);
   return (
     <>
+      {/* 地址搜索 */}
+      {AutoComplete.show && (
+        <MapServer.AutoComplete
+          onHighlight={(e) => {}}
+          onConfirm={(e: any) => {
+            AutoComplete.onConfirm && AutoComplete.onConfirm();
+            const geocoder = new BMapGL.Geocoder();
+            const business = e.item.value.business;
+
+            // 执行反向地理编码
+            geocoder.getPoint(
+              e.item.value.business,
+              function (locationResult: any) {
+                if (locationResult) {
+                  const { lng, lat } = locationResult;
+                  setMapCenter({ lng, lat });
+                  // mapRef.current?.centerAndZoom(locationResult, 16);
+                  AutoComplete.onConfirm && AutoComplete.onConfirm({ lng, lat });
+                } else {
+                  // console.error('无法获取地点坐标');
+                }
+              },
+              business
+            );
+          }}
+          onSearchComplete={(e) => {}}
+          style={{ marginBlockEnd: '15px', width: '100%' }}
+        />
+      )}
       <MapServer.Map
         style={style || {}}
-        center={center || { lng: 120.31224857818925, lat: 31.495985112865068 }}
+        center={mapCenter}
         zoom={zoom || 13}
-        enableScrollWheelZoom
+        enableScrollWheelZoom={enableScrollWheelZoom || true}
         onClick={handleMapClick}
         ref={mapRef}
       >
-        {/* 添加标记点 */}
-        {Marker && Marker.show && (
-          <>
-            {Marker.markers.map((item: any, index: number) => (
-              <MapServer.Marker
-                {...defParams}
-                {...item}
-                key={index}
-                enableMassClear
-                onClick={(e) => Marker?.onClick && Marker?.onClick(e)}
-                onMouseover={(e) => Marker?.onMouseover && Marker?.onMouseover(e)}
-                onMouseout={(e) => Marker?.onMouseout && Marker?.onMouseout(e)}
-              />
-            ))}
-          </>
-        )}
-        {/* Polygon 多边形 */}
-        {Polygon && Polygon.show && Polygon.path && (
-          <MapServer.Polygon
-            {...defParams}
-            {...Polygon.options}
-            enableMassClear
-            path={[...Polygon.path]}
-            onClick={(e) => Polygon?.onClick && Polygon?.onClick(e)}
-            onMouseover={(e) => Polygon?.onMouseover && Polygon?.onMouseover(e)}
-            onMouseout={(e) => Polygon?.onMouseout && Polygon?.onMouseout(e)}
-          />
-        )}
-        {/* Polyline 折线 */}
-        {Polyline && Polyline.show && Polyline.path && (
-          <MapServer.Polyline
-            {...defParams}
-            {...Polyline.options}
-            enableMassClear
-            path={[...Polyline.path]}
-            onClick={(e) => Polyline?.onClick && Polygon?.onClick(e)}
-            onMouseover={(e) => Polyline?.onMouseover && Polygon?.onMouseover(e)}
-            onMouseout={(e) => Polyline?.onMouseout && Polygon?.onMouseout(e)}
+        {/* 图形绘制 */}
+        {Object.entries(graphicDraw).map(([key, value], index: number) => (
+          <Suspense key={`graphicDraw-${key}-${index}`}>
+            {DynamicComp(key, value as Unlimit)}
+          </Suspense>
+        ))}
+
+        {/* tools 工具类加载 */}
+        {Object.entries(tools).map(([key, value], index: number) => (
+          <Col span={24} key={`tools-${key}-${index}`}>
+            <Suspense>{DynamicComp(key, value as Unlimit)}</Suspense>
+          </Col>
+        ))}
+        {/*  DrawingManager 绘图工具*/}
+        {DrawingManager.isEnabled && (
+          <MapServer.DrawingManager
+            map={mapRef}
+            {...DrawingManager}
+            onOverlaycomplete={(e: any, _: any) => {
+              const { overlay } = e;
+              const points =
+                e.drawingMode === 'marker'
+                  ? overlay.latLng
+                  : overlay.points.map((item: any) => item.latLng);
+              DrawingManager.onOverlaycomplete && DrawingManager.onOverlaycomplete(points, e);
+            }}
           />
         )}
 
-        {/* 地图县官操作 */}
-        {/* Circle 圆形 */}
-        {/* <MapServer.Circle
-            center={new BMapGL.Point(116.4, 39.91)}
-            radius={5000}
-            strokeColor="#f00"
-            strokeWeight={2}
-            fillColor="#ff0"
-            fillOpacity={0.3}
-          /> */}
-        {/* CustomOverlay 自定义覆盖物 */}
-        {/* <MapServer.CustomOverlay position={new BMapGL.Point(116.35, 39.88)}>
-            <div
-              className="custom"
-              style={{ width: 40, height: 40, background: 'rgba(222, 0, 0, 0.8)' }}
-            >
-              <span style={{ color: '#fff' }}>DOM</span>
-            </div>
-          </MapServer.CustomOverlay> */}
-        {/* InfoWindow 信息窗口 */}
-        {/* <MapServer.InfoWindow
-          position={new BMapGL.Point(116.4, 39.91)}
-          title="标题"
-          text="快速文本信息窗口"
-          onClickclose={(e) => {
-            console.log(e);
-          }}
-        /> */}
-        {/* Polyline 折线 */}
-        {/* <MapServer.Polyline
-            path={[
-              new BMapGL.Point(116.35, 39.88),
-              new BMapGL.Point(116.4, 39.92),
-              new BMapGL.Point(116.33, 40.01),
-            ]}
-            strokeColor="#f00"
-            strokeWeight={10}
-          /> */}
-
-        {/* CityListControl 城市选择控件 */}
-        {(!CityListControl || CityListControl.show) && (
-          <MapServer.CityListControl {...defParams} {...CityListControl} />
-        )}
-
-        {/* MapTypeControl 地图类型控件 */}
-        {(!MapTypeControl || MapTypeControl.show) && (
-          <MapServer.MapTypeControl {...defParams} {...MapTypeControl} />
-        )}
-
-        {/* NavigationControl 3D控件 */}
-        {(!NavigationControl || NavigationControl.show) && (
-          <MapServer.NavigationControl {...defParams} {...NavigationControl} />
-        )}
-
-        {/* ScaleControl 比例尺控件 */}
-        {(!ScaleControl || ScaleControl.show) && (
-          <MapServer.ScaleControl {...defParams} {...ScaleControl} />
-        )}
-
-        {/* ZoomControl 缩放控件 */}
-        {(!ZoomControl || ZoomControl.show) && (
-          <MapServer.ZoomControl {...defParams} {...ZoomControl} />
-        )}
-
-        {/* DrawingManager 鼠标绘制工具*/}
-        {DrawingManager.show && <MapServer.DrawingManager {...DrawingManager} />}
-
-        {/* DistanceTool 地图测距工具 */}
-        {DistanceTool.show && <MapServer.DistanceTool {...DistanceTool} />}
-
+        {/* 自定义组件 */}
         {children}
       </MapServer.Map>
     </>
   );
-};
+});

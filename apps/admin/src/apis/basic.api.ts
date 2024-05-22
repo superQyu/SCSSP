@@ -99,5 +99,93 @@ const user: ApiItem[] = [
     },
     params: [{ key: 'Authorization', location: "header" }]
   },
+  {
+    key: 'exportSubcontractorInfo',
+    url: `${ADMIN_API}/wisdom/subcontractor-info/export-excel`,
+    type: 'GET',
+    name: '分包商模板导出',
+    description: '分包商模板导出',
+    cusParmas: {
+      dataType: 'blob'
+    },
+    params: [{ key: 'Authorization', location: "header" }]
+  },
+  {
+    key: 'exportPersonnelInfo',
+    url: `${ADMIN_API}/wisdom/personnel-info/export-excel`,
+    type: 'GET',
+    name: '人员信息模板导出',
+    description: '人员信息模板导出',
+    cusParmas: {
+      dataType: 'blob'
+    },
+    params: [{ key: 'Authorization', location: "header" }]
+  },
+  {
+    key: 'exportPersonnelAttendance',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/export-excel`,
+    type: 'GET',
+    name: '考勤导出',
+    description: '考勤导出',
+    cusParmas: {
+      dataType: 'blob'
+    },
+    params: [{ key: 'Authorization', location: "header" }]
+  },
+  {
+    key: 'exportWorkTypeInfo',
+    url: `${ADMIN_API}/wisdom/work-type-info/export-excel`,
+    type: 'GET',
+    name: '工种导出',
+    description: '工种导出',
+    cusParmas: {
+      dataType: 'blob'
+    },
+    params: [{ key: 'Authorization', location: "header" }]
+  },
+  {
+    key: 'exportProjectUnity',
+    url: `${ADMIN_API}/wisdom/project-unity/export`,
+    type: 'GET',
+    name: '工种导出',
+    description: '工种导出',
+    cusParmas: {
+      dataType: 'blob'
+    },
+    params: [{ key: 'Authorization', location: "header" }]
+  },
+  {
+    key: 'exportMaterialsEnter',
+    url: `${ADMIN_API}/wisdom/materials-enter/export-excel`,
+    type: 'GET',
+    name: '物料进场导出',
+    description: '物料进场导出',
+    cusParmas: {
+      dataType: 'blob'
+    },
+    params: [{ key: 'Authorization', location: "header" }]
+  },
+  {
+    key: 'exportMaterialsExit',
+    url: `${ADMIN_API}/wisdom/materials-exit/export-excel`,
+    type: 'GET',
+    name: '物料退场导出',
+    description: '物料退场导出',
+    cusParmas: {
+      dataType: 'blob'
+    },
+    params: [{ key: 'Authorization', location: "header" }]
+  },
+  {
+    key: 'exportCarInOutRecord',
+    url: `${ADMIN_API}/wisdom/car-in-out-record/export-excel`,
+    type: 'GET',
+    name: '车辆进出场',
+    description: '车辆进出场',
+    cusParmas: {
+      dataType: 'blob'
+    },
+    params: [{ key: 'Authorization', location: "header" }]
+  },
 ];
 export default user;
