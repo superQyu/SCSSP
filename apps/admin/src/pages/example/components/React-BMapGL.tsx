@@ -1,9 +1,25 @@
 import { useRef, useEffect, useState } from 'react';
-import { Alert, Col, Row, Input, Typography } from 'antd';
+import {
+  Alert,
+  Col,
+  Row,
+  Input,
+  Radio,
+  Button,
+  Checkbox,
+  Form,
+  Switch,
+  Descriptions,
+  Typography,
+  InputNumber,
+} from 'antd';
+import type { FormInstance } from 'antd/es/form';
+import type { RadioChangeEvent } from 'antd';
 
-import MapServer, { AutoComplete } from '@/components/React-BMapGL';
+import { JsonEditor } from 'ui';
 
-// import * as CusMapServer from 'react-bmapgl';
+import MapServer from '@/components/React-BMapGL';
+import { MapProps } from '@/components/React-BMapGL/model';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
@@ -14,20 +30,72 @@ interface Unlimit {
 }
 
 export default withWebSocket(({ socket }) => {
-  const { server } = useBasicConfiguration();
   const CHANNEL = 'car_track';
 
-  const mapRef = useRef(null);
+  const formRef = useRef<FormInstance>(null);
+  const mapRef = useRef<any | null>(null);
+
   const [latlng, setLatlng] = useState<string[]>([]);
+
+  const [tools, setTools] = useState<Unlimit>({});
+  const [DistanceTool, setDistanceTool] = useState<boolean>(false);
+  const [DrawingManager, setDrawingManager] = useState<boolean>(false);
   const [center, setCenter] = useState<Unlimit>({
     lng: 120.31224857818925,
     lat: 31.495985112865068,
   });
+
+  const [zoom, setZoom] = useState<number>(17);
   const [markers, setMarkers] = useState<Unlimit[]>([]);
 
-  const animationRef = useRef<number>(-1);
   const [points, setPoints] = useState<Unlimit[]>([]);
-  const [animatedPoints, setAnimatedPoints] = useState<Unlimit[]>([]);
+
+  const [value1, setValue1] = useState('');
+  const [animatedPoints, setAnimatedPoints] = useState<MapProps.Position[]>([
+    {
+      lng: 120.31000935053041,
+      lat: 31.49832801882728,
+    },
+    {
+      lng: 120.31008916650208,
+      lat: 31.497928564577148,
+    },
+    {
+      lng: 120.3102144488597,
+      lat: 31.497407614262993,
+    },
+    {
+      lng: 120.31041939294992,
+      lat: 31.496332666743424,
+    },
+    {
+      lng: 120.31051421008465,
+      lat: 31.496197869498527,
+    },
+
+    {
+      lng: 120.3112838203947,
+      lat: 31.496369583720526,
+    },
+    {
+      lng: 120.31226203862387,
+      lat: 31.496644378664694,
+    },
+    {
+      lng: 120.31337690870417,
+      lat: 31.497056691364943,
+    },
+    {
+      lng: 120.31346476945085,
+      lat: 31.496500103340182,
+    },
+    {
+      lng: 120.31355263064668,
+      lat: 31.49600557929561,
+    },
+  ]);
+  const [RectShow, setRectShow] = useState<boolean>(false);
+  const [polygons, setPolygons] = useState<Unlimit[]>([]);
 
   const handleMapClick = (latlng: Unlimit) => {
     setLatlng([latlng.lng, latlng.lat]);
@@ -42,6 +110,8 @@ export default withWebSocket(({ socket }) => {
       },
     ]);
   };
+
+  const onChange1 = ({ target: { value } }: RadioChangeEvent) => setValue1(value);
 
   const handlerSocketMessage = ({ data }: Unlimit) => {
     const { type, content } = JSON.parse(data) as { type: string; content: any };
@@ -59,22 +129,6 @@ export default withWebSocket(({ socket }) => {
     // socket && (socket.onmessage = handlerSocketMessage);
   }, [socket]);
 
-  // 模拟轨迹线的绘制动画
-  // useEffect(() => {
-  //   let index = 0;
-  //   const animate = () => {
-  //     if (index < points.length) {
-  //       setAnimatedPoints([...animatedPoints, points[index]]);
-  //       index++;
-  //       animationRef.current = requestAnimationFrame(animate);
-  //     }
-  //   };
-
-  //   animationRef.current = requestAnimationFrame(animate);
-
-  //   return () => cancelAnimationFrame(animationRef.current);
-  // }, [points]);
-
   return (
     <>
       <Alert
@@ -85,176 +139,305 @@ export default withWebSocket(({ socket }) => {
       />
       <Row gutter={16} style={{ height: '100%' }}>
         <Col span={12}>
-          <Row style={{ marginBlockEnd: '15px' }}>
-            <Col span={8}>
+          <Row style={{ marginBlockEnd: '10px' }}>
+            <Col span={12}>
               <Input addonBefore="纬度:" value={latlng[0]} />
             </Col>
-            <Col span={8}>
+            <Col span={12}>
               <Input addonBefore="经度:" value={latlng[1]} />
             </Col>
           </Row>
-
-          <div style={{ position: 'relative', height: 'calc(100% - 95px)' }}>
-            {/* <input id="ac" /> */}
-            <AutoComplete
-              // input="ac"
-              style={{ marginBlockEnd: '10px', width: '100%' }}
-              onConfirm={(e: Unlimit) => {
-                const geocoder = new BMapGL.Geocoder();
-                console.log(e.item.value.business);
-
-                // 执行反向地理编码
-                geocoder.getPoint(e.item.value.business, function (locationResult: any) {
-                  if (locationResult) {
-                    const { lng, lat } = locationResult;
-                    console.log(`坐标：(${lng}, ${lat})`);
-                    // setCenter({ lng, lat });
-                  } else {
-                    // console.error('无法获取地点坐标');
-                  }
-                });
-              }}
-              onSearchComplete={(e: Unlimit) => {}}
-            />
-            <MapServer
-              center={{ ...center }}
-              style={{ height: 'calc(100% - 50px)' }}
-              zoom={18}
-              onClick={handleMapClick}
-              Marker={{
-                //添加标记点
-                show: true,
-                markers: [...markers],
-                // onClick: (e: Event) => {},
-                // onMouseout: (e: Event) => {},
-                // onMouseover: (e: Event) => {},
-              }}
-              Polygon={{
-                //多边形
-                show: false,
-                path: [
-                  new BMapGL.Point(116.35, 39.88),
-                  new BMapGL.Point(116.4, 39.92),
-                  new BMapGL.Point(116.33, 40.01),
-                ],
-                // onClick: (e: Event) => {},
-                // onMouseout: (e: Event) => {},
-                // onMouseover: (e: Event) => {},
-                options: {
-                  autoViewport: true, //是否默认聚焦
-                  strokeColor: '#f00', //	描边的颜色，同CSS颜色
-                  strokeWeight: 2, //	描边的宽度，单位为像素
-                  fillColor: '#ff0', //	面填充颜色，同CSS颜色
-                  fillOpacity: 0.3, //面填充的透明度，范围0-1
-                  enableEditing: false, //开启可编辑模式
-                },
-              }}
-              Polyline={{
-                //折线
-                show: true,
-                path: [
-                  new BMapGL.Point(120.303209, 31.496065),
-                  new BMapGL.Point(120.305401, 31.495757),
-                ],
-                // onClick: (e: Event) => {},
-                // onMouseout: (e: Event) => {},
-                // onMouseover: (e: Event) => {},
-                options: {
-                  autoViewport: false, //是否默认聚焦
-                  strokeColor: '#f00', //	描边的颜色，同CSS颜色
-                  strokeWeight: 2, //	描边的宽度，单位为像素
-                  fillColor: '#ff0', //	面填充颜色，同CSS颜色
-                  fillOpacity: 0.3, //面填充的透明度，范围0-1
-                  enableEditing: false, //开启可编辑模式
-                },
-              }}
-              DrawingManager={{
-                //鼠标绘制工具
-                show: true,
-                drawingMode: '',
-                isOpen: false,
-                enableCalculate: false, //	 绘制是否进行测距(画线时候)、测面积(画圆、多边形、矩形)
-                enableLimit: false, //是否开启限制绘制图形距离、面积功能，该功能依赖enableCalculate值为true
-                limitOptions: { area: 50000000, distance: 30000 }, //设置图形距离、面积限制的实际值，开启enableLimit后生效
-                enableSorption: false, //绘制线和多边形时，是否开启鼠标吸附功能
-                style: { position: 'absolute', left: 0, bottom: 120, width: 360 },
-                onOverlaycomplete: (e: Event, info: any) => {
-                  console.log(e, info);
-                },
-              }}
-              DistanceTool={{
-                //地图测距工具
-                show: false,
-                ref: (el: any) => {
-                  // el.distancetool.open()
-                },
-                onDrawend: (e: Event, info: object) => {}, // 测距时，每次双击底图结束当前测距折线时，派发事件的接口
-                onRemovepolyline: (e: Event, info: object) => {}, // 	 测距结束后，点击线段上最后一个节点旁的关闭按钮时，派发事件的接口
-              }}
-              CityListControl={{
-                show: true,
-                // anchor: 0, // 0: 左上（默认）；1：右上；2左下；3：右下
-              }}
-              MapTypeControl={{
-                show: true,
-                // anchor: 0, // 0: 左上；1：右上（默认）；2左下；3：右下
-              }}
-              NavigationControl={{
-                show: true,
-                // anchor: 0, // 0: 左上；1：右上（默认）；2左下；3：右下
-              }}
-              ScaleControl={{
-                show: true,
-                // anchor: 0, // 0: 左上；1：右上（默认）；2左下（默认）；3：右下
-              }}
-              ZoomControl={{
-                show: true,
-                // anchor: 0, // 0: 左上；1：右上；2左下；3：右下（默认）
-              }}
-            >
-              {/* 自定义控件 */}
-              {/* <CusMapServer.CityListControl /> */}
-            </MapServer>
-          </div>
+          <Form
+            name="basic1"
+            ref={formRef}
+            labelCol={{ span: 10 }}
+            wrapperCol={{ span: 12 }}
+            autoComplete="off"
+            initialValues={{
+              Zoom: zoom,
+            }}
+          >
+            <Row>
+              <Col span={12}>
+                <Form.Item label="地图缩放" name="Zoom">
+                  <InputNumber
+                    onChange={(v) => setZoom(v as number)}
+                    min={1}
+                    max={25}
+                    style={{ width: '100%' }}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="城市选择控件" name="CityListControl">
+                  <Switch
+                    onChange={(v) => {
+                      setTools({ ...tools, CityListControl: v });
+                    }}
+                    checkedChildren="开启"
+                    unCheckedChildren="关闭"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="地图类型控件" name="MapTypeControl">
+                  <Switch
+                    onChange={(v) => {
+                      setTools({ ...tools, MapTypeControl: v });
+                    }}
+                    checkedChildren="开启"
+                    unCheckedChildren="关闭"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="3D控件" name="NavigationControl">
+                  <Switch
+                    onChange={(v) => {
+                      setTools({ ...tools, NavigationControl: v });
+                    }}
+                    checkedChildren="开启"
+                    unCheckedChildren="关闭"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="比例尺控件" name="ScaleControl">
+                  <Switch
+                    onChange={(v) => {
+                      setTools({ ...tools, ScaleControl: v });
+                    }}
+                    checkedChildren="开启"
+                    unCheckedChildren="关闭"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="缩放控件" name="ZoomControl">
+                  <Switch
+                    onChange={(v) => {
+                      setTools({ ...tools, ZoomControl: v });
+                    }}
+                    checkedChildren="开启"
+                    unCheckedChildren="关闭"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="地图测距工具" name="DistanceToolShow">
+                  <Switch
+                    onChange={(v) => setDistanceTool(v)}
+                    checkedChildren="开启"
+                    unCheckedChildren="关闭"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="地图绘制工具" name="DrawingManagerShow">
+                  <Switch
+                    onChange={(v) => setDrawingManager(v)}
+                    checkedChildren="开启"
+                    unCheckedChildren="关闭"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            {DistanceTool && (
+              <Form.Item name="DistanceToolRest">
+                <Input addonBefore="测距结果:" addonAfter="m" style={{ width: '100%' }} />
+              </Form.Item>
+            )}
+            <Row>
+              <Col span={24}>
+                <Form.Item labelCol={{ span: 5 }} label="运动轨迹" name="TrackAnimation">
+                  <Radio.Group
+                    onChange={onChange1}
+                    optionType="button"
+                    buttonStyle="solid"
+                    value={value1}
+                  >
+                    {(value1 == '' || ['cancel'].indexOf(value1) != -1) && (
+                      <Radio value={'start'}>开始</Radio>
+                    )}
+                    {['start', 'continue'].indexOf(value1) != -1 && (
+                      <Radio value={'pause'}>暂停</Radio>
+                    )}
+                    {['pause'].indexOf(value1) != -1 && <Radio value={'continue'}>继续</Radio>}
+                    {['start', 'pause', 'continue'].indexOf(value1) != -1 && (
+                      <Radio value={'cancel'}>清除</Radio>
+                    )}
+                  </Radio.Group>
+                </Form.Item>
+                <Form.Item labelCol={{ span: 5 }} label="坐标集合" name="AnimatedPoints">
+                  <JsonEditor
+                    onChange={(params: any) => setAnimatedPoints(params)}
+                    defaultParams={animatedPoints}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="多边形" name="RectShow">
+                  <Switch
+                    onChange={(v) => {
+                      setRectShow(v);
+                      formRef.current?.setFieldsValue({
+                        RectEdit: false,
+                      });
+                      polygons.map(({ polygon }) => {
+                        polygon.disableEditing();
+                      });
+                    }}
+                    checkedChildren="显示"
+                    unCheckedChildren="隐藏"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="启用编辑" name="RectEdit">
+                  <Switch
+                    onChange={(v) => {
+                      polygons.map(({ isEditing, polygon }, index: number) => {
+                        !isEditing ? polygon.enableEditing() : polygon.disableEditing();
+                        const newItem = polygons;
+                        newItem[index]['isEditing'] = !newItem[index]['isEditing'];
+                        setPolygons([...newItem]);
+                      });
+                    }}
+                    disabled={!RectShow}
+                    checkedChildren="开启"
+                    unCheckedChildren="关闭"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label="清除" name="Reset">
+                  <Switch
+                    onChange={(v) => {
+                      polygons.map(({ polygon }) => {
+                        mapRef.current?.map.removeOverlay(polygon);
+                      });
+                    }}
+                    checkedChildren="是"
+                    unCheckedChildren="否"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
         </Col>
         <Col span={12}>
-          <Typography.Text style={{ whiteSpace: 'pre-wrap' }} type="success" code>
-            实时轨迹
-          </Typography.Text>
-          <Row style={{ height: '50%' }}>
-            <Col span={24}>
-              <div style={{ position: 'relative', height: 'calc(100% - 95px)' }}>
-                <MapServer
-                  center={{ ...center }}
-                  style={{ height: 'calc(100% - 50px)' }}
-                  zoom={14}
-                  // onClick={handleMapClick}
-                  Marker={{
-                    //添加标记点
-                    show: true,
-                    markers: [],
-                  }}
-                  Polyline={{
-                    //折线
-                    show: true,
-                    path: [
-                      new BMapGL.Point(120.303209, 31.496065),
-                      new BMapGL.Point(120.305401, 31.495757),
-                      ...animatedPoints,
-                    ],
-                    options: {
-                      autoViewport: false, //是否默认聚焦
-                      strokeColor: '#f00', //	描边的颜色，同CSS颜色
-                      strokeWeight: 2, //	描边的宽度，单位为像素
-                      fillColor: '#ff0', //	面填充颜色，同CSS颜色
-                      fillOpacity: 0.3, //面填充的透明度，范围0-1
-                      enableEditing: false, //开启可编辑模式
+          <div style={{ position: 'relative', height: 'calc(100% - 95px)' }}>
+            <MapServer
+              ref={mapRef}
+              center={{ ...center }}
+              style={{ position: 'relative', height: 'calc(100% - 75px)' }}
+              zoom={zoom}
+              onClick={handleMapClick}
+              AutoComplete={{
+                show: true,
+              }}
+              // 辅助工具
+              tools={{
+                ...tools,
+                DistanceTool: {
+                  show: !!DistanceTool,
+                  onAddpoint: (e: any) => {
+                    formRef.current?.setFieldsValue({
+                      DistanceToolRest: e.distance,
+                    });
+                  },
+                  onDrawend: (e: any) => {
+                    formRef.current?.setFieldsValue({
+                      DistanceToolRest: e.distance,
+                    });
+                  },
+                  onRemovepolyline: () => {
+                    setDistanceTool(false);
+                    formRef.current?.setFieldsValue({
+                      DistanceToolShow: false,
+                      DistanceToolRest: '',
+                    });
+                  },
+                },
+              }}
+              // 画图工具
+              DrawingManager={{
+                isEnabled: !!DrawingManager,
+                style: { position: 'absolute', left: 0, top: 0, width: 360 },
+                enableLimit: false,
+                limitOptions: { area: 5000, distance: 30 },
+                enableCalculate: true,
+                onOverlaycomplete: (e: Event, info: any) => {},
+              }}
+              graphicDraw={{
+                Marker: {
+                  show: true,
+                  position: [...markers],
+                  onClick: (e: any) => {},
+                  onMouseover: (e: any) => {},
+                  onMouseout: (e: any) => {},
+                },
+                Polygon: {
+                  show: true,
+                  loaded: (polys: any) => {
+                    setPolygons(polys);
+                  },
+                  // onClick: (e: any) => console.log(e),
+                  onEditingEnd: (index: number, path: MapProps.Position[]) => {
+                    // console.log(index, path);
+                  },
+                  // onMouseover: (e: any) => {console.log(e)},
+                  // onMouseout: (e: any) => {console.log(e)},
+                  paths: [
+                    {
+                      show: !!RectShow,
+                      path: [
+                        new BMapGL.Point(120.31038459425596, 31.498278877759205),
+                        new BMapGL.Point(120.31066306896406, 31.497054982508555),
+                        // new BMapGL.Point(120.31103586575071, 31.496131277267946),
+                        // new BMapGL.Point(120.31276061232987, 31.496377599566404),
+                        new BMapGL.Point(120.31211832389023, 31.496893334756617),
+                        new BMapGL.Point(120.31206442555963, 31.49844822048211),
+                      ],
+                      options: {
+                        fillColor: 'red',
+                        fillOpacity: 0.25,
+                        // strokeColor: 'yellow',
+                        // enableMassClear: false,
+                      },
                     },
-                  }}
-                ></MapServer>
-              </div>
-            </Col>
-          </Row>
+                    // {
+                    //   show: true,
+                    //   path: [
+                    //     new BMapGL.Point(120.31371730769798, 31.495346120568676),
+                    //     new BMapGL.Point(120.31263934108601, 31.495515468655135),
+                    //     new BMapGL.Point(120.31281900218801, 31.496223648206655),
+                    //     new BMapGL.Point(120.31350171437559, 31.49648536536593),
+                    //   ],
+                    // },
+                  ],
+                },
+                TrackAnimation: {
+                  tracks: {
+                    loaded: (polys: any) => {
+                      // var lineBounds = polys.getBounds();
+                      // var polygonBounds = polygons[0].polygon.getBounds();
+                      // console.log(lineBounds.intersects(polygonBounds));
+                      var result = BMapGLLib.GeoUtils.isPolylineIntersectArea(
+                        polys,
+                        polygons[0].polygon
+                      );
+
+                      console.log('result', result);
+                    },
+                    actions: value1,
+                    position: [...animatedPoints],
+                    options: {},
+                  },
+                },
+              }}
+            ></MapServer>
+          </div>
         </Col>
       </Row>
     </>

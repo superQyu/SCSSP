@@ -293,7 +293,7 @@ const InfoCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
   return (
     <>
       <SingleTitle label="基础信息" />
-      <Row gutter={16}>
+      <Row gutter={16} className='mt-5'>
         <Col className="gutter-row" span={4}>
           <Flex justify="center" align="center" className="h-full">
             <div>
@@ -319,6 +319,10 @@ const InfoCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
             formRef={formRef}
             labelAlign="right"
             columns={columns}
+            layoutStyle={{
+              labelCol: { span: 10 },
+              wrapperCol: { span: 14, flex: 1 },
+            }}
           />
         </Col>
       </Row>

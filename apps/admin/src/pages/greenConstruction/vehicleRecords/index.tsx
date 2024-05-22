@@ -1,16 +1,19 @@
-import { useRef } from 'react';
-import { Button } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { useRef, useState } from 'react';
+import { Button, Image, message } from 'antd';
+import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
 import siteModel from './modes/menu.model';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-
+import DetailForm from './components/detail';
 export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
   const { vehicle: V } = server;
   const initColumns = siteModel({ server });
+  const [visible, setVisible] = useState(false);
+  const [subForm, setSubForm] = useState<Record<string, any>>({});
+  const detailModal = useRef();
 
   return (
     <>
@@ -30,8 +33,64 @@ export default () => {
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}
-        scroll={{ x: 'auto', y: 'auto' }}
-        columns={[...initColumns]}
+        scroll={{ x: '1300px', y: 'auto' }}
+        columns={[
+          ...initColumns,
+          {
+            hideInSearch: true,
+            title: '抓拍图片',
+            dataIndex: 'attachment',
+
+            render: (_, record) => {
+              return (
+                <>
+                  <Button
+                    type="link"
+                    onClick={() => {
+                      if (!record.attachment) {
+                        message.warning(`暂无抓拍图片`);
+                      } else {
+                        setVisible(true);
+                      }
+                    }}
+                  >
+                    预览
+                  </Button>
+                  <Image
+                    style={{ display: 'none' }}
+                    preview={{
+                      visible,
+                      src: record.attachment || '',
+                      onVisibleChange: (value) => {
+                        setVisible(value);
+                      },
+                    }}
+                  />
+                </>
+              );
+            },
+          },
+          {
+            hideInSearch: true,
+            title: '轨迹',
+            render: (_, record) => {
+              return (
+                <>
+                  <Button
+                    type="link"
+                    onClick={() => {
+                      setSubForm(record);
+                      detailModal.current?.openModal(true);
+                    }}
+                    icon={<EyeOutlined />}
+                  >
+                    查看
+                  </Button>
+                </>
+              );
+            },
+          },
+        ]}
         pagination={{
           pageSize: 30,
         }}
@@ -52,6 +111,7 @@ export default () => {
           },
         }}
       ></ProTable>
+      <DetailForm subForm={subForm} ref={detailModal} />
     </>
   );
 };

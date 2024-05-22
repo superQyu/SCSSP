@@ -1,15 +1,14 @@
 import React, { useRef, forwardRef, useImperativeHandle, useState } from 'react';
-import { DatePicker, Col, Row, Flex } from 'antd';
+import { DatePicker } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import styled from 'styled-components';
+import dayjs from 'dayjs';
 
 import DictSelect from '@/components/DictSelect';
-import { AdForm } from 'components';
-import { FormColumnsTypes } from 'components';
+import { FormColumnsTypes, AdForm } from 'components';
 import AsyncSelect from '@/components/DictSelect/AsyncSelect';
 import SingleTitle from '@/components/SingleTitle';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-import dayjs from 'dayjs';
 
 interface Props {
   /** 表单初始化 */
@@ -217,13 +216,19 @@ const EntryCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
         label="进场信息"
         subLabel={<CustomsDiv>首先录入班组长（是否班组长选【是】），再录入其他工人</CustomsDiv>}
       />
-      <AdForm
-        loadingTitle="提交中..."
-        initialValues={subForm}
-        formRef={formRef}
-        labelAlign="right"
-        columns={columns}
-      />
+      <div className="mt-5">
+        <AdForm
+          loadingTitle="提交中..."
+          initialValues={subForm}
+          formRef={formRef}
+          labelAlign="right"
+          columns={columns}
+          layoutStyle={{
+            labelCol: { span: 12 },
+            wrapperCol: { span: 12, flex: 1 },
+          }}
+        />
+      </div>
     </>
   );
 });

@@ -44,23 +44,67 @@ const columns: ProColumns<TableListItem>[] = [
     ),
   },
 ];
-
+const list = [
+  {
+    key: 'exportPersonnelInfo',
+    label: '人员信息导出',
+  },
+  {
+    key: 'exportPersonnelAttendance',
+    label: '考勤导出',
+  },
+  {
+    key: 'exportWorkTypeInfo',
+    label: '工种导出',
+  },
+  {
+    key: 'exportProjectUnity',
+    label: '项目导出',
+  },
+  {
+    key: 'exportMaterialsEnter',
+    label: '物料进场导出',
+  },
+  {
+    key: 'exportMaterialsExit',
+    label: '物料退场导出',
+  },
+  {
+    key: 'exportCarInOutRecord',
+    label: '车辆进出场',
+  },
+  {
+    key: 'exportCarDispatchRecord',
+    label: '车辆导出',
+  },
+  {
+    key: 'exportSubcontractorInfo',
+    label: '分包商导出',
+  },
+];
 export default () => {
   const { server, config: C } = useBasicConfiguration();
 
   return (
     <>
-      <Alert
-        onClick={() => {
-          server.basic.exportCarDispatchRecord().then((data) => {
-            downFiles.excel(data, '模板文件');
-          });
-        }}
-        message={'文件下载'}
-        type="success"
-        style={{ marginBlockEnd: '25px' }}
-        showIcon
-      />
+      <div className="flex">
+        {list.map(({ label, key }) => (
+          <Alert
+            key={key}
+            onClick={() => {
+              key &&
+                key != '' &&
+                server.basic[key]().then((data: any) => {
+                  downFiles.excel(data, label);
+                });
+            }}
+            message={`${label}下载`}
+            type="success"
+            style={{ marginBlockEnd: '25px' }}
+            showIcon
+          />
+        ))}
+      </div>
       <Typography.Paragraph style={{ whiteSpace: 'pre-wrap' }} code={true} strong={true}>
         <Typography.Text type="success" code>
           {`import { downFiles } from 'utils';`}

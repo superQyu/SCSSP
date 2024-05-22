@@ -30,17 +30,17 @@ export default (_: MenusPropsType) => {
       dataIndex: 'name',
       ellipsis: true,
     },
-    {
-      hideInTable: true,
-      title: '时间范围',
-      valueType: 'dateRange',
-      search: {
-        transform: (value: any) => ({
-          startTime: value[0],
-          endTime: value[1],
-        }),
-      },
-    },
+    // {
+    //   hideInTable: true,
+    //   title: '时间范围',
+    //   valueType: 'dateRange',
+    //   search: {
+    //     transform: (value: any) => ({
+    //       startTime: value[0],
+    //       endTime: value[1],
+    //     }),
+    //   },
+    // },
     {
       hideInSearch: true,
       title: '坐标',
@@ -48,16 +48,10 @@ export default (_: MenusPropsType) => {
     },
     {
       hideInSearch: true,
-      title: '车型',
-      dataIndex: 'code',
-    },
-    {
-      hideInSearch: true,
       title: '创建时间',
       dataIndex: 'createTime',
       render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD hh:mm:ss')}</>,
     },
-
     {
       hideInSearch: true,
       title: '创建人',

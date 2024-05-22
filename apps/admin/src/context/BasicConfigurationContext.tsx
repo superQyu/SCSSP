@@ -1,14 +1,16 @@
-import React, { createContext, useContext } from 'react';
+import React, { useState, createContext, useContext } from 'react';
 
 import { TOKEN } from 'utils';
 import { autoInterface } from '@spms/web-request';
 import apisGather from '@/apis';
 import * as baseConf from '@/config';
 import { NET_STATUS } from '@/config/NetStatus';
+import { Spin } from 'antd';
 
 interface ConfigurationType {
   server: Record<string, any>;
   config?: Record<string, any>;
+  setFullLoding: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface BasicConfigurationContextType extends ConfigurationType {
@@ -30,16 +32,25 @@ export const useBasicConfiguration = () => {
 export const BasicConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const [loding, setFullLoding] = useState(false);
   return (
     <BasicConfigurationContext.Provider
       value={
         {
           server: autoInterface(apisGather, TOKEN, { requested: NET_STATUS }),
           config: baseConf,
+          setFullLoding,
         } as ConfigurationType
       }
     >
-      {children}
+      <Spin
+        tip={'加载中，请稍等...'}
+        size={'large'}
+        spinning={loding}
+        wrapperClassName="full-spining"
+      >
+        {children}
+      </Spin>
     </BasicConfigurationContext.Provider>
   );
 };

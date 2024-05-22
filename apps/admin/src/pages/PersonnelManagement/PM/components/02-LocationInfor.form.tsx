@@ -6,7 +6,7 @@ import { Button, Popconfirm, Spin } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import SingleTitle from '@/components/SingleTitle';
 
-import MapServer, { AutoComplete } from '@/components/React-BMapGL';
+import MapServer from '@/components/React-BMapGL';
 
 type MenusType = {
   [key: string]: any;
@@ -83,17 +83,37 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
           description={
             <Spin spinning={!openMap}>
               <div style={{ width: '400px', height: '350px' }}>
-                {/* <AutoComplete /> */}
-                {openMap && (
-                  <MapServer
-                    style={{ height: 'calc(100% - 38px)' }}
-                    onClick={handleMapClick}
-                    Marker={{
+                {/* {openMap && ( */}
+                <MapServer
+                  style={{ height: 'calc(100% - 38px)' }}
+                  onClick={handleMapClick}
+                  AutoComplete={{
+                    show: true,
+                    onConfirm: (e: any) => {
+                      setOpen(true);
+                      if (e) handleMapClick(e);
+                      // {
+
+                      // setMarkers([
+                      //   {
+                      //     position: e,
+                      //     icon: 'loc_red',
+                      //     isTop: true,
+                      //     autoViewport: false,
+                      //     offset: { width: 0, height: -22 },
+                      //   },
+                      // ]);
+                      // }
+                    },
+                  }}
+                  graphicDraw={{
+                    Marker: {
                       show: true,
-                      markers: [...markers],
-                    }}
-                  />
-                )}
+                      position: [...markers],
+                    },
+                  }}
+                />
+                {/* )} */}
               </div>
             </Spin>
           }
@@ -127,6 +147,11 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
     const isEmpty = !!Object.entries(subForm).length;
     setMenus(isEmpty && subForm.hasOwnProperty(getFormKey) ? { ...subForm[getFormKey] } : subForm);
   }, [subForm]);
+
+  // useEffect(() => {
+  // const { wgsLatitude: lat, wgsLongitude: lng } = menus;
+  // handleMapClick({ lng: parseInt(lng), lat: parseInt(lat) });
+  // }, [menus]);
 
   useImperativeHandle(ref, () => ({
     key: formKey,
