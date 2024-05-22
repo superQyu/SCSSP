@@ -6,6 +6,7 @@ import { Button, message, Popconfirm } from 'antd';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import EditDialog from './components/editdialog';
 import ExpandTable from './ExpandTable';
+import Styled from '@/components/Styled';
 
 import dayjs from 'dayjs';
 
@@ -127,6 +128,7 @@ export default ({ onChange }: any) => {
           },
         }}
         toolBarRender={() => [
+          <Styled.UploadButton api="exportMaterialsExit" fileName="物料退场导出" />,
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
           </Button>,

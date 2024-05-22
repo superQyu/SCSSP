@@ -6,6 +6,7 @@ import { ProTable } from 'components';
 import siteModel from './modes/menu.model';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import DetailForm from './components/detail';
+import Styled from '@/components/Styled';
 export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
@@ -110,6 +111,9 @@ export default () => {
             ];
           },
         }}
+        toolBarRender={() => [
+          <Styled.UploadButton api="exportCarInOutRecord" fileName="车辆进出场" />,
+        ]}
       ></ProTable>
       <DetailForm subForm={subForm} ref={detailModal} />
     </>

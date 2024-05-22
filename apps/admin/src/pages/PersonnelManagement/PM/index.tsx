@@ -8,6 +8,7 @@ import { ExclamationCircleFilled, PlusOutlined, SearchOutlined } from '@ant-desi
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 import InforModel from './modes/structural';
+import Styled from '@/components/Styled';
 
 // 项目管理表格模型
 import type { ModesApi } from './modes/model';
@@ -97,6 +98,7 @@ export default () => {
           },
         }}
         toolBarRender={() => [
+          <Styled.UploadButton api="exportProjectUnity" fileName="项目导出" />,
           <Button
             key="button"
             icon={<PlusOutlined />}

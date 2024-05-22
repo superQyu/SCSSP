@@ -6,6 +6,7 @@ import { Button, message, Popconfirm } from 'antd';
 import { PlusOutlined, UploadOutlined, SearchOutlined } from '@ant-design/icons';
 
 import EditDialog from './components/editdialog';
+import Styled from '@/components/Styled';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
@@ -118,12 +119,10 @@ export default () => {
           },
         }}
         toolBarRender={() => [
+          <Styled.UploadButton api="exportWorkTypeInfo" fileName="工种导出" />,
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
           </Button>,
-          // <Button icon={<UploadOutlined />} onClick={() => console.log('导出')} type="primary">
-          //   导出
-          // </Button>,
         ]}
         editable={{ onSave }}
         pagination={{

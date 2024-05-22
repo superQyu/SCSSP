@@ -4,8 +4,9 @@ import { ProTable } from 'components';
 // import { ProTable } from '@ant-design/pro-components';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
 import { Button, message, DatePicker, Space, Table, Alert } from 'antd';
+import Styled from '@/components/Styled';
 
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
 
 import { useAppSelector } from 'hooks';
 
@@ -138,6 +139,7 @@ export default () => {
           },
         }}
         toolBarRender={() => [
+          <Styled.UploadButton api="exportPersonnelInfo" fileName="人员信息导出" />,
           <Button
             key="button"
             icon={<PlusOutlined />}
