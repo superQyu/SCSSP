@@ -9,3 +9,4 @@ declare module '*.gif';
 declare module '*.tiff';
 
 declare let BMapGL: any;
+declare let BMapGLLib: any;

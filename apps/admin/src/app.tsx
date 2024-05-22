@@ -16,7 +16,7 @@ function App() {
   } = useAppSelector((state) => state) as { user: { menu: any; userInfor: object } };
 
   const cloneDefaultRoutes = cloneDeep(defaultRoutes);
-  const { path } = JSON.parse(getToken('BREADCRUMBS')) || {};
+  const { path } = JSON.parse(getToken('BREADCRUMBS') || '{}') || {};
 
   const ROUTETREE = filepathToElement(menu);
   const firstTo = path || GetFirstPath(ROUTETREE);

@@ -4,6 +4,9 @@ import ErrorPage from '@/pages/error-page';
 // import Login from '@/pages/login';
 import Login from '@/pages/login/Login';
 
+
+import MapDev from '@/pages/example/components/React-BMapGL';
+
 import Layout from '@/layout';
 
 // 防止路由丢失
@@ -21,6 +24,12 @@ const defaultRoutes: any = [
   {
     path: '/login',
     element: <Login />,
+  },
+  {
+    path: '/map',
+    element:<div style={{height:"100vh"}}>
+       <MapDev />
+    </div>,
   },
 ];
 

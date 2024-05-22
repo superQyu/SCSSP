@@ -28,7 +28,7 @@ function a11yProps(index: number) {
 }
 
 export default function ComponentDoc() {
-  const [value, setValue] = useState(7);
+  const [value, setValue] = useState(2);
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
