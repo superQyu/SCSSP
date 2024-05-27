@@ -51,19 +51,6 @@ export default () => {
       orgPicUri: '',
     },
   ];
-  const [time, setTime] = useState<string>();
-
-  const getTime = () => {
-    setTime(dayjs().format('YYYY年M月D日 hh:mm:ss'));
-    timer = setTimeout(getTime, 1000);
-  };
-
-  useEffect(() => {
-    getTime();
-    return () => {
-      clearTimeout(timer);
-    };
-  }, []);
 
   return (
     <div className="position-relative h-full overflow-y-auto overflow-x-hidden">
@@ -87,7 +74,6 @@ export default () => {
                       <div> {item.jobCategory}</div>
                       <div> {item.personName}</div>
                       <div className="color-#ff9c00 font-family-ds-digit font-size-16px">
-                        {' '}
                         {item.receiveTime}
                       </div>
                       {item.inAndOutType == '0' ? (

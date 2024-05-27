@@ -119,10 +119,8 @@ const DetailForm: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
   const initData = () => {
     const temps = columns.map((item) => {
       const { key, childItem, childItemProps } = item;
-
       let res = subForm[key];
       let newProps = {};
-
       if (childItemProps) {
         res = childItemProps(res);
       }
@@ -150,12 +148,7 @@ const DetailForm: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
 
   return (
     <Modal width={'50%'} open={open} title={title} maskClosable={false} onCancel={handleCancel}>
-      <ProDescriptions
-        column={2}
-        title={<SingleTitle label="基本信息" />}
-        items={desItems}
-        bordered={true}
-      />
+      <ProDescriptions column={2} items={desItems} bordered={true} />
     </Modal>
   );
 });

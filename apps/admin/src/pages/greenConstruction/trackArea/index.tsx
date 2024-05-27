@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Button, message } from 'antd';
-import { SearchOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import { SearchOutlined, EyeOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
 
@@ -8,7 +8,7 @@ import type { ModesApi } from './modes/model';
 import siteModel from './modes/menu.model';
 import DetailForm from './components/detail';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-
+import AddForm from './components/addForm';
 export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
@@ -16,6 +16,9 @@ export default () => {
   const initColumns = siteModel({ server });
   const [subForm, setSubForm] = useState<Record<string, any>>({});
   const detailModal = useRef();
+
+  const [formModal, setFormModal] = useState<boolean>(false);
+
 
   // 删除行
   const onDelete = async (id: number) => {
@@ -25,6 +28,13 @@ export default () => {
     });
     return res;
   };
+    // 修改状态
+    const handleModalStateChange = async (state: boolean) => {
+      setSubForm({});
+      setFormModal(state);
+      await actionRef.current?.reload();
+    };
+  
 
   return (
     <>
@@ -32,7 +42,6 @@ export default () => {
         headerTitle="轨迹区域管理"
         request={async (params: ModesApi.ParamsType) => {
           const res = await V.vehicleTrackList({ ...params, pageNo: params?.current || 0 });
-          console.log('list', res);
           res['list'] = res?.list.map((item: ModesApi.ParamsType) => {
             return { ...item, status: `${item.status}` };
           });
@@ -101,7 +110,18 @@ export default () => {
             ];
           },
         }}
+        toolBarRender={() => [
+          <Button
+            key="button"
+            icon={<PlusOutlined />}
+            onClick={() => setFormModal(true)}
+            type="primary"
+          >
+            新建
+          </Button>,
+        ]}
       ></ProTable>
+      <AddForm  openModal={formModal}  onStateChange={handleModalStateChange} />
       <DetailForm subForm={subForm} ref={detailModal} />
     </>
   );

@@ -3,9 +3,7 @@ import { Flex } from 'antd';
 import { UserOutlined, ScheduleTwoTone } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
-
 export default () => {
-  let timer: any;
   const list = [
     {
       label: '管理人员',
@@ -30,15 +28,14 @@ export default () => {
   ];
   const [time, setTime] = useState<string>();
 
-  const getTime = () => {
-    setTime(dayjs().format('YYYY年M月D日 hh:mm:ss'));
-    timer = setTimeout(getTime, 1000);
-  };
-
   useEffect(() => {
-    getTime();
+    setTime(dayjs().format('YYYY年M月D日 hh:mm:ss'));
+    const intervalId = setInterval(() => {
+      setTime(dayjs().format('YYYY年M月D日 hh:mm:ss'));
+    }, 1000);
+
     return () => {
-      clearTimeout(timer);
+      clearInterval(intervalId);
     };
   }, []);
 
