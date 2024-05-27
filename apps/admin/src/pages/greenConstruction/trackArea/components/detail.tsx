@@ -31,7 +31,7 @@ const DetailForm: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
     const points = subForm.points.split(';').map((item: string) => {
       return new BMapGL.Point(Number(item.split(',')[0]), Number(item.split(',')[1]));
     });
-    const center = new BMapGL.Point(0, 0);
+    const center = { lng: 0, lat: 0 };
     points.forEach((point) => {
       center.lng += point.lng;
       center.lat += point.lat;
@@ -70,7 +70,10 @@ const DetailForm: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
             Polygon: {
               show: true,
               loaded: (polys: any) => {
-                // setPolygons(polys);
+                if (polys[0]) {
+                  // var centerPoint = polys[0]?.polygon.getBounds().getCenter();
+                  // setCenter(centerPoint);
+                }
               },
               onEditingEnd: (index: number, path: MapProps.Position[]) => {
                 // console.log(index, path);
@@ -79,7 +82,7 @@ const DetailForm: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
                 {
                   show: true,
                   path: polygons,
-
+                  autoCenter: true,
                   options: {
                     fillColor: 'red',
                     fillOpacity: 0.25,

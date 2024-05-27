@@ -34,7 +34,7 @@ export default (props: MapProps) => {
       return [...acc, cur];
     }, []);
 
-    newPaths.map(({ path, show, options = {} }: Unlimit, index: number) => {
+    newPaths.map(({ path, show, autoCenter, options = {} }: Unlimit, index: number) => {
       if (polygons[index]) {
         const polygon = polygons[index];
         !show ? polygon.hide() : polygon.show();
@@ -50,6 +50,12 @@ export default (props: MapProps) => {
         map.addOverlay(polygon);
         !show ? polygon.hide() : polygon.show();
         setPolygons([...polygons, polygon]);
+
+        if (autoCenter) {
+          var bounds = polygon.getBounds();
+          var center = bounds.getCenter();
+          map.setCenter(center);
+        }
 
         polygon.addEventListener('lineupdate', function (event: any) {
           onEditingEnd && onEditingEnd(index, event.currentTarget.getPath());
