@@ -30,6 +30,18 @@ const vehicle: ApiItem[] = [
       { key: 'pageSize', cn: '每页条数' },
     ],
   },
+
+  {
+    key: 'getPointRecord',
+    url: `${ADMIN_API}/wisdom/car-in-out-record/getPointRecord`,
+    type: 'GET',
+    name: '车辆进出轨迹',
+    description: '车辆进出轨迹',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: 'id号' },
+    ],
+  },
   {
     key: 'vehicleApproveList',
     url: `${ADMIN_API}/wisdom/car-info/page`,

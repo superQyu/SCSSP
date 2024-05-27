@@ -29,6 +29,7 @@ export default (_: MenusPropsType) => {
       title: '区域名称',
       dataIndex: 'name',
       ellipsis: true,
+      width: 150
     },
     // {
     //   hideInTable: true,
