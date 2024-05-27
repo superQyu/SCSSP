@@ -90,6 +90,7 @@ export default forwardRef((props: MapProps, ref) => {
         />
       )}
       <MapServer.Map
+        key={center}
         style={style || {}}
         center={mapCenter}
         zoom={zoom || 13}
