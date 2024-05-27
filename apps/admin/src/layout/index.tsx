@@ -58,7 +58,7 @@ const LayoutContext: React.FC = () => {
   useEffect(() => {
     if (!getToken('BREADCRUMBS')) return;
     let breadcrumbs = JSON.parse(getToken('BREADCRUMBS')).breadcrumbs;
-    breadcrumbs.unshift({
+    breadcrumbs?.unshift({
       title: <HomeOutlined />,
     });
     setBreadcrumbList(breadcrumbs);

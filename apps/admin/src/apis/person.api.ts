@@ -21,6 +21,24 @@ const person: ApiItem[] = [
     ],
   },
   {
+    key: 'updateFullPersonInfo',
+    url: `${ADMIN_API}/wisdom/personnel-info/updatePersonnelInfoManagerDetail`,
+    type: 'PUT',
+    name: '信息采集',
+    description: '录入人员信息',
+    params: [
+      {
+        key: 'tenant-id', location: 'header', value: "1", valueAttrs: {
+          value: "1"
+        }
+      },
+      { key: 'Authorization', location: 'header' },
+      { key: 'personnelInfoSaveReqVO', cn: '用户基础信息' },
+      { key: 'personnelCertificateSaveReqVOS', cn: '人员证书信息' },
+      { key: 'entryInfoSaveReqVO', cn: '人员进场信息' },
+    ],
+  },
+  {
     key: 'workType',
     url: `${ADMIN_API}/wisdom/work-type-info/page`,
     type: 'GET',

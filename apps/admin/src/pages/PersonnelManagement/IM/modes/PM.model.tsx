@@ -132,31 +132,7 @@ export default ({ server }: MenusPropsType) => {
       title: '是否零工',
       dataIndex: 'name',
     },
-    {
-      title: '操作',
-      width: 140,
-      valueType: 'option',
-      key: 'option',
-      fixed: 'right',
-      render: (_text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.id);
-          }}
-        >
-          编辑
-        </a>,
-        <a
-          key="delete"
-          onClick={() => {
-            // action?.startEditable?.(record.id);
-          }}
-        >
-          删除
-        </a>,
-      ],
-    },
+    
   ];
 
   return columns;

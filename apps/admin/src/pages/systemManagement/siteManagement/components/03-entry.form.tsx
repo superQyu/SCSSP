@@ -1,8 +1,9 @@
-import React, { useRef, forwardRef, useImperativeHandle, useState } from 'react';
+import React, { useRef, forwardRef, useImperativeHandle, useState, useEffect } from 'react';
 import { DatePicker } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
+import ToString from '@/utils/ToString';
 
 import DictSelect from '@/components/DictSelect';
 import { FormColumnsTypes, AdForm } from 'components';
@@ -12,7 +13,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 interface Props {
   /** 表单初始化 */
-  subForm: Record<string, any>;
+  detail: Record<string, any>;
 }
 
 const CustomsDiv = styled.div`
@@ -25,11 +26,27 @@ const CustomsDiv = styled.div`
   }
 `;
 
-const EntryCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
+const EntryCom: React.FC<Props> = forwardRef(({ detail }: Props, ref) => {
   const { server } = useBasicConfiguration();
   const { group: G } = server;
   const formRef = useRef<FormInstance>(null);
   const [formKey, _] = useState<string>('entryInfoSaveReqVO');
+  const [subForm, setSubForm] = useState({});
+
+  useEffect(() => {
+    if (Object.keys(detail).length) {
+      const subForm = {...detail.entryInfoRespVO};
+      subForm.isTeamLeader = ToString(subForm.isTeamLeader);
+      subForm.subcontractorId = ToString(subForm.subcontractorId);
+      subForm.entryStatus = ToString(subForm.entryStatus);
+      subForm.valuationMethod = ToString(subForm.valuationMethod);
+      subForm.hasInsurance = ToString(subForm.hasInsurance);
+      subForm.laborContractStatus = ToString(subForm.laborContractStatus);
+      subForm.governmentPlatformUpload = ToString(subForm.governmentPlatformUpload);
+      // console.log('subForm', subForm);
+      setSubForm(subForm);
+    }
+  }, [detail]);
 
   const columns: FormColumnsTypes[] = [
     {
@@ -43,7 +60,7 @@ const EntryCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
     },
     {
       label: '班组名称',
-      dataIndex: 'team',
+      dataIndex: 'teamId',
       formItemProps: {
         rules: [{ required: true, message: '请选择班组名称' }],
       },
@@ -60,6 +77,8 @@ const EntryCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
             });
           }}
           onChange={async (val) => {
+            console.log('val', val, typeof val);
+            
             if (typeof val == 'string') {
               formRef.current?.setFieldsValue({
                 teamName: val,
@@ -194,16 +213,16 @@ const EntryCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
       formItem: <DictSelect dictKey={'pm_government_platform_upload'} />,
       colNum: 8,
     },
-    {
-      label: '',
-      dataIndex: 'teamName',
-      formItem: <div className="hidden"></div>,
-    },
-    {
-      label: '',
-      dataIndex: 'teamId',
-      formItem: <div className="hidden"></div>,
-    },
+    // {
+    //   label: '',
+    //   dataIndex: 'teamName',
+    //   formItem: <div className="hidden"></div>,
+    // },
+    // {
+    //   label: '',
+    //   dataIndex: 'teamId',
+    //   formItem: <div className="hidden"></div>,
+    // },
   ];
 
   useImperativeHandle(ref, () => ({

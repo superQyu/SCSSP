@@ -455,6 +455,20 @@ export default (props) => {
 
   const certificateColumns: FormColumnsTypes[] = [
     {
+      label: '证书id(数据库主键)',
+      dataIndex: 'id',
+      formItemProps: {
+        hidden: true,
+      },
+    },
+    {
+      label: '人员id',
+      dataIndex: 'userId',
+      formItemProps: {
+        hidden: true,
+      },
+    },
+    {
       label: '证书名称',
       dataIndex: 'credentialName',
       formItemProps: {

@@ -106,7 +106,7 @@ const certificate: ApiItem[] = [
   {
     key: 'deleteCertificate',
     url: `${ADMIN_API}/wisdom/personnel-certificate/delete`,
-    type: 'GET',
+    type: 'DELETE',
     name: '证件列表',
     description: '删除证件列表',
     params: [

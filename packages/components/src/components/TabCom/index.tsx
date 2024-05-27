@@ -58,6 +58,7 @@ export default () => {
     if (newPanes.length && newActiveKey === targetKey) {
       newActiveKey = lastIndex >= 0 ? newPanes[lastIndex].key : newPanes[0].key;
     }
+    navigate(newActiveKey);
     setActiveKey(newActiveKey);
     const breadcrumbs = menuTab.find((item: Item) => item.key == newActiveKey);
     setToken('BREADCRUMBS', JSON.stringify(breadcrumbs));
