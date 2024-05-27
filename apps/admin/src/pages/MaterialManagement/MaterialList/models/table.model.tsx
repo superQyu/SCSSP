@@ -60,6 +60,7 @@ export default ({ server }: MenusPropsType) => {
   const option: ProColumns = {
     title: '操作',
     width: 70,
+    fixed: 'right',
     valueType: 'option',
     dataIndex: 'option',
     render: (_text, record, _, action) => [
@@ -81,76 +82,78 @@ export default ({ server }: MenusPropsType) => {
     thirdColumns: [...third, option],
   };
 
+  const columnWidth = 128;
+
   const rightColumns: ProColumns[] = [
     {
       title: '材料编码',
       dataIndex: 'materialCode',
       ellipsis: true,
+      width: columnWidth,
       // editable: false,
       hideInSearch: true,
-      // width: 70,
     },
     {
       title: '材料名称',
       dataIndex: 'materialName',
       ellipsis: true,
-      // width: 48,
+      width: columnWidth,
     },
     {
       title: '规格',
       dataIndex: 'specification',
       ellipsis: true,
       hideInSearch: true,
-      // width: 48,
+      width: columnWidth,
     },
     {
       title: '计量单位',
       dataIndex: 'measuringUnit',
       ellipsis: true,
       hideInSearch: true,
-      // width: 48,
+      width: columnWidth,
     },
     {
       title: '价格',
       dataIndex: 'price',
       ellipsis: true,
       hideInSearch: true,
-      // width: 48,
+      width: columnWidth,
     },
     {
       title: '备注',
       dataIndex: 'remark',
       ellipsis: true,
       hideInSearch: true,
-      // width: 48,
+      width: columnWidth,
     },
     {
       title: '说明',
       dataIndex: 'description',
       ellipsis: true,
       hideInSearch: true,
-      // width: 48,
+      width: columnWidth,
     },
     {
       title: '初始八位码',
       dataIndex: 'initialEightBitCode',
       ellipsis: true,
       hideInSearch: true,
-      // width: 48,
+      width: columnWidth,
     },
     {
       title: '原六位码',
       dataIndex: 'originalSixBitCode',
       ellipsis: true,
       hideInSearch: true,
-      // width: 48,
+      width: columnWidth,
     },
     {
       title: '原省十位码',
       dataIndex: 'originalProvinceTenBitCode',
       ellipsis: true,
       hideInSearch: true,
-      // width: 48,
+      width: columnWidth,
     },
     option,
   ];

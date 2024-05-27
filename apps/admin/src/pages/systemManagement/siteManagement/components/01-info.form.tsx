@@ -299,7 +299,7 @@ const InfoCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
             <div>
               <ProUpload
                 key={JSON.stringify(defaultUrl)}
-                defaultFileList={defaultUrl}
+                defaultFileList={() => defaultUrl}
                 onRequest={async (params: any) => await F.fileUpload(params)}
                 onUploadSuccess={async (res) => {
                   const { url } = Object.values(res)[0] as { url: string };

@@ -6,6 +6,7 @@ import { Button, message, Popconfirm } from 'antd';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 
 import EditDialog from './components/editdialog';
+import Styled from '@/components/Styled';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
@@ -63,6 +64,7 @@ export default () => {
           {
             title: '操作',
             width: 100,
+            fixed: 'right',
             valueType: 'option',
             dataIndex: 'option',
             render: (_text: any, record: any, _: any, action: any) => [
@@ -123,6 +125,7 @@ export default () => {
           },
         }}
         toolBarRender={() => [
+          <Styled.UploadButton api="exportSubcontractorInfo" fileName="分包商导出" />,
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
           </Button>,

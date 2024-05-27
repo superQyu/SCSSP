@@ -14,6 +14,7 @@ import siteModel from './modes/menu.model';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import AddForm from './components/addForm';
 // import ApproveForm from './components/approveForm';
+import Styled from '@/components/Styled';
 
 export default () => {
   const { server } = useBasicConfiguration();
@@ -129,6 +130,7 @@ export default () => {
         ]}
         editable={{ onDelete, onSave }}
         toolBarRender={() => [
+          <Styled.UploadButton api="exportCarDispatchRecord" fileName="车辆导出" />,
           <Button
             key="button"
             icon={<PlusOutlined />}

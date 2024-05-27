@@ -7,6 +7,8 @@ import { ProTable } from 'components';
 import type { ModesApi } from './modes/model';
 import siteModel from './modes/menu.model';
 
+import Styled from '@/components/Styled';
+
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 export default () => {
@@ -57,6 +59,9 @@ export default () => {
             ];
           },
         }}
+        toolBarRender={() => [
+          <Styled.UploadButton api="exportPersonnelAttendance" fileName="考勤导出" />,
+        ]}
         scroll={{ x: '1000px', y: 'auto' }}
         columns={[...initColumns]}
       ></ProTable>

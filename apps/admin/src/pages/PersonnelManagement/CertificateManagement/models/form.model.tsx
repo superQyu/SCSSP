@@ -240,7 +240,7 @@ export default (basicFormRef: any, certificateFormRef: any, picture: string[], t
               picture: list,
             });
           }}
-          defaultFileList={fileList}
+          defaultFileList={() => fileList}
         />
       ),
     },

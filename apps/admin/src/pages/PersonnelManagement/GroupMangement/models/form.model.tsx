@@ -145,7 +145,7 @@ export default (subFormRef: any, entryAttachments: [] = [], exitAttachments: [] 
               entryAttachments: list,
             });
           }}
-          defaultFileList={entryFileList}
+          defaultFileList={() => entryFileList}
         />
       ),
     },
@@ -164,7 +164,7 @@ export default (subFormRef: any, entryAttachments: [] = [], exitAttachments: [] 
               exitAttachments: list,
             });
           }}
-          defaultFileList={exitFileList}
+          defaultFileList={() => exitFileList}
         />
       ),
     },

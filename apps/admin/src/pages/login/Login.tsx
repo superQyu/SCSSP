@@ -11,9 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext, useAppDispatch } from 'hooks';
 import { logo, title, describe } from '@/config';
 
-// Current usage CSS stylesheet
-// import styles from './index.module.scss';
-import { LoginContainer, FormOther, FormOtherTips, OtherItem, PageImg } from './Styled';
+import Styled from './Styled';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
@@ -86,9 +84,10 @@ const Login: React.FC = () => {
   };
 
   return (
-    <LoginContainer>
-      <PageImg
+    <Styled.LoginContainer>
+      <img
         style={{
+          position: 'fixed',
           zIndex: 99,
           top: '15%',
           left: '8%',
@@ -96,8 +95,9 @@ const Login: React.FC = () => {
         width={'500'}
         src={new URL('@/assets/login/title.svg', import.meta.url).href}
       />
-      <PageImg
+      <img
         style={{
+          position: 'fixed',
           bottom: '-10%',
           left: '-2%',
         }}
@@ -112,20 +112,25 @@ const Login: React.FC = () => {
         // subTitle={describe}
         loading={loading ? true : undefined}
         actions={
-          <Button className='mt-4 w-full h-40px' ghost>数据大屏</Button>
-          // <FormOther>
-          //   <Divider plain>
-          //     <FormOtherTips>其他登录方式</FormOtherTips>
-          //   </Divider>
-          //   <Space align="center" size={24}>
-          //     <OtherItem />
-          //     <OtherItem />
-          //     <OtherItem />
-          //   </Space>
-          // </FormOther>
+          <>
+            <Styled.ToScreenButton className="mt-4 w-full h-40px" ghost>
+              数据大屏
+            </Styled.ToScreenButton>
+            {/* <FormOther>
+              <Divider plain>
+                <FormOtherTips>其他登录方式</FormOtherTips>
+              </Divider>
+              <Space align="center" size={24}>
+                <OtherItem />
+                <OtherItem />
+                <OtherItem />
+              </Space>
+            </FormOther> */}
+          </>
         }
       >
         <Tabs
+          className="display-none"
           centered
           activeKey={loginType}
           onChange={(activeKey: any) => handlerTabsChange(activeKey as LoginType)}
@@ -153,7 +158,7 @@ const Login: React.FC = () => {
               name="password"
               fieldProps={{
                 size: 'large',
-                prefix: <img src={new URL('@/assets/login/user.svg', import.meta.url).href} />,
+                prefix: <img src={new URL('@/assets/login/password.svg', import.meta.url).href} />,
               }}
               placeholder={'密码'}
               rules={[{ required: true, message: '请输入密码！' }]}
@@ -216,14 +221,14 @@ const Login: React.FC = () => {
             />
           </>
         )}
-        <div className='bottom' style={{ marginBlockEnd: 24 }}>
+        <div className="bottom" style={{ marginBlockEnd: 24 }}>
           <ProFormCheckbox noStyle name="autoLogin" disabled={loading} valuePropName="checked">
             记住密码
           </ProFormCheckbox>
           <a style={{ float: 'right', color: 'white' }}> 忘记密码</a>
         </div>
       </LoginFormPage>
-    </LoginContainer>
+    </Styled.LoginContainer>
   );
 };
 

@@ -1,19 +1,16 @@
 import { useState, useEffect } from 'react';
 
-import { FormColumnsTypes, ProUpload, SearchSelect } from 'components';
+import { FormColumnsTypes, SearchSelect } from 'components';
 import { type ProColumns } from '@ant-design/pro-components';
-import { Select, DatePicker, Input } from 'antd';
+import { Select, DatePicker, Input, Button } from 'antd';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-export default (
-  tableRef: any,
-  editableFormRef: any,
-) => {
+export default (tableRef: any, editableFormRef: any) => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { materialList } = server;
+  const { materialList, file } = server;
 
   const formColumns: FormColumnsTypes[] = [
     {
@@ -57,7 +54,7 @@ export default (
       dataIndex: 'materialsInventoryId',
       ellipsis: true,
       hideInSearch: true,
-      hideInTable: true
+      hideInTable: true,
     },
     {
       title: '物料名称',
@@ -67,6 +64,7 @@ export default (
       renderFormItem: () => {
         return (
           <SearchSelect
+            popupMatchSelectWidth={200}
             placeholder="请选择物料名称"
             request={async (input) => {
               const res = await materialList.getAllMaterialList({
@@ -92,7 +90,7 @@ export default (
                 materialName: res.materialName,
                 measuringUnit: res.measuringUnit,
                 specification: res.specification,
-                materialCode: res.materialCode
+                materialCode: res.materialCode,
               });
             }}
           />
@@ -156,7 +154,7 @@ export default (
                 materialName: res.materialName,
                 measuringUnit: res.measuringUnit,
                 specification: res.specification,
-                materialCode: res.materialCode
+                materialCode: res.materialCode,
               });
             }}
           />
@@ -170,8 +168,8 @@ export default (
       hideInSearch: true,
     },
     {
-      title: '合格证件',
-      dataIndex: 'attachment',
+      title: '实际验收数量',
+      dataIndex: 'acceptNumber',
       ellipsis: true,
       hideInSearch: true,
     },

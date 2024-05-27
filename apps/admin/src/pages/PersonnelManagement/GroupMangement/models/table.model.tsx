@@ -54,17 +54,20 @@ export default ({ server }: MenusPropsType) => {
       valueType: 'indexBorder',
       dataIndex: 'index',
       ellipsis: true,
+      width: 213,
     },
     {
       title: '班组名称',
       dataIndex: 'teamName',
       ellipsis: true,
+      width: 213,
       hideInSearch: true,
     },
     {
       title: '班组长',
       dataIndex: 'userId',
       ellipsis: true,
+      width: 213,
       render: (_, record) => {
         return <span>{record.userName}</span>;
       },
@@ -76,12 +79,14 @@ export default ({ server }: MenusPropsType) => {
       title: '身份证号',
       dataIndex: 'identityCard',
       ellipsis: true,
+      width: 213,
       hideInSearch: true,
     },
     {
       title: '分包单位名称',
       dataIndex: 'subcontractorId',
       ellipsis: true,
+      width: 213,
       render: (_, record) => {
         return <span>{record.subcontractorName}</span>;
       },
@@ -93,18 +98,21 @@ export default ({ server }: MenusPropsType) => {
       title: '劳务工种',
       dataIndex: 'workTypeName',
       ellipsis: true,
+      width: 213,
       editable: false
     },
     {
       title: '公司简称简拼',
       dataIndex: 'corpCode',
       ellipsis: true,
+      width: 213,
       hideInSearch: true,
     },
     {
       title: '联系电话',
       dataIndex: 'phone',
       ellipsis: true,
+      width: 213,
       hideInSearch: true,
     },
   ];

@@ -3,9 +3,10 @@ import { useRef, useState } from 'react';
 import { ProTable } from 'components';
 import { type ActionType } from '@ant-design/pro-components';
 import { Button, message, Popconfirm } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import EditDialog from './components/editdialog';
-import CTable from './cTable';
+import ExpandTable from './ExpandTable';
+import Styled from '@/components/Styled';
 
 import dayjs from 'dayjs';
 
@@ -110,8 +111,24 @@ export default ({ onChange }: any) => {
           ignoreRules: false,
         }}
         scroll={{ y: 'auto' }}
-        search={false}
+        search={{
+          labelWidth: 'auto',
+          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+            return [
+              dom[0],
+              <Button
+                type="primary"
+                key="sub"
+                icon={<SearchOutlined />}
+                onClick={() => form?.submit()}
+              >
+                {searchText}
+              </Button>,
+            ];
+          },
+        }}
         toolBarRender={() => [
+          <Styled.UploadButton api="exportMaterialsExit" fileName="物料退场导出" />,
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
           </Button>,
@@ -119,7 +136,7 @@ export default ({ onChange }: any) => {
         editable={{}}
         expandable={{
           expandedRowRender: (record: any) =>
-            CTable({ record, server, cColumns, onChange }, firstTableRef),
+            ExpandTable({ record, server, cColumns, onChange }, firstTableRef),
         }}
         pagination={{
           pageSize: 10,

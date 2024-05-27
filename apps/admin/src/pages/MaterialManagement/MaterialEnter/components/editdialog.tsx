@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Modal, Button, message, Popconfirm, Form } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import { type ActionType } from '@ant-design/pro-components';
-import { AdForm, EditTable } from 'components';
-import { PlusOutlined } from '@ant-design/icons';
+import { AdForm, ProUpload } from 'components';
 import dayjs from 'dayjs';
-
+import EditTable from './Table';
 import initColumns from '../models/form.model';
 
 // api 相关
@@ -31,20 +30,17 @@ export default ({ openModal, onStateChange, detail = {} }: Props) => {
 
   const [open, setOpen] = useState<boolean>(openModal);
   const [loading, setLoading] = useState<boolean>(false);
+  const [tableData, setTableData] = useState([]);
 
   // 表单 DOM
   const formRef = useRef<FormInstance>(null);
-  // 可编辑表格 DOM
-  const actionRef = useRef<any>(null);
   // 自定义的表格 ref,主要用来抛出自定义的方法
-  const tableRef = useRef<any>(null);
+  const tableRef = useRef<any>();
   // 可编辑表格的 Form 的 DOM
-  const editableFormRef = useRef<any>(null);
+  const editableFormRef = useRef<any>();
 
   // 表单项配置
   // 只能放在外面, 因为调用该方法中使用 hook, 只能放在函数式组件的外部
-  // 传入表单的DOM 和 两个图片列表的默认值
-  // const { materialsDetailsWithInventoryRespVOS } = detail;
   const { formColumns, tableColumns } = initColumns(tableRef, editableFormRef);
 
   // 分包商信息表单的默认值
@@ -60,6 +56,13 @@ export default ({ openModal, onStateChange, detail = {} }: Props) => {
   useEffect(() => {
     setOpen(openModal);
   }, [openModal]);
+  useEffect(() => {
+    const list = detail.materialsDetailsWithInventoryRespVOS?.map((item: any) => {
+      return { ...item, attachment: item.attachment?.split('@') };
+    });
+    setTableData(list);
+    // console.log('detail', detail)
+  }, []);
 
   // 点击重置
   const onReset = () => {
@@ -72,10 +75,17 @@ export default ({ openModal, onStateChange, detail = {} }: Props) => {
 
   // 点击保存
   const handleOk = async () => {
+    const editRow = tableRef.current.getCurrentRow();
+    // console.log('当前尚在编辑的行', editRow);
+    if (editRow) {
+      message.error('有未保存行, 请先保存');
+      return;
+    }
     const materialsEnterSaveReqVO: MenusType = await formRef.current?.validateFields();
     materialsEnterSaveReqVO.enterDate = materialsEnterSaveReqVO.enterDate.valueOf();
     materialsEnterSaveReqVO.id = detail.id;
     const table = tableRef.current?.getTableData();
+    // console.log('所有表格数据', table);
     const materialsEnterDetailsSaveReqVOS = table.map((item: any) => {
       return {
         // 如果 id 为number, 则是编辑
@@ -84,10 +94,9 @@ export default ({ openModal, onStateChange, detail = {} }: Props) => {
         materialsInventoryId: item.materialsInventoryId,
         materialType: item.materialType,
         enterNumber: item.enterNumber,
-        attachment: item.attachment,
+        attachment: item.attachment?.join('@'),
       };
     });
-    // console.log('所有表格数据', materialsEnterDetailsSaveReqVOS);
     const values = { materialsEnterSaveReqVO, materialsEnterDetailsSaveReqVOS };
     // console.log('表单提交时的数据', values);
     setLoading(true);
@@ -135,86 +144,22 @@ export default ({ openModal, onStateChange, detail = {} }: Props) => {
           </Button>,
         ]}
       >
-        <AdForm
-          loadingTitle="提交中..."
-          formRef={formRef}
-          initialValues={formData}
-          loading={loading}
-          labelAlign="left"
-          columns={formColumns}
-        />
-        <EditTable
-          // key={`${detail.materialsEnterDetailsSaveReqVOS}`}
-          ref={tableRef}
-          actionRef={actionRef}
-          editableFormRef={editableFormRef}
-          headerTitle="物料列表"
-          columns={[
-            ...tableColumns,
-            {
-              title: '操作',
-              width: 100,
-              valueType: 'option',
-              dataIndex: 'option',
-              render: (_text: any, record: any, _: any, action: any) => [
-                <a
-                  key="editable"
-                  onClick={() => {
-                    // console.log('点击了编辑')
-                    action?.startEditable?.(record.id);
-                  }}
-                >
-                  编辑
-                </a>,
-                <Popconfirm
-                  key="delete"
-                  title="删除此项"
-                  onConfirm={() => {
-                    // console.log('tableRef', tableRef);
-                    tableRef.current?.removeRow(record);
-                  }}
-                  okText="确认"
-                  cancelText="取消"
-                >
-                  <a>删除</a>
-                </Popconfirm>,
-              ],
-            },
-          ]}
-          request={async (params = {}) => {
-            // console.log('表格数据', detail);
-            return {
-              success: true,
-              data: detail.materialsDetailsWithInventoryRespVOS || [],
-              // total: res.total,
-            };
-          }}
-          form={{
-            ignoreRules: false,
-          }}
-          scroll={{ y: 'auto' }}
-          search={false}
-          toolBarRender={() => [
-            <Button
-              icon={<PlusOutlined />}
-              onClick={() =>
-                actionRef.current?.addEditRecord?.(
-                  {
-                    id: (Math.random() * 1000000).toFixed(0),
-                    // title: '新的一行',
-                  },
-                  { position: 'top' }
-                )
-              }
-              type="primary"
-            >
-              新建
-            </Button>,
-          ]}
-          pagination={{
-            pageSize: 10,
-          }}
-        ></EditTable>
+        <div className="h-70vh p-inline-4" style={{ overflow: 'hidden auto' }}>
+          <AdForm
+            loadingTitle="提交中..."
+            formRef={formRef}
+            initialValues={formData}
+            loading={loading}
+            labelAlign="left"
+            columns={formColumns}
+          />
+          <EditTable
+            tableRef={tableRef}
+            editableFormRef={editableFormRef}
+            columns={tableColumns}
+            tableData={tableData}
+          />
+        </div>
       </Modal>
     </>
   );
