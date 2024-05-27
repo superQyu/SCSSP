@@ -30,7 +30,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
   const { server } = useBasicConfiguration();
   const { vehicle: V } = server;
   const formRef = useRef<FormInstance>(null);
-  const [title] = useState<string>('车辆信息');
+  const [title] = useState<string>('新增车辆进出场备案');
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(openModal);
 
@@ -192,7 +192,7 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
 
   return (
     <Modal
-      width={'50%'}
+      width={'800px'}
       open={open}
       title={title}
       onOk={handleOk}
@@ -210,15 +210,21 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
         </Button>,
       ]}
     >
-      <AdForm
+  <div className='mr-8'>
+  <AdForm
         key={`${JSON.stringify(subForm)}`}
         loadingTitle="提交中..."
         formRef={formRef}
         loading={loading}
-        labelAlign="left"
+        labelAlign="right"
         onFormChange={onFormChange}
         columns={columns}
+        layoutStyle={{
+          labelCol: { span: 12 },
+          wrapperCol: { span: 12, flex: 1 },
+        }}
       />
+  </div>
     </Modal>
   );
 };

@@ -115,6 +115,18 @@ const vehicle: ApiItem[] = [
     ],
   },
   {
+    key: 'createTrack',
+    url: `${ADMIN_API}/wisdom/car-district-track-info/create`,
+    type: 'POST',
+    name: '创建车辆轨迹',
+    description: '创建车辆轨迹',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'name', cn: '区域名称' },
+      { key: 'points', cn: '坐标点集合' },
+    ],
+  },
+  {
     key: 'delVehicleTrack',
     url: `${ADMIN_API}/wisdom/car-district-track-info/delete`,
     type: 'DELETE',

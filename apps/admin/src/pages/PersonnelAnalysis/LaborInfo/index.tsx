@@ -1,4 +1,4 @@
-import { Flex, Row, Col, Space } from 'antd';
+import { Flex, Row, Col } from 'antd';
 
 import LaborPie from './components/LaborPie';
 

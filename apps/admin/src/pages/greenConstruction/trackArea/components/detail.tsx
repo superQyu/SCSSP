@@ -1,19 +1,12 @@
-import React, {
-  cloneElement,
-  useState,
-  useEffect,
-  useRef,
-  forwardRef,
-  useImperativeHandle,
-} from 'react';
-import { Modal, Image } from 'antd';
-import type { DescriptionsProps } from 'antd';
-import type { FormInstance } from 'antd/es/form';
-import dayjs from 'dayjs';
-import { ProDescriptions } from 'components';
-import SingleTitle from '@/components/SingleTitle';
-import DictSelect from '@/components/DictSelect';
+import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
+import { Modal } from 'antd';
 
+import { MapProps } from '@/components/React-BMapGL/model';
+import MapServer from '@/components/React-BMapGL';
+
+interface Unlimit {
+  [key: string]: any;
+}
 interface Props {
   /** 表单初始化 */
   subForm: {};
@@ -22,15 +15,32 @@ interface Props {
 }
 
 const DetailForm: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
-  const [title] = useState<string>('查看轨迹区域');
+  const [title] = useState<string>('查看车辆轨迹');
   const [open, setOpen] = useState<boolean>(false);
-
+  const mapRef = useRef();
+  const [center, setCenter] = useState<Unlimit>({});
+  const [zoom, _] = useState<number>(17);
+  const [polygons, setPolygons] = useState<Unlimit[]>([]);
 
   const handleCancel = () => {
     setOpen(false);
   };
 
-  const initData = () => {};
+  const initData = () => {
+    if (!subForm?.points?.length) return;
+    const points = subForm.points.split(';').map((item: string) => {
+      return new BMapGL.Point(Number(item.split(',')[0]), Number(item.split(',')[1]));
+    });
+    const center = new BMapGL.Point(0, 0);
+    points.forEach((point) => {
+      center.lng += point.lng;
+      center.lat += point.lat;
+    });
+    center.lng /= points.length;
+    center.lat /= points.length;
+    setCenter(center);
+    setPolygons(points);
+  };
 
   useEffect(() => {
     initData();
@@ -41,8 +51,45 @@ const DetailForm: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
   }));
 
   return (
-    <Modal width={'50%'} open={open} title={title} maskClosable={false} onCancel={handleCancel}>
-      地图
+    <Modal
+      width={'1000px'}
+      open={open}
+      title={title}
+      maskClosable={false}
+      onCancel={handleCancel}
+      footer={[]}
+      destroyOnClose={true}
+    >
+      <div className="w-full h-500px">
+        <MapServer
+          ref={mapRef}
+          center={{ ...center }}
+          style={{ position: 'relative', height: 'calc(100%)' }}
+          zoom={zoom}
+          graphicDraw={{
+            Polygon: {
+              show: true,
+              loaded: (polys: any) => {
+                // setPolygons(polys);
+              },
+              onEditingEnd: (index: number, path: MapProps.Position[]) => {
+                // console.log(index, path);
+              },
+              paths: [
+                {
+                  show: true,
+                  path: polygons,
+
+                  options: {
+                    fillColor: 'red',
+                    fillOpacity: 0.25,
+                  },
+                },
+              ],
+            },
+          }}
+        />
+      </div>
     </Modal>
   );
 });
