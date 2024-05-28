@@ -119,7 +119,6 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
                 // 获取合理的中心点
                 // const centerPoint = map.getViewport(points)
 
-                console.log('mapRef', mapRef);
               },
             }}
             graphicDraw={{}}

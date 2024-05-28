@@ -16,6 +16,18 @@ export default () => {
   const [subForm, setSubForm] = useState<Record<string, any>>({});
   const detailModal = useRef();
 
+  const trajectoryHandle = async (id: string | number) => {
+    const res = await V.getPointRecord({
+      id,
+    });
+    if (!res.length) {
+      message.warning(`暂无车辆轨迹`);
+    } else {
+      setSubForm(res);
+      detailModal.current?.openModal(true);
+    }
+  };
+
   return (
     <>
       <ProTable
@@ -80,8 +92,7 @@ export default () => {
                   <Button
                     type="link"
                     onClick={() => {
-                      setSubForm(record);
-                      detailModal.current?.openModal(true);
+                      trajectoryHandle(record.id);
                     }}
                     icon={<EyeOutlined />}
                   >

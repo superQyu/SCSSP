@@ -31,14 +31,6 @@ const DetailForm: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
     const points = subForm.points.split(';').map((item: string) => {
       return new BMapGL.Point(Number(item.split(',')[0]), Number(item.split(',')[1]));
     });
-    const center = { lng: 0, lat: 0 };
-    points.forEach((point) => {
-      center.lng += point.lng;
-      center.lat += point.lat;
-    });
-    center.lng /= points.length;
-    center.lat /= points.length;
-    setCenter(center);
     setPolygons(points);
   };
 

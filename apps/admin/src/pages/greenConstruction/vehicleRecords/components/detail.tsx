@@ -18,56 +18,22 @@ interface Props {
 const DetailForm: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
   const [title] = useState<string>('查看车辆轨迹');
   const [open, setOpen] = useState<boolean>(false);
-  const [animatedPoints, setAnimatedPoints] = useState<MapProps.Position[]>([
-    {
-      lng: 120.31000935053041,
-      lat: 31.49832801882728,
-    },
-    {
-      lng: 120.31008916650208,
-      lat: 31.497928564577148,
-    },
-    {
-      lng: 120.3102144488597,
-      lat: 31.497407614262993,
-    },
-    {
-      lng: 120.31041939294992,
-      lat: 31.496332666743424,
-    },
-    {
-      lng: 120.31051421008465,
-      lat: 31.496197869498527,
-    },
-
-    {
-      lng: 120.3112838203947,
-      lat: 31.496369583720526,
-    },
-    {
-      lng: 120.31226203862387,
-      lat: 31.496644378664694,
-    },
-    {
-      lng: 120.31337690870417,
-      lat: 31.497056691364943,
-    },
-    {
-      lng: 120.31346476945085,
-      lat: 31.496500103340182,
-    },
-    {
-      lng: 120.31355263064668,
-      lat: 31.49600557929561,
-    },
-  ]);
+  const [animatedPoints, setAnimatedPoints] = useState<MapProps.Position[]>([]);
 
   const handleCancel = () => {
     setOpen(false);
   };
 
   const initData = () => {
-    console.log('subForm', subForm);
+    if (!subForm.length) return;
+    const points = subForm.map((item: { point: string }) => {
+      const point = item.point.split(',');
+      return {
+        lng: point[0] * 1,
+        lat: point[1] * 1,
+      };
+    });
+    setAnimatedPoints(points);
   };
 
   useEffect(() => {
@@ -86,7 +52,6 @@ const DetailForm: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
       maskClosable={false}
       onCancel={handleCancel}
       footer={[]}
-   
       destroyOnClose={true}
     >
       <div className="w-full h-500px">
@@ -117,15 +82,6 @@ const DetailForm: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
                     // enableMassClear: false,
                   },
                 },
-                // {
-                //   show: true,
-                //   path: [
-                //     new BMapGL.Point(120.31371730769798, 31.495346120568676),
-                //     new BMapGL.Point(120.31263934108601, 31.495515468655135),
-                //     new BMapGL.Point(120.31281900218801, 31.496223648206655),
-                //     new BMapGL.Point(120.31350171437559, 31.49648536536593),
-                //   ],
-                // },
               ],
             },
             TrackAnimation: {
