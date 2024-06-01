@@ -30,6 +30,18 @@ const vehicle: ApiItem[] = [
       { key: 'pageSize', cn: '每页条数' },
     ],
   },
+
+  {
+    key: 'getPointRecord',
+    url: `${ADMIN_API}/wisdom/car-in-out-record/getPointRecord`,
+    type: 'GET',
+    name: '车辆进出轨迹',
+    description: '车辆进出轨迹',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: 'id号' },
+    ],
+  },
   {
     key: 'vehicleApproveList',
     url: `${ADMIN_API}/wisdom/car-info/page`,
@@ -112,6 +124,18 @@ const vehicle: ApiItem[] = [
       { key: 'name', cn: '区域名称' },
       { key: 'pageNo', cn: '页码' },
       { key: 'pageSize', cn: '每页条数' },
+    ],
+  },
+  {
+    key: 'createTrack',
+    url: `${ADMIN_API}/wisdom/car-district-track-info/create`,
+    type: 'POST',
+    name: '创建车辆轨迹',
+    description: '创建车辆轨迹',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'name', cn: '区域名称' },
+      { key: 'points', cn: '坐标点集合' },
     ],
   },
   {
