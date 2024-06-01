@@ -11,8 +11,7 @@ import Styled from '@/components/Styled';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
-import type { ModesApi } from './models/model';
-import siteModel, { type ColumnsParamsProps } from './models/table.model';
+import siteModel from './models/table.model';
 
 export default () => {
   // api 相关
@@ -36,12 +35,7 @@ export default () => {
   // 点击保存
   const onSave = async (params: any) => {
     // console.log('编辑分包商时的参数', params);
-    const res = await subContractor
-      .updateSubContractor(params as ColumnsParamsProps)
-      .then(async () => {
-        message.success('信息更新成功！');
-        await actionRef.current?.reload();
-      });
+    const res = await subContractor.updateSubContractor(params);
     return res;
   };
 
@@ -99,10 +93,9 @@ export default () => {
               (item.subcontractorType = item.subcontractorType || `${item.subcontractorType}`)
           );
           return {
-            // ...params,
             data: res.list,
             total: res.total,
-          } as unknown as ModesApi.pageItemType;
+          };
         }}
         form={{
           ignoreRules: false,

@@ -1,48 +1,50 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 
 import { ProTable } from 'components';
 import { type ActionType } from '@ant-design/pro-components';
 import { Button, message, Popconfirm } from 'antd';
-import { PlusOutlined, UploadOutlined, SearchOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 
-import EditDialog from './components/editdialog';
-import Styled from '@/components/Styled';
+import Modal from './components/Modal';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
 import siteModel from './models/table.model';
+import { ToString } from '@/utils/transform';
+import { useRoute } from 'hooks';
 
 export default () => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { job } = server;
+  const { flowForm } = server;
+
+  const { tabNavigate } = useRoute();
 
   // 初始化表格列
   const initColumns = siteModel({ server });
   const actionRef = useRef<ActionType>();
 
   const [dialogVisible, setDialogVisible] = useState<boolean>(false);
+  const [detail, setDetail] = useState({});
 
   // 修改表单打开关闭状态
-  const handleModalStateChange = async (state: boolean) => {
+  const handleModalStateChange: ModalState.ModalStateChange<''> = async (props) => {
+    const { state, detail = {} } = props;
+    setDetail(detail);
     setDialogVisible(state);
-    await actionRef.current?.reload();
+    !state && (await actionRef.current?.reload());
   };
 
   // 点击保存
   const onSave = async (params: any) => {
-    // const res = await job.updateJob(params as ColumnsParamsProps).then(async () => {
-    //   message.success('信息更新成功！');
-    //   await actionRef.current?.reload();
-    // });
-    const res = await job.updateJob(params);
+    const res = await flowForm.updateGroup(params);
     return res;
   };
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await job.deleteJob({ id }).then(async () => {
+    const res = await flowForm.deleteForm({ id }).then(async () => {
       message.success('信息删除成功！');
       await actionRef.current?.reload();
     });
@@ -53,23 +55,36 @@ export default () => {
     <>
       <ProTable
         actionRef={actionRef}
-        headerTitle="工种列表"
+        headerTitle="流程表单列表"
         columns={[
           ...initColumns,
           {
             title: '操作',
-            width: 100,
+            width: 130,
+            fixed: 'right',
             valueType: 'option',
             dataIndex: 'option',
             render: (_text: any, record: any, _: any, action: any) => [
               <a
                 key="editable"
                 onClick={() => {
-                  // console.log('点击了编辑')
-                  action?.startEditable?.(record.id);
+                  tabNavigate({
+                    namePath: `工作流程/流程管理/设计流程表单${record.id}`,
+                    routePath: `/workflow/bpm/form/design?id=${record.id}`,
+                  });
                 }}
               >
                 编辑
+              </a>,
+              <a
+                key="detail"
+                onClick={() => {
+                  // console.log('点击了详情');
+                  handleModalStateChange({ state: true });
+                  // action?.startEditable?.(record.id);
+                }}
+              >
+                详情
               </a>,
               <Popconfirm
                 key="delete"
@@ -84,13 +99,12 @@ export default () => {
           },
         ]}
         request={async (params = {}) => {
-          // console.log('请求工种列表的参数', params)
-          const res = await job.getJobList(params);
-          res.list.forEach((item: any) => {
-            if (item.isSpecialWorkType != undefined || null)
-              item.isSpecialWorkType = `${item.isSpecialWorkType}`;
+          const res = await flowForm.getFormPage(params);
+          res.list = res.list.map((item: any) => {
+            item.status = ToString(item.status);
+            return item;
           });
-          // console.log('工种列表', res.list);
+          // console.log('工种列表', res);
           return {
             data: res.list,
             total: res.total,
@@ -117,18 +131,27 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.UploadButton api="exportWorkTypeInfo" fileName="工种导出" />,
-          <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
+          <Button
+            icon={<PlusOutlined />}
+            onClick={() => {
+              tabNavigate({
+                namePath: '工作流程/流程管理/设计流程表单',
+                routePath: '/workflow/bpm/form/design',
+              });
+            }}
+            type="primary"
+          >
             新建
           </Button>,
         ]}
-        editable={{ onSave }}
+        editable={{ onDelete, onSave }}
         pagination={{
           pageSize: 10,
         }}
       ></ProTable>
-      <EditDialog
+      <Modal
         key={`${dialogVisible}`}
+        detail={detail}
         openModal={dialogVisible}
         onStateChange={handleModalStateChange}
       />

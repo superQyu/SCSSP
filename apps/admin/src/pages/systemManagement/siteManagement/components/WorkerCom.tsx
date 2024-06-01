@@ -11,7 +11,7 @@ import styles from '../index.module.scss';
 import type { ModesApi } from '../modes/model';
 import { jobCategoryDanger } from '@/config';
 import Styled from '../Styled';
-import ToString from '@/utils/ToString';
+import { ToString } from '@/utils/transform';
 
 interface Props {
   /** 表单初始化 */

@@ -3,7 +3,7 @@ import { DatePicker } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
-import ToString from '@/utils/ToString';
+import { ToString } from '@/utils/transform';
 
 import DictSelect from '@/components/DictSelect';
 import { FormColumnsTypes, AdForm } from 'components';
@@ -35,7 +35,7 @@ const EntryCom: React.FC<Props> = forwardRef(({ detail }: Props, ref) => {
 
   useEffect(() => {
     if (Object.keys(detail).length) {
-      const subForm = {...detail.entryInfoRespVO};
+      const subForm = { ...detail.entryInfoRespVO };
       subForm.isTeamLeader = ToString(subForm.isTeamLeader);
       subForm.subcontractorId = ToString(subForm.subcontractorId);
       subForm.entryStatus = ToString(subForm.entryStatus);
@@ -78,7 +78,7 @@ const EntryCom: React.FC<Props> = forwardRef(({ detail }: Props, ref) => {
           }}
           onChange={async (val) => {
             console.log('val', val, typeof val);
-            
+
             if (typeof val == 'string') {
               formRef.current?.setFieldsValue({
                 teamName: val,

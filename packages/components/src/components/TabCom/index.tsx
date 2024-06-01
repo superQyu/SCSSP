@@ -40,6 +40,7 @@ export default () => {
 
   const onChange = (newActiveKey: string) => {
     const breadcrumbs = menuTab.find((item: Item) => item.key == newActiveKey);
+    // console.log('breadcrumbs', breadcrumbs);
     navigate(newActiveKey);
     setActiveKey(newActiveKey);
     setToken('BREADCRUMBS', JSON.stringify(breadcrumbs));

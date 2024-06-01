@@ -29,6 +29,16 @@ const ApiLists: ApiItem[] = [
         ],
     },
     {
+        key: 'getSimpleUserList',
+        url: `${ADMIN_API}/system/user/simple-list`,
+        type: 'GET',
+        name: '用户列表',
+        description: '获取用户精简信息列表',
+        params: [
+            { key: 'Authorization', location: 'header' },
+        ],
+    },
+    {
         key: 'deleteUser',
         url: `${ADMIN_API}/system/user/delete`,
         type: 'DELETE',

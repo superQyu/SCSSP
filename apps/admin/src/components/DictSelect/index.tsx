@@ -17,7 +17,7 @@ interface Props {
   /** 新增选项 */
   afterAddItem?: (state: any) => void;
   /** 字典key */
-  dictkey?: string;
+  dictKey?: string;
   /** 格式化下拉菜单样式 */
   valueEnum?: Record<string, any>;
   /** 绑定tree dom */

@@ -39,7 +39,7 @@ export default (basicFormRef: any, certificateFormRef: any, picture: string[], t
         url: item,
       };
     });
-    console.log('当前list', list);
+    // console.log('当前list', list);
     setFileList(list);
   }, [picture]);
 

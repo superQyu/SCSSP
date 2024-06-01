@@ -4,7 +4,6 @@ import { type ProColumns } from '@ant-design/pro-components';
 import { Select } from 'antd';
 
 import DictText from '@/components/DictSelect/DictText';
-import DictSelect from '@/components/DictSelect';
 
 type objJson = Record<string, any>;
 

@@ -1,7 +1,4 @@
 import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
-import { message, Tag, Input } from 'antd';
-
-import DictSelect from '@/components/DictSelect';
 
 type objJson = Record<string, any>;
 

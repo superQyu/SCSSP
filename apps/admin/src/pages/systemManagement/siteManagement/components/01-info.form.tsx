@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 import { AdForm, ProUpload, FormColumnsTypes } from 'components';
 import SingleTitle from '@/components/SingleTitle';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-import ToString from '@/utils/ToString';
+import { ToString } from '@/utils/transform';
 
 interface Props {
   /** 表单初始化 */

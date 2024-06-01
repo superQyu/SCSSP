@@ -10,9 +10,7 @@ import EditDialog from './components/editdialog';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-// 表格相关
-import type { ModesApi } from './models/model';
-import siteModel, { type ColumnsParamsProps } from './models/table.model';
+import siteModel from './models/table.model';
 
 export default () => {
   // api 相关
@@ -48,7 +46,7 @@ export default () => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    const res = await certificate.updateCertificate(params as ColumnsParamsProps).then(async () => {
+    const res = await certificate.updateCertificate(params).then(async () => {
       message.success('信息更新成功！');
       await actionRef.current?.reload();
     });
@@ -112,11 +110,10 @@ export default () => {
           });
           // console.log('证件列表', res);
           return {
-            // ...params,
             // success: true,
             data: res.list,
             total: res.total,
-          } as unknown as ModesApi.pageItemType;
+          };
         }}
         form={{
           ignoreRules: false,
