@@ -17,7 +17,7 @@ interface MenusPropsType {
 }
 
 export default ({ server, handleModalStateChange }: MenusPropsType) => {
-  const { tabNavigate } = useRoute();
+  const { tabNavigate, getRouteName } = useRoute();
 
   const { subContractor, certificate } = server as objJson;
 
@@ -128,7 +128,8 @@ export default ({ server, handleModalStateChange }: MenusPropsType) => {
               key="editable"
               onClick={() => {
                 // console.log('点击了编辑')
-                tabNavigate({ namePath: '', routePath: record.formCustomCreatePath });
+                const name = getRouteName(record.formCustomCreatePath);
+                tabNavigate({ namePath: name, routePath: record.formCustomCreatePath });
                 // handleModalStateChange(true);
                 // action?.startEditable?.(record.id);
                 // setDetail(record);
