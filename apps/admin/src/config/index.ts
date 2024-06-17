@@ -36,7 +36,10 @@ const jobCategoryDanger = [
   },
 ]
 
-export { PLATFORMID, logo, title, flogo, prefix, fieldConversion, describe,jobCategoryDanger };
+
+const PROJECTNAME = 'PROJECTNAME@CUR';
+
+export { PLATFORMID, logo, title, flogo, prefix, fieldConversion, describe, jobCategoryDanger, PROJECTNAME };
 
 export enum DICT_TYPE {
   USER_TYPE = 'user_type',

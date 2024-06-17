@@ -144,18 +144,30 @@ class AutoInterface {
         const service: jsonObject = fetchService;
         if (service.hasOwnProperty(xhrType)) {
           let headerParams = {}
+          // 添加固定参数
+          const { additionalParam } = _this.cusParmas
+          const aParams: jsonObject = {};
+          Object.entries(additionalParam).map(([ak, av], index) => {
+            if (typeof av === 'function') {
+              aParams[ak] = av();
+            } else {
+              aParams[ak] = av;
+            }
+          })
           if (['post', 'put', 'patch'].indexOf(xhrType) != -1) {
             if (!isFormData) {
               _this.dayjsZone(verifyed.params);
-
-              verifyed.params = JSON.stringify(verifyed.params);
+              verifyed.params = JSON.stringify({ ...verifyed.params, ...aParams });
             } else {
               headerParams = {
                 headers: {},
               }
             };
+          } else {
+            verifyed.params = { ...verifyed.params, ...aParams };
           };
-          return service[xhrType](url, verifyed.params, verifyed.config, { ..._this.cusParmas, ...cusParmas }, headerParams);
+
+          return service[xhrType](url, verifyed.params, verifyed.config, { ..._this.cusParmas, ...cusParmas, }, headerParams);
         };
         return _this.errorMethod(`请填写正确的请求类型!`);
 
