@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext } from 'react';
 
-import { TOKEN } from 'utils';
+import { TOKEN, getToken } from 'utils';
 import { autoInterface } from '@spms/web-request';
 import apisGather from '@/apis';
 import * as baseConf from '@/config';
@@ -33,11 +33,20 @@ export const BasicConfigurationProvider: React.FC<{ children: React.ReactNode }>
   children,
 }) => {
   const [loding, setFullLoding] = useState(false);
+  const { PROJECTNAME: DP } = baseConf || {};
+
+  const parameter = {
+    projectId: () => getToken(DP),
+  };
+
   return (
     <BasicConfigurationContext.Provider
       value={
         {
-          server: autoInterface(apisGather, TOKEN, { requested: NET_STATUS }),
+          server: autoInterface(apisGather, TOKEN, {
+            additionalParam: parameter,
+            requested: NET_STATUS,
+          }),
           config: baseConf,
           setFullLoding,
         } as ConfigurationType
