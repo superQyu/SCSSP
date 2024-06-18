@@ -80,7 +80,7 @@ export default ({ openModal, onStateChange }: Props) => {
   return (
     <>
       <Modal
-        open={open}
+        open={openModal}
         title="新建"
         onOk={handleOk}
         onCancel={handleCancel}

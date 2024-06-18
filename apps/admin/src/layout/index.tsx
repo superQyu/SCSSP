@@ -64,6 +64,7 @@ const LayoutContext: React.FC = () => {
   };
 
   const menuClick = (item: MenuDataItem) => {
+    // console.log('点击的菜单对象', item);
     const locale = item.locale as string;
     const localeArr = locale.slice(5).split('.');
     const breadcrumbs = localeArr.map((pathName: string) => {
@@ -87,7 +88,9 @@ const LayoutContext: React.FC = () => {
   useEffect(() => {
     if (!getToken('BREADCRUMBS')) return;
     let breadcrumbs = JSON.parse(getToken('BREADCRUMBS')).breadcrumbs;
-    breadcrumbs.unshift({ title: <HomeOutlined /> });
+    breadcrumbs?.unshift({
+      title: <HomeOutlined />,
+    });
     setBreadcrumbList(breadcrumbs);
   }, [getToken('BREADCRUMBS')]);
 

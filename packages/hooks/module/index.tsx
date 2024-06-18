@@ -10,6 +10,7 @@ import {
   saveDicts,
 } from './context';
 import KeepAlive from './KeepAlive';
+import useRoute from './route'
 import { AppDispatch, RootState, TypedUseSelectorHook, useSelector, useDispatch } from 'store';
 
 const useLocationListen = (listener: (location: Location) => void) => {
@@ -35,4 +36,5 @@ export {
   saveUserInfor,
   saveSiteInfor,
   saveDicts,
+  useRoute
 };

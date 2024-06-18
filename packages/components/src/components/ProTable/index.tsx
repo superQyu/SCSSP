@@ -83,6 +83,7 @@ export default (props: any) => {
         showHeader={props.showHeader}
         columns={props.columns || initColumns}
         params={props.params || {}}
+        beforeSearchSubmit={props.beforeSearchSubmit}
         request={props.request || false}
         actionRef={props.actionRef || actionRef}
         toolbar={props.toolBar || {}}

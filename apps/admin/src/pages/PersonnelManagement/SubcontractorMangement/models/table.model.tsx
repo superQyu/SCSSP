@@ -29,6 +29,7 @@ export default ({ server }: MenusPropsType) => {
       title: '序号',
       valueType: 'indexBorder',
       dataIndex: 'index',
+      fixed: 'left',
       ellipsis: true,
       width: 170,
     },

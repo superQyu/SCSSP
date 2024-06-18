@@ -10,8 +10,7 @@ import EditDialog from './components/editdialog';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
-import type { ModesApi } from './models/model';
-import siteModel, { type ColumnsParamsProps } from './models/table.model';
+import siteModel from './models/table.model';
 
 export default () => {
   // api 相关
@@ -34,7 +33,7 @@ export default () => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    const res = await group.updateGroup(params as ColumnsParamsProps).then(async () => {
+    const res = await group.updateGroup(params).then(async () => {
       message.success('信息更新成功！');
       await actionRef.current?.reload();
     });
@@ -96,10 +95,9 @@ export default () => {
           });
           // console.log('工种列表', res);
           return {
-            ...params,
             data: res.list,
             total: res.total,
-          } as unknown as ModesApi.pageItemType;
+          };
         }}
         form={{
           ignoreRules: false,

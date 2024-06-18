@@ -1,0 +1,146 @@
+import { useRef, useState } from 'react';
+
+import { ProTable } from 'components';
+import { type ActionType } from '@ant-design/pro-components';
+import { Button, message, Popconfirm } from 'antd';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+
+import EditDialog from './components/editdialog';
+
+// api 相关
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+// 表格相关
+import siteModel from './models/table.model';
+import { ToString } from '@/utils/transform';
+
+export default () => {
+  // api 相关
+  const { server } = useBasicConfiguration();
+  const { flowGroup } = server;
+
+  // 初始化表格列
+  const initColumns = siteModel({ server });
+  const actionRef = useRef<ActionType>();
+
+  const [dialogVisible, setDialogVisible] = useState<boolean>(false);
+  const [detail, setDetail] = useState({});
+
+  // 修改表单打开关闭状态
+  const handleModalStateChange = async (state: boolean) => {
+    setDetail({});
+    setDialogVisible(state);
+    await actionRef.current?.reload();
+  };
+
+  // 点击保存
+  const onSave = async (params: any) => {
+    const res = await flowGroup.updateGroup(params);
+    return res;
+  };
+
+  // 删除行
+  const onDelete = async (id: number) => {
+    const res = await flowGroup.deleteUserGroup({ id }).then(async () => {
+      message.success('信息删除成功！');
+      await actionRef.current?.reload();
+    });
+    return res;
+  };
+
+  return (
+    <>
+      <ProTable
+        actionRef={actionRef}
+        headerTitle="用户分组列表"
+        columns={[
+          ...initColumns,
+          {
+            title: '操作',
+            width: 100,
+            fixed: 'right',
+            valueType: 'option',
+            dataIndex: 'option',
+            render: (_text: any, record: any, _: any, action: any) => [
+              <a
+                key="editable"
+                onClick={() => {
+                  // console.log('点击了编辑')
+                  handleModalStateChange(true);
+                  // action?.startEditable?.(record.id);
+                  setDetail(record);
+                }}
+              >
+                编辑
+              </a>,
+              <Popconfirm
+                key="delete"
+                title="删除此项"
+                onConfirm={() => onDelete(record.id)}
+                okText="确认"
+                cancelText="取消"
+              >
+                <a>删除</a>
+              </Popconfirm>,
+            ],
+          },
+        ]}
+        beforeSearchSubmit={(params: any) => {
+          // console.log('搜索参数', params);
+          // return params
+          return {
+            ...params,
+            'createTime[0]': params.createTime && `${params.createTime?.[0]} 00:00:00`,
+            'createTime[1]': params.createTime && `${params.createTime?.[1]} 23:59:59`,
+          };
+        }}
+        request={async (params = {}) => {
+          const res = await flowGroup.getUserGroupPage(params);
+          res.list = res.list.map((item: any) => {
+            item.status = ToString(item.status);
+            return item;
+          });
+          // console.log('工种列表', res);
+          return {
+            data: res.list,
+            total: res.total,
+          };
+        }}
+        form={{
+          ignoreRules: false,
+        }}
+        scroll={{ y: 'auto' }}
+        search={{
+          labelWidth: 'auto',
+          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+            return [
+              dom[0],
+              <Button
+                type="primary"
+                key="sub"
+                icon={<SearchOutlined />}
+                onClick={() => form?.submit()}
+              >
+                {searchText}
+              </Button>,
+            ];
+          },
+        }}
+        toolBarRender={() => [
+          <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
+            新建
+          </Button>,
+        ]}
+        editable={{ onDelete, onSave }}
+        pagination={{
+          pageSize: 10,
+        }}
+      ></ProTable>
+      <EditDialog
+        key={`${dialogVisible}`}
+        detail={detail}
+        openModal={dialogVisible}
+        onStateChange={handleModalStateChange}
+      />
+    </>
+  );
+};

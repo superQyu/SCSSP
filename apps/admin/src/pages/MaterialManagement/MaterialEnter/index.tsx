@@ -128,7 +128,7 @@ export default ({ onChange }: any) => {
           },
         }}
         toolBarRender={() => [
-          <Styled.UploadButton api="exportMaterialsEnter" fileName="物料进场导出" />,
+          <Styled.ExportButton api="exportMaterialsEnter" fileName="物料进场导出" />,
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
           </Button>,

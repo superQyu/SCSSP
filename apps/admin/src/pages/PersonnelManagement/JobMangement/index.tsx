@@ -11,8 +11,7 @@ import Styled from '@/components/Styled';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
-import type { ModesApi } from './models/model';
-import siteModel, { type ColumnsParamsProps } from './models/table.model';
+import siteModel from './models/table.model';
 
 export default () => {
   // api 相关
@@ -37,7 +36,7 @@ export default () => {
     //   message.success('信息更新成功！');
     //   await actionRef.current?.reload();
     // });
-    const res = await job.updateJob(params as ColumnsParamsProps);
+    const res = await job.updateJob(params);
     return res;
   };
 
@@ -93,10 +92,9 @@ export default () => {
           });
           // console.log('工种列表', res.list);
           return {
-            ...params,
             data: res.list,
             total: res.total,
-          } as unknown as ModesApi.pageItemType;
+          };
         }}
         form={{
           ignoreRules: false,
@@ -119,7 +117,7 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.UploadButton api="exportWorkTypeInfo" fileName="工种导出" />,
+          <Styled.ExportButton api="exportWorkTypeInfo" fileName="工种导出" />,
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
           </Button>,

@@ -9,19 +9,10 @@ type MenusPropsType = {
   server?: objJson;
 };
 
-export interface ColumnsParamsProps extends objJson {
-  subcontractorType: string;
-  realName: string;
-  corpCode: string;
-  legalRepresentative: string;
-  registeredCapital: string;
-  unitAddress: string;
-  principal: string;
-  principalTel: string;
-}
-
 export default ({ server }: MenusPropsType) => {
   const { subContractor, certificate } = server as objJson;
+
+  const columnWidth = 213
 
   // 分包单位选择下拉
   const [subcontractorList, setSubcontractorList] = useState([]);
@@ -53,21 +44,22 @@ export default ({ server }: MenusPropsType) => {
       title: '序号',
       valueType: 'indexBorder',
       dataIndex: 'index',
+      fixed: 'left',
       ellipsis: true,
-      width: 213,
+      width: columnWidth,
     },
     {
       title: '班组名称',
       dataIndex: 'teamName',
       ellipsis: true,
-      width: 213,
+      width: columnWidth,
       hideInSearch: true,
     },
     {
       title: '班组长',
       dataIndex: 'userId',
       ellipsis: true,
-      width: 213,
+      width: columnWidth,
       render: (_, record) => {
         return <span>{record.userName}</span>;
       },
@@ -79,14 +71,14 @@ export default ({ server }: MenusPropsType) => {
       title: '身份证号',
       dataIndex: 'identityCard',
       ellipsis: true,
-      width: 213,
+      width: columnWidth,
       hideInSearch: true,
     },
     {
       title: '分包单位名称',
       dataIndex: 'subcontractorId',
       ellipsis: true,
-      width: 213,
+      width: columnWidth,
       render: (_, record) => {
         return <span>{record.subcontractorName}</span>;
       },
@@ -98,21 +90,21 @@ export default ({ server }: MenusPropsType) => {
       title: '劳务工种',
       dataIndex: 'workTypeName',
       ellipsis: true,
-      width: 213,
+      width: columnWidth,
       editable: false
     },
     {
       title: '公司简称简拼',
       dataIndex: 'corpCode',
       ellipsis: true,
-      width: 213,
+      width: columnWidth,
       hideInSearch: true,
     },
     {
       title: '联系电话',
       dataIndex: 'phone',
       ellipsis: true,
-      width: 213,
+      width: columnWidth,
       hideInSearch: true,
     },
   ];

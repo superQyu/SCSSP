@@ -11,8 +11,8 @@ import Styled from '@/components/Styled';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
-import type { ModesApi } from './models/model';
-import siteModel, { type ColumnsParamsProps } from './models/table.model';
+import siteModel from './models/table.model';
+import { ToString } from '@/utils/transform';
 
 export default () => {
   // api 相关
@@ -36,12 +36,7 @@ export default () => {
   // 点击保存
   const onSave = async (params: any) => {
     // console.log('编辑分包商时的参数', params);
-    const res = await subContractor
-      .updateSubContractor(params as ColumnsParamsProps)
-      .then(async () => {
-        message.success('信息更新成功！');
-        await actionRef.current?.reload();
-      });
+    const res = await subContractor.updateSubContractor(params);
     return res;
   };
 
@@ -94,15 +89,17 @@ export default () => {
         request={async (params = {}) => {
           const res = await subContractor.getSubContractorList(params);
           // console.log('分包商列表', res.list);
-          res.list.forEach(
-            (item: any) =>
-              (item.subcontractorType = item.subcontractorType || `${item.subcontractorType}`)
-          );
+          res.list = res.list.map((item: any) => {
+            item.subcontractorType = ToString(item.subcontractorType);
+            item.corpType = ToString(item.corpType);
+            item.overallMerit = ToString(item.overallMerit);
+            item.isConformity = ToString(item.isConformity);
+            return item;
+          });
           return {
-            // ...params,
             data: res.list,
             total: res.total,
-          } as unknown as ModesApi.pageItemType;
+          };
         }}
         form={{
           ignoreRules: false,
@@ -125,7 +122,7 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.UploadButton api="exportSubcontractorInfo" fileName="分包商导出" />,
+          <Styled.ExportButton api="exportSubcontractorInfo" fileName="分包商导出" />,
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
           </Button>,

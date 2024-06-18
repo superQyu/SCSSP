@@ -123,7 +123,7 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.UploadButton api="exportCarInOutRecord" fileName="车辆进出场" />,
+          <Styled.ExportButton api="exportCarInOutRecord" fileName="车辆进出场" />,
         ]}
       ></ProTable>
       <DetailForm subForm={subForm} ref={detailModal} />

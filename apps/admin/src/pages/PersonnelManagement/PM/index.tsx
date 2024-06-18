@@ -98,7 +98,7 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.UploadButton api="exportProjectUnity" fileName="项目导出" />,
+          <Styled.ExportButton api="exportProjectUnity" fileName="项目导出" />,
           <Button
             key="button"
             icon={<PlusOutlined />}

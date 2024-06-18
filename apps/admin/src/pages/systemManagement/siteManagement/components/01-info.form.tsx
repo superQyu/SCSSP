@@ -1,4 +1,4 @@
-import React, { useRef, forwardRef, useImperativeHandle, useState } from 'react';
+import React, { useRef, forwardRef, useImperativeHandle, useState, useEffect } from 'react';
 import { DatePicker, Col, Row, Flex } from 'antd';
 import type { UploadFile } from 'antd';
 import DictSelect from '@/components/DictSelect';
@@ -8,19 +8,46 @@ import dayjs from 'dayjs';
 import { AdForm, ProUpload, FormColumnsTypes } from 'components';
 import SingleTitle from '@/components/SingleTitle';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import { ToString } from '@/utils/transform';
 
 interface Props {
   /** 表单初始化 */
-  subForm: Record<string, any>;
+  detail: Record<string, any>;
 }
 
-const InfoCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
+const InfoCom: React.FC<Props> = forwardRef(({ detail }: Props, ref) => {
   const { server } = useBasicConfiguration();
   const { file: F } = server;
 
   const formRef = useRef<FormInstance>(null);
   const [formKey, _] = useState<string>('personnelInfoSaveReqVO');
   const [defaultUrl, setDefaultUrl] = useState<(UploadFile & { url?: string })[]>([]);
+  const [subForm, setSubForm] = useState<any>({});
+
+  useEffect(() => {
+    // console.log('detail发生变化', detail);
+    if (JSON.stringify(detail) != '{}') {
+      const subForm = { ...detail.personnelInfoRespVO };
+      subForm.gender = ToString(subForm.gender);
+      subForm.educational = ToString(subForm.educational);
+      subForm.companyType = ToString(subForm.companyType);
+      subForm.jobState = ToString(subForm.jobState);
+      subForm.enabled = ToString(subForm.enabled);
+      subForm.maritalStatus = ToString(subForm.maritalStatus);
+      subForm.hasMajorMedicalHistory = ToString(subForm.hasMajorMedicalHistory);
+      subForm.passportPhoto = subForm.passportPhoto && subForm.passportPhoto?.split('@');
+      // console.log('subForm.passportPhoto', subForm.passportPhoto)
+      const list = subForm.passportPhoto?.map((item: string, index: number) => {
+        return {
+          uid: `${index}`,
+          name: item?.split('/')?.slice(-1)[0],
+          url: item,
+        };
+      });
+      setDefaultUrl(list);
+      setSubForm(subForm);
+    }
+  }, [detail]);
 
   const columns: FormColumnsTypes[] = [
     {
@@ -293,12 +320,12 @@ const InfoCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
   return (
     <>
       <SingleTitle label="基础信息" />
-      <Row gutter={16} className='mt-5'>
+      <Row gutter={16} className="mt-5">
         <Col className="gutter-row" span={4}>
           <Flex justify="center" align="center" className="h-full">
             <div>
               <ProUpload
-                key={JSON.stringify(defaultUrl)}
+                key={JSON.stringify(subForm.passportPhoto)}
                 defaultFileList={() => defaultUrl}
                 onRequest={async (params: any) => await F.fileUpload(params)}
                 onUploadSuccess={async (res) => {
@@ -314,6 +341,7 @@ const InfoCom: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
         </Col>
         <Col className="gutter-row" span={20}>
           <AdForm
+            key={`${JSON.stringify(subForm)}`}
             name={formKey}
             initialValues={subForm}
             formRef={formRef}

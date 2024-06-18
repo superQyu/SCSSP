@@ -1,9 +1,10 @@
 import { cloneElement, useRef, useState, useEffect } from 'react';
+import { useRoute } from 'hooks';
 
 import { ProTable } from 'components';
 // import { ProTable } from '@ant-design/pro-components';
 import type { ProColumns, ActionType } from '@ant-design/pro-components';
-import { Button, message, DatePicker, Space, Table, Alert } from 'antd';
+import { Button, message, DatePicker, Space, Table, Alert, Popconfirm } from 'antd';
 import Styled from '@/components/Styled';
 
 import { PlusOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
@@ -73,6 +74,9 @@ export default () => {
   // 初始化 表格列表项
   const initColumns = PMmodel({ server });
 
+  // 路由跳转
+  const { tabNavigate } = useRoute();
+
   // 删除行
   const onDelete = async (id: number) => {
     const res = await M.deleteMenus({ ids: id }).then(async () => {
@@ -104,7 +108,39 @@ export default () => {
             total: res.total,
           } as unknown as ModesApi.pageItemType;
         }}
-        columns={initColumns}
+        columns={[
+          ...initColumns,
+          {
+            title: '操作',
+            width: 140,
+            valueType: 'option',
+            key: 'option',
+            fixed: 'right',
+            render: (_text: any, record: any, _: any, action: any) => [
+              <a
+                key="editable"
+                onClick={() => {
+                  // action?.startEditable?.(record.id);
+                  tabNavigate({
+                    namePath: `项目人员管理/人员详情${record.id}`,
+                    routePath: `/PersonDetail/?id=${record.id}`,
+                  });
+                }}
+              >
+                编辑
+              </a>,
+              <Popconfirm
+                key="delete"
+                title="删除此项"
+                onConfirm={() => onDelete(record.id)}
+                okText="确认"
+                cancelText="取消"
+              >
+                <a>删除</a>
+              </Popconfirm>,
+            ],
+          },
+        ]}
         scroll={{ x: 1900, y: 'auto' }}
         onSubmit={async (params: {}) => {}}
         pagination={{
@@ -139,12 +175,13 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.UploadButton api="exportPersonnelInfo" fileName="人员信息导出" />,
+          <Styled.ExportButton api="exportPersonnelInfo" fileName="人员信息导出" />,
           <Button
             key="button"
             icon={<PlusOutlined />}
             onClick={() => {
-              console.log(dictionary);
+              // console.log(dictionary);
+              tabNavigate({ namePath: '项目人员管理/信息采集', routePath: '/PM/IA' });
             }}
             type="primary"
           >

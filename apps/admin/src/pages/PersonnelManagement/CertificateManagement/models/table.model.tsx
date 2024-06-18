@@ -4,7 +4,6 @@ import { type ProColumns } from '@ant-design/pro-components';
 import { Select } from 'antd';
 
 import DictText from '@/components/DictSelect/DictText';
-import DictSelect from '@/components/DictSelect';
 
 type objJson = Record<string, any>;
 
@@ -61,6 +60,7 @@ export default ({ server }: MenusPropsType) => {
         title: '序号',
         valueType: 'indexBorder',
         dataIndex: 'index',
+        fixed: 'left',
         width: columnWidth0,
         ellipsis: true,
       },
@@ -143,6 +143,7 @@ export default ({ server }: MenusPropsType) => {
         title: '序号',
         valueType: 'indexBorder',
         dataIndex: 'index',
+        fixed: 'left',
         width: columnWidth1,
         ellipsis: true,
       },
@@ -225,6 +226,7 @@ export default ({ server }: MenusPropsType) => {
         title: '序号',
         valueType: 'indexBorder',
         dataIndex: 'index',
+        fixed: 'left',
         width: columnWidth2,
         ellipsis: true,
       },

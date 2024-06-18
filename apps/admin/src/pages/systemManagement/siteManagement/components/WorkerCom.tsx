@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
-import { Button, message, Modal, Collapse, Flex, Select } from 'antd';
+import { Button, message, Modal, Collapse, Flex, Select, Popconfirm } from 'antd';
 import type { CollapseProps } from 'antd';
 import { LeftOutlined, DeleteOutlined, AuditOutlined } from '@ant-design/icons';
 import type { FormInstance } from 'antd/es/form';
@@ -10,14 +10,19 @@ import siteModel from '../modes/info.model';
 import styles from '../index.module.scss';
 import type { ModesApi } from '../modes/model';
 import { jobCategoryDanger } from '@/config';
+import Styled from '../Styled';
+import { ToString } from '@/utils/transform';
 
 interface Props {
   /** 表单初始化 */
   subForm: Record<string, any>;
   /** 监听Modal状态变化 */
-  onStateChange?: (any) => void;
+  onStateChange?: (state: any) => void;
   /** 监听确定按钮提交 */
-  onSubmit: (state: ModesApi.PersonnelCertificateSaveReqVO[]) => void;
+  // onSubmit: (state: ModesApi.PersonnelCertificateSaveReqVO[]) => void;
+  onSubmit: (state: any) => void;
+  /** 编辑时的证书详情 */
+  detail?: Record<string, any>;
 }
 
 interface FileItem {
@@ -36,7 +41,7 @@ type MenusType = {
   [key: string]: any;
 };
 
-const FunctionCom: React.FC<Props> = forwardRef(({ subForm, onSubmit }: Props, ref) => {
+const FunctionCom: React.FC<Props> = forwardRef(({ subForm, onSubmit, detail }: Props, ref) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
 
@@ -55,7 +60,10 @@ const FunctionCom: React.FC<Props> = forwardRef(({ subForm, onSubmit }: Props, r
   const [functionKey, setFunctionKey] = useState<'jobCategory' | 'workTypeId'>('jobCategory');
   const certificateRef = useRef<FormInstance[]>([]);
   const [activeKey, setActiveKey] = useState('');
-  const { file: F, basic: B, person: P } = server;
+  // 控制所属工种表单的默认值
+  const [initialValues, setInitialValues] = useState<any>({});
+
+  const { file: F, basic: B, person: P, certificate } = server;
 
   const { certificateColumns } = siteModel({ server });
 
@@ -96,49 +104,67 @@ const FunctionCom: React.FC<Props> = forwardRef(({ subForm, onSubmit }: Props, r
   };
 
   // 选择工种
-  const workTypeClick = ({ value, danger = false }) => {
+  const workTypeClick = ({ value = '', danger = false }) => {
     setCurVal(value);
     setIfcertificate(danger);
     formRef.current?.setFieldValue([functionKey], value);
   };
 
-  const handleAddItem = () => {
-    const newFile = fileList.at(-1) as FileItem;
-    const collapseItemIdx = fileList.length - 1;
-    setCollapseItem([
-      ...collapseItem,
-      {
-        key: newFile.uid,
-        label: <span className="h-44px font-700 color-#458FFF">{newFile.name}</span>,
-        children: (
-          <>
-            <AdForm
-              layout="horizontal"
-              formRef={(el: any) => (certificateRef.current[collapseItemIdx] = el)}
-              columns={certificateColumns}
-            />
-            <Flex justify="flex-end">
-              <Button
-                type="primary"
-                icon={<DeleteOutlined />}
-                danger
-                onClick={() => {
-                  delIconClick(collapseItemIdx);
-                }}
-              >
-                删除
-              </Button>
-            </Flex>
-          </>
-        ),
-      },
-    ]);
+  const handleAddItem = (newFile: FileItem, collapseItemIdx: number) => {
+    // const newFile = fileList.at(-1) as FileItem;
+    // const collapseItemIdx = fileList.length - 1;
+    // console.log('新增的证件', newFile, collapseItemIdx);
+    setCollapseItem((collapseItem = []) => {
+      const subForm = detail?.personnelCertificateRespVOS?.[collapseItemIdx];
+      // console.log('subForm', subForm);
+      return [
+        ...collapseItem,
+        {
+          className: 'title',
+          key: newFile.uid,
+          forceRender: true,
+          label: <div className="truncate font-700 color-#458FFF">{newFile.name}</div>,
+          children: (
+            <>
+              <AdForm
+                initialValues={subForm}
+                layout="horizontal"
+                formRef={(el: any) => (certificateRef.current[collapseItemIdx] = el)}
+                columns={certificateColumns}
+              />
+              <Flex justify="flex-end">
+                <Popconfirm
+                  key="delete"
+                  title="删除此项"
+                  description="一旦删除, 将不可回退!"
+                  onConfirm={() => delIconClick(collapseItemIdx)}
+                  okText="确认"
+                  cancelText="取消"
+                >
+                  <Button type="primary" icon={<DeleteOutlined />} danger>
+                    删除
+                  </Button>
+                </Popconfirm>
+              </Flex>
+            </>
+          ),
+        },
+      ];
+    });
     setActiveKey(newFile.uid);
   };
 
-  const handleDelItem = () => {
-    const newList = [...collapseItem];
-    newList.splice(delIndex, 1);
+  const handleDelItem = async () => {
+    // console.log('delIndex', delIndex);
+    // 以下是接口删除逻辑
+    const id = certificateRef.current[delIndex]?.getFieldValue('id');
+    // console.log('id', id);
+    if (id) await certificate.deleteCertificate({ id });
+    // 以下是页面显示逻辑
+    const list = [...collapseItem];
+    const newList = list.filter((item) => item.key != `${delIndex}`);
+    // newList.splice(delIndex, 1);
+    // console.log('newList', newList);
     certificateRef.current[delIndex] = null;
     setCollapseItem(newList);
   };
@@ -157,17 +183,17 @@ const FunctionCom: React.FC<Props> = forwardRef(({ subForm, onSubmit }: Props, r
       message.warning(`该${label}需上传证书信息`);
       return;
     }
-
     if (refs.length) {
       refs.forEach(async (el, index) => {
         if (el) {
           const elValue: MenusType = await el.validateFields();
           arr.push({ ...elValue, picture: fileList[index].url });
         }
-        onSubmit(arr);
+        onSubmit({ certificate: arr, [functionKey]: curVal });
         setOpen(false);
       });
     } else {
+      onSubmit({ certificate: [], [functionKey]: curVal });
       setOpen(false);
     }
   };
@@ -191,8 +217,25 @@ const FunctionCom: React.FC<Props> = forwardRef(({ subForm, onSubmit }: Props, r
   const setFormModal = (value: boolean) => setOpen(value);
 
   useEffect(() => {
-    if (fileList.length > collapseItem.length) {
-      handleAddItem();
+    if (fileList.length > (collapseItem?.length as number)) {
+      // console.log('fileList 增加', fileList, collapseItem.current);
+      const newFileList = fileList?.filter((newI) => {
+        return !collapseItem?.find((oldI) => oldI.key == newI.uid);
+      });
+      // console.log('newFileList', newFileList);
+      newFileList.forEach(async (item, index) => {
+        let collapseItemIdx: number;
+        if (newFileList.length != 1) {
+          // 说明一次性添加了多个证件
+          // 只有在初始化时可能出现该情况
+          // 此时 collapseItemIdx 与 index 保持一致
+          collapseItemIdx = index;
+        } else {
+          collapseItemIdx = fileList.length - 1;
+        }
+        // console.log('collapseItemIdx', collapseItemIdx);
+        handleAddItem(item, collapseItemIdx);
+      });
     } else {
       handleDelItem();
     }
@@ -209,6 +252,30 @@ const FunctionCom: React.FC<Props> = forwardRef(({ subForm, onSubmit }: Props, r
     setFunctionKey(key);
     init();
   }, [subForm]);
+
+  useEffect(() => {
+    if (Object.entries(detail || {}).length > 0) {
+      // console.log('detail', detail, functionKey);
+      // 所属工种表单的默认值
+      const value = detail?.personnelInfoRespVO?.[`${functionKey}`];
+      const strValue = ToString(value);
+      let initValue = { [functionKey]: strValue };
+      // console.log('initValue', initValue, strValue);
+      setInitialValues(initValue);
+      setCurVal(strValue || '');
+      // 证书列表默认值
+      const list =
+        detail?.personnelCertificateRespVOS?.map((item: any, index: number) => {
+          return {
+            uid: `${index}`,
+            name: item.picture?.split('/')?.slice(-1)[0],
+            url: item.picture,
+          };
+        }) || [];
+      // console.log('初始化文件列表', list);
+      setFileList(list);
+    }
+  }, [detail]);
 
   useImperativeHandle(ref, () => ({
     resetAll,
@@ -232,79 +299,87 @@ const FunctionCom: React.FC<Props> = forwardRef(({ subForm, onSubmit }: Props, r
       ]}
       width={'50%'}
     >
-      <AdForm
-        formRef={formRef}
-        labelAlign="left"
-        columns={columns}
-        layoutStyle={{
-          labelCol: { span: 3 },
-          wrapperCol: { span: 10, flex: 1 },
-        }}
-      />
-      <Flex wrap="wrap" gap="middle">
-        {options.map((item: workTypeItem) => {
-          return (
-            <Button
-              key={item.value}
-              type="default"
-              danger={item.danger || false}
-              style={
-                curVal == item.value
-                  ? { color: '#379E04', background: 'rgba(103,194,58,0.2', border: 'none' }
-                  : {}
-              }
-              onClick={() => workTypeClick(item)}
-            >
-              {item.label}
-            </Button>
-          );
-        })}
-      </Flex>
-
-      <div className={styles.infoTitle}>
-        <Flex justify={'space-between'} align={'center'} className="w-full">
-          证书信息
-          <ProUpload
-            buttonRender={
-              <Button icon={<AuditOutlined />} className="bg-#67c23a color-#fff" size="large">
-                上传证书
+      <div className="max-h-70vh p-inline-4" style={{ overflow: 'hidden auto' }}>
+        <AdForm
+          formRef={formRef}
+          initialValues={initialValues}
+          labelAlign="left"
+          columns={columns}
+          layoutStyle={{
+            labelCol: { span: 3 },
+            wrapperCol: { span: 10, flex: 1 },
+          }}
+        />
+        <Flex wrap="wrap" gap="middle">
+          {options.map((item: workTypeItem) => {
+            return (
+              <Button
+                key={item.value}
+                type="default"
+                danger={item.danger || false}
+                style={
+                  curVal == item.value
+                    ? { color: '#379E04', background: 'rgba(103,194,58,0.2', border: 'none' }
+                    : {}
+                }
+                onClick={() => workTypeClick(item)}
+              >
+                {item.label}
               </Button>
-            }
-            onRequest={async (params: any) => await F.fileUpload(params)}
-            onUploadSuccess={async (res) => {
-              const uid = Object.keys(res)[0];
-              const { name, url } = Object.values(res)[0] as { name: string; url: string };
-              setFileList([
-                ...fileList,
-                {
-                  uid,
-                  name,
-                  url,
-                },
-              ]);
-            }}
-            maxCount={false}
-            showUploadList={false}
-          />
+            );
+          })}
         </Flex>
-      </div>
 
-      <Collapse
-        activeKey={activeKey}
-        items={collapseItem}
-        bordered={false}
-        style={{ background: '#fff' }}
-        expandIconPosition="end"
-        expandIcon={({ isActive, panelKey }) => (
-          <LeftOutlined
-            rotate={isActive ? 90 : 0}
-            onClick={() => {
-              const index = !isActive ? panelKey : -1;
-              setActiveKey(index);
-            }}
-          />
-        )}
-      />
+        <div className={styles.infoTitle}>
+          <Flex justify={'space-between'} align={'center'} className="w-full">
+            证书信息
+            <ProUpload
+              buttonRender={
+                <Button icon={<AuditOutlined />} className="bg-#67c23a color-#fff" size="large">
+                  上传证书
+                </Button>
+              }
+              onRequest={async (params: any) => await F.fileUpload(params)}
+              onUploadSuccess={async (res) => {
+                const uid = Object.keys(res)[0];
+                const { name, url } = Object.values(res)[0] as { name: string; url: string };
+                setFileList([
+                  ...fileList,
+                  {
+                    uid,
+                    name,
+                    url,
+                  },
+                ]);
+              }}
+              maxCount={false}
+              showUploadList={false}
+            />
+          </Flex>
+        </div>
+
+        <Styled.Collapse
+          activeKey={activeKey}
+          accordion
+          items={collapseItem}
+          bordered={false}
+          style={{ background: '#fff' }}
+          expandIconPosition="end"
+          // expandIcon={({ isActive, panelKey }) => (
+          //   <LeftOutlined
+          //     rotate={isActive ? 90 : 0}
+          //     onClick={() => {
+          //       const index = !isActive ? panelKey : -1;
+          //       setActiveKey(index);
+          //     }}
+          //   />
+          // )}
+          onChange={(props) => {
+            // console.log('当前展开项', props);
+            setActiveKey(props[0]);
+          }}
+        />
+      </div>
     </Modal>
   );
 });
