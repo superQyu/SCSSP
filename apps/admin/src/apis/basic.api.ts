@@ -1,7 +1,16 @@
 import { ApiItem } from '@spms/web-request';
 const MOCK = import.meta.env.VITE_APP_MOCK_API;
 const ADMIN_API = import.meta.env.VITE_APP_ADMIN_API;
+
 const user: ApiItem[] = [
+  {
+    key: 'getListByUser',
+    url: `${ADMIN_API}/wisdom/project-info/list-by-user`,
+    type: 'GET',
+    name: '获取用户项目列表',
+    description: '获取用户项目列表',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
   {
     key: 'getSimpleDictTypeList',
     url: `${ADMIN_API}/system/dict-type/list-all-simple`,
