@@ -3,12 +3,13 @@ import { useRef, useState } from 'react';
 import { ProTable } from 'components';
 import { TableDropdown, type ActionType } from '@ant-design/pro-components';
 import { Button, message, Popconfirm } from 'antd';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined, DownloadOutlined } from '@ant-design/icons';
 
 import { type modalType } from './models/model';
 import EditDialog from './components/editdialog';
 import FlowChartModal from './components/FlowChartModal';
 import FormCreateModal from './components/FormCreateModal';
+import Styled from '@/components/Styled';
 
 import { Navigate, useNavigate } from 'react-router-dom';
 
@@ -23,6 +24,15 @@ export default () => {
   const { server } = useBasicConfiguration();
   const { flowModel } = server;
 
+  // 弹窗相关
+  // 流程图弹窗
+  const [flowChartModal, setFlowChartModal] = useState<boolean>(false);
+  // 表单信息弹窗
+  const [formCreateModal, setFormCreateModal] = useState<boolean>(false);
+  const [detail, setDetail] = useState({});
+
+  const actionRef = useRef<ActionType>();
+
   // 修改表单打开关闭状态
   const handleModalStateChange: ModalState.ModalStateChange<modalType> = async (props) => {
     const { state, type, detail = {} } = props;
@@ -33,15 +43,11 @@ export default () => {
   };
 
   // 初始化表格列
-  const initColumns = siteModel({ server, handleModalStateChange: handleModalStateChange });
-  const actionRef = useRef<ActionType>();
-
-  // 弹窗相关
-  // 流程图弹窗
-  const [flowChartModal, setFlowChartModal] = useState<boolean>(false);
-  // 表单信息弹窗
-  const [formCreateModal, setFormCreateModal] = useState<boolean>(false);
-  const [detail, setDetail] = useState({});
+  const initColumns = siteModel({
+    actionRef,
+    server,
+    handleModalStateChange: handleModalStateChange,
+  });
 
   // 点击保存
   const onSave = async (params: any) => {
@@ -62,7 +68,7 @@ export default () => {
     <>
       <ProTable
         actionRef={actionRef}
-        headerTitle="班组列表"
+        headerTitle="流程模型列表"
         columns={[
           ...initColumns,
           {
@@ -144,11 +150,12 @@ export default () => {
         toolBarRender={() => [
           <Button
             icon={<PlusOutlined />}
-            onClick={() => handleModalStateChange({ state: false, type: 'flowChart' })}
+            onClick={() => handleModalStateChange({ state: true, type: 'flowChart' })}
             type="primary"
           >
             新建
           </Button>,
+          <Styled.ImportButton onClick={() => handleModalStateChange({ state: true, type: 'flowChart' })} />,
         ]}
         editable={{ onDelete, onSave }}
         pagination={{
@@ -168,6 +175,7 @@ export default () => {
         openModal={flowChartModal}
         onStateChange={handleModalStateChange}
       />
+      {/* 点击表单信息列打开 */}
       <FormCreateModal
         key={`FormCreateModal${formCreateModal}`}
         detail={detail}

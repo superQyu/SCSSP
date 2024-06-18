@@ -175,7 +175,7 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.UploadButton api="exportPersonnelInfo" fileName="人员信息导出" />,
+          <Styled.ExportButton api="exportPersonnelInfo" fileName="人员信息导出" />,
           <Button
             key="button"
             icon={<PlusOutlined />}

@@ -58,5 +58,17 @@ const flowModel: ApiItem[] = [
       { key: 'id', cn: '数据库主键' },
     ],
   },
+  {
+    key: 'updateModelState',
+    url: `${ADMIN_API}/bpm/model/update-state`,
+    type: 'PUT',
+    name: '流程管理/流程模型',
+    description: '任务状态修改',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: '数据库主键' },
+      { key: 'state', cn: '状态' },
+    ],
+  },
 ];
 export default flowModel;

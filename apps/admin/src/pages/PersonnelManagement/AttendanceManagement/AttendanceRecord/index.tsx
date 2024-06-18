@@ -60,7 +60,7 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.UploadButton api="exportPersonnelAttendance" fileName="考勤导出" />,
+          <Styled.ExportButton api="exportPersonnelAttendance" fileName="考勤导出" />,
         ]}
         scroll={{ x: '1000px', y: 'auto' }}
         columns={[...initColumns]}

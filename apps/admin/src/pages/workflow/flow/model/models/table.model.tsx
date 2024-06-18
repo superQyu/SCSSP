@@ -12,14 +12,20 @@ import { type modalType } from './model';
 type objJson = Record<string, any>;
 
 interface MenusPropsType {
+  /** 表格 DOM */
+  actionRef: any;
+  /** 用来获取 api */
   server?: objJson;
+  /** 控制弹窗的开启和关闭 */
   handleModalStateChange?: ModalState.ModalStateChange<modalType>;
 }
 
-export default ({ server, handleModalStateChange }: MenusPropsType) => {
+export default (props: MenusPropsType) => {
+  const { actionRef, server, handleModalStateChange } = props;
+
   const { tabNavigate, getRouteName } = useRoute();
 
-  const { subContractor, certificate } = server as objJson;
+  const { flowModel } = server as objJson;
 
   const columnWidth = 208;
 
@@ -34,18 +40,38 @@ export default ({ server, handleModalStateChange }: MenusPropsType) => {
 
   // 通过接口获取下拉框的内容
   const getSelectOptions = async () => {
-    const res1 = await subContractor.getAllSubContractor();
-    // console.log('分包商列表', res1);
-    const list1 = res1.map((item: any) => {
-      return { label: item.realName, value: item.id };
-    });
-    setSubcontractorList(list1);
-    const res2 = await certificate.getPersonInfoList();
-    // console.log('班组长列表', res2);
-    const list2 = res2.map((item: any) => {
-      return { label: item.name, value: item.id };
-    });
-    setPersonInfoList(list2);
+    // const res1 = await subContractor.getAllSubContractor();
+    // // console.log('分包商列表', res1);
+    // const list1 = res1.map((item: any) => {
+    //   return { label: item.realName, value: item.id };
+    // });
+    // setSubcontractorList(list1);
+    // const res2 = await certificate.getPersonInfoList();
+    // // console.log('班组长列表', res2);
+    // const list2 = res2.map((item: any) => {
+    //   return { label: item.name, value: item.id };
+    // });
+    // setPersonInfoList(list2);
+  };
+
+  // 更新状态操作
+  const handleChangeState = async (checked: boolean, row: any) => {
+    // console.log('checked', checked);
+    const state = checked ? 1 : 2;
+    // 修改状态的二次确认
+    const id = row.id;
+    const statusState = state === 1 ? '激活' : '挂起';
+    const content = '是否确认' + statusState + '流程名字为"' + row.name + '"的数据项?';
+    const told = confirm(content);
+    if (told) {
+      // 发起修改状态
+      await flowModel.updateModelState({ id, state });
+      // 刷新列表
+      await actionRef.current?.reload();
+    } else {
+      // 取消后，进行恢复按钮
+      row.processDefinition.suspensionState = state === 1 ? 2 : 1;
+    }
   };
 
   const columns: ProColumns[] = [
@@ -192,16 +218,19 @@ export default ({ server, handleModalStateChange }: MenusPropsType) => {
           },
           width: columnWidth,
           hideInSearch: true,
-          render: (_, record) => (
-            <>
-              {record.processDefinition && (
-                <Switch
-                  value={record.processDefinition.suspensionState}
-                  // onChange={() => handleChangeState(record)}
-                />
-              )}
-            </>
-          ),
+          render: (_, record) => {
+            const state = record.processDefinition?.suspensionState == 1 ? true : false;
+            return (
+              <>
+                {record.processDefinition && (
+                  <Switch
+                    checked={state}
+                    onChange={(checked: boolean) => handleChangeState(checked, record)}
+                  />
+                )}
+              </>
+            );
+          },
         },
         {
           title: '部署时间',

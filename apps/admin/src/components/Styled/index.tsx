@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Button } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined, PlusOutlined } from '@ant-design/icons';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 文件下载工具
@@ -14,12 +14,12 @@ interface FileProps {
   /** 下载文件名 */
   fileName: string;
 }
-const UploadButton = (props: FileProps) => {
+const ExportButton = (props: FileProps) => {
   // api 相关
   const { server } = useBasicConfiguration();
   const { basic } = server;
 
-  const UploadButton = styled(Button).attrs(() => ({
+  const ExportButton = styled(Button).attrs(() => ({
     // 静态属性
     icon: <UploadOutlined />,
     type: 'primary',
@@ -40,7 +40,22 @@ const UploadButton = (props: FileProps) => {
       background: 'rgba(255, 161, 83, 0.8) !important',
     },
   }));
-  return <UploadButton />;
+  return <ExportButton />;
 };
 
-export default { UploadButton };
+const ImportButton = styled(Button).attrs(() => ({
+  // 静态属性
+  icon: <PlusOutlined />,
+  type: 'primary',
+  children: '导入',
+}))(() => ({
+  // 样式属性
+  background: 'rgba(1, 185, 143, 1)',
+  '&:hover': {
+    borderColor: 'white !important',
+    color: 'white !important',
+    background: 'rgba(1, 185, 143, 0.8) !important',
+  },
+}));
+
+export default { ExportButton, ImportButton };

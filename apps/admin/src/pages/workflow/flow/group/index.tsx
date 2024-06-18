@@ -51,7 +51,7 @@ export default () => {
     <>
       <ProTable
         actionRef={actionRef}
-        headerTitle="班组列表"
+        headerTitle="用户分组列表"
         columns={[
           ...initColumns,
           {

@@ -130,7 +130,7 @@ export default () => {
         ]}
         editable={{ onDelete, onSave }}
         toolBarRender={() => [
-          <Styled.UploadButton api="exportCarDispatchRecord" fileName="车辆导出" />,
+          <Styled.ExportButton api="exportCarDispatchRecord" fileName="车辆导出" />,
           <Button
             key="button"
             icon={<PlusOutlined />}

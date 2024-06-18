@@ -119,7 +119,7 @@ export default (props: Props) => {
   return (
     <>
       <Modal
-        open={open}
+        open={openModal}
         title={detail.id ? '编辑' : '新建'}
         width={1000}
         centered

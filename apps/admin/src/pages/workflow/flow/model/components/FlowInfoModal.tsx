@@ -2,37 +2,52 @@ import { useState, useEffect, useRef } from 'react';
 import { Modal, Button, message } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import { AdForm } from 'components';
+import dayjs from 'dayjs';
 
-import columns from '../models/form.model';
+import initColumns from '../models/form.model';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
+// 代表任意对象
+type MenusType = {
+  [key: string]: any;
+};
 interface Props {
   /** 控制 Modal 是否显示 */
   openModal: boolean;
   /** 监听 Modal 状态变化 */
-  onStateChange: (state: boolean) => void;
+  onStateChange: ModalState.ModalProps<'flowChart'>;
+  // 当为详情表单时, 有该属性
+  detail: MenusType;
 }
 
-type MenusType = {
-  [key: string]: any;
-};
-
-export default ({ openModal, onStateChange }: Props) => {
+export default ({ openModal, onStateChange, detail }: Props) => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { job } = server;
+  const { group } = server;
 
   const [open, setOpen] = useState<boolean>(openModal);
   const [loading, setLoading] = useState<boolean>(false);
 
   const formRef = useRef<FormInstance>(null);
 
-  // 表单的默认值
-  const [initialValues] = useState<MenusType>({
-    sort: 0,
-    isSpecialWorkType: '0',
+  // 表单项配置
+  // 只能放在外面, 因为调用该方法中使用 hook, 只能放在函数式组件的外部
+  // 传入表单的DOM 和 两个图片列表的默认值
+  const { entryAttachments, exitAttachments } = detail;
+  const formColumns = initColumns(formRef, entryAttachments, exitAttachments);
+
+  // 班组信息表单的默认值
+  const [formData] = useState<MenusType>({
+    teamName: detail.teamName,
+    subcontractorId: detail.subcontractorId,
+    userId: detail.userId,
+    workTypeName: detail.workTypeName,
+    identityCard: detail.identityCard,
+    phone: detail.phone,
+    entryDate: detail.entryDate && dayjs(detail.entryDate),
+    exitDate: detail.exitDate && dayjs(detail.exitDate),
   });
 
   useEffect(() => {
@@ -52,13 +67,17 @@ export default ({ openModal, onStateChange }: Props) => {
   const handleOk = async () => {
     try {
       const values: MenusType = await formRef.current?.validateFields();
-      // console.log('保存时的值', values);
+      values.entryAttachments = values.entryAttachments?.join('@');
+      values.exitAttachments = values.exitAttachments?.join('@');
+      values.id = detail.id;
+      // console.log('表单提交时的数据', values);
       setLoading(true);
-      job
-        .createJob(values)
+      group[detail.id ? 'updateGroup' : 'createGroup'](values)
         .then(() => {
-          onStateChange(false);
-          message.success('站点创建成功！');
+          message.success('操作成功！');
+          setLoading(false);
+          onStateChange({ state: false, type: 'flowChart' });
+          onReset();
         })
         .catch(() => {
           setLoading(false);
@@ -74,14 +93,15 @@ export default ({ openModal, onStateChange }: Props) => {
     }
     setOpen(false);
     onReset();
-    onStateChange(false);
+    // onStateChange(false);
   };
 
   return (
     <>
       <Modal
-        open={openModal}
-        title="新建"
+        open={open}
+        title={detail.id ? '编辑' : '新建'}
+        width={1000}
         onOk={handleOk}
         onCancel={handleCancel}
         maskClosable={false}
@@ -93,17 +113,18 @@ export default ({ openModal, onStateChange }: Props) => {
             重置
           </Button>,
           <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
-            提交
+            {detail.id ? '更新' : '提交'}
           </Button>,
         ]}
       >
         <AdForm
+          key={JSON.stringify(formData)}
           loadingTitle="提交中..."
           formRef={formRef}
-          initialValues={initialValues}
+          initialValues={formData}
           loading={loading}
           labelAlign="left"
-          columns={columns}
+          columns={formColumns}
         />
       </Modal>
     </>

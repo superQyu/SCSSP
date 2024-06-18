@@ -12,6 +12,7 @@ import Styled from '@/components/Styled';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
 import siteModel from './models/table.model';
+import { ToString } from '@/utils/transform';
 
 export default () => {
   // api 相关
@@ -88,10 +89,13 @@ export default () => {
         request={async (params = {}) => {
           const res = await subContractor.getSubContractorList(params);
           // console.log('分包商列表', res.list);
-          res.list.forEach(
-            (item: any) =>
-              (item.subcontractorType = item.subcontractorType || `${item.subcontractorType}`)
-          );
+          res.list = res.list.map((item: any) => {
+            item.subcontractorType = ToString(item.subcontractorType);
+            item.corpType = ToString(item.corpType);
+            item.overallMerit = ToString(item.overallMerit);
+            item.isConformity = ToString(item.isConformity);
+            return item;
+          });
           return {
             data: res.list,
             total: res.total,
@@ -118,7 +122,7 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.UploadButton api="exportSubcontractorInfo" fileName="分包商导出" />,
+          <Styled.ExportButton api="exportSubcontractorInfo" fileName="分包商导出" />,
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
           </Button>,

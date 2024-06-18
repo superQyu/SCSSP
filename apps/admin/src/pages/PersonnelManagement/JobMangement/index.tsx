@@ -117,7 +117,7 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.UploadButton api="exportWorkTypeInfo" fileName="工种导出" />,
+          <Styled.ExportButton api="exportWorkTypeInfo" fileName="工种导出" />,
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
           </Button>,

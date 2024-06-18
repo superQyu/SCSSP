@@ -52,12 +52,14 @@ export default () => {
         };
       });
     } else {
-      nameArr = [''];
-      breadcrumbs = nameArr.map((pathName: string) => {
-        return {
-          title: pathName,
-        };
-      });
+      alert('当前路由不存在');
+      return;
+      // nameArr = [''];
+      // breadcrumbs = nameArr.map((pathName: string) => {
+      //   return {
+      //     title: pathName,
+      //   };
+      // });
     }
 
     const newMenuTab = {
@@ -98,16 +100,18 @@ export default () => {
    */
   const getRouteName = (routePath: string) => {
     // console.log('菜单列表', menu);
-    const { menuData } = getMenuData(menu);
-    // console.log('有完整路径的菜单列表', menuData);
+    const { breadcrumbMap } = getMenuData(menu);
+    // console.log('有完整路径的菜单列表', breadcrumbMap);
+    const routeObj = breadcrumbMap.get(routePath)?.locale as string;
+    const name = routeObj?.split('.')?.slice(1)?.join('/');
     // 筛选出所传路由的层级结构
-    const list = filter(menuData, (node) => node.path == routePath);
-    // console.log('所查询路由的层级结构', list);
-    // 展开层级结构
-    const newList = flattenArray(list);
-    // console.log('展开后的层级结构', newList);
-    const name = newList[0]?.locale?.split('.')?.slice(1)?.join('/');
-    // console.log('路由完整的名字', name);
+    // const list = filter(menuData, (node) => node.path == routePath);
+    // // console.log('所查询路由的层级结构', list);
+    // // 展开层级结构
+    // const newList = flattenArray(list);
+    // // console.log('展开后的层级结构', newList);
+    // const name = newList[0]?.locale?.split('.')?.slice(1)?.join('/');
+    // // console.log('路由完整的名字', name);
     return name;
   };
 
