@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { Switch, Tooltip, Space, Popover, Image, Skeleton } from 'antd';
 import { QuestionCircleFilled } from '@ant-design/icons';
 import {
-  PageContainer,
   ProConfigProvider,
   ProLayout,
   SettingDrawer,
@@ -15,7 +14,7 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 
 import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
 import { useAppDispatch, useAppSelector, KeepAlive, useLocationListen } from 'hooks';
-import { MenuItem, sortMenu, setToken } from 'utils';
+import { MenuItem, sortMenu } from 'utils';
 
 // 组件列表
 import SearchInput from './components/SearchInput';
@@ -176,20 +175,30 @@ const layout: React.FC<CommonObject> = (props: any) => {
                   style={{ ...SkeletonInputStyle, marginTop: '-3px' }}
                 />
               ) : (
-                <div>{(baseInfor as unknown as { userName: '欢迎！' })?.userName}</div>
+                <Popover
+                  rootClassName="profile-popover"
+                  placement="bottomRight"
+                  trigger="click"
+                  content={<Profile user={user} tokenKeys={props.TokenKeys} />}
+                >
+                  <div>
+                    {}
+                    {(baseInfor as unknown as { userName: '欢迎！' })?.userName}
+                  </div>
+                </Popover>
               ),
-              render: (props, dom) => {
-                return (
-                  <Popover
-                    rootClassName="profile-popover"
-                    placement="bottomRight"
-                    trigger="click"
-                    content={<Profile user={user} />}
-                  >
-                    {dom}
-                  </Popover>
-                );
-              },
+              // render: (props, dom) => {
+              //   return (
+              //     <Popover
+              //       rootClassName="profile-popover"
+              //       placement="bottomRight"
+              //       trigger="click"
+              //       content={<Profile user={user} />}
+              //     >
+              //       {dom}
+              //     </Popover>
+              //   );
+              // },
             }}
             actionsRender={(props) => {
               if (props.isMobile) return [];

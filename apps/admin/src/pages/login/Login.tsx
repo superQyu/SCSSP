@@ -84,23 +84,14 @@ const Login: React.FC = () => {
   };
 
   return (
-    <Styled.LoginContainer>
+    <Styled.LoginContainer id="login-container">
       <img
-        style={{
-          position: 'fixed',
-          zIndex: 99,
-          top: '15%',
-          left: '8%',
-        }}
+        className="title-posit"
         width={'500'}
         src={new URL('@/assets/login/title.svg', import.meta.url).href}
       />
       <img
-        style={{
-          position: 'fixed',
-          bottom: '-10%',
-          left: '-2%',
-        }}
+        className="img-posit"
         width={'50%'}
         src={new URL('@/assets/login/img.svg', import.meta.url).href}
       />
@@ -221,7 +212,7 @@ const Login: React.FC = () => {
             />
           </>
         )}
-        <div className="bottom" style={{ marginBlockEnd: 24 }}>
+        <div className="bottom" style={{ marginBlockEnd: 60 }}>
           <ProFormCheckbox noStyle name="autoLogin" disabled={loading} valuePropName="checked">
             记住密码
           </ProFormCheckbox>
