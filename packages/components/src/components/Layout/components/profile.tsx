@@ -1,22 +1,19 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Avatar, Divider, Input, Space, theme } from 'antd';
-import {
-  LogoutOutlined,
-  LoginOutlined,
-  QuestionCircleOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import { Avatar, Divider, Space, theme } from 'antd';
+import { LoginOutlined, QuestionCircleOutlined, UserOutlined } from '@ant-design/icons';
+
+import { removeToken } from 'utils';
 
 import { AuthContext, useAppDispatch } from 'hooks';
 
 import './profile.scss';
 
-const Profile: React.FC<{ user: any }> = (props) => {
+const Profile: React.FC<{ user: any; tokenKeys: any[] }> = (props) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { signOut } = useContext(AuthContext);
-  const { user } = props || {};
+  const { user, tokenKeys } = props || {};
   const { userName, avatar, nickName } = user.userInfor;
   const { token } = theme.useToken();
 
@@ -53,6 +50,7 @@ const Profile: React.FC<{ user: any }> = (props) => {
               onClick={async () => {
                 await signOut(dispatch);
                 navigate('/');
+                tokenKeys.map((keyName) => removeToken(keyName));
               }}
             >
               <Space>

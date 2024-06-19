@@ -34,3 +34,55 @@
 .tangram-suggestion-main {
   z-index: 9999;
 }
+
+// login 自适应
+.title-posit {
+  position: fixed;
+  z-index: 99;
+  top: 15%;
+  left: 8%;
+}
+.img-posit {
+  position: fixed;
+  top: 30%;
+  left: -1%;
+}
+@media screen and (max-width: 1200px) {
+  #login-container {
+    .title-posit {
+      transform: scale(0.85);
+      left: 1vw;
+    }
+    .img-posit {
+      // top: 40vh;
+    }
+  }
+}
+
+@media screen and (max-width: 950px) {
+  #login-container {
+    .title-posit {
+      transform: scale(0.75);
+      left: -3%;
+    }
+  }
+}
+
+@media screen and (max-width: 765px) {
+  #login-container {
+    .ant-pro-form-login-page-notice {
+      display: none;
+    }
+    .ant-pro-form-login-page-container {
+      max-width: 100%;
+    }
+    .title-posit {
+      display: none;
+    }
+    .img-posit {
+      top: initial;
+      bottom: 0;
+      z-index: 1;
+    }
+  }
+}

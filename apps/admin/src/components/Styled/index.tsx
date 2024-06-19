@@ -14,33 +14,35 @@ interface FileProps {
   /** 下载文件名 */
   fileName: string;
 }
+
+const CusUploadButton = styled(Button)(() => ({
+  // 样式属性
+  background: 'rgba(255, 161, 83, 1)',
+  '&:hover': {
+    borderColor: 'white !important',
+    color: 'white !important',
+    background: 'rgba(255, 161, 83, 0.8) !important',
+  },
+}));
 const ExportButton = (props: FileProps) => {
   // api 相关
   const { server } = useBasicConfiguration();
   const { basic } = server;
 
-  const ExportButton = styled(Button).attrs(() => ({
-    // 静态属性
-    icon: <UploadOutlined />,
-    type: 'primary',
-    onClick: (e) => {
-      if (props.onClick) props.onClick(e);
-      else
-        basic[props.api]().then((data: any) => {
-          downFiles.excel(data, props.fileName);
-        });
-    },
-    children: '导出',
-  }))(() => ({
-    // 样式属性
-    background: 'rgba(255, 161, 83, 1)',
-    '&:hover': {
-      borderColor: 'white !important',
-      color: 'white !important',
-      background: 'rgba(255, 161, 83, 0.8) !important',
-    },
-  }));
-  return <ExportButton />;
+  return (
+    <CusUploadButton
+      icon={<UploadOutlined />}
+      type="primary"
+      onClick={(e) => {
+        if (props.onClick) props.onClick(e);
+        else
+          basic[props.api]().then((data: any) => {
+            downFiles.excel(data, props.fileName);
+          });
+      }}
+      children="导出"
+    />
+  );
 };
 
 const ImportButton = styled(Button).attrs(() => ({
