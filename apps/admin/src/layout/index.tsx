@@ -55,7 +55,8 @@ const LayoutContext: React.FC = () => {
     setProjectList(list);
 
     if (!getToken(DP)) {
-      const defValue = list[0]['projectNo'] || '';
+      const defValue = (list[0]['id'] || '') + '';
+
       setProjectShow(defValue);
       setToken(DP, defValue);
     } else {
