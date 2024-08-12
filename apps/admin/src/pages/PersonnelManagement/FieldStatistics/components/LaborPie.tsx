@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useECharts } from '@/context/EChartContext';
+import { Spin } from 'antd';
+import { useState } from 'react';
 
 interface Props {
   /** { total: 100, value: 30 } */
@@ -11,37 +13,34 @@ const SomeChartComponent = (props: Props) => {
 
   const { getEChartsInstance, getLinearGradient } = useECharts();
   const chartRef = useRef(null);
+  const [spinning, setSpinning] = useState(true);
 
   let chartInstance: any = null;
 
-  // useEffect(() => {
-  //   setOptions();
-  // }, []);
   useEffect(() => {
-    initChart();
-    setOptions();
-    return () => {
-      chartInstance.dispose();
-      window.removeEventListener('resize', () =>
-        chartInstance.resize()
-      );
-    };
-  }, [chartData]);
-  // useEffect(() => {
-  //   initChart()
-  //   setOptions();
-  // }, [chartData]);
-
-  const initChart = () => {
     if (!chartInstance) {
       chartInstance = getEChartsInstance(chartRef);
     }
     window.addEventListener('resize', () =>
       chartInstance.resize()
     );
-  };
+    return () => {
+      chartInstance.dispose();
+      window.removeEventListener('resize', () =>
+        chartInstance.resize()
+      );
+    };
+  }, []);
+  useEffect(() => {
+    if (!chartInstance) {
+      chartInstance = getEChartsInstance(chartRef);
+    }
+    setOptions();
+    chartInstance.resize()
+  }, [chartData]);
 
   const setOptions = () => {
+    setSpinning(true);
     const max = chartData.total;
     const value = chartData.value;
     const option = {
@@ -121,6 +120,7 @@ const SomeChartComponent = (props: Props) => {
           label: {
             show: true,
             position: 'left',
+            formatter: () => max - value,
           },
         },
         // 尾端小圆点 饼图
@@ -128,7 +128,9 @@ const SomeChartComponent = (props: Props) => {
           type: 'pie',
           radius: '127%',
           center: ['50%', '50%'],
-          hoverAnimation: false,
+          emphasis: {
+            scale: false,
+          },
           startAngle: 180,
           endAngle: 0,
           silent: 1,
@@ -160,9 +162,28 @@ const SomeChartComponent = (props: Props) => {
       ],
     };
     chartInstance.setOption(option);
+    setSpinning(false);
   };
 
-  return <div ref={chartRef} className="w-full h-full"></div>;
+  return (
+    <Spin
+      wrapperClassName="cus-spin"
+      tip="加载中"
+      spinning={spinning}
+    >
+      <div className="flex justify-center items-center h-full">
+        {!chartData.total && (
+          <div className="color-#409eff">暂无数据</div>
+        )}
+        <div
+          className={`w-full h-full ${
+            !chartData.total && 'hidden'
+          }`}
+          ref={chartRef}
+        ></div>
+      </div>
+    </Spin>
+  );
 };
 
 export default SomeChartComponent;

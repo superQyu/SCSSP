@@ -11,7 +11,10 @@ export default () => {
   const { server } = useBasicConfiguration();
   const { attendance } = server;
 
-  const [chartData, setChartData] = useState<any>();
+  const [chartData, setChartData] = useState<any>({
+    value: 0,
+    total: 0,
+  });
 
   useEffect(() => {
     loadData();
@@ -19,15 +22,21 @@ export default () => {
 
   const loadData = async () => {
     const res = await attendance.attendanceCount();
+    // 出勤人数必定大于等于在场人数
     setChartData({
-      value: res.attendanceNum,
-      total: res.presentWorkerNum,
+      value: res.presentWorkerNum,
+      total: res.presentWorkerNum + res.attendanceNum,
     });
+    // setChartData({
+    //   value: 30,
+    //   total: 100,
+    // });
   };
 
   return (
     <Row className="h-full pb-10 pt-4">
       <Col span={14} className="h-full">
+        {/* <LaborPie /> */}
         <LaborPie data={chartData} />
       </Col>
       <Col span={10} className="h-full">
@@ -38,15 +47,23 @@ export default () => {
           className="h-full"
         >
           <div className="overflow-hidden grid grid-cols-2 border-rd-4px">
-            <TitleItem label="在场人数" color="#26ff00" />
-            <TitleItem label="出勤人数" color="#0080ff" />
+            <TitleItem label="出勤人数" color="#26ff00" />
+            <TitleItem label="在场人数" color="#0080ff" />
           </div>
           <Space direction="vertical" size={5}>
             <div className="mb-1 font-size-14px font-700 color-#454545">
               在场状态
             </div>
-            <TextItem label="在场人数" value={4} unit="人" />
-            <TextItem label="出勤人数" value={4} unit="人" />
+            <TextItem
+              label="在场人数"
+              value={chartData.value}
+              unit="人"
+            />
+            <TextItem
+              label="出勤人数"
+              value={chartData.total - chartData.value}
+              unit="人"
+            />
             {/* <TextItem label="出勤率" value={25} unit="%" /> */}
           </Space>
         </Flex>

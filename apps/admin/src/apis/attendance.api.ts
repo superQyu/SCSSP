@@ -7,18 +7,28 @@ const attendance: ApiItem[] = [
     url: `${ADMIN_API}/wisdom/personnel-attendance/getAttendanceCount`,
     type: 'GET',
     description: '现场统计(劳务信息)',
-    params: [
-      { key: 'Authorization', location: 'header' },
-    ],
+    params: [{ key: 'Authorization', location: 'header' }],
   },
   {
     key: 'attendanceCountWithSpecialWorkType',
     url: `${ADMIN_API}/wisdom/personnel-attendance/getAttendanceSpecialWorkTypeCount`,
     type: 'GET',
     description: '现场统计(现场特殊工种统计)',
-    params: [
-      { key: 'Authorization', location: 'header' },
-    ],
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'attendanceCountWithTotalWorkType',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/getPresentWorkTypeCount`,
+    type: 'GET',
+    description: '现场统计(全场工种)',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'attendanceCountWithTotalGroup',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/getPresentGroupCount`,
+    type: 'GET',
+    description: '现场统计(全场班组人数)',
+    params: [{ key: 'Authorization', location: 'header' }],
   },
   {
     key: 'attendanceList',
@@ -86,6 +96,10 @@ const attendance: ApiItem[] = [
       },
       {
         key: 'username',
+        cn: '姓名',
+      },
+      {
+        key: 'userId',
         cn: '姓名',
       },
     ],

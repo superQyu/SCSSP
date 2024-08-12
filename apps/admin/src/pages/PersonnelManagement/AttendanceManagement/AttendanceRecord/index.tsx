@@ -15,7 +15,7 @@ import dayjs from 'dayjs';
 export default () => {
   const { server } = useBasicConfiguration();
   const { attendance: A } = server;
-  const { userIdInParams } = useParams();
+  const { userId: userIdInParams } = useParams();
   const [params] = useSearchParams();
 
   const initColumns = siteModel({ server });

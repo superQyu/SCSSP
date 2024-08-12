@@ -1,22 +1,63 @@
 import { useEffect, useRef } from 'react';
 import { useECharts } from '@/context/EChartContext';
+import { Spin } from 'antd';
+import { useState } from 'react';
 
-const SomeChartComponent = () => {
+interface Props {
+  data?: { name: string; value: number }[];
+}
+interface Config {}
+
+export default (props: Props) => {
+  const {
+    data: chartData = [
+      { name: '木工【王积国】', value: 72 },
+      { name: '建筑电工【宋德国】', value: 71 },
+      { name: '起重信号工【李清然】', value: 47 },
+      { name: '钢筋工【钱莱】', value: 34 },
+      { name: '混凝土工【孙祥】', value: 68 },
+      { name: '除尘工【赵三清】', value: 68 },
+    ],
+  } = props;
+
   const { getEChartsInstance, getLinearGradient } = useECharts();
+
+  const config: Config = {};
   const chartRef = useRef(null);
-  const xAxis = [
-    '木工【王积国】',
-    '建筑电工【宋德国】',
-    '起重信号工【李清然】',
-    '钢筋工【钱莱】',
-    '混凝土工【孙祥】',
-    '除尘工【赵三清】',
-  ];
-  const data = [30, 26, 13, 13, 12, 15, 20, 30, 12, 15, 20, 30];
+
+  const [spinning, setSpinning] = useState(true);
 
   let chartInstance: any = null;
 
+  useEffect(() => {
+    if (!chartInstance) {
+      chartInstance = getEChartsInstance(chartRef);
+    }
+    window.addEventListener('resize', () =>
+      chartInstance.resize()
+    );
+    return () => {
+      chartInstance.dispose();
+      window.removeEventListener('resize', () =>
+        chartInstance.resize()
+      );
+    };
+  }, []);
+  useEffect(() => {
+    if (!chartInstance) {
+      chartInstance = getEChartsInstance(chartRef);
+    }
+    setConfig();
+    setOptions();
+    chartInstance.resize();
+  }, [chartData]);
+
+  const setConfig = () => {};
+
   const setOptions = () => {
+    setSpinning(true);
+    const xAxis = chartData.map((item: any) => item.name);
+    const data = chartData.map((item: any) => item.value);
     const option = {
       color: ['#1A64F8'],
       tooltip: {
@@ -24,11 +65,10 @@ const SomeChartComponent = () => {
         axisPointer: {
           type: 'none',
         },
-        formatter: function (prams) {
-          return prams[0].name + ':' + prams[0].data;
+        formatter: function (params: any) {
+          return params[0].name + ':' + params[0].data;
         },
       },
-
       grid: {
         left: '8%',
         right: '8%',
@@ -48,7 +88,8 @@ const SomeChartComponent = () => {
             margin: 10,
             formatter: function (value: string) {
               const reg = /(?<name>[^【]+)【(?<group>[^】]+)】/;
-              const { name, group } = value.match(reg)?.groups as { name: string; group: string };
+              const { name, group } = value.match(reg)
+                ?.groups as { name: string; group: string };
               return `${name}\n【${group}】`;
             },
           },
@@ -110,24 +151,26 @@ const SomeChartComponent = () => {
       ],
     };
     chartInstance.setOption(option);
+    setSpinning(false);
   };
 
-  const resizeChart = () => chartInstance.resize();
-
-  useEffect(() => {
-    chartInstance = getEChartsInstance(chartRef);
-    setOptions();
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('resize', resizeChart);
-    return () => {
-      chartInstance.dispose();
-      window.removeEventListener('resize', resizeChart);
-    };
-  }, []);
-
-  return <div ref={chartRef} className="w-full h-full"></div>;
+  return (
+    <Spin
+      wrapperClassName="cus-spin"
+      tip="加载中"
+      spinning={spinning}
+    >
+      <div className="flex justify-center items-center h-full">
+        {!chartData.length && (
+          <div className="color-#409eff">暂无数据</div>
+        )}
+        <div
+          className={`w-full h-full ${
+            !chartData.length && 'hidden'
+          }`}
+          ref={chartRef}
+        ></div>
+      </div>
+    </Spin>
+  );
 };
-
-export default SomeChartComponent;
