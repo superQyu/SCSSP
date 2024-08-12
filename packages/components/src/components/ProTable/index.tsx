@@ -1,39 +1,64 @@
-import React, { cloneElement, useRef, useState, useEffect } from 'react';
+import React, {
+  cloneElement,
+  useRef,
+  useState,
+  useEffect,
+} from 'react';
 import { message } from 'antd';
-import type { ActionType } from '@ant-design/pro-components';
+import type {
+  ActionType,
+  ProColumns,
+  ProTableProps,
+} from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 
 import { useTableScroll } from './useTableScroll';
 import DefModel from './model';
 
-export default (props: any) => {
+interface Props extends ProTableProps<any, any> {
+  /** 滚轮的配置, {10, 10} */
+  scroll?: any;
+  actionRef?: any;
+  editable?: {
+    onSave: (row: any, originRow?: any) => Promise<any>;
+    onDelete?: (id: any) => Promise<any>;
+  };
+  rowKey?: any;
+  columns?: any[];
+}
+
+export default (props: Props) => {
   const actionRef = useRef<ActionType>();
   const domRef = useRef(null);
   const [srcollY, setSrcollY] = useState<string>('');
 
   // 重写save方法 阻止提交失败也退出编辑状态
   const onSave = async (...args: any[]) => {
-    const [C, id, n, a, b] = args;
+    const [dom, id, row, originRow, b] = args;
 
-    const onSaveRes = await props.editable.onSave({ ...n }, a).then(async () => {
-      message.success('更新成功！');
-      await (props.actionRef || actionRef).current?.reload();
-    });
+    const onSaveRes = await props.editable
+      ?.onSave({ ...row }, originRow)
+      .then(async () => {
+        message.success('更新成功！');
+        await (props.actionRef || actionRef).current?.reload();
+      });
 
     if (onSaveRes === false) {
       message.error('信息更新失败，请重新提交！');
       return false;
     }
-    C.cancelEditable(id);
+    dom.cancelEditable(id);
     return true;
   };
 
   // 删除行
   const onDelete = async (...args: any[]) => {
     const [C, id, n] = args;
-    const onDeleteRes = await props.editable.onDelete(id).then(async () => {
-      await (props.actionRef || actionRef).current?.reload();
-    });
+    const onDeleteRes =
+      props.editable?.onDelete &&
+      props.editable?.onDelete(id).then(async () => {
+        await (props.actionRef || actionRef).current?.reload();
+      });
     if (onDeleteRes === false) {
       return false;
     }
@@ -84,9 +109,9 @@ export default (props: any) => {
         columns={props.columns || initColumns}
         params={props.params || {}}
         beforeSearchSubmit={props.beforeSearchSubmit}
-        request={props.request || false}
+        request={props.request || undefined}
         actionRef={props.actionRef || actionRef}
-        toolbar={props.toolBar || {}}
+        toolbar={props.toolbar || {}}
         toolBarRender={props.toolBarRender}
         cardBordered
         editable={{
@@ -96,15 +121,21 @@ export default (props: any) => {
           actionRender: (...args: any[]) => {
             const [, config, defaultDom] = args;
             return [
-              cloneElement(defaultDom.save as React.ReactElement, {
-                onSave: onSave.bind(null, config),
-              }),
+              cloneElement(
+                defaultDom.save as React.ReactElement,
+                {
+                  onSave: onSave.bind(null, config),
+                }
+              ),
               defaultDom.cancel,
               // 只有在传入 onDelete 时，才会渲染删除按钮
-              props.editable.onDelete &&
-                cloneElement(defaultDom.delete as React.ReactElement, {
-                  onDelete: onDelete.bind(null, config),
-                }),
+              props.editable?.onDelete &&
+                cloneElement(
+                  defaultDom.delete as React.ReactElement,
+                  {
+                    onDelete: onDelete.bind(null, config),
+                  }
+                ),
               // defaultDom.delete,
             ];
           },
@@ -152,6 +183,7 @@ export default (props: any) => {
         scroll={{ ...scroll() }}
         expandable={props.expandable}
         onRow={props.onRow}
+        onReset={props.onReset}
       />
     </div>
   );

@@ -26,31 +26,49 @@ export default (tableRef: any, editableFormRef: any) => {
       label: '退料人员',
       dataIndex: 'exitPersonnel',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入退料人员' }],
+      },
     },
     {
       label: '见证人员',
       dataIndex: 'witnessPersonnel',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入见证人员' }],
+      },
     },
     {
       label: '供应单位',
       dataIndex: 'supplierDepartment',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入供应单位' }],
+      },
     },
     {
       label: '生产厂家',
       dataIndex: 'manufacturer',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入生产厂家' }],
+      },
     },
     {
       label: '购买单位',
       dataIndex: 'purchaserDepartment',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入购买单位' }],
+      },
     },
     {
       label: '退场原因',
       dataIndex: 'exitReason',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入退场原因' }],
+      },
     },
   ];
   const tableColumns: ProColumns[] = [

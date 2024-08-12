@@ -18,7 +18,8 @@ type GithubIssueItem = {
 };
 
 export default () => {
-  const columns: ProColumns<GithubIssueItem>[] = [
+  // const columns: ProColumns<GithubIssueItem>[] = [
+  const columns: ProColumns<any>[] = [
     {
       dataIndex: 'index',
       valueType: 'indexBorder',

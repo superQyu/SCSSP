@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button, InputNumber, message, Modal, DatePicker } from 'antd';
+import {
+  Button,
+  InputNumber,
+  message,
+  Modal,
+  DatePicker,
+  Row,
+  Col,
+  Flex,
+} from 'antd';
+import { ProUpload } from 'components';
 import type { GetProp, TreeSelectProps } from 'antd';
 
 import { ExclamationCircleTwoTone } from '@ant-design/icons';
@@ -17,7 +27,7 @@ interface Props {
   /** 控制 Modal 是否显示 */
   openModal: boolean;
   /** 表单初始化 */
-  subForm: {};
+  subForm: Record<string, any>;
   /** 监听Modal状态变化 */
   onStateChange: (state: boolean) => void;
 }
@@ -26,7 +36,11 @@ type MenusType = {
   [key: string]: any;
 };
 
-const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) => {
+const AddMenus: React.FC<Props> = ({
+  openModal,
+  subForm,
+  onStateChange,
+}: Props) => {
   const { server } = useBasicConfiguration();
   const { vehicle: V } = server;
   const formRef = useRef<FormInstance>(null);
@@ -44,7 +58,8 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
 
   const handleOk = async () => {
     try {
-      const values: MenusType = await formRef.current?.validateFields();
+      const values: MenusType =
+        await formRef.current?.validateFields();
       setLoading(true);
 
       V.vehicleApproveAdd(values)
@@ -109,11 +124,20 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
       colNum: 12,
     },
     {
-      label: '车型',
+      label: '是否安装GPS',
+      dataIndex: 'hasGPS',
+      formItem: <DictSelect dictKey={'system_true_false'} />,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入车辆型号' }],
+      },
+      colNum: 12,
+    },
+    {
+      label: '车辆类型',
       dataIndex: 'carType',
       formItem: <DictSelect dictKey={'cm_car_type'} />,
       formItemProps: {
-        rules: [{ required: true, message: '请选择车型' }],
+        rules: [{ required: true, message: '车辆类型' }],
       },
       colNum: 12,
     },
@@ -129,19 +153,17 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     {
       label: '车辆识别代号/车架号',
       dataIndex: 'frameNo',
-
-      formItemProps: {
-        rules: [{ required: true, message: '请输入车辆识别代号/车架号' }],
-      },
+      // formItemProps: {
+      //   rules: [{ required: true, message: '请输入车辆识别代号/车架号' }],
+      // },
       colNum: 12,
     },
     {
       label: '发动机号',
       dataIndex: 'engineNo',
-
-      formItemProps: {
-        rules: [{ required: true, message: '请输入发动机号' }],
-      },
+      // formItemProps: {
+      //   rules: [{ required: true, message: '请输入发动机号' }],
+      // },
       colNum: 12,
     },
     {
@@ -156,7 +178,13 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     {
       label: '核定载客',
       dataIndex: 'approvalSeats',
-      formItem: <InputNumber min={1} style={{ width: '100%' }} placeholder="请输入核定载荷" />,
+      formItem: (
+        <InputNumber
+          min={1}
+          style={{ width: '100%' }}
+          placeholder="请输入核定载荷"
+        />
+      ),
       formItemProps: {
         rules: [{ required: true, message: '请输入核定载客' }],
       },
@@ -165,7 +193,9 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     {
       label: '年审时间',
       dataIndex: 'examinedDate',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
         getValueProps: (value) => ({
@@ -178,7 +208,9 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
     {
       label: '保险时间',
       dataIndex: 'insuranceDate',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
         getValueProps: (value) => ({
@@ -187,6 +219,13 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
         rules: [{ required: true, message: '请选择保险时间' }],
       },
       colNum: 12,
+    },
+    {
+      // OCR 行驶证识别
+      label: '',
+      dataIndex: 'passportPhoto',
+      formItem: <div className="hidden"></div>,
+      colNum: 8,
     },
   ];
 
@@ -199,32 +238,80 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
       onCancel={handleCancel}
       maskClosable={false}
       footer={[
-        <Button key="back" onClick={handleCancel} disabled={loading}>
+        <Button
+          key="back"
+          onClick={handleCancel}
+          disabled={loading}
+        >
           取消
         </Button>,
-        <Button key="reset" htmlType="reset" onClick={onReset} disabled={loading}>
+        <Button
+          key="reset"
+          htmlType="reset"
+          onClick={onReset}
+          disabled={loading}
+        >
           重置
         </Button>,
-        <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
+        <Button
+          key="submit"
+          type="primary"
+          loading={loading}
+          onClick={handleOk}
+        >
           提交
         </Button>,
       ]}
     >
-  <div className='mr-8'>
-  <AdForm
-        key={`${JSON.stringify(subForm)}`}
-        loadingTitle="提交中..."
-        formRef={formRef}
-        loading={loading}
-        labelAlign="right"
-        onFormChange={onFormChange}
-        columns={columns}
-        layoutStyle={{
-          labelCol: { span: 12 },
-          wrapperCol: { span: 12, flex: 1 },
-        }}
-      />
-  </div>
+      <div className="mr-8 ml-8">
+        <Row gutter={10} className="mt-5">
+          <Col span={4}>
+            <Flex
+              justify="center"
+              align="center"
+              className="h-full"
+            >
+              <div>
+                <ProUpload
+                  key={JSON.stringify(subForm.passportPhoto)}
+                  tip="请上传行驶证正面图片"
+                  // defaultFileList={() => defaultUrl}
+                  // onRequest={async (params: any) =>
+                  //   await F.fileUpload(params)
+                  // }
+                  onUploadSuccess={async (res) => {
+                    const { url } = Object.values(res)[0] as {
+                      url: string;
+                    };
+                    // setDefaultUrl([...defaultUrl, { url: url }]);
+                    formRef.current?.setFieldValue(
+                      'passportPhoto',
+                      url
+                    );
+                  }}
+                  maxCount={1}
+                  showUploadList={true}
+                />
+              </div>
+            </Flex>
+          </Col>
+          <Col span={20}>
+            <AdForm
+              key={`${JSON.stringify(subForm)}`}
+              loadingTitle="提交中..."
+              formRef={formRef}
+              loading={loading}
+              labelAlign="right"
+              onFormChange={onFormChange}
+              columns={columns}
+              layoutStyle={{
+                labelCol: { span: 12 },
+                wrapperCol: { span: 12, flex: 1 },
+              }}
+            />
+          </Col>
+        </Row>
+      </div>
     </Modal>
   );
 };

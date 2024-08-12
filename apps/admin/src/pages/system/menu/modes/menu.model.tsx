@@ -1,5 +1,8 @@
 import { StarTwoTone, StopTwoTone } from '@ant-design/icons';
-import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
+import {
+  TableDropdown,
+  type ProColumns,
+} from '@ant-design/pro-components';
 import { message, Tag } from 'antd';
 
 import { IconSelect, IconShow } from 'ui';
@@ -31,9 +34,11 @@ export default (props: MenusPropsType) => {
 
   const columns: ProColumns[] = [
     {
+      width: 180,
       title: '菜单名称',
+      fixed: 'left',
       dataIndex: 'name',
-      ellipsis: true,
+      // ellipsis: true,
       formItemProps: {
         rules: [
           {
@@ -50,7 +55,7 @@ export default (props: MenusPropsType) => {
     //   dataIndex: 'path',
     // },
     {
-      width: 80,
+      width: 120,
       hideInSearch: true,
       title: 'ID编号',
       editable: false,
@@ -60,7 +65,7 @@ export default (props: MenusPropsType) => {
     {
       title: '图标',
       hideInSearch: true,
-      width: 60,
+      width: 120,
       dataIndex: 'icon',
       ellipsis: true,
       valueType: 'select',
@@ -85,7 +90,8 @@ export default (props: MenusPropsType) => {
     },
     {
       hideInSearch: true,
-      width: 140,
+      width: 120,
+      ellipsis: true,
       editable: false,
       title: '权限标识',
       dataIndex: 'permission',
@@ -94,6 +100,8 @@ export default (props: MenusPropsType) => {
       hideInSearch: true,
       title: '组件路径',
       dataIndex: 'component',
+      // ellipsis: true,
+      width: 120,
     },
     {
       tooltip: '控制是否在主菜单中显示，不影响路由访问！',
@@ -113,8 +121,10 @@ export default (props: MenusPropsType) => {
             '0': {
               text: (
                 <>
-                  
-                  <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
+                  <StarTwoTone
+                    twoToneColor="#50a14f"
+                    style={{ marginRight: '10px' }}
+                  />
                   显示
                 </>
               ),
@@ -122,8 +132,10 @@ export default (props: MenusPropsType) => {
             '1': {
               text: (
                 <>
-                  
-                  <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
+                  <StopTwoTone
+                    twoToneColor="red"
+                    style={{ marginRight: '10px' }}
+                  />
                   隐藏
                 </>
               ),
@@ -132,7 +144,13 @@ export default (props: MenusPropsType) => {
         />
       ),
       render: (_, record) => (
-        <>{record.status == '0' ? <Tag color="green">显示</Tag> : <Tag color="red">隐藏</Tag>}</>
+        <>
+          {record.status == '0' ? (
+            <Tag color="green">显示</Tag>
+          ) : (
+            <Tag color="red">隐藏</Tag>
+          )}
+        </>
       ),
       formItemProps: {
         rules: [

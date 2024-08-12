@@ -30,16 +30,28 @@ const vehicle: ApiItem[] = [
       { key: 'pageSize', cn: '每页条数' },
     ],
   },
-
   {
     key: 'getPointRecord',
     url: `${ADMIN_API}/wisdom/car-in-out-record/getPointRecord`,
     type: 'GET',
-    name: '车辆进出轨迹',
+    name: '车辆进出轨迹（旧，假数据）',
     description: '车辆进出轨迹',
     params: [
       { key: 'Authorization', location: 'header' },
       { key: 'id', cn: 'id号' },
+    ],
+  },
+  {
+    key: 'getTrackDetail',
+    url: `${ADMIN_API}/wisdom/gps/getHistory`,
+    type: 'POST',
+    name: '车辆进出轨迹（新，对接硬件）',
+    description: '车辆进出轨迹',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'carNo', cn: '车牌号' },
+      { key: 'startTime', cn: '开始时间' },
+      { key: 'endTime', cn: '结束时间' },
     ],
   },
   {

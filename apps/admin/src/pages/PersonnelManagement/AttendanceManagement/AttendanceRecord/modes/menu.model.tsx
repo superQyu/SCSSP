@@ -88,6 +88,7 @@ export default ({ server }: MenusPropsType) => {
     {
       title: '时间范围',
       valueType: 'dateTimeRange',
+      dataIndex: 'dateTimeRange',
       hideInTable: true,
       search: {
         transform: (value) => {
@@ -110,7 +111,11 @@ export default ({ server }: MenusPropsType) => {
       hideInSearch: true,
       title: '打卡时间',
       render: (_, record) => (
-        <>{dayjs(record.leaveTime || record.enterTime).format('YYYY-MM-DD hh:mm:ss')}</>
+        <>
+          {dayjs(record.leaveTime || record.enterTime).format(
+            'YYYY-MM-DD hh:mm:ss'
+          )}
+        </>
       ),
     },
     {
@@ -131,7 +136,11 @@ export default ({ server }: MenusPropsType) => {
       title: '打卡状态',
       render: (_, record) => {
         return (
-          <DictSelect type="text" dictKey={'pm_clock_status'} value={record.clockStatus + ''} />
+          <DictSelect
+            type="text"
+            dictKey={'pm_clock_status'}
+            value={record.clockStatus + ''}
+          />
         );
       },
     },

@@ -167,9 +167,11 @@ export default (props: Props) => {
                     const list = res.map((item: any) => item.url);
                     // 获取当前行 id
                     const id = tableRef.current.getCurrentRow();
-                    await editableFormRef.current?.setRowData(id, {
-                      attachment: list,
-                    });
+                    console.log('id', id, list);
+                    id &&
+                      (await editableFormRef.current?.setRowData(id, {
+                        attachment: list.length ? list : null,
+                      }));
                   }
                 }}
                 defaultFileList={() => {

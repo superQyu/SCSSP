@@ -3,7 +3,9 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Image, Upload, Button, message } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+type FileType = Parameters<
+  GetProp<UploadProps, 'beforeUpload'>
+>[0];
 
 export type RequestData<T> =
   | ({
@@ -14,10 +16,14 @@ export type RequestData<T> =
   | string;
 
 interface Props {
+  /** 文件上传的提示 */
+  tip?: string;
   /** 自定义上传按钮  */
   buttonRender?: JSX.Element;
   /** 上传接口配置  */
-  onRequest?: (params: any) => Promise<Partial<RequestData<any>>>;
+  onRequest?: (
+    params: any
+  ) => Promise<Partial<RequestData<any>>>;
   /** 上传成功  */
   onUploadSuccess?: (params: any, path: string) => void;
   /** 上传失败 */
@@ -49,24 +55,28 @@ const getBase64 = (file: FileType): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
-const ProUpload: React.FC<Props> = ({
-  buttonRender,
-  onRequest,
-  onUploadSuccess,
-  onUploadError,
-  onDeleted,
-  fileType = ['jpeg', 'png', 'image/jpeg', 'image/png'],
-  fileSize = 20,
-  maxCount = 8,
-  showUploadList = true,
-  showUploadButton = true,
-  defaultFileList = () => [],
-  onListChange,
-}: Props) => {
+const ProUpload: React.FC<Props> = (props: Props) => {
+  const {
+    buttonRender,
+    onRequest,
+    onUploadSuccess,
+    onUploadError,
+    onDeleted,
+    fileType = ['jpeg', 'png', 'image/jpeg', 'image/png'],
+    fileSize = 20,
+    maxCount = 8,
+    showUploadList = true,
+    showUploadButton = true,
+    defaultFileList = () => [],
+    onListChange,
+  } = props;
+
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [fileList, setFileList] = useState<(UploadFile & { url?: string })[]>(defaultFileList());
+  const [fileList, setFileList] = useState<
+    (UploadFile & { url?: string })[]
+  >(defaultFileList());
 
   const [tempFileUid, setTempFileUid] = useState<string>('');
 
@@ -75,7 +85,11 @@ const ProUpload: React.FC<Props> = ({
     onListChange && onListChange(fileList);
   }, [fileList]);
 
-  const customRequest = async ({ file, onSuccess, onError }: Record<string, any>) => {
+  const customRequest = async ({
+    file,
+    onSuccess,
+    onError,
+  }: Record<string, any>) => {
     if (onRequest) {
       try {
         const formData = new FormData();
@@ -133,14 +147,18 @@ const ProUpload: React.FC<Props> = ({
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as FileType);
+      file.preview = await getBase64(
+        file.originFileObj as FileType
+      );
     }
 
     setPreviewImage(file.url || (file.preview as string));
     setPreviewOpen(true);
   };
 
-  const handleChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+  const handleChange: UploadProps['onChange'] = ({
+    fileList: newFileList,
+  }) => {
     // setFileList(newFileList);
   };
 
@@ -152,9 +170,10 @@ const ProUpload: React.FC<Props> = ({
     onDeleted && onDeleted(file);
   };
 
-  const delErrorFile = (files: UploadFile[]) => files.map((file: UploadFile) => onRemove(file));
+  const delErrorFile = (files: UploadFile[]) =>
+    files.map((file: UploadFile) => onRemove(file));
 
-  const props: UploadProps = {
+  const uploadProps: UploadProps = {
     listType: buttonRender ? 'text' : 'picture-card',
     onRemove,
     beforeUpload,
@@ -167,20 +186,28 @@ const ProUpload: React.FC<Props> = ({
 
   useEffect(() => {
     if (tempFileUid && tempFileUid != '') {
-      delErrorFile(fileList.filter((file) => file.uid == tempFileUid));
+      delErrorFile(
+        fileList.filter((file) => file.uid == tempFileUid)
+      );
     }
   }, [fileList]);
 
   const uploadButton = buttonRender || (
-    <Button style={{ border: 0, background: 'none' }} type="text">
+    <Button
+      style={{ border: 0, background: 'none' }}
+      type="text"
+    >
       <PlusOutlined />
       <div style={{ marginTop: 8 }}>上传</div>
+      {props.tip && (
+        <div style={{ marginTop: 20 }}>{props.tip}</div>
+      )}
     </Button>
   );
 
   return (
     <>
-      <Upload {...props}>
+      <Upload {...uploadProps}>
         {!maxCount && showUploadButton
           ? uploadButton
           : fileList?.length >= maxCount || !showUploadButton
@@ -192,8 +219,10 @@ const ProUpload: React.FC<Props> = ({
           wrapperStyle={{ display: 'none' }}
           preview={{
             visible: previewOpen,
-            onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(''),
+            onVisibleChange: (visible) =>
+              setPreviewOpen(visible),
+            afterOpenChange: (visible) =>
+              !visible && setPreviewImage(''),
           }}
           src={previewImage}
         />

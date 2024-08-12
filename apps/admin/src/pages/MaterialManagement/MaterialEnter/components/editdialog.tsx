@@ -87,6 +87,7 @@ export default ({ openModal, onStateChange, detail = {} }: Props) => {
     const table = tableRef.current?.getTableData();
     // console.log('所有表格数据', table);
     const materialsEnterDetailsSaveReqVOS = table.map((item: any) => {
+      // console.log('item.attachment', item.attachment)
       return {
         // 如果 id 为number, 则是编辑
         id: typeof item.id == 'number' ? item.id : undefined,

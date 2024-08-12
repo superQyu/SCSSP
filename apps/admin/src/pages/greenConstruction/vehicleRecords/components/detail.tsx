@@ -26,11 +26,13 @@ const DetailForm: React.FC<Props> = forwardRef(({ subForm }: Props, ref) => {
 
   const initData = () => {
     if (!subForm.length) return;
-    const points = subForm.map((item: { point: string }) => {
-      const point = item.point.split(',');
+    const points = subForm.map((item: any) => {
+      // const point = item.point.split(',');
       return {
-        lng: point[0] * 1,
-        lat: point[1] * 1,
+        // lng: point[0] * 1,
+        // lat: point[1] * 1,
+        lng: item.mlng * 1,
+        lat: item.mlat * 1,
       };
     });
     setAnimatedPoints(points);

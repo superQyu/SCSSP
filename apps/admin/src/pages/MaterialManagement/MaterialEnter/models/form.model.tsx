@@ -26,26 +26,41 @@ export default (tableRef: any, editableFormRef: any) => {
       label: '送货人',
       dataIndex: 'deliveryMan',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入送货人' }],
+      },
     },
     {
       label: '材料员',
       dataIndex: 'materialMan',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入材料员' }],
+      },
     },
     {
       label: '供应单位',
       dataIndex: 'supplierDepartment',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入供应单位' }],
+      },
     },
     {
       label: '生产厂家',
       dataIndex: 'manufacturer',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入生产厂家' }],
+      },
     },
     {
       label: '购买单位',
       dataIndex: 'purchaserDepartment',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入购买单位' }],
+      },
     },
   ];
   const tableColumns: ProColumns[] = [

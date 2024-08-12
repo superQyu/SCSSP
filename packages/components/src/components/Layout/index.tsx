@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Switch, Tooltip, Space, Popover, Image, Skeleton } from 'antd';
+import {
+  Switch,
+  Tooltip,
+  Space,
+  Popover,
+  Image,
+  Skeleton,
+} from 'antd';
 import { QuestionCircleFilled } from '@ant-design/icons';
 import {
   ProConfigProvider,
@@ -10,11 +17,20 @@ import {
   type ProSettings,
   type MenuDataItem,
 } from '@ant-design/pro-components';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate,
+  Link,
+} from 'react-router-dom';
 
 import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
-import { useAppDispatch, useAppSelector, KeepAlive, useLocationListen } from 'hooks';
-import { MenuItem, sortMenu } from 'utils';
+import {
+  useAppDispatch,
+  useAppSelector,
+  KeepAlive,
+  useLocationListen,
+} from 'hooks';
+import { MenuItem, sortMenu, getToken } from 'utils';
 
 // 组件列表
 import SearchInput from './components/SearchInput';
@@ -40,9 +56,12 @@ const layout: React.FC<CommonObject> = (props: any) => {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const { user, site } = useAppSelector((state) => state);
+  // 控制当前的 activeMenu
   const [pathname, setPathname] = useState(location.pathname);
   const [isDark, setDark] = useState<boolean>(false);
-  const [settings, setSetting] = useState<Partial<ProSettings> | undefined>({
+  const [settings, setSetting] = useState<
+    Partial<ProSettings> | undefined
+  >({
     navTheme: 'light',
     colorPrimary: '#1677FF',
     contentWidth: 'Fluid',
@@ -53,7 +72,8 @@ const layout: React.FC<CommonObject> = (props: any) => {
 
   const [num, setNum] = useState(40);
   const [keyWord, setKeyWord] = useState('');
-  const [shouldRender, setShouldRender] = useState<boolean>(false);
+  const [shouldRender, setShouldRender] =
+    useState<boolean>(false);
 
   const [loading, setLoading] = useState(true);
   const { userInfor = {}, menu = [] } = user as CommonObject; // 获取用户基本信息
@@ -64,26 +84,48 @@ const layout: React.FC<CommonObject> = (props: any) => {
     logo: '',
     siteName: '',
   });
-  const [menus, setMenus] = useState<{ path: string; routes: MenuItem[] }>({
+  const [menus, setMenus] = useState<{
+    path: string;
+    routes: MenuItem[];
+  }>({
     path: '/',
     routes: [],
   });
 
   // css
-  const SkeletonAvatarStyle = { display: 'flex', justifyContent: 'center', alignItems: 'center' };
+  const SkeletonAvatarStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  };
   const SkeletonInputStyle = { verticalAlign: 'middle' };
 
+  // 监听路由的变化
   useLocationListen(({ pathname }) => {
+    // console.log('当前路由', pathname)
     setPathname(pathname);
+    if (!getToken('BREADCRUMBS')) return;
+    else {
+      let activeMenu = JSON.parse(
+        getToken('BREADCRUMBS')
+      ).activeMenu;
+      activeMenu && setPathname(activeMenu);
+    }
   });
 
-  const filterByMenuData = (data: MenuDataItem[], keyWord: string): MenuDataItem[] =>
+  const filterByMenuData = (
+    data: MenuDataItem[],
+    keyWord: string
+  ): MenuDataItem[] =>
     data
       .map((item) => {
         if (item.name?.includes(keyWord)) {
           return { ...item };
         }
-        const children = filterByMenuData(item.children || [], keyWord);
+        const children = filterByMenuData(
+          item.children || [],
+          keyWord
+        );
         if (children.length > 0) {
           return { ...item, children };
         }
@@ -109,7 +151,10 @@ const layout: React.FC<CommonObject> = (props: any) => {
     setSetting(v);
   };
 
-  const filteredObject = (a: CommonObject, b: CommonObject): CommonObject => {
+  const filteredObject = (
+    a: CommonObject,
+    b: CommonObject
+  ): CommonObject => {
     return Object.keys(b).reduce((obj, key) => {
       if (a.hasOwnProperty(key)) {
         obj[key] = b[key];
@@ -135,22 +180,33 @@ const layout: React.FC<CommonObject> = (props: any) => {
       logo: siteInfor.ico,
       siteName: siteInfor.name,
     });
-    if (siteInfor.ico && siteInfor.ico != '') setShouldRender(true);
+    if (siteInfor.ico && siteInfor.ico != '')
+      setShouldRender(true);
     setLoading(false);
   }, [user, site]);
   useEffect(() => {
-    const newSettings = filteredObject(settings as CommonObject, props);
+    const newSettings = filteredObject(
+      settings as CommonObject,
+      props
+    );
     setSetting({ ...settings, ...newSettings });
   }, [props]);
   return (
     <WaterMark content={props.waterMarkProps || ''}>
       <ProConfigProvider>
-        <div id={areaId} style={{ height: '100vh', overflow: 'hidden' }}>
+        <div
+          id={areaId}
+          style={{ height: '100vh', overflow: 'hidden' }}
+        >
           <CustomProLayout
             title="管理平台"
             prefixCls={`${areaId}-prefix`}
             contentStyle={{ height: 'calc(100vh - 5px)' }}
-            route={props.reRenderRoute ? props.reRenderRoute(menus) : menus}
+            route={
+              props.reRenderRoute
+                ? props.reRenderRoute(menus)
+                : menus
+            }
             location={{
               pathname,
             }}
@@ -160,11 +216,16 @@ const layout: React.FC<CommonObject> = (props: any) => {
               },
             }}
             menu={{}}
-            postMenuData={(menus) => filterByMenuData(menus || [], keyWord)}
+            postMenuData={(menus) =>
+              filterByMenuData(menus || [], keyWord)
+            }
             avatarProps={{
               size: 'small',
               src: loading ? (
-                <Skeleton.Avatar active style={SkeletonInputStyle} />
+                <Skeleton.Avatar
+                  active
+                  style={SkeletonInputStyle}
+                />
               ) : (
                 (baseInfor as unknown as { avatar: '' })?.avatar
               ),
@@ -172,18 +233,32 @@ const layout: React.FC<CommonObject> = (props: any) => {
                 <Skeleton.Input
                   active
                   size={'small'}
-                  style={{ ...SkeletonInputStyle, marginTop: '-3px' }}
+                  style={{
+                    ...SkeletonInputStyle,
+                    marginTop: '-3px',
+                  }}
                 />
               ) : (
                 <Popover
                   rootClassName="profile-popover"
                   placement="bottomRight"
                   trigger="click"
-                  content={<Profile user={user} tokenKeys={props.TokenKeys} />}
+                  content={
+                    <Profile
+                      user={user}
+                      tokenKeys={props.TokenKeys}
+                    />
+                  }
                 >
                   <div>
                     {}
-                    {(baseInfor as unknown as { userName: '欢迎！' })?.userName}
+                    {
+                      (
+                        baseInfor as unknown as {
+                          userName: '欢迎！';
+                        }
+                      )?.userName
+                    }
                   </div>
                 </Popover>
               ),
@@ -204,7 +279,8 @@ const layout: React.FC<CommonObject> = (props: any) => {
               if (props.isMobile) return [];
               if (typeof window === 'undefined') return [];
               return [
-                props.layout !== 'side' && document.body.clientWidth > 1400 ? (
+                props.layout !== 'side' &&
+                document.body.clientWidth > 1400 ? (
                   <SearchInput />
                 ) : undefined,
                 <Tooltip placement="bottom" title={'主题切换'}>
@@ -222,17 +298,24 @@ const layout: React.FC<CommonObject> = (props: any) => {
               const defaultDom = (
                 <a href="/">
                   {!shouldRender ? (
-                    <Skeleton.Avatar active style={SkeletonAvatarStyle} />
+                    <Skeleton.Avatar
+                      active
+                      style={SkeletonAvatarStyle}
+                    />
                   ) : (
                     <img
                       src={(baseInfor as { logo: '' })?.logo}
-                      title={(baseInfor as { siteName: '' })?.siteName}
+                      title={
+                        (baseInfor as { siteName: '' })?.siteName
+                      }
                     />
                   )}
                 </a>
               );
-              if (typeof window === 'undefined') return defaultDom;
-              if (document.body.clientWidth < 1400) return defaultDom;
+              if (typeof window === 'undefined')
+                return defaultDom;
+              if (document.body.clientWidth < 1400)
+                return defaultDom;
               if (_.isMobile) return defaultDom;
               return (
                 <>
@@ -242,7 +325,8 @@ const layout: React.FC<CommonObject> = (props: any) => {
               );
             }}
             menuFooterRender={(props) => {
-              if (props?.collapsed || props?.isMobile) return undefined;
+              if (props?.collapsed || props?.isMobile)
+                return undefined;
               return (
                 <div>
                   <div key={1} style={{ height: '135px' }}>
@@ -255,17 +339,27 @@ const layout: React.FC<CommonObject> = (props: any) => {
                     <Space
                       align="center"
                       size="middle"
-                      style={{ width: '100%', marginBlockStart: '32px' }}
+                      style={{
+                        width: '100%',
+                        marginBlockStart: '32px',
+                      }}
                     />
                   </div>
-                  <div style={{ textAlign: 'center', paddingBlockStart: 12 }}>
+                  <div
+                    style={{
+                      textAlign: 'center',
+                      paddingBlockStart: 12,
+                    }}
+                  >
                     <div>© 2023 Made with love</div>
                     <div>by Designer Q_Y</div>
                   </div>
                 </div>
               );
             }}
-            menuItemRender={(item, dom) => <Link to={item.path ?? '/'}>{dom}</Link>}
+            menuItemRender={(item, dom) => (
+              <Link to={item.path ?? '/'}>{dom}</Link>
+            )}
             {...props}
             {...settings}
           >
@@ -283,7 +377,9 @@ const layout: React.FC<CommonObject> = (props: any) => {
                 disableUrlParams={false}
               />
             )}
-            <ErrorBoundary>{<KeepAlive include={[]} keys={[]} />}</ErrorBoundary>
+            <ErrorBoundary>
+              {<KeepAlive include={[]} keys={[]} />}
+            </ErrorBoundary>
           </CustomProLayout>
         </div>
       </ProConfigProvider>

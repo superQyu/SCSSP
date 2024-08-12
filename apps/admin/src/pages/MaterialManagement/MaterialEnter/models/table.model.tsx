@@ -110,10 +110,10 @@ export default ({ server }: MenusPropsType) => {
       ellipsis: true,
       hideInSearch: true,
       render: (text, record) => {
-        console.log('record', record)
+        // console.log('行数据', record)
         const list = record?.attachment?.split('@');
-        console.log('图片列表', list);
-        if (list) {
+        // console.log('图片列表', list);
+        if (list && list[0].length) {
           return (
             <div>
               <Image.PreviewGroup items={list}>

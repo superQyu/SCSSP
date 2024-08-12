@@ -56,7 +56,7 @@ export default (_: MenusPropsType) => {
       hideInSearch: true,
       title: '方向',
       dataIndex: 'direction',
-      render: (_, record) => (record.enterTime ? '出场' : '进场'),
+      render: (_, record) => (record.enterTime ? '进场' : '出场'),
     },
     {
       hideInSearch: true,

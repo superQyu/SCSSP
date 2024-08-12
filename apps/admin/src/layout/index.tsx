@@ -1,4 +1,8 @@
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
+import {
+  Navigate,
+  useNavigate,
+  useLocation,
+} from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { HomeOutlined } from '@ant-design/icons';
 import { type RouterTypes } from './_suppllyTypes';
@@ -30,7 +34,11 @@ import { Breadcrumb, TabCom } from 'components';
 
 // 验证权限
 const Permissions = ({ children }: any) => {
-  return getToken(TOKEN) ? <InitSettings>{children}</InitSettings> : <Navigate to="/login" />;
+  return getToken(TOKEN) ? (
+    <InitSettings>{children}</InitSettings>
+  ) : (
+    <Navigate to="/login" />
+  );
 };
 
 const LayoutContext: React.FC = () => {
@@ -38,14 +46,20 @@ const LayoutContext: React.FC = () => {
   const dispatch = useAppDispatch();
   const {
     common: { menuTab },
-  } = useAppSelector((state) => state) as { common: { menuTab: any } };
+  } = useAppSelector((state) => state) as {
+    common: { menuTab: any };
+  };
   const { server, config } = useBasicConfiguration();
   const { basic: B } = server;
   const { PROJECTNAME: DP } = config || {};
 
-  const [breadcrumbList, setBreadcrumbList] = useState<MenuTabItem[]>([]);
+  const [breadcrumbList, setBreadcrumbList] = useState<
+    MenuTabItem[]
+  >([]);
   const [projectShow, setProjectShow] = useState<string>('');
-  const [projectList, setProjectList] = useState<MenusType[]>([]);
+  const [projectList, setProjectList] = useState<MenusType[]>(
+    []
+  );
 
   const [key, setKey] = useState(0);
   const [loading, setLoading] = useState<boolean>(false);
@@ -80,7 +94,10 @@ const LayoutContext: React.FC = () => {
       breadcrumbs,
     };
     setToken('BREADCRUMBS', JSON.stringify(newMenuTab));
-    if (!menuTab.some((el: MenuTabItem) => el.label == item.name)) {
+    // if (!menuTab.some((el: MenuTabItem) => el.label == item.name)) {
+    if (
+      !menuTab.some((el: MenuTabItem) => el.path == item.path)
+    ) {
       dispatch(setMenuTab([...menuTab, newMenuTab]));
     }
     item.path && navigator(item.path);
@@ -88,7 +105,9 @@ const LayoutContext: React.FC = () => {
 
   useEffect(() => {
     if (!getToken('BREADCRUMBS')) return;
-    let breadcrumbs = JSON.parse(getToken('BREADCRUMBS')).breadcrumbs;
+    let breadcrumbs = JSON.parse(
+      getToken('BREADCRUMBS')
+    ).breadcrumbs;
     breadcrumbs?.unshift({
       title: <HomeOutlined />,
     });
@@ -118,12 +137,20 @@ const LayoutContext: React.FC = () => {
           key={key}
           {...{
             ...LayoutConfig(),
-            onMenuHeaderClick: (_: React.MouseEvent<HTMLDivElement>) => {
+            onMenuHeaderClick: (
+              _: React.MouseEvent<HTMLDivElement>
+            ) => {
               navigator('/');
             },
             logo: myImage,
-            reRenderRoute: (e: RouterTypes) => ({ ...e, routes: filterRoutes(e.routes || []) }),
-            menuItemRender: (item: MenuDataItem, dom: React.ReactNode) => (
+            reRenderRoute: (e: RouterTypes) => ({
+              ...e,
+              routes: filterRoutes(e.routes || []),
+            }),
+            menuItemRender: (
+              item: MenuDataItem,
+              dom: React.ReactNode
+            ) => (
               <div onClick={() => menuClick(item)}>{dom}</div>
             ),
             contentStyle: { padding: '0' },

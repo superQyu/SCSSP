@@ -3,6 +3,24 @@ const ADMIN_API = import.meta.env.VITE_APP_ADMIN_API;
 
 const attendance: ApiItem[] = [
   {
+    key: 'attendanceCount',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/getAttendanceCount`,
+    type: 'GET',
+    description: '现场统计(劳务信息)',
+    params: [
+      { key: 'Authorization', location: 'header' },
+    ],
+  },
+  {
+    key: 'attendanceCountWithSpecialWorkType',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/getAttendanceSpecialWorkTypeCount`,
+    type: 'GET',
+    description: '现场统计(现场特殊工种统计)',
+    params: [
+      { key: 'Authorization', location: 'header' },
+    ],
+  },
+  {
     key: 'attendanceList',
     url: `${ADMIN_API}/wisdom/personnel-attendance/getAttendanceSummaryPage`,
     type: 'GET',

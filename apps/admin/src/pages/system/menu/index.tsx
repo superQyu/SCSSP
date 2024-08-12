@@ -96,6 +96,7 @@ export default () => {
           {
             title: '操作',
             width: 140,
+            fixed: 'right',
             valueType: 'option',
             key: 'option',
             render: (_text: any, record: any, _: any, action: any) => [
@@ -179,7 +180,8 @@ export default () => {
             新建
           </Button>,
         ]}
-        scroll={{ y: 'auto' }}
+        scroll={{ x: 1040, y: 'auto' }}
+        // scroll={{ y: 'auto' }}
         search={{
           labelWidth: 'auto',
           optionRender: ({ searchText }: any, { form }: any, dom: any) => {

@@ -5,6 +5,7 @@ export declare namespace ModesApi {
     subcontractorId?: number;
     workTypeId?: number;
     groupId?: number;
+    dateTime?: string;
     beginTime?: string;
     endTime?: string;
   };

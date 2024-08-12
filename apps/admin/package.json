@@ -27,7 +27,7 @@
     "apis": "workspace:*",
     "clipboard": "^2.0.11",
     "components": "workspace:*",
-    "dayjs": "^1.11.11",
+    "dayjs": "^1.11.10",
     "echarts": "^5.5.0",
     "hooks": "workspace:*",
     "lodash": "^4.17.21",

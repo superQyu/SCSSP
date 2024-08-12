@@ -1,19 +1,49 @@
 import { useEffect, useRef } from 'react';
 import { useECharts } from '@/context/EChartContext';
 
-const SomeChartComponent = () => {
+interface Props {
+  /** { total: 100, value: 30 } */
+  data?: any;
+}
+
+const SomeChartComponent = (props: Props) => {
+  const { data: chartData = { total: 100, value: 30 } } = props;
+
   const { getEChartsInstance, getLinearGradient } = useECharts();
   const chartRef = useRef(null);
-  var chartData = {
-    value: 30,
-    total: 100,
-  };
 
-  let max = chartData.total;
-  let value = chartData.value;
   let chartInstance: any = null;
 
+  // useEffect(() => {
+  //   setOptions();
+  // }, []);
+  useEffect(() => {
+    initChart();
+    setOptions();
+    return () => {
+      chartInstance.dispose();
+      window.removeEventListener('resize', () =>
+        chartInstance.resize()
+      );
+    };
+  }, [chartData]);
+  // useEffect(() => {
+  //   initChart()
+  //   setOptions();
+  // }, [chartData]);
+
+  const initChart = () => {
+    if (!chartInstance) {
+      chartInstance = getEChartsInstance(chartRef);
+    }
+    window.addEventListener('resize', () =>
+      chartInstance.resize()
+    );
+  };
+
   const setOptions = () => {
+    const max = chartData.total;
+    const value = chartData.value;
     const option = {
       angleAxis: {
         axisLine: {
@@ -92,7 +122,6 @@ const SomeChartComponent = () => {
             show: true,
             position: 'left',
           },
-   
         },
         // 尾端小圆点 饼图
         {
@@ -132,21 +161,6 @@ const SomeChartComponent = () => {
     };
     chartInstance.setOption(option);
   };
-
-  const resizeChart = () => chartInstance.resize();
-
-  useEffect(() => {
-    chartInstance = getEChartsInstance(chartRef);
-    setOptions();
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('resize', resizeChart);
-    return () => {
-      chartInstance.dispose();
-      window.removeEventListener('resize', resizeChart);
-    };
-  }, []);
 
   return <div ref={chartRef} className="w-full h-full"></div>;
 };
