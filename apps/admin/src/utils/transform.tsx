@@ -14,4 +14,16 @@ const ToString = (value: Value) => {
   return newVal;
 };
 
-export { ToString };
+/**
+ * 将 字符串 转化为 url 数组
+ * @param arr 需要转化的字符串
+ * @param split 分隔符
+ */
+const toUrlArr = (str: string | undefined, split: string) => {
+  let realStr = undefined;
+  // str 如果是空字符串 '', 其调用 split 传化后的值就为 ['']
+  if (str && str.length != 0) realStr = str;
+  return realStr?.split(split);
+};
+
+export { ToString, toUrlArr };

@@ -12,7 +12,7 @@ type MenusPropsType = {
 };
 
 export default ({
-  month: searchMonth = dayjs().format('YYYY-MM'),
+  month: searchMonth,
   server,
 }: MenusPropsType) => {
   const { tabNavigate } = useRoute();
@@ -207,7 +207,7 @@ export default ({
     },
     {
       width: 100,
-      title: '工日(天)',
+      title: '工时(小时)',
       hideInSearch: true,
       dataIndex: 'workingHours',
       fixed: 'left',

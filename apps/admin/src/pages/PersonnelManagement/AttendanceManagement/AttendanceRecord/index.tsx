@@ -87,26 +87,26 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <div
-            className="cursor-pointer w-66px h-25px"
-            onClick={() => {
-              let id = (Math.random() * 1000000).toFixed(0);
-              actionRef.current?.addEditRecord(
-                {
-                  id: id,
-                  name: '超级管理员',
-                  identityCard: '411024199001029098',
-                  enterTime: undefined,
-                  clockDirection: 0,
-                  clockStatus: 1,
-                  temperature: '36.5',
-                },
-                { position: 'top', newRecordType: 'dataSource' }
-              );
-              actionRef.current?.cancelEditable(id);
-              // setIfAdd(true)
-            }}
-          ></div>,
+          // <div
+          //   className="cursor-pointer w-66px h-25px"
+          //   onClick={() => {
+          //     let id = (Math.random() * 1000000).toFixed(0);
+          //     actionRef.current?.addEditRecord(
+          //       {
+          //         id: id,
+          //         name: '超级管理员',
+          //         identityCard: '411024199001029098',
+          //         enterTime: undefined,
+          //         clockDirection: 0,
+          //         clockStatus: 1,
+          //         temperature: '36.5',
+          //       },
+          //       { position: 'top', newRecordType: 'dataSource' }
+          //     );
+          //     actionRef.current?.cancelEditable(id);
+          //     // setIfAdd(true)
+          //   }}
+          // ></div>,
           <Styled.ExportButton
             api="exportPersonnelAttendance"
             fileName="考勤导出"

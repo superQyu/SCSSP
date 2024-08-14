@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Button,
-  InputNumber,
   message,
   Modal,
   DatePicker,
@@ -15,13 +14,11 @@ import type { GetProp, TreeSelectProps } from 'antd';
 import { ExclamationCircleTwoTone } from '@ant-design/icons';
 import type { FormInstance } from 'antd/es/form';
 
-import dayjs from 'dayjs';
-
-import DictSelect from '@/components/DictSelect';
 import { AdForm, FormColumnsTypes } from 'components';
 
 import { RebuildTree, flattenArray, sortMenu } from 'utils';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import setModel from '../modes/form.model';
 
 interface Props {
   /** 控制 Modal 是否显示 */
@@ -41,12 +38,19 @@ const AddMenus: React.FC<Props> = ({
   subForm,
   onStateChange,
 }: Props) => {
+  const { formColumns } = setModel();
+
   const { server } = useBasicConfiguration();
   const { vehicle: V } = server;
   const formRef = useRef<FormInstance>(null);
   const [title] = useState<string>('新增车辆进出场备案');
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(openModal);
+
+  // 分包商信息表单的默认值
+  const [formData, setFormData] = useState<MenusType>({
+    ...subForm,
+  });
 
   const onReset = () => {
     if (loading) {
@@ -90,150 +94,12 @@ const AddMenus: React.FC<Props> = ({
   }, [openModal]);
   useEffect(() => {}, [subForm]);
 
-  const columns: FormColumnsTypes[] = [
-    {
-      label: '车牌号',
-      dataIndex: 'carNo',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入车牌号' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '行驶证号',
-      dataIndex: 'carLicense',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入行驶证号' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '车辆品牌',
-      dataIndex: 'carBrand',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入车辆品牌' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '车辆型号',
-      dataIndex: 'carModel',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入车辆型号' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '是否安装GPS',
-      dataIndex: 'hasGPS',
-      formItem: <DictSelect dictKey={'system_true_false'} />,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入车辆型号' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '车辆类型',
-      dataIndex: 'carType',
-      formItem: <DictSelect dictKey={'cm_car_type'} />,
-      formItemProps: {
-        rules: [{ required: true, message: '车辆类型' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '车辆颜色',
-      dataIndex: 'carColor',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入车辆颜色' }],
-      },
-      colNum: 12,
-    },
-
-    {
-      label: '车辆识别代号/车架号',
-      dataIndex: 'frameNo',
-      // formItemProps: {
-      //   rules: [{ required: true, message: '请输入车辆识别代号/车架号' }],
-      // },
-      colNum: 12,
-    },
-    {
-      label: '发动机号',
-      dataIndex: 'engineNo',
-      // formItemProps: {
-      //   rules: [{ required: true, message: '请输入发动机号' }],
-      // },
-      colNum: 12,
-    },
-    {
-      label: '能源种类',
-      dataIndex: 'energyType',
-      formItem: <DictSelect dictKey={'cm_energy_type'} />,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入能源种类' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '核定载客',
-      dataIndex: 'approvalSeats',
-      formItem: (
-        <InputNumber
-          min={1}
-          style={{ width: '100%' }}
-          placeholder="请输入核定载荷"
-        />
-      ),
-      formItemProps: {
-        rules: [{ required: true, message: '请输入核定载客' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '年审时间',
-      dataIndex: 'examinedDate',
-      formItem: (
-        <DatePicker className="w-full" format="YYYY-MM-DD" />
-      ),
-      formItemProps: {
-        getValueFromEvent: (...[, dateString]) => dateString,
-        getValueProps: (value) => ({
-          value: value ? dayjs(value) : undefined,
-        }),
-        rules: [{ required: true, message: '请选择年审时间' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '保险时间',
-      dataIndex: 'insuranceDate',
-      formItem: (
-        <DatePicker className="w-full" format="YYYY-MM-DD" />
-      ),
-      formItemProps: {
-        getValueFromEvent: (...[, dateString]) => dateString,
-        getValueProps: (value) => ({
-          value: value ? dayjs(value) : undefined,
-        }),
-        rules: [{ required: true, message: '请选择保险时间' }],
-      },
-      colNum: 12,
-    },
-    {
-      // OCR 行驶证识别
-      label: '',
-      dataIndex: 'passportPhoto',
-      formItem: <div className="hidden"></div>,
-      colNum: 8,
-    },
-  ];
-
   return (
     <Modal
       width={'800px'}
       open={open}
-      title={title}
+      // title={title}
+      title={subForm.id ? '编辑' : '新增'}
       onOk={handleOk}
       onCancel={handleCancel}
       maskClosable={false}
@@ -259,7 +125,7 @@ const AddMenus: React.FC<Props> = ({
           loading={loading}
           onClick={handleOk}
         >
-          提交
+          {subForm.id ? '更新' : '提交'}
         </Button>,
       ]}
     >
@@ -298,12 +164,13 @@ const AddMenus: React.FC<Props> = ({
           <Col span={20}>
             <AdForm
               key={`${JSON.stringify(subForm)}`}
+              initialValues={formData}
               loadingTitle="提交中..."
               formRef={formRef}
               loading={loading}
               labelAlign="right"
               onFormChange={onFormChange}
-              columns={columns}
+              columns={formColumns}
               layoutStyle={{
                 labelCol: { span: 12 },
                 wrapperCol: { span: 12, flex: 1 },

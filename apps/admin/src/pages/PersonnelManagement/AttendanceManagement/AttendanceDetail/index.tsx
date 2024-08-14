@@ -7,6 +7,7 @@ import Styled from '@/components/Styled';
 
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import dayjs from 'dayjs';
 
 import type { ModesApi } from './modes/model';
 import siteModel from './modes/menu.model';
@@ -21,7 +22,7 @@ export default () => {
   const actionRef = useRef<ActionType>();
   // 示例: 2024-05
   const [month, setMonth] = useState<string | undefined>(
-    params.get('searchMonth') || undefined
+    params.get('searchMonth') || dayjs().format('YYYY-MM')
   );
   const [groupId, setGroupId] = useState<number | undefined>(
     Number(teamId) || undefined

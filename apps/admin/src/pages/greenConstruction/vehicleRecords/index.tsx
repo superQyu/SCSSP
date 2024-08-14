@@ -14,7 +14,9 @@ export default () => {
   const { vehicle: V } = server;
   const initColumns = siteModel({ server });
   const [visible, setVisible] = useState(false);
-  const [subForm, setSubForm] = useState<Record<string, any>>({});
+  const [subForm, setSubForm] = useState<Record<string, any>>(
+    {}
+  );
   const detailModal = useRef();
 
   const trajectoryHandle = async (row: any) => {
@@ -67,7 +69,6 @@ export default () => {
             hideInSearch: true,
             title: '抓拍图片',
             dataIndex: 'attachment',
-
             // render: (_, record) => {
             //   return (
             //     <>
@@ -104,7 +105,11 @@ export default () => {
                 return (
                   <div>
                     <Image.PreviewGroup items={list}>
-                      <Image width={30} height={30} src={list[0]} />
+                      <Image
+                        width={30}
+                        height={30}
+                        src={list[0]}
+                      />
                     </Image.PreviewGroup>
                   </div>
                 );
@@ -138,7 +143,11 @@ export default () => {
         }}
         search={{
           labelWidth: 'auto',
-          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+          optionRender: (
+            { searchText }: any,
+            { form }: any,
+            dom: any
+          ) => {
             return [
               dom[0],
               <Button
@@ -173,7 +182,10 @@ export default () => {
               // setIfAdd(true)
             }}
           ></div>,
-          <Styled.ExportButton api="exportCarInOutRecord" fileName="车辆进出场" />,
+          <Styled.ExportButton
+            api="exportCarInOutRecord"
+            fileName="车辆进出场"
+          />,
         ]}
       ></ProTable>
       <DetailForm subForm={subForm} ref={detailModal} />

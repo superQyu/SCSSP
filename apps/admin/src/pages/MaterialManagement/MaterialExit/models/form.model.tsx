@@ -10,7 +10,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 export default (tableRef: any, editableFormRef: any) => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { materialList, file } = server;
+  const { materialList, file, vehicle } = server;
 
   const formColumns: FormColumnsTypes[] = [
     {
@@ -72,6 +72,33 @@ export default (tableRef: any, editableFormRef: any) => {
     },
   ];
   const tableColumns: ProColumns[] = [
+    {
+      title: '车牌号',
+      dataIndex: 'carNo',
+      ellipsis: true,
+      hideInSearch: true,
+      renderFormItem: () => {
+        return (
+          <SearchSelect
+            // popupMatchSelectWidth={200}
+            placeholder="请选择车牌号"
+            request={async (input) => {
+              const res = await vehicle.vehicleApproveList({
+                carNo: input,
+              });
+              // console.log('车牌号下拉选项', res);
+              const options = res.list.map((item: any) => {
+                return {
+                  label: item.carNo,
+                  value: item.carNo,
+                };
+              });
+              return options;
+            }}
+          />
+        );
+      },
+    },
     {
       title: '物料清单id',
       dataIndex: 'materialsInventoryId',

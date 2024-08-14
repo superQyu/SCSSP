@@ -22,7 +22,9 @@ export default () => {
   const { vehicle: V } = server;
   const initColumns = siteModel({ server });
 
-  const [subForm, setSubForm] = useState<Record<string, any>>({});
+  const [subForm, setSubForm] = useState<Record<string, any>>(
+    {}
+  );
   const [formModal, setFormModal] = useState<boolean>(false);
   // const [approveFormModal, setApproveFormModal] = useState<boolean>(false);
   // const [subApproveForm, setSubApproveForm] = useState<Record<string, any>>({});
@@ -46,16 +48,20 @@ export default () => {
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await V.vehicleApproveDel({ id: id }).then(async () => {
-      message.success('操作成功!');
-      await actionRef.current?.reload();
-    });
+    const res = await V.vehicleApproveDel({ id: id }).then(
+      async () => {
+        message.success('操作成功!');
+        await actionRef.current?.reload();
+      }
+    );
     return res;
   };
 
   // 保存
   const onSave = async (params: any) => {
-    const res = await V.vehicleApproveUpdate(JSON.parse(JSON.stringify(params)));
+    const res = await V.vehicleApproveUpdate(
+      JSON.parse(JSON.stringify(params))
+    );
     return res;
   };
 
@@ -66,7 +72,9 @@ export default () => {
       <ProTable
         headerTitle="车辆进出场备案审批"
         request={async (params: any) => {
-          const { list, total } = await V.vehicleApproveList(params);
+          const { list, total } = await V.vehicleApproveList(
+            params
+          );
           const res = list.map((item: any) => {
             return {
               ...item,
@@ -94,11 +102,18 @@ export default () => {
             width: 200,
             valueType: 'option',
             fixed: 'right',
-            render: (_text: any, record: any, _: any, action: any) => [
+            render: (
+              _text: any,
+              record: any,
+              _: any,
+              action: any
+            ) => [
               <a
                 key="editable"
                 onClick={() => {
-                  action?.startEditable?.(record.id);
+                  // action?.startEditable?.(record.id);
+                  handleModalStateChange(true);
+                  setSubForm(record);
                 }}
               >
                 {<EditOutlined />}
@@ -130,7 +145,10 @@ export default () => {
         ]}
         editable={{ onDelete, onSave }}
         toolBarRender={() => [
-          <Styled.ExportButton api="exportCarDispatchRecord" fileName="车辆导出" />,
+          <Styled.ExportButton
+            api="exportCarDispatchRecord"
+            fileName="车辆导出"
+          />,
           <Button
             key="button"
             icon={<PlusOutlined />}
@@ -145,7 +163,11 @@ export default () => {
         }}
         search={{
           labelWidth: 'auto',
-          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+          optionRender: (
+            { searchText }: any,
+            { form }: any,
+            dom: any
+          ) => {
             return [
               dom[0],
               <Button
@@ -160,7 +182,12 @@ export default () => {
           },
         }}
       ></ProTable>
-      <AddForm subForm={subForm} openModal={formModal} onStateChange={handleModalStateChange} />
+      <AddForm
+        key={`${formModal}`}
+        subForm={subForm}
+        openModal={formModal}
+        onStateChange={handleModalStateChange}
+      />
       {/* <ApproveForm
         subForm={subApproveForm}
         openModal={approveFormModal}
