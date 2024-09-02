@@ -69,6 +69,12 @@ export default ({ server }: MenusPropsType) => {
 
   const cColumns: ProColumns[] = [
     {
+      title: '车牌号',
+      dataIndex: 'carNo',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
       title: '物料名称',
       dataIndex: 'materialName',
       ellipsis: true,
@@ -110,10 +116,32 @@ export default ({ server }: MenusPropsType) => {
       ellipsis: true,
       hideInSearch: true,
       render: (text, record) => {
-        console.log('record', record)
+        // console.log('行数据', record)
         const list = record?.attachment?.split('@');
-        console.log('图片列表', list);
-        if (list) {
+        // console.log('图片列表', list);
+        if (list && list[0].length) {
+          return (
+            <div>
+              <Image.PreviewGroup items={list}>
+                <Image width={30} height={30} src={list[0]} />
+              </Image.PreviewGroup>
+            </div>
+          );
+        } else {
+          return <div className="color-red">暂无图片</div>;
+        }
+      },
+    },
+    {
+      title: '验收单',
+      dataIndex: 'acceptAttachment',
+      ellipsis: true,
+      hideInSearch: true,
+      render: (text, record) => {
+        // console.log('行数据', record)
+        const list = record?.acceptAttachment?.split('@');
+        // console.log('图片列表', list);
+        if (list && list[0].length) {
           return (
             <div>
               <Image.PreviewGroup items={list}>

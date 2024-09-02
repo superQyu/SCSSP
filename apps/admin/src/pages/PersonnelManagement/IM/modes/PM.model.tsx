@@ -1,5 +1,12 @@
-import { UserOutlined, StarTwoTone, StopTwoTone } from '@ant-design/icons';
-import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
+import {
+  UserOutlined,
+  StarTwoTone,
+  StopTwoTone,
+} from '@ant-design/icons';
+import {
+  TableDropdown,
+  type ProColumns,
+} from '@ant-design/pro-components';
 import { message, Avatar, Tag } from 'antd';
 
 import { IconSelect, IconShow } from 'ui';
@@ -46,7 +53,11 @@ export default ({ server }: MenusPropsType) => {
       render: (_, record) => (
         <Avatar
           icon={<UserOutlined />}
-          src={record.passportPhoto || <img src={url} alt={record.name} />}
+          src={
+            record.passportPhoto || (
+              <img src={url} alt={record.name} />
+            )
+          }
         />
       ),
       // renderFormItem: () => <IconSelect model="simple" />,
@@ -63,7 +74,9 @@ export default ({ server }: MenusPropsType) => {
       title: '性别',
       dataIndex: 'gender',
       // type='text'
-      render: (_, record) => <DictText value={record.gender} dictKey={`pm_gender`} />,
+      render: (_, record) => (
+        <DictText value={record.gender} dictKey={`pm_gender`} />
+      ),
     },
     {
       width: 160,
@@ -78,6 +91,12 @@ export default ({ server }: MenusPropsType) => {
       title: '民族',
       ellipsis: true,
       dataIndex: 'nationality',
+      render: (_, record) => (
+        <DictText
+          value={record.nationality}
+          dictKey={`pm_nationality`}
+        />
+      ),
     },
     {
       hideInSearch: true,
@@ -90,49 +109,75 @@ export default ({ server }: MenusPropsType) => {
     },
     {
       title: '家庭住址',
-      key: 'address',
+      // key: 'address',
+      dataIndex: 'address',
     },
     {
       hideInSearch: true,
-      title: '进场时间',
-      dataIndex: 'name',
+      valueType: 'date',
+      title: '进场日期',
+      dataIndex: 'entryDate',
     },
     {
       hideInSearch: true,
       title: '分包单位',
-      dataIndex: 'companyName',
+      dataIndex: 'realName',
     },
     {
       hideInSearch: true,
       title: '劳务工种',
-      dataIndex: 'workType',
+      dataIndex: 'workTypeName',
+      // render: (_, record) => {
+      //   if (record.workerType == '1') {
+      //     // 建筑工人
+      //     return (
+      //       <DictText
+      //         value={record.nationality}
+      //         dictKey={`pm_nationality`}
+      //       />
+      //     );
+      //   } else {
+      //     // 管理人员
+      //     return (
+      //       <DictText
+      //         value={record.nationality}
+      //         dictKey={`pm_nationality`}
+      //       />
+      //     );
+      //   }
+      // },
     },
     {
       hideInSearch: true,
       title: '班组名',
-      dataIndex: 'name',
+      dataIndex: 'teamName',
     },
     {
       hideInSearch: true,
       title: '是否班组长',
-      dataIndex: 'name',
+      dataIndex: 'isTeamLeader',
+      render: (_, record) => (
+        <DictText
+          value={record.isTeamLeader}
+          dictKey={`pm_is_team_leader`}
+        />
+      ),
     },
-    {
-      hideInSearch: true,
-      title: '计价方式',
-      dataIndex: 'name',
-    },
-    {
-      hideInSearch: true,
-      title: '合同签订日',
-      dataIndex: 'name',
-    },
-    {
-      hideInSearch: true,
-      title: '是否零工',
-      dataIndex: 'name',
-    },
-    
+    // {
+    //   hideInSearch: true,
+    //   title: '计价方式',
+    //   dataIndex: 'name',
+    // },
+    // {
+    //   hideInSearch: true,
+    //   title: '合同签订日',
+    //   dataIndex: 'name',
+    // },
+    // {
+    //   hideInSearch: true,
+    //   title: '是否零工',
+    //   dataIndex: 'name',
+    // },
   ];
 
   return columns;

@@ -3,6 +3,34 @@ const ADMIN_API = import.meta.env.VITE_APP_ADMIN_API;
 
 const attendance: ApiItem[] = [
   {
+    key: 'attendanceCount',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/getAttendanceCount`,
+    type: 'GET',
+    description: '现场统计(劳务信息)',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'attendanceCountWithSpecialWorkType',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/getAttendanceSpecialWorkTypeCount`,
+    type: 'GET',
+    description: '现场统计(现场特殊工种统计)',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'attendanceCountWithTotalWorkType',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/getPresentWorkTypeCount`,
+    type: 'GET',
+    description: '现场统计(全场工种)',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'attendanceCountWithTotalGroup',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/getPresentGroupCount`,
+    type: 'GET',
+    description: '现场统计(全场班组人数)',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
     key: 'attendanceList',
     url: `${ADMIN_API}/wisdom/personnel-attendance/getAttendanceSummaryPage`,
     type: 'GET',
@@ -68,6 +96,10 @@ const attendance: ApiItem[] = [
       },
       {
         key: 'username',
+        cn: '姓名',
+      },
+      {
+        key: 'userId',
         cn: '姓名',
       },
     ],

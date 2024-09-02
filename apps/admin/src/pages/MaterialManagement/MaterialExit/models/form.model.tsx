@@ -10,7 +10,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 export default (tableRef: any, editableFormRef: any) => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { materialList, file } = server;
+  const { materialList, file, vehicle } = server;
 
   const formColumns: FormColumnsTypes[] = [
     {
@@ -26,34 +26,79 @@ export default (tableRef: any, editableFormRef: any) => {
       label: '退料人员',
       dataIndex: 'exitPersonnel',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入退料人员' }],
+      },
     },
     {
       label: '见证人员',
       dataIndex: 'witnessPersonnel',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入见证人员' }],
+      },
     },
     {
       label: '供应单位',
       dataIndex: 'supplierDepartment',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入供应单位' }],
+      },
     },
     {
       label: '生产厂家',
       dataIndex: 'manufacturer',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入生产厂家' }],
+      },
     },
     {
       label: '购买单位',
       dataIndex: 'purchaserDepartment',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入购买单位' }],
+      },
     },
     {
       label: '退场原因',
       dataIndex: 'exitReason',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入退场原因' }],
+      },
     },
   ];
   const tableColumns: ProColumns[] = [
+    {
+      title: '车牌号',
+      dataIndex: 'carNo',
+      ellipsis: true,
+      hideInSearch: true,
+      renderFormItem: () => {
+        return (
+          <SearchSelect
+            // popupMatchSelectWidth={200}
+            placeholder="请选择车牌号"
+            request={async (input) => {
+              const res = await vehicle.vehicleApproveList({
+                carNo: input,
+              });
+              // console.log('车牌号下拉选项', res);
+              const options = res.list.map((item: any) => {
+                return {
+                  label: item.carNo,
+                  value: item.carNo,
+                };
+              });
+              return options;
+            }}
+          />
+        );
+      },
+    },
     {
       title: '物料清单id',
       dataIndex: 'materialsInventoryId',

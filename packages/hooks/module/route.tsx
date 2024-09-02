@@ -1,4 +1,8 @@
-import { Navigate, useNavigate, useRouteLoaderData } from 'react-router-dom';
+import {
+  Navigate,
+  useNavigate,
+  useRouteLoaderData,
+} from 'react-router-dom';
 import { setMenuTab } from 'store';
 import { getToken, setToken, filter, flattenArray } from 'utils';
 import { useAppDispatch, useAppSelector } from './index';
@@ -9,14 +13,27 @@ interface MenuTabItem {
   path: string;
 }
 interface TabProps {
+  /**
+   * 控制 tab 文字内容
+   * 如果不传, 则使用 namePath 的最后一个路径
+   */
+  tabName?: string;
   /** 中文路径
+   * 控制 面包屑导航 和 tab 文字内容
+   * 如果设置 namePath, 则按照设置的 namePath 生成(弃用)
+   * 如果不设置 namePath, 则按照路由的路径结构自动生成(弃用)
    * 示例: 项目人员管理/工种管理
    */
   namePath: string;
-  /** 配置的路由路径
+  /** 需要跳转的路由路径
    * 示例: /PM/JM
    */
   routePath: string;
+  /**
+   * 需要保持激活的左侧菜单 menu
+   * 如果为空, 则激活当前路由对应的菜单
+   */
+  activeMenu?: string;
   /** state 传参 */
   state?: Record<string, any>;
 }
@@ -26,21 +43,21 @@ export default () => {
   const dispatch = useAppDispatch();
   const {
     common: { menuTab },
-  } = useAppSelector((state) => state) as { common: { menuTab: any[] } };
+  } = useAppSelector((state) => state) as {
+    common: { menuTab: any[] };
+  };
   const {
     user: { menu },
-  } = useAppSelector((state) => state) as { user: { menu: any; userInfor: object } };
+  } = useAppSelector((state) => state) as {
+    user: { menu: any; userInfor: object };
+  };
 
   /**
    * 路由跳转, 并添加tab
-   * namePath: 中文路径, 设置 面包屑导航 和 tab
-   * 如果设置 namePath, 则按照设置的 namePath 生成
-   * 如果不设置 namePath, 则按照路由的路径结构自动生成
-   * routePath: 需要跳转的路由路径
    * @param props
    */
   const tabNavigate = (props: TabProps) => {
-    const { namePath, routePath } = props;
+    const { namePath, routePath, tabName } = props;
 
     let nameArr: string[] = [];
     let breadcrumbs;
@@ -63,15 +80,27 @@ export default () => {
     }
 
     const newMenuTab = {
-      label: nameArr.reverse()?.[0],
+      label: tabName || nameArr.reverse()?.[0],
       path: routePath,
       key: routePath,
+      activeMenu: props.activeMenu,
       breadcrumbs,
     };
     setToken('BREADCRUMBS', JSON.stringify(newMenuTab));
 
-    if (!menuTab.some((el: MenuTabItem) => el.label == newMenuTab.label)) {
+    // console.log('当前已存在的menuTab', menuTab);
+    if (
+      // 如果当前需要跳转的 menuTab 不存在
+      // 如果完整路径没有重复, 则创建新的 tab
+      !menuTab.some(
+        // (el: MenuTabItem) => el.label == newMenuTab.label
+        (el: MenuTabItem) => el.path == newMenuTab.path
+      )
+    ) {
       dispatch(setMenuTab([...menuTab, newMenuTab]));
+    } else {
+      // 如果完整路径是重复的, 直接激活就行
+      // dispatch(setMenuTab([...menuTab]));
     }
 
     routePath && navigator(routePath, { state: props.state });
@@ -84,7 +113,9 @@ export default () => {
    */
   const deleteTab = (label: string, toRight: boolean) => {
     // console.log('menuTab', menuTab, label);
-    const list = menuTab.filter((item: MenuTabItem) => item.label != label);
+    const list = menuTab.filter(
+      (item: MenuTabItem) => item.label != label
+    );
     // console.log('list', list);
     dispatch(setMenuTab(list));
     if (toRight) {
@@ -102,7 +133,8 @@ export default () => {
     // console.log('菜单列表', menu);
     const { breadcrumbMap } = getMenuData(menu);
     // console.log('有完整路径的菜单列表', breadcrumbMap);
-    const routeObj = breadcrumbMap.get(routePath)?.locale as string;
+    const routeObj = breadcrumbMap.get(routePath)
+      ?.locale as string;
     const name = routeObj?.split('.')?.slice(1)?.join('/');
     // 筛选出所传路由的层级结构
     // const list = filter(menuData, (node) => node.path == routePath);

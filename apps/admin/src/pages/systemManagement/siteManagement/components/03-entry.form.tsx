@@ -127,6 +127,48 @@ const EntryCom: React.FC<Props> = forwardRef(({ detail }: Props, ref) => {
       },
       colNum: 8,
     },
+
+    {
+      label: '邮政编码',
+      dataIndex: 'postalCode',
+      colNum: 8,
+    },
+
+    {
+      label: '考勤卡号',
+      dataIndex: 'attendanceCardNumber',
+      colNum: 8,
+    },
+    {
+      label: '是否购买工伤或意外伤害保险',
+      dataIndex: 'hasInsurance',
+      formItem: <DictSelect dictKey={'pm_has_insurance'} />,
+      colNum: 8,
+    },
+    {
+      label: '加入公会时间',
+      dataIndex: 'unionJoinDate',
+      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
+      formItemProps: {
+        getValueFromEvent: (...[, dateString]) => dateString,
+        getValueProps: (value) => ({
+          value: value ? dayjs(value) : undefined,
+        }),
+      },
+      colNum: 8,
+    },
+    {
+      label: '劳动合同状态',
+      dataIndex: 'laborContractStatus',
+      formItem: <DictSelect dictKey={'pm_labor_contract_status'} />,
+      colNum: 8,
+    },
+    {
+      label: '上传政府平台状态',
+      dataIndex: 'governmentPlatformUpload',
+      formItem: <DictSelect dictKey={'pm_government_platform_upload'} />,
+      colNum: 8,
+    },
     {
       label: '计价方式',
       dataIndex: 'valuationMethod',
@@ -162,11 +204,6 @@ const EntryCom: React.FC<Props> = forwardRef(({ detail }: Props, ref) => {
       colNum: 8,
     },
     {
-      label: '邮政编码',
-      dataIndex: 'postalCode',
-      colNum: 8,
-    },
-    {
       label: '发卡时间',
       dataIndex: 'cardIssuanceDate',
       formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
@@ -176,41 +213,6 @@ const EntryCom: React.FC<Props> = forwardRef(({ detail }: Props, ref) => {
           value: value ? dayjs(value) : undefined,
         }),
       },
-      colNum: 8,
-    },
-    {
-      label: '考勤卡号',
-      dataIndex: 'attendanceCardNumber',
-      colNum: 8,
-    },
-    {
-      label: '是否购买工伤或意外伤害保险',
-      dataIndex: 'hasInsurance',
-      formItem: <DictSelect dictKey={'pm_has_insurance'} />,
-      colNum: 8,
-    },
-    {
-      label: '加入公会时间',
-      dataIndex: 'unionJoinDate',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
-      formItemProps: {
-        getValueFromEvent: (...[, dateString]) => dateString,
-        getValueProps: (value) => ({
-          value: value ? dayjs(value) : undefined,
-        }),
-      },
-      colNum: 8,
-    },
-    {
-      label: '劳动合同状态',
-      dataIndex: 'laborContractStatus',
-      formItem: <DictSelect dictKey={'pm_labor_contract_status'} />,
-      colNum: 8,
-    },
-    {
-      label: '上传政府平台状态',
-      dataIndex: 'governmentPlatformUpload',
-      formItem: <DictSelect dictKey={'pm_government_platform_upload'} />,
       colNum: 8,
     },
     // {

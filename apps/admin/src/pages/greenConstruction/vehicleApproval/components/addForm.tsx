@@ -1,23 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button, InputNumber, message, Modal, DatePicker } from 'antd';
+import {
+  Button,
+  message,
+  Modal,
+  DatePicker,
+  Row,
+  Col,
+  Flex,
+} from 'antd';
+import { ProUpload } from 'components';
 import type { GetProp, TreeSelectProps } from 'antd';
 
 import { ExclamationCircleTwoTone } from '@ant-design/icons';
 import type { FormInstance } from 'antd/es/form';
 
-import dayjs from 'dayjs';
-
-import DictSelect from '@/components/DictSelect';
 import { AdForm, FormColumnsTypes } from 'components';
 
 import { RebuildTree, flattenArray, sortMenu } from 'utils';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import setModel from '../modes/form.model';
+import { ToString } from '@/utils/transform';
 
 interface Props {
   /** 控制 Modal 是否显示 */
   openModal: boolean;
   /** 表单初始化 */
-  subForm: {};
+  subForm: Record<string, any>;
   /** 监听Modal状态变化 */
   onStateChange: (state: boolean) => void;
 }
@@ -26,13 +34,34 @@ type MenusType = {
   [key: string]: any;
 };
 
-const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) => {
+const AddMenus: React.FC<Props> = ({
+  openModal,
+  subForm,
+  onStateChange,
+}: Props) => {
   const { server } = useBasicConfiguration();
   const { vehicle: V } = server;
   const formRef = useRef<FormInstance>(null);
   const [title] = useState<string>('新增车辆进出场备案');
   const [loading, setLoading] = useState<boolean>(false);
+  // 对传入的图片进行控制
+  const [picture, setPicture] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(openModal);
+
+  // 分包商信息表单的默认值
+  const [formData, setFormData] = useState<MenusType>({
+    ...subForm,
+    energyType: ToString(subForm.energyType),
+  });
+
+  const { formColumns } = setModel(formRef, picture);
+
+  useEffect(() => {
+    setOpen(openModal);
+  }, [openModal]);
+  useEffect(() => {
+    setPicture(subForm.attachment?.split('@'));
+  }, [subForm]);
 
   const onReset = () => {
     if (loading) {
@@ -44,10 +73,18 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
 
   const handleOk = async () => {
     try {
-      const values: MenusType = await formRef.current?.validateFields();
+      const values: MenusType =
+        await formRef.current?.validateFields();
+      console.log('表单校验后的值', values);
       setLoading(true);
-
-      V.vehicleApproveAdd(values)
+      V[
+        subForm.id ? 'vehicleApproveUpdate' : 'vehicleApproveAdd'
+      ]({
+        ...values,
+        id: subForm.id,
+        attachment:
+          values.attachment && values.attachment?.join('@'),
+      })
         .then(() => {
           message.success('操作成功！');
           setLoading(false);
@@ -70,161 +107,91 @@ const AddMenus: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props)
   };
   const onFormChange = (_: MenusType) => {};
 
-  useEffect(() => {
-    setOpen(openModal);
-  }, [openModal]);
-  useEffect(() => {}, [subForm]);
-
-  const columns: FormColumnsTypes[] = [
-    {
-      label: '车牌号',
-      dataIndex: 'carNo',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入车牌号' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '行驶证号',
-      dataIndex: 'carLicense',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入行驶证号' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '车辆品牌',
-      dataIndex: 'carBrand',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入车辆品牌' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '车辆型号',
-      dataIndex: 'carModel',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入车辆型号' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '车型',
-      dataIndex: 'carType',
-      formItem: <DictSelect dictKey={'cm_car_type'} />,
-      formItemProps: {
-        rules: [{ required: true, message: '请选择车型' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '车辆颜色',
-      dataIndex: 'carColor',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入车辆颜色' }],
-      },
-      colNum: 12,
-    },
-
-    {
-      label: '车辆识别代号/车架号',
-      dataIndex: 'frameNo',
-
-      formItemProps: {
-        rules: [{ required: true, message: '请输入车辆识别代号/车架号' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '发动机号',
-      dataIndex: 'engineNo',
-
-      formItemProps: {
-        rules: [{ required: true, message: '请输入发动机号' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '能源种类',
-      dataIndex: 'energyType',
-      formItem: <DictSelect dictKey={'cm_energy_type'} />,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入能源种类' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '核定载客',
-      dataIndex: 'approvalSeats',
-      formItem: <InputNumber min={1} style={{ width: '100%' }} placeholder="请输入核定载荷" />,
-      formItemProps: {
-        rules: [{ required: true, message: '请输入核定载客' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '年审时间',
-      dataIndex: 'examinedDate',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
-      formItemProps: {
-        getValueFromEvent: (...[, dateString]) => dateString,
-        getValueProps: (value) => ({
-          value: value ? dayjs(value) : undefined,
-        }),
-        rules: [{ required: true, message: '请选择年审时间' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '保险时间',
-      dataIndex: 'insuranceDate',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
-      formItemProps: {
-        getValueFromEvent: (...[, dateString]) => dateString,
-        getValueProps: (value) => ({
-          value: value ? dayjs(value) : undefined,
-        }),
-        rules: [{ required: true, message: '请选择保险时间' }],
-      },
-      colNum: 12,
-    },
-  ];
-
   return (
     <Modal
       width={'800px'}
       open={open}
-      title={title}
+      // title={title}
+      title={subForm.id ? '编辑' : '新增'}
       onOk={handleOk}
       onCancel={handleCancel}
       maskClosable={false}
       footer={[
-        <Button key="back" onClick={handleCancel} disabled={loading}>
+        <Button
+          key="back"
+          onClick={handleCancel}
+          disabled={loading}
+        >
           取消
         </Button>,
-        <Button key="reset" htmlType="reset" onClick={onReset} disabled={loading}>
+        <Button
+          key="reset"
+          htmlType="reset"
+          onClick={onReset}
+          disabled={loading}
+        >
           重置
         </Button>,
-        <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
-          提交
+        <Button
+          key="submit"
+          type="primary"
+          loading={loading}
+          onClick={handleOk}
+        >
+          {subForm.id ? '更新' : '提交'}
         </Button>,
       ]}
     >
-  <div className='mr-8'>
-  <AdForm
-        key={`${JSON.stringify(subForm)}`}
-        loadingTitle="提交中..."
-        formRef={formRef}
-        loading={loading}
-        labelAlign="right"
-        onFormChange={onFormChange}
-        columns={columns}
-        layoutStyle={{
-          labelCol: { span: 12 },
-          wrapperCol: { span: 12, flex: 1 },
-        }}
-      />
-  </div>
+      <div className="mr-8 ml-8">
+        <Row gutter={10} className="mt-5">
+          <Col span={4}>
+            <Flex
+              justify="center"
+              align="center"
+              className="h-full"
+            >
+              <div>
+                <ProUpload
+                  key={JSON.stringify(subForm.passportPhoto)}
+                  tip="请上传行驶证正面图片"
+                  // defaultFileList={() => defaultUrl}
+                  // onRequest={async (params: any) =>
+                  //   await F.fileUpload(params)
+                  // }
+                  onUploadSuccess={async (res) => {
+                    const { url } = Object.values(res)[0] as {
+                      url: string;
+                    };
+                    // setDefaultUrl([...defaultUrl, { url: url }]);
+                    formRef.current?.setFieldValue(
+                      'passportPhoto',
+                      url
+                    );
+                  }}
+                  maxCount={1}
+                  showUploadList={true}
+                />
+              </div>
+            </Flex>
+          </Col>
+          <Col span={20}>
+            <AdForm
+              key={`${JSON.stringify(subForm)}`}
+              initialValues={formData}
+              loadingTitle="提交中..."
+              formRef={formRef}
+              loading={loading}
+              labelAlign="right"
+              onFormChange={onFormChange}
+              columns={formColumns}
+              layoutStyle={{
+                labelCol: { span: 12 },
+                wrapperCol: { span: 12, flex: 1 },
+              }}
+            />
+          </Col>
+        </Row>
+      </div>
     </Modal>
   );
 };

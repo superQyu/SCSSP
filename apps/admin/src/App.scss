@@ -7,6 +7,26 @@
   margin: 16px 0;
 }
 
+// 加载中的相关样式
+.cus-spin {
+  width: 100%;
+  height: 100%;
+  .ant-spin-container {
+    height: 100%;
+  }
+}
+
+// 超链接
+.link-type,
+.link-type:focus {
+  color: #337ab7;
+  cursor: pointer;
+
+  &:hover {
+    color: rgb(32, 160, 255);
+  }
+}
+
 .full-spining {
   .ant-spin {
     max-height: 65vh !important;

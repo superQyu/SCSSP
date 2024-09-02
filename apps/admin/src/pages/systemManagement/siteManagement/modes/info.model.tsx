@@ -43,6 +43,36 @@ export default (props) => {
       colNum: 8,
     },
     {
+      label: '身份证号',
+      dataIndex: 'identityCard',
+      formItemProps: {
+        rules: [
+          { required: true, message: '请输入身份证号' },
+          {
+            pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+            message: '请输入正确的联系电话',
+          },
+        ],
+      },
+      colNum: 8,
+    },
+    {
+      label: '公司名称',
+      dataIndex: 'companyName',
+      formItemProps: {
+        rules: [{ required: true, message: '请输入公司名称' }],
+      },
+      colNum: 8,
+    },
+    {
+      label: '单位信用代码',
+      dataIndex: 'creditCode',
+      formItemProps: {
+        rules: [{ required: true, message: '请输入单位信用代码' }],
+      },
+      colNum: 8,
+    },
+    {
       label: '电子邮件',
       dataIndex: 'email',
       formItemProps: {
@@ -109,20 +139,7 @@ export default (props) => {
       formItem: <DictSelect dictKey={'pm_nationality'} />,
       colNum: 8,
     },
-    {
-      label: '身份证号',
-      dataIndex: 'identityCard',
-      formItemProps: {
-        rules: [
-          { required: true, message: '请输入身份证号' },
-          {
-            pattern: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
-            message: '请输入正确的联系电话',
-          },
-        ],
-      },
-      colNum: 8,
-    },
+    
     {
       label: '身份证到期时间',
       dataIndex: 'expiressEnd',
@@ -145,22 +162,7 @@ export default (props) => {
       dataIndex: 'jobNo',
       colNum: 8,
     },
-    {
-      label: '公司名称',
-      dataIndex: 'companyName',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入公司名称' }],
-      },
-      colNum: 8,
-    },
-    {
-      label: '单位信用代码',
-      dataIndex: 'creditCode',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入单位信用代码' }],
-      },
-      colNum: 8,
-    },
+    
     {
       label: '公司角色',
       dataIndex: 'companyType',

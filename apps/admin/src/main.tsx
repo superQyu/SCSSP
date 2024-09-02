@@ -16,6 +16,17 @@ import { EChartsProvider } from '@/context/EChartContext';
 
 import App from './app';
 
+import locale from 'antd/locale/zh_CN';
+import dayjs from 'dayjs';
+import weekday from "dayjs/plugin/weekday"
+import localeData from "dayjs/plugin/localeData"
+
+import 'dayjs/locale/zh-cn';
+
+dayjs.locale('zh-cn');
+dayjs.extend(weekday)
+dayjs.extend(localeData)
+
 const root = createRoot(document.getElementById('root') as HTMLDivElement);
 root.render(
   // 状态管理
@@ -29,6 +40,7 @@ root.render(
           <EChartsProvider>
             {/* antd 主题配置 */}
             <ConfigProvider
+              locale={locale}
               theme={{
                 token: {
                   colorPrimary: '#00a2fb',

@@ -1,21 +1,33 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import { useParams, useSearchParams } from 'react-router-dom';
+
 import { Button } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
+import Styled from '@/components/Styled';
 
 import type { ModesApi } from './modes/model';
 import siteModel from './modes/menu.model';
-
-import Styled from '@/components/Styled';
-
-import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import dayjs from 'dayjs';
 
 export default () => {
   const { server } = useBasicConfiguration();
-  const actionRef = useRef<ActionType>();
   const { attendance: A } = server;
+  const { userId: userIdInParams } = useParams();
+  const [params] = useSearchParams();
+
   const initColumns = siteModel({ server });
+
+  const actionRef = useRef<ActionType>();
+  const [ifAdd, setIfAdd] = useState<boolean>(false);
+  const [date, setDate] = useState<string | undefined>(
+    params.get('searchDate') || undefined
+  );
+  const [userId, setUserId] = useState<number | undefined>(
+    Number(userIdInParams) || undefined
+  );
 
   useEffect(() => {}, []);
 
@@ -23,15 +35,26 @@ export default () => {
     <>
       <ProTable
         headerTitle="考勤记录"
+        // params={{ifAdd: ifAdd}}
+        params={{
+          userId: userId,
+          dateTime: date,
+        }}
         request={async (params: ModesApi.ParamsType) => {
-          const { list, total } = await A.attendanceRecordList(params);
+          // console.log('请求参数', params);
+          const { list, total } = await A.attendanceRecordList({
+            beginTime: dayjs(params.dateTime, 'YYYY-MM-DD')
+              .startOf('date')
+              .format('YYYY-MM-DD HH:mm:ss'),
+            endTime: dayjs(params.dateTime, 'YYYY-MM-DD')
+              .endOf('date')
+              .format('YYYY-MM-DD HH:mm:ss'),
+            ...params,
+          });
           return {
             ...params,
             total: total || 0,
-            data:
-              list.map((item: any, index: number) => {
-                return { ...item, id: index };
-              }) || [],
+            data: list || [],
           };
         }}
         actionRef={actionRef}
@@ -45,7 +68,11 @@ export default () => {
         }}
         search={{
           labelWidth: 'auto',
-          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+          optionRender: (
+            { searchText }: any,
+            { form }: any,
+            dom: any
+          ) => {
             return [
               dom[0],
               <Button
@@ -60,7 +87,30 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.ExportButton api="exportPersonnelAttendance" fileName="考勤导出" />,
+          // <div
+          //   className="cursor-pointer w-66px h-25px"
+          //   onClick={() => {
+          //     let id = (Math.random() * 1000000).toFixed(0);
+          //     actionRef.current?.addEditRecord(
+          //       {
+          //         id: id,
+          //         name: '超级管理员',
+          //         identityCard: '411024199001029098',
+          //         enterTime: undefined,
+          //         clockDirection: 0,
+          //         clockStatus: 1,
+          //         temperature: '36.5',
+          //       },
+          //       { position: 'top', newRecordType: 'dataSource' }
+          //     );
+          //     actionRef.current?.cancelEditable(id);
+          //     // setIfAdd(true)
+          //   }}
+          // ></div>,
+          <Styled.ExportButton
+            api="exportPersonnelAttendance"
+            fileName="考勤导出"
+          />,
         ]}
         scroll={{ x: '1000px', y: 'auto' }}
         columns={[...initColumns]}

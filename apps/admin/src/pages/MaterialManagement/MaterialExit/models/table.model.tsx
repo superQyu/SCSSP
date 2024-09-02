@@ -75,6 +75,12 @@ export default ({ server }: MenusPropsType) => {
 
   const cColumns: ProColumns[] = [
     {
+      title: '车牌号',
+      dataIndex: 'carNo',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
       title: '物料名称',
       dataIndex: 'materialName',
       ellipsis: true,

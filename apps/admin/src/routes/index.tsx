@@ -1,17 +1,19 @@
 import { Navigate, useLocation } from 'react-router-dom';
 
+import Layout from '@/layout';
+
 import ErrorPage from '@/pages/error-page';
 // import Login from '@/pages/login';
 import Login from '@/pages/login/Login';
-
 import MapDev from '@/pages/example/components/React-BMapGL';
-
-import Layout from '@/layout';
-
 import PersonDetail from '@/pages/systemManagement/siteManagement';
+import AttendanceDetail from '@/pages/PersonnelManagement/AttendanceManagement/AttendanceDetail';
+import AttendanceRecord from '@/pages/PersonnelManagement/AttendanceManagement/AttendanceRecord';
 
 // 防止路由丢失
-const PreventRouteLoss = () => <Navigate to={useLocation().pathname} />;
+const PreventRouteLoss = () => (
+  <Navigate to={useLocation().pathname} />
+);
 
 const defaultRoutes: any = [
   {
@@ -21,6 +23,19 @@ const defaultRoutes: any = [
     children: [
       { path: '/*', element: <PreventRouteLoss /> },
       { path: 'PersonDetail', element: <PersonDetail /> },
+      {
+        path: 'attendance',
+        children: [
+          {
+            path: 'AttendanceDetail/:teamId',
+            element: <AttendanceDetail />,
+          },
+          {
+            path: 'AttendanceRecord/:userId',
+            element: <AttendanceRecord />,
+          },
+        ],
+      },
     ],
   },
   {

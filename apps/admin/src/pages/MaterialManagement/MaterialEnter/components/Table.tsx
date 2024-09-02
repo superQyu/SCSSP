@@ -32,25 +32,50 @@ export default (props: Props) => {
   useImperativeHandle(props.tableRef, () => tableRef.current);
   // 可编辑表格的 Form 的 DOM
   const editableFormRef = useRef<any>();
-  useImperativeHandle(props.editableFormRef, () => editableFormRef.current);
+  useImperativeHandle(
+    props.editableFormRef,
+    () => editableFormRef.current
+  );
 
   // 控制上传按钮是否显示
-  const [showUploadButton, setShowUploadButton] = useState<boolean>(false);
+  const [showUploadButton, setShowUploadButton] =
+    useState<boolean>(false);
   // 暂存当前编辑行的图片, 用来在取消时重置
   const [attachment, setAttachment] = useState([]);
+  // 暂存当前编辑行的图片, 用来在取消时重置
+  const [acceptAttachment, setAcceptAttachment] = useState([]);
+
   // 控制是否刷新ProUpload
   const [refresh, setRefresh] = useState<boolean>(false);
 
   // 可编辑表格扩展项中表头的显示逻辑
-  const expandTitle = (record: any) => {
+  const expandTitle1 = (record: any) => {
     // 如果点击了编辑, 统一展示合格证件
-    if (showUploadButton && tableRef.current.getCurrentRow() == record.id) {
+    if (
+      showUploadButton &&
+      tableRef.current.getCurrentRow() == record.id
+    ) {
       return <div>合格证件</div>;
     } else {
       if (!record.attachment?.length) {
         return <div className="color-red">暂无合格证件</div>;
       } else {
         return <div>合格证件</div>;
+      }
+    }
+  };
+  const expandTitle2 = (record: any) => {
+    // 如果点击了编辑, 统一展示验收单
+    if (
+      showUploadButton &&
+      tableRef.current.getCurrentRow() == record.id
+    ) {
+      return <div>验收单</div>;
+    } else {
+      if (!record.acceptAttachment?.length) {
+        return <div className="color-red">暂无验收单</div>;
+      } else {
+        return <div>验收单</div>;
       }
     }
   };
@@ -69,12 +94,18 @@ export default (props: Props) => {
           width: 100,
           valueType: 'option',
           dataIndex: 'option',
-          render: (_text: any, record: any, _: any, action: any) => [
+          render: (
+            _text: any,
+            record: any,
+            _: any,
+            action: any
+          ) => [
             <a
               key="editable"
               onClick={async () => {
                 // console.log('点击了编辑')
                 setAttachment(record.attachment);
+                setAcceptAttachment(record.acceptAttachment);
                 // 开启行编辑
                 await action?.startEditable?.(record.id);
                 // 设置是否展示上传按钮
@@ -147,6 +178,7 @@ export default (props: Props) => {
           // console.log('缓存的attachment', attachment);
           await editableFormRef.current?.setRowData(id, {
             attachment: attachment,
+            acceptAttachment: acceptAttachment,
           });
           // 刷新 ProUpLoad
           setRefresh(!refresh);
@@ -155,36 +187,102 @@ export default (props: Props) => {
       expandable={{
         expandedRowRender: (record: any) => {
           return (
-            <>
-              {expandTitle(record)}
-              <ProUpload
-                key={`${refresh}`}
-                showUploadButton={showUploadButton && tableRef.current.getCurrentRow() == record.id}
-                onRequest={async (params: any) => await file.fileUpload(params)}
-                onListChange={async (res: any) => {
-                  if (showUploadButton) {
-                    // console.log('文件列表改变', res);
-                    const list = res.map((item: any) => item.url);
-                    // 获取当前行 id
-                    const id = tableRef.current.getCurrentRow();
-                    await editableFormRef.current?.setRowData(id, {
-                      attachment: list,
-                    });
+            <div className="flex">
+              <div>
+                {expandTitle1(record)}
+                <ProUpload
+                  key={`${refresh}`}
+                  showUploadButton={
+                    showUploadButton &&
+                    tableRef.current.getCurrentRow() == record.id
                   }
-                }}
-                defaultFileList={() => {
-                  // 用来初始化图片列表的初始值
-                  const list = record.attachment?.map((item: string, index: number) => {
-                    return {
-                      uid: `${index}`,
-                      name: item?.split('/')?.slice(-1)[0],
-                      url: item,
-                    };
-                  });
-                  return list || [];
-                }}
-              />
-            </>
+                  onRequest={async (params: any) =>
+                    await file.fileUpload(params)
+                  }
+                  onListChange={async (res: any) => {
+                    if (showUploadButton) {
+                      // console.log('文件列表改变', res);
+                      const list = res.map(
+                        (item: any) => item.url
+                      );
+                      // 获取当前行 id
+                      const id =
+                        tableRef.current.getCurrentRow();
+                      // console.log('获取当前行 id', id, list);
+                      id &&
+                        (await editableFormRef.current?.setRowData(
+                          id,
+                          {
+                            attachment: list.length
+                              ? list
+                              : null,
+                          }
+                        ));
+                    }
+                  }}
+                  defaultFileList={() => {
+                    // 用来初始化图片列表的初始值
+                    const list = record.attachment?.map(
+                      (item: string, index: number) => {
+                        return {
+                          uid: `${index}`,
+                          name: item?.split('/')?.slice(-1)[0],
+                          url: item,
+                        };
+                      }
+                    );
+                    return list || [];
+                  }}
+                />
+              </div>
+              <div className="ml-4">
+                {expandTitle2(record)}
+                <ProUpload
+                  key={`${refresh}`}
+                  showUploadButton={
+                    showUploadButton &&
+                    tableRef.current.getCurrentRow() == record.id
+                  }
+                  onRequest={async (params: any) =>
+                    await file.fileUpload(params)
+                  }
+                  onListChange={async (res: any) => {
+                    if (showUploadButton) {
+                      // console.log('文件列表改变', res);
+                      const list = res.map(
+                        (item: any) => item.url
+                      );
+                      // 获取当前行 id
+                      const id =
+                        tableRef.current.getCurrentRow();
+                      console.log('id', id, list);
+                      id &&
+                        (await editableFormRef.current?.setRowData(
+                          id,
+                          {
+                            acceptAttachment: list.length
+                              ? list
+                              : null,
+                          }
+                        ));
+                    }
+                  }}
+                  defaultFileList={() => {
+                    // 用来初始化图片列表的初始值
+                    const list = record.acceptAttachment?.map(
+                      (item: string, index: number) => {
+                        return {
+                          uid: `${index}`,
+                          name: item?.split('/')?.slice(-1)[0],
+                          url: item,
+                        };
+                      }
+                    );
+                    return list || [];
+                  }}
+                />
+              </div>
+            </div>
           );
         },
       }}

@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { Select } from 'antd';
 import { type ProColumns } from '@ant-design/pro-components';
 import dayjs from 'dayjs';
+import { Link } from 'react-router-dom';
+// 路由跳转
+import { useRoute } from 'hooks';
 
 type MenusPropsType = {
   server?: any;
@@ -10,6 +13,7 @@ type MenusPropsType = {
 export default ({ server }: MenusPropsType) => {
   const { subContractor: S, person: P, group: G } = server;
 
+  const { tabNavigate } = useRoute();
   const [subcontractorList, setSubcontractorList] = useState([]);
   const [laborList, setLaborList] = useState([]);
   const [groupList, setGroupList] = useState([]);
@@ -57,22 +61,42 @@ export default ({ server }: MenusPropsType) => {
       title: '分包单位',
       dataIndex: 'subcontractorId',
       render: (text: any) => {
-        const obj = Object.fromEntries(subcontractorList.map(({ value, label }) => [value, label]));
+        const obj = Object.fromEntries(
+          subcontractorList.map(({ value, label }) => [
+            value,
+            label,
+          ])
+        );
         return <span>{obj[text] || '-'}</span>;
       },
       renderFormItem: () => {
-        return <Select placeholder="请选择分包单位" options={subcontractorList} allowClear />;
+        return (
+          <Select
+            placeholder="请选择分包单位"
+            options={subcontractorList}
+            allowClear
+          />
+        );
       },
     },
     {
       title: '劳务工种',
       dataIndex: 'workTypeId',
-      render: (text: any) => {
-        const obj = Object.fromEntries(laborList.map(({ value, label }) => [value, label]));
-        return <span>{obj[text] || '-'}</span>;
+      // render: (text: any) => {
+      //   const obj = Object.fromEntries(laborList.map(({ value, label }) => [value, label]));
+      //   return <span>{obj[text] || '-'}</span>;
+      // },
+      render: (text: any, record) => {
+        return <span>{record.workTypeName || '-'}</span>;
       },
       renderFormItem: () => {
-        return <Select placeholder="请选择劳务工种" options={laborList} allowClear />;
+        return (
+          <Select
+            placeholder="请选择劳务工种"
+            options={laborList}
+            allowClear
+          />
+        );
       },
     },
     {
@@ -80,16 +104,44 @@ export default ({ server }: MenusPropsType) => {
       title: '班组名称',
       dataIndex: 'groupId',
       renderFormItem: () => {
-        return <Select placeholder="请选择班组名称" options={groupList} allowClear />;
+        return (
+          <Select
+            placeholder="请选择班组名称"
+            options={groupList}
+            allowClear
+          />
+        );
       },
     },
     {
       hideInSearch: true,
       title: '班组名称',
       dataIndex: 'teamId',
-      render: (text: any) => {
-        const obj = Object.fromEntries(groupList.map(({ value, label }) => [value, label]));
-        return <span>{obj[text] || '-'}</span>;
+      // render: (text: any) => {
+      //   const obj = Object.fromEntries(
+      //     groupList.map(({ value, label }) => [value, label])
+      //   );
+      //   return <span>{obj[text] || '-'}</span>;
+      // },
+      render: (text: any, row) => {
+        return (
+          <a
+            key="editable"
+            onClick={() => {
+              // action?.startEditable?.(record.id);
+              tabNavigate({
+                tabName: '考勤明细',
+                namePath: `项目人员管理/考勤管理/${row.time}${row.teamName}考勤明细`,
+                // routePath: `/PM/AttendanceManagement/AttendanceDetail/${row.teamId}?searchMonth=${row.time}`,
+                routePath: `/attendance/AttendanceDetail/${row.teamId}?searchMonth=${row.time}`,
+                activeMenu:
+                  '/PM/AttendanceManagement/AttendanceDetail',
+              });
+            }}
+          >
+            {row.teamName || '-'}
+          </a>
+        );
       },
     },
     {
@@ -109,7 +161,9 @@ export default ({ server }: MenusPropsType) => {
       hideInSearch: true,
       title: '年月',
       dataIndex: 'time',
-      render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM')}</>,
+      render: (_, record) => (
+        <>{dayjs(record.time).format('YYYY-MM')}</>
+      ),
     },
     {
       hideInSearch: true,

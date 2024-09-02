@@ -144,7 +144,7 @@ export default forwardRef((props: any, ref: any) => {
         expandable={{
           expandedRowKeys: expandedRowKeys,
           onExpand: (expanded: boolean, record: any) => {
-            console.log('展开了', expanded);
+            // console.log('展开了', expanded);
             if (expanded) {
               // 展开时的逻辑
               setExpandedRowKeys([...expandedRowKeys, record.id]);

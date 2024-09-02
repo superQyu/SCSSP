@@ -1,4 +1,10 @@
-import { useState, lazy, Suspense, useRef, useEffect } from 'react';
+import {
+  useState,
+  lazy,
+  Suspense,
+  useRef,
+  useEffect,
+} from 'react';
 import { Flex, Button, message } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
@@ -34,7 +40,9 @@ export default () => {
   const formRef = useRef<FormRefProps>({});
   const workerRef = useRef<FormInstance>(null);
   const [workerType, setWorkerType] = useState<string>('');
-  const [certificate, setCertificates] = useState<ModesApi.PersonnelCertificateSaveReqVO[]>([]);
+  const [certificate, setCertificates] = useState<
+    ModesApi.PersonnelCertificateSaveReqVO[]
+  >([]);
   // 详情数据
   const [detail, setDetail] = useState<any>({});
   // 额外的参数，主要是人员的工种(workTypeId)或职位(jobCategory)
@@ -58,7 +66,8 @@ export default () => {
   const onSubmitCertificate = (data: any) => {
     // console.log('证书表单带出的数据', data);
     const obj: Record<string, any> = {};
-    const res: [string, any] | undefined = Object.entries(data)?.at(-1);
+    const res: [string, any] | undefined =
+      Object.entries(data)?.at(-1);
     res && (obj[res?.[0]] = res?.[1]);
     // console.log('额外参数', obj);
     setExtraParam(obj);
@@ -79,7 +88,10 @@ export default () => {
         .then((value: MenusType) => {
           !key || key == ''
             ? (params = { ...params, ...value })
-            : (params[key] = { ...(params[key] || {}), ...value });
+            : (params[key] = {
+                ...(params[key] || {}),
+                ...value,
+              });
           len--;
 
           if (len === 0) SubmitEvent(params);
@@ -111,7 +123,8 @@ export default () => {
       ...params.personnelInfoSaveReqVO,
       ...extraParam,
       id: detail.personnelInfoRespVO?.id,
-      passportPhoto: params.personnelInfoSaveReqVO?.passportPhoto?.join('@'),
+      passportPhoto:
+        params.personnelInfoSaveReqVO?.passportPhoto?.join('@'),
     };
     // console.log('params', params, certificate);
     params.entryInfoSaveReqVO = {
@@ -120,7 +133,11 @@ export default () => {
       userId: detail.entryInfoRespVO?.userId,
     };
     try {
-      await P[routerParams.get('id') ? 'updateFullPersonInfo' : 'createFullPersonInfo']({
+      await P[
+        routerParams.get('id')
+          ? 'updateFullPersonInfo'
+          : 'createFullPersonInfo'
+      ]({
         ...params,
         personnelCertificateSaveReqVOS: certificate,
       });
@@ -158,10 +175,16 @@ export default () => {
     <div className="h-full pl-20px pr-100px overflow-y-auto overflow-x-hidden bg-#fff">
       {FormList.map((Item) => {
         return (
-          <Suspense fallback={<div>Loading...</div>} key={Item.label}>
+          <Suspense
+            fallback={<div>Loading...</div>}
+            key={Item.label}
+          >
             <Item.Component
-              ref={(el: any) => (formRef.current[Item.label] = el)}
+              ref={(el: any) =>
+                (formRef.current[Item.label] = el)
+              }
               openModel={(val: string) => {
+                // console.log('当前选择的工人类型', val);
                 setWorkerType(val);
                 workerRef?.current?.setFormModal(true);
               }}
@@ -172,15 +195,33 @@ export default () => {
       })}
 
       <Flex gap="middle" justify="center" className="py-10">
-        <Button size="large" key="submit" type="primary" loading={loading} onClick={handleOk}>
+        <Button
+          size="large"
+          key="submit"
+          type="primary"
+          loading={loading}
+          onClick={handleOk}
+        >
           确定
         </Button>
         {Object.keys(detail).length ? (
-          <Button size="large" key="reset" htmlType="reset" onClick={goBack} disabled={loading}>
+          <Button
+            size="large"
+            key="reset"
+            htmlType="reset"
+            onClick={goBack}
+            disabled={loading}
+          >
             取消
           </Button>
         ) : (
-          <Button size="large" key="reset" htmlType="reset" onClick={onReset} disabled={loading}>
+          <Button
+            size="large"
+            key="reset"
+            htmlType="reset"
+            onClick={onReset}
+            disabled={loading}
+          >
             重置
           </Button>
         )}

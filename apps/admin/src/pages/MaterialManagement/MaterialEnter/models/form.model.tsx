@@ -10,7 +10,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 export default (tableRef: any, editableFormRef: any) => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { materialList, file } = server;
+  const { materialList, file, vehicle } = server;
 
   const formColumns: FormColumnsTypes[] = [
     {
@@ -20,35 +20,79 @@ export default (tableRef: any, editableFormRef: any) => {
       formItemProps: {
         rules: [{ required: true, message: '请选择进场时间' }],
       },
-      formItem: <DatePicker showTime placeholder="请选择进场时间" />,
+      formItem: (
+        <DatePicker showTime placeholder="请选择进场时间" />
+      ),
     },
     {
       label: '送货人',
       dataIndex: 'deliveryMan',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入送货人' }],
+      },
     },
     {
       label: '材料员',
       dataIndex: 'materialMan',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入材料员' }],
+      },
     },
     {
       label: '供应单位',
       dataIndex: 'supplierDepartment',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入供应单位' }],
+      },
     },
     {
       label: '生产厂家',
       dataIndex: 'manufacturer',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入生产厂家' }],
+      },
     },
     {
       label: '购买单位',
       dataIndex: 'purchaserDepartment',
       colNum: 12,
+      formItemProps: {
+        rules: [{ required: true, message: '请输入购买单位' }],
+      },
     },
   ];
   const tableColumns: ProColumns[] = [
+    {
+      title: '车牌号',
+      dataIndex: 'carNo',
+      ellipsis: true,
+      hideInSearch: true,
+      renderFormItem: () => {
+        return (
+          <SearchSelect
+            // popupMatchSelectWidth={200}
+            placeholder="请选择车牌号"
+            request={async (input) => {
+              const res = await vehicle.vehicleApproveList({
+                carNo: input,
+              });
+              // console.log('车牌号下拉选项', res);
+              const options = res.list.map((item: any) => {
+                return {
+                  label: item.carNo,
+                  value: item.carNo,
+                };
+              });
+              return options;
+            }}
+          />
+        );
+      },
+    },
     {
       title: '物料清单id',
       dataIndex: 'materialsInventoryId',
@@ -81,7 +125,9 @@ export default (tableRef: any, editableFormRef: any) => {
             }}
             onChange={async (select: any) => {
               // console.log('物料名称发生改变', select);
-              const res = await materialList.getMaterialDetail({ id: select });
+              const res = await materialList.getMaterialDetail({
+                id: select,
+              });
               // 获取当前行 id
               const id = tableRef.current.getCurrentRow();
               // console.log('editableFormRef', id, res);
@@ -129,6 +175,7 @@ export default (tableRef: any, editableFormRef: any) => {
       renderFormItem: () => {
         return (
           <SearchSelect
+            popupMatchSelectWidth={100}
             placeholder="请选择物料编号"
             request={async (input) => {
               const res = await materialList.getAllMaterialList({
@@ -145,7 +192,9 @@ export default (tableRef: any, editableFormRef: any) => {
             }}
             onChange={async (select: any) => {
               // console.log('物料编号发生改变', select);
-              const res = await materialList.getMaterialDetail({ id: select });
+              const res = await materialList.getMaterialDetail({
+                id: select,
+              });
               // 获取当前行 id
               const id = tableRef.current.getCurrentRow();
               // console.log('editableFormRef', id, res);

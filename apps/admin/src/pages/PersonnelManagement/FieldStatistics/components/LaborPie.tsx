@@ -1,20 +1,57 @@
 import { useEffect, useRef } from 'react';
 import { useECharts } from '@/context/EChartContext';
+import { Spin } from 'antd';
+import { useState } from 'react';
 
-const SomeChartComponent = () => {
+interface Props {
+  /** { total: 100, value: 30 } */
+  data?: any;
+}
+
+const SomeChartComponent = (props: Props) => {
+  const { data: chartData = { total: 100, value: 30 } } = props;
+
   const { getEChartsInstance, getLinearGradient } = useECharts();
   const chartRef = useRef(null);
-  var chartData = {
-    value: 30,
-    total: 100,
-  };
+  const [spinning, setSpinning] = useState(true);
 
-  let max = chartData.total;
-  let value = chartData.value;
   let chartInstance: any = null;
 
+  useEffect(() => {
+    if (!chartInstance) {
+      chartInstance = getEChartsInstance(chartRef);
+    }
+    window.addEventListener('resize', () =>
+      chartInstance.resize()
+    );
+    return () => {
+      chartInstance.dispose();
+      window.removeEventListener('resize', () =>
+        chartInstance.resize()
+      );
+    };
+  }, []);
+  useEffect(() => {
+    if (!chartInstance) {
+      chartInstance = getEChartsInstance(chartRef);
+    }
+    setOptions();
+    chartInstance.resize();
+  }, [chartData]);
+
   const setOptions = () => {
+    setSpinning(true);
+    // total 为出勤人数 + 在场人数
+    // value 最终计算的应该是相对于 100 来说的数值比例
+    const value = (
+      (chartData.value / chartData.total) *
+      100
+    ).toFixed(0);
     const option = {
+      polar: {
+        radius: '130%',
+        center: ['50%', '50%'],
+      },
       angleAxis: {
         axisLine: {
           show: false,
@@ -45,10 +82,6 @@ const SomeChartComponent = () => {
         },
         data: [],
       },
-      polar: {
-        radius: '130%',
-        center: ['50%', '50%'],
-      },
       series: [
         {
           type: 'bar',
@@ -75,12 +108,13 @@ const SomeChartComponent = () => {
           label: {
             show: true,
             position: 'right',
+            formatter: () => chartData.value,
           },
         },
         // 背景图形
         {
           type: 'bar',
-          data: [max],
+          data: [100],
           z: 0,
           silent: true,
           coordinateSystem: 'polar',
@@ -91,15 +125,17 @@ const SomeChartComponent = () => {
           label: {
             show: true,
             position: 'left',
+            formatter: () => chartData.total - chartData.value,
           },
-   
         },
         // 尾端小圆点 饼图
         {
           type: 'pie',
           radius: '127%',
           center: ['50%', '50%'],
-          hoverAnimation: false,
+          emphasis: {
+            scale: false,
+          },
           startAngle: 180,
           endAngle: 0,
           silent: 1,
@@ -131,24 +167,28 @@ const SomeChartComponent = () => {
       ],
     };
     chartInstance.setOption(option);
+    setSpinning(false);
   };
 
-  const resizeChart = () => chartInstance.resize();
-
-  useEffect(() => {
-    chartInstance = getEChartsInstance(chartRef);
-    setOptions();
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('resize', resizeChart);
-    return () => {
-      chartInstance.dispose();
-      window.removeEventListener('resize', resizeChart);
-    };
-  }, []);
-
-  return <div ref={chartRef} className="w-full h-full"></div>;
+  return (
+    <Spin
+      wrapperClassName="cus-spin"
+      tip="加载中"
+      spinning={spinning}
+    >
+      <div className="flex justify-center items-center h-full">
+        {!chartData.total && (
+          <div className="color-#409eff">暂无数据</div>
+        )}
+        <div
+          className={`w-full h-full ${
+            !chartData.total && 'hidden'
+          }`}
+          ref={chartRef}
+        ></div>
+      </div>
+    </Spin>
+  );
 };
 
 export default SomeChartComponent;

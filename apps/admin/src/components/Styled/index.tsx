@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button } from 'antd';
+import { Button, Spin as AntSpin } from 'antd';
 import { UploadOutlined, PlusOutlined } from '@ant-design/icons';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
@@ -8,7 +8,9 @@ import { downFiles } from 'utils';
 
 interface FileProps {
   /** 自定义的点击事件 */
-  onClick?: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  onClick?: (
+    e: React.MouseEvent<HTMLElement, MouseEvent>
+  ) => void;
   /** 接口地址 */
   api: string;
   /** 下载文件名 */
@@ -60,4 +62,29 @@ const ImportButton = styled(Button).attrs(() => ({
   },
 }));
 
-export default { ExportButton, ImportButton };
+// 因为 styled 的原理是 className 注入
+// 所以 styled 对无法通过 className 添加类名的组件无效
+const Spin = styled(AntSpin).attrs(() => ({
+  // 静态属性
+  tip: '加载中',
+  wrapperClassName: 'w-full h-full',
+}))(() => ({
+  display: 'none !important',
+  // 样式属性
+  '&& .ant-spin-container': {
+    height: '100% !important',
+    display: 'none'
+  },
+}));
+
+const Tooltip = styled.div`
+  font-size: 12px;
+  color: #454545;
+  &::before {
+    content: '*';
+    margin: 0 2px 0 10px;
+    color: red;
+  }
+`;
+
+export default { ExportButton, ImportButton, Spin, Tooltip };
