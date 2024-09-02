@@ -19,6 +19,7 @@ import { AdForm, FormColumnsTypes } from 'components';
 import { RebuildTree, flattenArray, sortMenu } from 'utils';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import setModel from '../modes/form.model';
+import { ToString } from '@/utils/transform';
 
 interface Props {
   /** 控制 Modal 是否显示 */
@@ -38,19 +39,29 @@ const AddMenus: React.FC<Props> = ({
   subForm,
   onStateChange,
 }: Props) => {
-  const { formColumns } = setModel();
-
   const { server } = useBasicConfiguration();
   const { vehicle: V } = server;
   const formRef = useRef<FormInstance>(null);
   const [title] = useState<string>('新增车辆进出场备案');
   const [loading, setLoading] = useState<boolean>(false);
+  // 对传入的图片进行控制
+  const [picture, setPicture] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(openModal);
 
   // 分包商信息表单的默认值
   const [formData, setFormData] = useState<MenusType>({
     ...subForm,
+    energyType: ToString(subForm.energyType),
   });
+
+  const { formColumns } = setModel(formRef, picture);
+
+  useEffect(() => {
+    setOpen(openModal);
+  }, [openModal]);
+  useEffect(() => {
+    setPicture(subForm.attachment?.split('@'));
+  }, [subForm]);
 
   const onReset = () => {
     if (loading) {
@@ -64,9 +75,16 @@ const AddMenus: React.FC<Props> = ({
     try {
       const values: MenusType =
         await formRef.current?.validateFields();
+      console.log('表单校验后的值', values);
       setLoading(true);
-
-      V.vehicleApproveAdd(values)
+      V[
+        subForm.id ? 'vehicleApproveUpdate' : 'vehicleApproveAdd'
+      ]({
+        ...values,
+        id: subForm.id,
+        attachment:
+          values.attachment && values.attachment?.join('@'),
+      })
         .then(() => {
           message.success('操作成功！');
           setLoading(false);
@@ -88,11 +106,6 @@ const AddMenus: React.FC<Props> = ({
     onStateChange(false);
   };
   const onFormChange = (_: MenusType) => {};
-
-  useEffect(() => {
-    setOpen(openModal);
-  }, [openModal]);
-  useEffect(() => {}, [subForm]);
 
   return (
     <Modal

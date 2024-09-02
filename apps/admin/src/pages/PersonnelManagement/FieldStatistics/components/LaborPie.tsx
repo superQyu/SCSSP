@@ -36,14 +36,22 @@ const SomeChartComponent = (props: Props) => {
       chartInstance = getEChartsInstance(chartRef);
     }
     setOptions();
-    chartInstance.resize()
+    chartInstance.resize();
   }, [chartData]);
 
   const setOptions = () => {
     setSpinning(true);
-    const max = chartData.total;
-    const value = chartData.value;
+    // total 为出勤人数 + 在场人数
+    // value 最终计算的应该是相对于 100 来说的数值比例
+    const value = (
+      (chartData.value / chartData.total) *
+      100
+    ).toFixed(0);
     const option = {
+      polar: {
+        radius: '130%',
+        center: ['50%', '50%'],
+      },
       angleAxis: {
         axisLine: {
           show: false,
@@ -74,10 +82,6 @@ const SomeChartComponent = (props: Props) => {
         },
         data: [],
       },
-      polar: {
-        radius: '130%',
-        center: ['50%', '50%'],
-      },
       series: [
         {
           type: 'bar',
@@ -104,12 +108,13 @@ const SomeChartComponent = (props: Props) => {
           label: {
             show: true,
             position: 'right',
+            formatter: () => chartData.value,
           },
         },
         // 背景图形
         {
           type: 'bar',
-          data: [max],
+          data: [100],
           z: 0,
           silent: true,
           coordinateSystem: 'polar',
@@ -120,7 +125,7 @@ const SomeChartComponent = (props: Props) => {
           label: {
             show: true,
             position: 'left',
-            formatter: () => max - value,
+            formatter: () => chartData.total - chartData.value,
           },
         },
         // 尾端小圆点 饼图

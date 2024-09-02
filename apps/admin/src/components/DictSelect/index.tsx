@@ -62,6 +62,7 @@ const DictSelect: React.FC<Props> = (
 
   const loadData = async () => {
     const isExsit = dictionary.get(dictKey);
+    // console.log('isExsit', isExsit)
     setItems(isExsit as SelectOption[]);
     const curItem = (isExsit as SelectOption[]).filter((item) => item.value == value);
     const label = curItem[0]?.label || '-';
@@ -99,7 +100,8 @@ const DictSelect: React.FC<Props> = (
         <span>{showLabel}</span>
       ) : (
         <Select
-          defaultValue={value}
+          // defaultValue={value}
+          value={value}
           mode={mode}
           maxTagCount={maxTagCount}
           style={{ width: '100%' }}

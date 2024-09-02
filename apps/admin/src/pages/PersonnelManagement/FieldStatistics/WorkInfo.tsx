@@ -22,6 +22,10 @@ export default () => {
 
   const loadData = async () => {
     const res = await attendance.attendanceCount();
+    console.log('接口返回的结果', res);
+    if (res.code === 40001) {
+      return;
+    }
     // 出勤人数必定大于等于在场人数
     setChartData({
       value: res.presentWorkerNum,

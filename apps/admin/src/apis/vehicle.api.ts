@@ -81,6 +81,7 @@ const vehicle: ApiItem[] = [
       { key: 'carLicense', cn: '行驶证号' },
       { key: 'carBrand', cn: '车辆品牌' },
       { key: 'carModel', cn: '车辆型号' },
+      { key: 'isGps', cn: '是否安装GPS' },
       { key: 'carType', cn: '车型' },
       { key: 'carColor', cn: '车车辆颜色牌号' },
       { key: 'frameNo', cn: '车牌车辆识别代号号' },
@@ -89,6 +90,7 @@ const vehicle: ApiItem[] = [
       { key: 'approvalSeats', cn: '核定载客' },
       { key: 'examinedDate', cn: '年审时间' },
       { key: 'insuranceDate', cn: '保险时间' },
+      { key: 'attachment', cn: '保险保单照片' },
     ],
   },
   {
@@ -115,6 +117,7 @@ const vehicle: ApiItem[] = [
       { key: 'carLicense', cn: '行驶证号' },
       { key: 'carBrand', cn: '车辆品牌' },
       { key: 'carModel', cn: '车辆型号' },
+      { key: 'isGps', cn: '是否安装GPS' },
       { key: 'carType', cn: '车型' },
       { key: 'carColor', cn: '车车辆颜色牌号' },
       { key: 'frameNo', cn: '车牌车辆识别代号号' },
@@ -123,6 +126,7 @@ const vehicle: ApiItem[] = [
       { key: 'approvalSeats', cn: '核定载客' },
       { key: 'examinedDate', cn: '年审时间' },
       { key: 'insuranceDate', cn: '保险时间' },
+      { key: 'attachment', cn: '保险保单照片' },
     ],
   },
   {

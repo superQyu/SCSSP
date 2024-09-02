@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 
-import { FormColumnsTypes, SearchSelect } from 'components';
+import {
+  FormColumnsTypes,
+  SearchSelect,
+  ProUpload,
+} from 'components';
 import { type ProColumns } from '@ant-design/pro-components';
 import {
   Select,
@@ -9,18 +13,26 @@ import {
   Button,
   InputNumber,
 } from 'antd';
+import type { UploadFile } from 'antd';
 import DictSelect from '@/components/DictSelect';
 import dayjs from 'dayjs';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-export default () => {
+export default (formRef: any, picture: any[] = []) => {
   // api 相关
   const { server } = useBasicConfiguration();
   const { materialList, file, vehicle } = server;
 
+  const [isRequired, setIsRequired] = useState<boolean>(false);
+
   const formColumns: FormColumnsTypes[] = [
+    {
+      label: 'OCR 行驶证识别',
+      show: false,
+      dataIndex: 'passportPhoto',
+    },
     {
       label: '车牌号',
       dataIndex: 'carNo',
@@ -55,8 +67,21 @@ export default () => {
     },
     {
       label: '是否安装GPS',
-      dataIndex: 'hasGPS',
-      formItem: <DictSelect dictKey={'system_true_false'} />,
+      dataIndex: 'isGps',
+      formItem: (
+        <DictSelect
+          dictKey={'system_true_false'}
+          onChange={(val: string) => {
+            // console.log('改变后的值', val, typeof val);
+            if (val == '1')
+              formRef.current.setFieldsValue({ carType: '1' });
+            else
+              formRef.current.setFieldsValue({
+                carType: undefined,
+              });
+          }}
+        />
+      ),
       formItemProps: {
         rules: [{ required: true, message: '请输入车辆型号' }],
       },
@@ -151,11 +176,51 @@ export default () => {
       colNum: 12,
     },
     {
-      // OCR 行驶证识别
-      label: '',
-      dataIndex: 'passportPhoto',
-      formItem: <div className="hidden"></div>,
-      colNum: 8,
+      label: '保险保单照片',
+      dataIndex: 'attachment',
+      colNum: 12,
+      formItem: (
+        <ProUpload
+          key={picture.length}
+          onRequest={async (params: any) =>
+            await file.fileUpload(params)
+          }
+          onListChange={(res: any) => {
+            // console.log('文件列表改变', res);
+            const list = res.map((item: any) => item.url);
+            formRef.current.setFieldsValue({
+              // 保险保单照片图片
+              attachment: list,
+            });
+          }}
+          defaultFileList={() =>
+            picture.map((item: string, index: number) => {
+              return {
+                uid: `${index}`,
+                name: item?.split('/')?.slice(-1)[0],
+                url: item,
+              };
+            })
+          }
+        />
+      ),
+      formItemProps: {
+        rules: [
+          (form: any) => {
+            const isGps = form.getFieldValue('isGps');
+            if (isGps == '1')
+              return {
+                required: true,
+                message: '请输入保险保单照片',
+              };
+            else
+              return {
+                required: false,
+                message: '请输入保险保单照片',
+              };
+          },
+        ],
+      },
     },
   ];
   return { formColumns };
