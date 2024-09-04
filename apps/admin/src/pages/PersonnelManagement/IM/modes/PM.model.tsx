@@ -120,8 +120,8 @@ export default ({ server }: MenusPropsType) => {
     },
     {
       hideInSearch: true,
-      title: '分包单位',
-      dataIndex: 'realName',
+      title: '所属单位',
+      dataIndex: 'companyName',
     },
     {
       hideInSearch: true,

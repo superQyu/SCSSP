@@ -68,7 +68,9 @@ export default (props) => {
       label: '单位信用代码',
       dataIndex: 'creditCode',
       formItemProps: {
-        rules: [{ required: true, message: '请输入单位信用代码' }],
+        rules: [
+          { required: true, message: '请输入单位信用代码' },
+        ],
       },
       colNum: 8,
     },
@@ -88,7 +90,9 @@ export default (props) => {
     {
       label: '出生日期',
       dataIndex: 'birthday',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
         getValueProps: (value) => ({
@@ -139,11 +143,13 @@ export default (props) => {
       formItem: <DictSelect dictKey={'pm_nationality'} />,
       colNum: 8,
     },
-    
+
     {
       label: '身份证到期时间',
       dataIndex: 'expiressEnd',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
         getValueProps: (value) => ({
@@ -162,7 +168,7 @@ export default (props) => {
       dataIndex: 'jobNo',
       colNum: 8,
     },
-    
+
     {
       label: '公司角色',
       dataIndex: 'companyType',
@@ -199,7 +205,9 @@ export default (props) => {
     {
       label: '有效期起',
       dataIndex: 'validityStartDate',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
         getValueProps: (value) => ({
@@ -211,7 +219,9 @@ export default (props) => {
     {
       label: '有效期止',
       dataIndex: 'validityEndDate',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
         getValueProps: (value) => ({
@@ -245,7 +255,9 @@ export default (props) => {
     {
       label: '是否有重大病史',
       dataIndex: 'hasMajorMedicalHistory',
-      formItem: <DictSelect dictKey={'pm_has_major_medical_history'} />,
+      formItem: (
+        <DictSelect dictKey={'pm_has_major_medical_history'} />
+      ),
       colNum: 8,
     },
     {
@@ -289,12 +301,14 @@ export default (props) => {
           dropdownExtend={true}
           asyncData={async () => {
             const { list } = await G.getGroupList();
-            return list.map((item: { teamName: string; id: number }) => {
-              return {
-                label: item.teamName,
-                value: item.id,
-              };
-            });
+            return list.map(
+              (item: { teamName: string; id: number }) => {
+                return {
+                  label: item.teamName,
+                  value: item.id,
+                };
+              }
+            );
           }}
           onChange={async (val) => {
             if (typeof val == 'string') {
@@ -307,7 +321,8 @@ export default (props) => {
             } else {
               const { list } = await G.getGroupList();
               const name = list.find(
-                (item: { label: string; value: number }) => item.value == val
+                (item: { label: string; value: number }) =>
+                  item.value == val
               )?.label;
               props?.entryRef.current?.setFieldsValue({
                 teamId: val,
@@ -336,7 +351,9 @@ export default (props) => {
     {
       label: '进场日期',
       dataIndex: 'entryDate',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
         getValueProps: (value) => ({
@@ -387,7 +404,9 @@ export default (props) => {
     {
       label: '发卡时间',
       dataIndex: 'cardIssuanceDate',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
         getValueProps: (value) => ({
@@ -410,7 +429,9 @@ export default (props) => {
     {
       label: '加入公会时间',
       dataIndex: 'unionJoinDate',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
         getValueProps: (value) => ({
@@ -422,13 +443,17 @@ export default (props) => {
     {
       label: '劳动合同状态',
       dataIndex: 'laborContractStatus',
-      formItem: <DictSelect dictKey={'pm_labor_contract_status'} />,
+      formItem: (
+        <DictSelect dictKey={'pm_labor_contract_status'} />
+      ),
       colNum: 8,
     },
     {
       label: '上传政府平台状态',
       dataIndex: 'governmentPlatformUpload',
-      formItem: <DictSelect dictKey={'pm_government_platform_upload'} />,
+      formItem: (
+        <DictSelect dictKey={'pm_government_platform_upload'} />
+      ),
       colNum: 8,
     },
     {
@@ -481,18 +506,29 @@ export default (props) => {
     {
       label: '证书编号',
       dataIndex: 'credentialNumber',
+      formItemProps: {
+        rules: [{ required: true, message: '请输入证书编号' }],
+      },
       colNum: 12,
     },
     {
       label: '证书种类',
       dataIndex: 'certificateType',
       formItem: <DictSelect dictKey={'pm_certificate_type'} />,
+      formItemProps: {
+        rules: [{ required: true, message: '请选择证书种类' }],
+      },
       colNum: 12,
     },
     {
       label: '证书类型',
       dataIndex: 'certificateCategory',
-      formItem: <DictSelect dictKey={'pm_credential_classification'} />,
+      formItem: (
+        <DictSelect dictKey={'pm_credential_classification'} />
+      ),
+      formItemProps: {
+        rules: [{ required: true, message: '请选择证书类型' }],
+      },
       colNum: 12,
     },
     {
@@ -508,7 +544,9 @@ export default (props) => {
     {
       label: '第一次发证日期',
       dataIndex: 'firstIssuedDate',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
 
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
@@ -521,7 +559,9 @@ export default (props) => {
     {
       label: '有效期起',
       dataIndex: 'validityStartDate',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
         getValueProps: (value) => ({
@@ -533,7 +573,9 @@ export default (props) => {
     {
       label: '有效期止',
       dataIndex: 'validityEndDate',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
         getValueProps: (value) => ({
@@ -550,7 +592,9 @@ export default (props) => {
     {
       label: '复核日期',
       dataIndex: 'reviewDate',
-      formItem: <DatePicker className="w-full" format="YYYY-MM-DD" />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
       formItemProps: {
         getValueFromEvent: (...[, dateString]) => dateString,
         getValueProps: (value) => ({

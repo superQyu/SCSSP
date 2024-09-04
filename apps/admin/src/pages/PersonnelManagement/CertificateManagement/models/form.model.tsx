@@ -8,8 +8,15 @@ import DictSelect from '@/components/DictSelect';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import { ToString } from '@/utils/transform';
 
-export default (basicFormRef: any, certificateFormRef: any, picture: string[], type: string) => {
+export default (
+  basicFormRef: any,
+  certificateFormRef: any,
+  picture: string[],
+  type: string,
+  detail: any
+) => {
   // api 相关
   const { server } = useBasicConfiguration();
   const { certificate, file, subContractor } = server;
@@ -42,18 +49,27 @@ export default (basicFormRef: any, certificateFormRef: any, picture: string[], t
     // console.log('当前list', list);
     setFileList(list);
   }, [picture]);
+  useEffect(() => {
+    detail.userId && getPersonInfo(detail.userId);
+  }, [detail]);
 
   // 表单交互相关
   // 选择人员后，带出人员相关信息
   const getPersonInfo = async (value: string) => {
     // console.log('选择项改变', value);
-    const res = await certificate.getPersonInfoDetail({ id: value });
+    const res = await certificate.getPersonInfoDetail({
+      id: value,
+    });
     // console.log('人员信息', res);
     basicFormRef.current.setFieldsValue({
-      // 分包单位
-      subcontractorId: res.entryInfoRespVO.subcontractorId,
+      // 所属单位
+      companyName: res.personnelInfoRespVO.companyName,
       // 人员类型(建筑工人/管理人员)
-      workerType: res.personnelInfoRespVO.workerType,
+      workerType: ToString(res.personnelInfoRespVO.workerType),
+      // 工种信息
+      workTypeName: res.personnelInfoRespVO.workTypeName,
+      // 管理人员职位id
+      jobCategory: ToString(res.personnelInfoRespVO.jobCategory),
       // 身份证号
       identityCard: res.personnelInfoRespVO.identityCard,
       // 工龄
@@ -61,7 +77,11 @@ export default (basicFormRef: any, certificateFormRef: any, picture: string[], t
     });
     // 岗位/职位(如果是建筑工人, 则是 workTypeName, 即工种)
     // 如果是管理人员, 则是 jobCategory
-    setJobIndex(res.personnelInfoRespVO.workerType == '1' ? 'workTypeName' : 'jobCategory');
+    setJobIndex(
+      res.personnelInfoRespVO.workerType == 1
+        ? 'workTypeName'
+        : 'jobCategory'
+    );
   };
 
   // 通过接口获取下拉框的内容
@@ -91,20 +111,27 @@ export default (basicFormRef: any, certificateFormRef: any, picture: string[], t
         rules: [{ required: true, message: '请选择隶属人员' }],
       },
       formItem: (
-        <Select placeholder="请选择隶属人员" options={personInfoList} onChange={getPersonInfo} />
+        <Select
+          placeholder="请选择隶属人员"
+          options={personInfoList}
+          onChange={getPersonInfo}
+          disabled={detail.userId ? true : false}
+        />
       ),
     },
     {
-      label: '分包单位',
-      dataIndex: 'subcontractorId',
+      label: '所属单位',
+      dataIndex: 'companyName',
       colNum: 12,
-      formItem: <Select placeholder="请选择隶属人员" options={subcontractorList} disabled />,
+      formItem: <Input placeholder="请选择隶属人员" disabled />,
     },
     {
       label: '人员类型',
       dataIndex: 'workerType',
       colNum: 12,
-      formItem: <DictSelect dictKey={'subcontractor_type'} disabled />,
+      formItem: (
+        <DictSelect dictKey={'pm_worker_type'} disabled />
+      ),
     },
     {
       // show: workTypeName.length ? true : false,
@@ -170,7 +197,9 @@ export default (basicFormRef: any, certificateFormRef: any, picture: string[], t
       formItemProps: {
         rules: [{ required: true, message: '请选择隶属人员' }],
       },
-      formItem: <DictSelect dictKey={'pm_credential_classification'} />,
+      formItem: (
+        <DictSelect dictKey={'pm_credential_classification'} />
+      ),
     },
     {
       label: '证书等级',
@@ -231,7 +260,9 @@ export default (basicFormRef: any, certificateFormRef: any, picture: string[], t
       formItem: (
         <ProUpload
           key={fileList.length}
-          onRequest={async (params: any) => await file.fileUpload(params)}
+          onRequest={async (params: any) =>
+            await file.fileUpload(params)
+          }
           onListChange={(res: any) => {
             // console.log('文件列表改变', res);
             const list = res.map((item: any) => item.url);

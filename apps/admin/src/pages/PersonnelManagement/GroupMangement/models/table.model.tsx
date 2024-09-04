@@ -46,7 +46,8 @@ export default ({ server }: MenusPropsType) => {
       dataIndex: 'index',
       fixed: 'left',
       ellipsis: true,
-      width: columnWidth,
+      // width: columnWidth,
+      width: 60,
     },
     {
       title: '班组名称',
@@ -55,6 +56,25 @@ export default ({ server }: MenusPropsType) => {
       width: columnWidth,
       hideInSearch: true,
     },
+    {
+      title: '分包单位名称',
+      dataIndex: 'subcontractorId',
+      ellipsis: true,
+      width: columnWidth,
+      render: (_, record) => {
+        return <span>{record.subcontractorName}</span>;
+      },
+      renderFormItem: () => {
+        return <Select placeholder="请选择分包单位" options={subcontractorList} />;
+      },
+    },
+    // {
+    //   title: '公司简称简拼',
+    //   dataIndex: 'corpCode',
+    //   ellipsis: true,
+    //   width: columnWidth,
+    //   hideInSearch: true,
+    // },
     {
       title: '班组长',
       dataIndex: 'userId',
@@ -75,30 +95,11 @@ export default ({ server }: MenusPropsType) => {
       hideInSearch: true,
     },
     {
-      title: '分包单位名称',
-      dataIndex: 'subcontractorId',
-      ellipsis: true,
-      width: columnWidth,
-      render: (_, record) => {
-        return <span>{record.subcontractorName}</span>;
-      },
-      renderFormItem: () => {
-        return <Select placeholder="请选择分包单位" options={subcontractorList} />;
-      },
-    },
-    {
       title: '劳务工种',
       dataIndex: 'workTypeName',
       ellipsis: true,
       width: columnWidth,
       editable: false
-    },
-    {
-      title: '公司简称简拼',
-      dataIndex: 'corpCode',
-      ellipsis: true,
-      width: columnWidth,
-      hideInSearch: true,
     },
     {
       title: '联系电话',

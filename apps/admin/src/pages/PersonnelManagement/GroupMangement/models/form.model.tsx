@@ -128,7 +128,7 @@ export default (subFormRef: any, entryAttachments: [] = [], exitAttachments: [] 
       label: '退场日期',
       dataIndex: 'exitDate',
       colNum: 12,
-      formItem: <DatePicker placeholder="请选择班组长" disabled />,
+      formItem: <DatePicker placeholder="请选择班组长" />,
     },
     {
       label: '进场附件',
