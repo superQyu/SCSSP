@@ -1,4 +1,9 @@
-import React, { useState, useEffect, forwardRef, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  forwardRef,
+  useRef,
+} from 'react';
 import { Col, Row, Form, Spin, Input } from 'antd';
 
 import type { FormInstance } from 'antd/es/form';
@@ -47,8 +52,8 @@ const _layoutStyle = {
 };
 
 const AdForm: React.FC<FormPropsTypes> = forwardRef(
-  (
-    {
+  (props, ref) => {
+    const {
       layout = 'horizontal',
       layoutStyle = {},
       loadingTitle = '提交中...',
@@ -62,7 +67,9 @@ const AdForm: React.FC<FormPropsTypes> = forwardRef(
           dataIndex: 'name',
           colNum: 12,
           formItemProps: {
-            rules: [{ required: true, message: '请输入菜单名称' }],
+            rules: [
+              { required: true, message: '请输入菜单名称' },
+            ],
           },
         },
         {
@@ -70,21 +77,28 @@ const AdForm: React.FC<FormPropsTypes> = forwardRef(
           dataIndex: 'name2',
           colNum: 12,
           formItemProps: {
-            rules: [{ required: true, message: '请输入菜单名称' }],
+            rules: [
+              { required: true, message: '请输入菜单名称' },
+            ],
           },
         },
       ],
       formRef = useRef<FormInstance>(null),
       onFormChange,
-    }: FormPropsTypes,
-    ref
-  ) => {
+    }: FormPropsTypes = props;
+
     const [menus, setMenus] = useState<FieldType>({});
 
     const init = () => {
-      const _menus = columns.reduce((acc: FieldType, curr: FormColumnsTypes) => {
-        return { ...acc, [curr.dataIndex]: curr.defaultValue || '' };
-      }, {});
+      const _menus = columns.reduce(
+        (acc: FieldType, curr: FormColumnsTypes) => {
+          return {
+            ...acc,
+            [curr.dataIndex]: curr.defaultValue || '',
+          };
+        },
+        {}
+      );
       setMenus(_menus);
     };
 
@@ -93,7 +107,10 @@ const AdForm: React.FC<FormPropsTypes> = forwardRef(
     }, []);
 
     return (
-      <Spin spinning={loading} tip={loadingTitle}>
+      <Spin
+        spinning={loading}
+        tip={loadingTitle}
+      >
         <Form
           key={`${Object.entries(initialValues || {}).length}`}
           {..._layoutStyle}
@@ -116,7 +133,11 @@ const AdForm: React.FC<FormPropsTypes> = forwardRef(
                     label={item.label}
                     {...item.formItemProps}
                   >
-                    {item.formItem || <Input placeholder={`请输入${item.label}`} />}
+                    {item.formItem || (
+                      <Input
+                        placeholder={`请输入${item.label}`}
+                      />
+                    )}
                   </Form.Item>
                 ) : (
                   <></>

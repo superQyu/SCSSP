@@ -147,7 +147,7 @@ export default (props: Props) => {
       form={{
         ignoreRules: false,
       }}
-      // scroll={{ y: 'auto' }}
+      scroll={{ x: '100%' }}
       search={false}
       toolBarRender={() => [
         <Button

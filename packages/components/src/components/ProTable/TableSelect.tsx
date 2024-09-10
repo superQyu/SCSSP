@@ -29,7 +29,7 @@ const TableSelect: React.FC<Props> = (props: Props) => {
       // {...props.tableConfig}
       // rowKey="key"
       // actionRef={firstTableRef}
-      // headerTitle="证件列表"
+      // headerTitle="111"
       columns={props.tableConfig.columns}
       params={props.tableConfig.params}
       request={props.tableConfig.request}

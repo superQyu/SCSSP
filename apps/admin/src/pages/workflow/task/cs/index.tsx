@@ -4,54 +4,47 @@ import { ProTable } from 'components';
 import { type ActionType } from '@ant-design/pro-components';
 import { Button, message, Popconfirm } from 'antd';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import EditDialog from './components/editdialog';
-import ExpandTable from './ExpandTable';
-import Styled from '@/components/Styled';
 
-import dayjs from 'dayjs';
+import EditDialog from './components/editdialog';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
 import siteModel from './models/table.model';
 
-export default ({ onChange }: any) => {
+export default () => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { materialExit } = server;
+  const { group } = server;
 
   // 初始化表格列
-  const { fColumns, cColumns } = siteModel({ server });
+  const initColumns = siteModel({ server });
+  const actionRef = useRef<ActionType>();
 
-  // 表格的受控 DOM
-  const firstTableRef = useRef<ActionType>();
-
-  // 控制弹窗的打开与关闭
   const [dialogVisible, setDialogVisible] = useState<boolean>(false);
-  // 控制详情表单
   const [detail, setDetail] = useState({});
 
   // 修改表单打开关闭状态
   const handleModalStateChange = async (state: boolean) => {
-    setDialogVisible(state);
     setDetail({});
-    await firstTableRef.current?.reload();
+    setDialogVisible(state);
+    await actionRef.current?.reload();
   };
 
   // 点击保存
   const onSave = async (params: any) => {
-    const res = await materialExit.updateFirst(params).then(async () => {
+    const res = await group.updateGroup(params).then(async () => {
       message.success('信息更新成功！');
-      await firstTableRef.current?.reload();
+      await actionRef.current?.reload();
     });
     return res;
   };
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await materialExit.deleteExit({ id }).then(async () => {
+    const res = await group.deleteGroup({ id }).then(async () => {
       message.success('信息删除成功！');
-      await firstTableRef.current?.reload();
+      await actionRef.current?.reload();
     });
     return res;
   };
@@ -59,14 +52,14 @@ export default ({ onChange }: any) => {
   return (
     <>
       <ProTable
-        // rowKey="key"
-        actionRef={firstTableRef}
-        headerTitle="物料/机械出场"
+        actionRef={actionRef}
+        headerTitle="班组列表"
         columns={[
-          ...fColumns,
+          ...initColumns,
           {
             title: '操作',
             width: 100,
+            fixed: 'right',
             valueType: 'option',
             dataIndex: 'option',
             render: (_text: any, record: any, _: any, action: any) => [
@@ -75,6 +68,7 @@ export default ({ onChange }: any) => {
                 onClick={() => {
                   // console.log('点击了编辑')
                   handleModalStateChange(true);
+                  // action?.startEditable?.(record.id);
                   setDetail(record);
                 }}
               >
@@ -93,16 +87,14 @@ export default ({ onChange }: any) => {
           },
         ]}
         request={async (params = {}) => {
-          // console.log('Table 查询参数', params)
-          const res = await materialExit.getExitList(params);
+          const res = await group.getGroupList(params);
           res.list = res.list.map((item: any) => {
-            item.exitDate = dayjs(item.exitDate).format('YYYY-MM-DD hh:mm:ss');
+            item.entryAttachments = item.entryAttachments?.split('@');
+            item.exitAttachments = item.exitAttachments?.split('@');
             return item;
           });
-          // console.log('物料进场列表', res);
+          // console.log('工种列表', res);
           return {
-            // ...params,
-            // success: true,
             data: res.list,
             total: res.total,
           };
@@ -128,16 +120,11 @@ export default ({ onChange }: any) => {
           },
         }}
         toolBarRender={() => [
-          <Styled.ExportButton api="exportMaterialsExit" fileName="物料退场导出" />,
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
           </Button>,
         ]}
-        editable={{}}
-        expandable={{
-          expandedRowRender: (record: any) =>
-            ExpandTable({ record, server, cColumns, onChange }, firstTableRef),
-        }}
+        editable={{ onDelete, onSave }}
         pagination={{
           pageSize: 10,
         }}

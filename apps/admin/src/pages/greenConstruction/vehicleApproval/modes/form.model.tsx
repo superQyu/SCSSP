@@ -5,17 +5,8 @@ import {
   SearchSelect,
   ProUpload,
 } from 'components';
-import { type ProColumns } from '@ant-design/pro-components';
-import {
-  Select,
-  DatePicker,
-  Input,
-  Button,
-  InputNumber,
-} from 'antd';
-import type { UploadFile } from 'antd';
+
 import DictSelect from '@/components/DictSelect';
-import dayjs from 'dayjs';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
@@ -25,14 +16,15 @@ export default (formRef: any, picture: any[] = []) => {
   const { server } = useBasicConfiguration();
   const { materialList, file, vehicle } = server;
 
-  const [isRequired, setIsRequired] = useState<boolean>(false);
+  const [carTypeDisabled, setCarTypeDisabled] =
+    useState<boolean>(false);
 
   const formColumns: FormColumnsTypes[] = [
-    {
-      label: 'OCR 行驶证识别',
-      show: false,
-      dataIndex: 'passportPhoto',
-    },
+    // {
+    //   label: 'OCR 行驶证识别',
+    //   show: false,
+    //   dataIndex: 'passportPhoto',
+    // },
     {
       label: '车牌号',
       dataIndex: 'carNo',
@@ -41,30 +33,30 @@ export default (formRef: any, picture: any[] = []) => {
       },
       colNum: 12,
     },
-    {
-      label: '行驶证号',
-      dataIndex: 'carLicense',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入行驶证号' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '车辆品牌',
-      dataIndex: 'carBrand',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入车辆品牌' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '车辆型号',
-      dataIndex: 'carModel',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入车辆型号' }],
-      },
-      colNum: 12,
-    },
+    // {
+    //   label: '行驶证号',
+    //   dataIndex: 'carLicense',
+    //   formItemProps: {
+    //     rules: [{ required: true, message: '请输入行驶证号' }],
+    //   },
+    //   colNum: 12,
+    // },
+    // {
+    //   label: '车辆品牌',
+    //   dataIndex: 'carBrand',
+    //   formItemProps: {
+    //     rules: [{ required: true, message: '请输入车辆品牌' }],
+    //   },
+    //   colNum: 12,
+    // },
+    // {
+    //   label: '车辆型号',
+    //   dataIndex: 'carModel',
+    //   formItemProps: {
+    //     rules: [{ required: true, message: '请输入车辆型号' }],
+    //   },
+    //   colNum: 12,
+    // },
     {
       label: '是否安装GPS',
       dataIndex: 'isGps',
@@ -73,12 +65,16 @@ export default (formRef: any, picture: any[] = []) => {
           dictKey={'system_true_false'}
           onChange={(val: string) => {
             // console.log('改变后的值', val, typeof val);
-            if (val == '1')
-              formRef.current.setFieldsValue({ carType: '1' });
-            else
+            // 只有土方车有GPS
+            if (val == '1') {
+              formRef.current.setFieldsValue({ carType: '2' });
+              setCarTypeDisabled(true);
+            } else {
               formRef.current.setFieldsValue({
                 carType: undefined,
               });
+              setCarTypeDisabled(false);
+            }
           }}
         />
       ),
@@ -90,88 +86,102 @@ export default (formRef: any, picture: any[] = []) => {
     {
       label: '车辆类型',
       dataIndex: 'carType',
-      formItem: <DictSelect dictKey={'cm_car_type'} />,
+      formItem: (
+        <DictSelect
+          dictKey={'cm_car_type'}
+          disabled={carTypeDisabled}
+        />
+      ),
       formItemProps: {
         rules: [{ required: true, message: '车辆类型' }],
       },
       colNum: 12,
     },
-    {
-      label: '车辆颜色',
-      dataIndex: 'carColor',
-      formItemProps: {
-        rules: [{ required: true, message: '请输入车辆颜色' }],
-      },
-      colNum: 12,
-    },
+    // {
+    //   label: '车辆颜色',
+    //   dataIndex: 'carColor',
+    //   formItemProps: {
+    //     rules: [{ required: true, message: '请输入车辆颜色' }],
+    //   },
+    //   colNum: 12,
+    // },
 
+    // {
+    //   label: '车辆识别代号/车架号',
+    //   dataIndex: 'frameNo',
+    //   // formItemProps: {
+    //   //   rules: [{ required: true, message: '请输入车辆识别代号/车架号' }],
+    //   // },
+    //   colNum: 12,
+    // },
+    // {
+    //   label: '发动机号',
+    //   dataIndex: 'engineNo',
+    //   // formItemProps: {
+    //   //   rules: [{ required: true, message: '请输入发动机号' }],
+    //   // },
+    //   colNum: 12,
+    // },
+    // {
+    //   label: '能源种类',
+    //   dataIndex: 'energyType',
+    //   formItem: <DictSelect dictKey={'cm_energy_type'} />,
+    //   formItemProps: {
+    //     rules: [{ required: true, message: '请输入能源种类' }],
+    //   },
+    //   colNum: 12,
+    // },
+    // {
+    //   label: '核定载客',
+    //   dataIndex: 'approvalSeats',
+    //   formItem: (
+    //     <InputNumber
+    //       min={1}
+    //       style={{ width: '100%' }}
+    //       placeholder="请输入核定载荷"
+    //     />
+    //   ),
+    //   formItemProps: {
+    //     rules: [{ required: true, message: '请输入核定载客' }],
+    //   },
+    //   colNum: 12,
+    // },
+    // {
+    //   label: '年审时间',
+    //   dataIndex: 'examinedDate',
+    //   formItem: (
+    //     <DatePicker className="w-full" format="YYYY-MM-DD" />
+    //   ),
+    //   formItemProps: {
+    //     getValueFromEvent: (...[, dateString]) => dateString,
+    //     getValueProps: (value: any) => ({
+    //       value: value ? dayjs(value) : undefined,
+    //     }),
+    //     rules: [{ required: true, message: '请选择年审时间' }],
+    //   },
+    //   colNum: 12,
+    // },
+    // {
+    //   label: '保险时间',
+    //   dataIndex: 'insuranceDate',
+    //   formItem: (
+    //     <DatePicker className="w-full" format="YYYY-MM-DD" />
+    //   ),
+    //   formItemProps: {
+    //     getValueFromEvent: (...[, dateString]) => dateString,
+    //     getValueProps: (value: any) => ({
+    //       value: value ? dayjs(value) : undefined,
+    //     }),
+    //     rules: [{ required: true, message: '请选择保险时间' }],
+    //   },
+    //   colNum: 12,
+    // },
     {
-      label: '车辆识别代号/车架号',
-      dataIndex: 'frameNo',
-      // formItemProps: {
-      //   rules: [{ required: true, message: '请输入车辆识别代号/车架号' }],
-      // },
-      colNum: 12,
-    },
-    {
-      label: '发动机号',
-      dataIndex: 'engineNo',
-      // formItemProps: {
-      //   rules: [{ required: true, message: '请输入发动机号' }],
-      // },
-      colNum: 12,
-    },
-    {
-      label: '能源种类',
-      dataIndex: 'energyType',
-      formItem: <DictSelect dictKey={'cm_energy_type'} />,
+      label: '车载容量',
+      dataIndex: 'carStorage',
+      // formItem: <DictSelect dictKey={'cm_energy_type'} />,
       formItemProps: {
-        rules: [{ required: true, message: '请输入能源种类' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '核定载客',
-      dataIndex: 'approvalSeats',
-      formItem: (
-        <InputNumber
-          min={1}
-          style={{ width: '100%' }}
-          placeholder="请输入核定载荷"
-        />
-      ),
-      formItemProps: {
-        rules: [{ required: true, message: '请输入核定载客' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '年审时间',
-      dataIndex: 'examinedDate',
-      formItem: (
-        <DatePicker className="w-full" format="YYYY-MM-DD" />
-      ),
-      formItemProps: {
-        getValueFromEvent: (...[, dateString]) => dateString,
-        getValueProps: (value: any) => ({
-          value: value ? dayjs(value) : undefined,
-        }),
-        rules: [{ required: true, message: '请选择年审时间' }],
-      },
-      colNum: 12,
-    },
-    {
-      label: '保险时间',
-      dataIndex: 'insuranceDate',
-      formItem: (
-        <DatePicker className="w-full" format="YYYY-MM-DD" />
-      ),
-      formItemProps: {
-        getValueFromEvent: (...[, dateString]) => dateString,
-        getValueProps: (value: any) => ({
-          value: value ? dayjs(value) : undefined,
-        }),
-        rules: [{ required: true, message: '请选择保险时间' }],
+        rules: [{ required: true, message: '请输入车载容量' }],
       },
       colNum: 12,
     },

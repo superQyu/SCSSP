@@ -91,6 +91,7 @@ const vehicle: ApiItem[] = [
       { key: 'examinedDate', cn: '年审时间' },
       { key: 'insuranceDate', cn: '保险时间' },
       { key: 'attachment', cn: '保险保单照片' },
+      { key: 'carStorage', cn: '车载容量' },
     ],
   },
   {
@@ -127,6 +128,7 @@ const vehicle: ApiItem[] = [
       { key: 'examinedDate', cn: '年审时间' },
       { key: 'insuranceDate', cn: '保险时间' },
       { key: 'attachment', cn: '保险保单照片' },
+      { key: 'carStorage', cn: '车载容量' },
     ],
   },
   {

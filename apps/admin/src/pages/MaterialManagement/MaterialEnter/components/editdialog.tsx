@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import EditTable from './Table';
 import initColumns from '../models/form.model';
 import { toUrlArr } from '@/utils/transform';
+import { ReloadButton } from './Styled';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
@@ -34,6 +35,11 @@ export default ({
   const { materialEnter } = server;
 
   const [open, setOpen] = useState<boolean>(openModal);
+  const [storageModalOpen, setStorageModalOpen] =
+    useState<boolean>(false);
+  const [reloadModalOpen, setReloadModalOpen] =
+    useState<boolean>(false);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [tableData, setTableData] = useState([]);
 
@@ -41,6 +47,8 @@ export default ({
   const formRef = useRef<FormInstance>(null);
   // 自定义的表格 ref,主要用来抛出自定义的方法
   const tableRef = useRef<any>();
+  // 主要用来刷新表格
+  const actionTableRef = useRef<any>();
   // 可编辑表格的 Form 的 DOM
   const editableFormRef = useRef<any>();
 
@@ -55,9 +63,10 @@ export default ({
   const [formData, setFormData] = useState<MenusType>({
     enterDate: detail.enterDate && dayjs(detail.enterDate),
     deliveryMan: detail.deliveryMan,
-    materialMan: detail.materialMan,
-    supplierDepartment: detail.supplierDepartment,
-    manufacturer: detail.manufacturer,
+    deliveryContact: detail.deliveryContact,
+    materialMan: toUrlArr(detail.materialMan, ','),
+    // supplierDepartment: detail.supplierDepartment,
+    // manufacturer: detail.manufacturer,
     purchaserDepartment: detail.purchaserDepartment,
   });
 
@@ -104,6 +113,9 @@ export default ({
     materialsEnterSaveReqVO.enterDate =
       materialsEnterSaveReqVO.enterDate.valueOf();
     materialsEnterSaveReqVO.id = detail.id;
+    materialsEnterSaveReqVO.materialMan =
+      materialsEnterSaveReqVO.materialMan?.join(',');
+
     const table = tableRef.current?.getTableData();
     // console.log('所有表格数据', table);
     const materialsEnterDetailsSaveReqVOS = table.map(
@@ -148,9 +160,103 @@ export default ({
       message.warning(`数据提交中,请稍等...`);
       return;
     }
+    setStorageModalOpen(true);
+    // setOpen(false);
+    // onReset();
+    // onStateChange(false);
+  };
+
+  // 暂存表单信息至浏览器
+  const handleStorageOk = () => {
+    const editRow = tableRef.current.getCurrentRow();
+    // console.log('当前尚在编辑的行', editRow);
+    if (editRow) {
+      message.error('有未保存行, 请先保存');
+      return;
+    }
+    const materialsEnterSaveReqVO: MenusType =
+      formRef.current?.getFieldsValue(true);
+    materialsEnterSaveReqVO.enterDate =
+      materialsEnterSaveReqVO.enterDate.valueOf();
+    // materialsEnterSaveReqVO.id = detail.id;
+    materialsEnterSaveReqVO.materialMan =
+      materialsEnterSaveReqVO.materialMan?.join(',');
+    // console.log('所有表单数据', materialsEnterSaveReqVO);
+
+    const table = tableRef.current?.getTableData();
+    // console.log('所有表格数据', table);
+    const materialsEnterDetailsSaveReqVOS = table.map(
+      (item: any) => {
+        // console.log('item.attachment', item.attachment)
+        return {
+          // 如果 id 为number, 则是编辑
+          ...item,
+          // id 是可编辑表格必备的东西
+          // 但是为了加载缓存时取消关联性, 故存为 string
+          id: `${item.id}`,
+          // materialEnterId: detail.id,
+          carNo: item.carNo,
+          materialsInventoryId: item.materialsInventoryId,
+          materialType: item.materialType,
+          enterNumber: item.enterNumber,
+          attachment: item.attachment?.join('@'),
+          acceptAttachment: item.acceptAttachment?.join('@'),
+        };
+      }
+    );
+    const values = {
+      materialsEnterSaveReqVO,
+      materialsEnterDetailsSaveReqVOS,
+    };
+    // console.log('暂存至浏览器的数据', values);
+    localStorage.setItem(
+      'materialEnter',
+      JSON.stringify(values)
+    );
+    setStorageModalOpen(false);
     setOpen(false);
     onReset();
     onStateChange(false);
+  };
+  // 不暂存，并删除当前 暂存信息
+  const handleStorageCancel = () => {
+    localStorage.removeItem('materialEnter');
+    setStorageModalOpen(false);
+    setOpen(false);
+    onReset();
+    onStateChange(false);
+  };
+  // 将暂存信息加载至表单中
+  const handleReloadOk = () => {
+    const res = localStorage.getItem('materialEnter');
+    // console.log('浏览器缓存数据', res);
+    if (res) {
+      const data = JSON.parse(res);
+      // console.log('转换后的数据', data);
+      const formData = data.materialsEnterSaveReqVO || {};
+      formRef.current?.setFieldsValue({
+        enterDate:
+          formData.enterDate && dayjs(formData.enterDate),
+        deliveryMan: formData.deliveryMan,
+        deliveryContact: formData.deliveryContact,
+        materialMan: toUrlArr(formData.materialMan, ','),
+        // supplierDepartment: detail.supplierDepartment,
+        // manufacturer: detail.manufacturer,
+        purchaserDepartment: formData.purchaserDepartment,
+      });
+      const tableData =
+        data.materialsEnterDetailsSaveReqVOS || {};
+      const list = tableData.map((item: any) => {
+        return {
+          ...item,
+          attachment: toUrlArr(item.attachment, '@'),
+          acceptAttachment: toUrlArr(item.acceptAttachment, '@'),
+        };
+      });
+      setTableData(list);
+      actionTableRef.current?.reload();
+    }
+    setReloadModalOpen(false);
   };
 
   return (
@@ -158,11 +264,19 @@ export default ({
       <Modal
         open={open}
         title={detail.id ? '编辑' : '新增'}
-        width={1000}
+        width={'100%'}
         onOk={handleOk}
         onCancel={handleCancel}
         maskClosable={false}
         footer={[
+          <ReloadButton
+            type="primary"
+            key="reload"
+            onClick={() => setReloadModalOpen(true)}
+            disabled={loading}
+          >
+            加载暂存
+          </ReloadButton>,
           <Button
             key="back"
             onClick={handleCancel}
@@ -192,15 +306,21 @@ export default ({
           className="h-70vh p-inline-4"
           style={{ overflow: 'hidden auto' }}
         >
-          <AdForm
-            loadingTitle="提交中..."
-            formRef={formRef}
-            initialValues={formData}
-            loading={loading}
-            labelAlign="left"
-            columns={formColumns}
-          />
+          <div className="flex justify-center">
+            <div className="w-1000px">
+              <AdForm
+                loadingTitle="提交中..."
+                formRef={formRef}
+                initialValues={formData}
+                loading={loading}
+                labelAlign="left"
+                columns={formColumns}
+              />
+            </div>
+          </div>
+
           <EditTable
+            actionRef={actionTableRef}
             tableRef={tableRef}
             editableFormRef={editableFormRef}
             columns={tableColumns}
@@ -208,6 +328,30 @@ export default ({
           />
         </div>
       </Modal>
+      <Modal
+        title="是否需要暂存当前信息"
+        maskClosable={false}
+        open={storageModalOpen}
+        onOk={handleStorageOk}
+        onCancel={handleStorageCancel}
+      >
+        <h3 className="color-red">注意</h3>
+        <p>
+          如果点击确定, 系统会暂存当前所有表单信息,
+          并覆盖之前暂存的信息;
+        </p>
+        <p>
+          如果点击取消, 系统会刷新暂存信息,
+          即之前暂存的内容也会被删除。
+        </p>
+      </Modal>
+      <Modal
+        title="是否加载之前暂存的信息"
+        maskClosable={false}
+        open={reloadModalOpen}
+        onOk={handleReloadOk}
+        onCancel={() => setReloadModalOpen(false)}
+      ></Modal>
     </>
   );
 };

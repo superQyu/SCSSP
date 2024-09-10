@@ -1,9 +1,23 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useContext,
+} from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Divider, Input, Select, Space, Button, Spin, Empty } from 'antd';
+import {
+  Divider,
+  Input,
+  Select,
+  Space,
+  Button,
+  Spin,
+  Empty,
+} from 'antd';
 import type { InputRef } from 'antd';
 
 import { useAppSelector } from 'hooks';
+import { Tag } from 'antd/lib';
 
 interface Props {
   /** 设置 Select 的模式为多选或标签	multiple | tags */
@@ -22,8 +36,14 @@ interface Props {
   valueEnum?: Record<string, any>;
   /** 绑定tree dom */
   ref?: any;
-  /** 显示模式*/
+  /** 显示模式
+   * 如果需要以文本格式显示，则传 text
+   */
   type?: string;
+  /** 只有 type 为 text 时生效
+   * 控制文本是以 tag 显示，还是仅文本
+   */
+  isTag?: boolean;
   [key: string]: any;
 }
 
@@ -34,8 +54,8 @@ interface SelectOption {
   [key: string]: any;
 }
 
-const DictSelect: React.FC<Props> = (
-  {
+const DictSelect: React.FC<Props> = (props, ref) => {
+  const {
     value,
     dictKey,
     dropdownExtend,
@@ -47,34 +67,53 @@ const DictSelect: React.FC<Props> = (
     disabled,
     mode,
     maxTagCount,
-  }: Props,
-  ref
-) => {
+  }: Props = props;
+
   const {
     common: { dictionary },
-  } = useAppSelector((state: any) => state) as { common: { dictionary: Record<string, any> } };
+  } = useAppSelector((state: any) => state) as {
+    common: { dictionary: Record<string, any> };
+  };
 
   const [items, setItems] = useState<SelectOption[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState('');
   const inputRef = useRef<InputRef>(null);
   const [showLabel, setShowLabel] = useState<string>('');
+  const [textColor, setTextColor] = useState<string>('');
 
   const loadData = async () => {
     const isExsit = dictionary.get(dictKey);
-    // console.log('isExsit', isExsit)
+    // console.log('字典返回数据', isExsit);
     setItems(isExsit as SelectOption[]);
-    const curItem = (isExsit as SelectOption[]).filter((item) => item.value == value);
-    const label = curItem[0]?.label || '-';
 
-    if (type === 'text') setShowLabel(label);
+    // console.log('传入的value', value);
+    const curItem = (isExsit as SelectOption[]).filter(
+      (item) => item.value == value
+    );
+    // console.log('匹配的字典项', curItem);
+    const label = curItem[0]?.label || '-';
+    const color = (() => {
+      const color = curItem[0]?.colorType;
+      if (color == 'primary') return 'processing';
+      else return color;
+    })();
+
+    if (type === 'text') {
+      setShowLabel(label);
+      setTextColor(color);
+    }
   };
 
-  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setName(event.target.value);
   };
 
-  const addItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+  const addItem = (
+    e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
+  ) => {
     e.preventDefault();
     const newItem = { key: name, value: name, label: name };
     setItems([...items, newItem]);
@@ -95,9 +134,13 @@ const DictSelect: React.FC<Props> = (
   }, [loading]);
 
   return (
-    <>
+    <span>
       {type && type === 'text' ? (
-        <span>{showLabel}</span>
+        props.isTag ? (
+          <Tag color={textColor}>{showLabel}</Tag>
+        ) : (
+          <span>{showLabel}</span>
+        )
       ) : (
         <Select
           // defaultValue={value}
@@ -132,7 +175,12 @@ const DictSelect: React.FC<Props> = (
                 dropdownExtend ? (
                   <>
                     <Divider style={{ margin: '8px 0' }} />
-                    <Space style={{ width: '100%', padding: '0 8px 4px' }}>
+                    <Space
+                      style={{
+                        width: '100%',
+                        padding: '0 8px 4px',
+                      }}
+                    >
                       <Input
                         placeholder="输入自定义选项"
                         ref={inputRef}
@@ -164,17 +212,27 @@ const DictSelect: React.FC<Props> = (
           options={items}
           optionRender={({ value, label }) => {
             let v = `${value}`;
-            if (valueEnum && typeof v != 'undefined' && valueEnum[v].text) return valueEnum[v].text;
+            if (
+              valueEnum &&
+              typeof v != 'undefined' &&
+              valueEnum[v].text
+            )
+              return valueEnum[v].text;
             return label;
           }}
           labelRender={({ value, label }) => {
             let v = `${value}`;
-            if (valueEnum && typeof v != 'undefined' && valueEnum[v].text) return valueEnum[v].text;
+            if (
+              valueEnum &&
+              typeof v != 'undefined' &&
+              valueEnum[v].text
+            )
+              return valueEnum[v].text;
             return label;
           }}
         />
       )}
-    </>
+    </span>
   );
 };
 

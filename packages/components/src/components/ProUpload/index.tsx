@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Image, Upload, Button, message } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
+import './index.scss';
 
 type FileType = Parameters<
   GetProp<UploadProps, 'beforeUpload'>
@@ -207,7 +208,10 @@ const ProUpload: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <Upload {...uploadProps}>
+      <Upload
+        {...uploadProps}
+        className={`${!showUploadButton && 'noDelete'}`}
+      >
         {!maxCount && showUploadButton
           ? uploadButton
           : fileList?.length >= maxCount || !showUploadButton
