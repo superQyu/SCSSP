@@ -7,6 +7,8 @@ import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 
 import EditDialog from './components/editdialog';
 
+import { useRoute } from 'hooks';
+
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
@@ -15,7 +17,8 @@ import siteModel from './models/table.model';
 export default () => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { materialList } = server;
+  const { flowInstance } = server;
+  const { tabNavigate } = useRoute();
 
   // 初始化表格列
   const initColumns = siteModel({ server });
@@ -34,8 +37,8 @@ export default () => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    const res = await materialList
-      .updatematerialList(params)
+    const res = await flowInstance
+      .updateflowInstance(params)
       .then(async () => {
         message.success('信息更新成功！');
         await actionRef.current?.reload();
@@ -45,8 +48,8 @@ export default () => {
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await materialList
-      .deletematerialList({ id })
+    const res = await flowInstance
+      .deleteflowInstance({ id })
       .then(async () => {
         message.success('信息删除成功！');
         await actionRef.current?.reload();
@@ -58,53 +61,53 @@ export default () => {
     <>
       <ProTable
         actionRef={actionRef}
-        headerTitle="班组列表"
+        headerTitle="我的流程"
         columns={[
           ...initColumns,
-          // {
-          //   title: '操作',
-          //   width: 100,
-          //   fixed: 'right',
-          //   valueType: 'option',
-          //   dataIndex: 'option',
-          //   render: (
-          //     _text: any,
-          //     record: any,
-          //     _: any,
-          //     action: any
-          //   ) => [
-          //     <a
-          //       key="editable"
-          //       onClick={() => {
-          //         // console.log('点击了编辑')
-          //         handleModalStateChange(true);
-          //         // action?.startEditable?.(record.id);
-          //         setDetail(record);
-          //       }}
-          //     >
-          //       编辑
-          //     </a>,
-          //     <Popconfirm
-          //       key="delete"
-          //       title="删除此项"
-          //       onConfirm={() => onDelete(record.id)}
-          //       okText="确认"
-          //       cancelText="取消"
-          //     >
-          //       <a>删除</a>
-          //     </Popconfirm>,
-          //   ],
-          // },
+          {
+            title: '操作',
+            width: 100,
+            fixed: 'right',
+            valueType: 'option',
+            dataIndex: 'option',
+            render: (
+              _text: any,
+              row: any,
+              _: any,
+              action: any
+            ) => [
+              <a
+                onClick={() => {
+                  tabNavigate({
+                    tabName: '流程详情',
+                    namePath: `工作流程/${row.name}`,
+                    routePath: `/flow/process-instance/detail?id=${row.id}`,
+                    activeMenu: '/workflow/task/my',
+                  });
+                }}
+              >
+                详情
+              </a>,
+              <>
+                {row.result === 1 && (
+                  <a
+                    onClick={() => {
+                      // console.log('点击了编辑')
+                      handleModalStateChange(true);
+                      // action?.startEditable?.(record.id);
+                      setDetail(row);
+                    }}
+                  >
+                    取消
+                  </a>
+                )}
+              </>,
+            ],
+          },
         ]}
         request={async (params = {}) => {
-          // console.log('请求参数', params)
-          const res = await materialList.analysisList(params);
-          res.list = res.list.map(
-            (item: any, index: number) => ({
-              ...item,
-              id: index,
-            })
-          );
+          const res =
+            await flowInstance.getMyProcessInstancePage(params);
           // console.log('工种列表', res);
           return {
             data: res.list,
@@ -135,15 +138,15 @@ export default () => {
             ];
           },
         }}
-        // toolBarRender={() => [
-        //   <Button
-        //     icon={<PlusOutlined />}
-        //     onClick={() => setDialogVisible(true)}
-        //     type="primary"
-        //   >
-        //     新建
-        //   </Button>,
-        // ]}
+        toolBarRender={() => [
+          <Button
+            icon={<PlusOutlined />}
+            onClick={() => setDialogVisible(true)}
+            type="primary"
+          >
+            新建
+          </Button>,
+        ]}
         editable={{ onDelete, onSave }}
         pagination={{
           pageSize: 10,

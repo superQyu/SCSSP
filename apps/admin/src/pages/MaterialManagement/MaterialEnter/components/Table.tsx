@@ -17,6 +17,8 @@ interface Props {
   editableFormRef?: any;
   /** 表格的静态数据 */
   tableData?: any[];
+  /** 是否可以新增表格行 */
+  noCreate?: boolean;
 }
 
 export default (props: Props) => {
@@ -121,18 +123,22 @@ export default (props: Props) => {
             >
               编辑
             </a>,
-            <Popconfirm
-              key="delete"
-              title="删除此项"
-              onConfirm={() => {
-                // console.log('tableRef', tableRef);
-                tableRef.current?.removeRow(record);
-              }}
-              okText="确认"
-              cancelText="取消"
-            >
-              <a>删除</a>
-            </Popconfirm>,
+            <>
+              {!props.noCreate && (
+                <Popconfirm
+                  key="delete"
+                  title="删除此项"
+                  onConfirm={() => {
+                    // console.log('tableRef', tableRef);
+                    tableRef.current?.removeRow(record);
+                  }}
+                  okText="确认"
+                  cancelText="取消"
+                >
+                  <a>删除</a>
+                </Popconfirm>
+              )}
+            </>,
           ],
         },
       ]}
@@ -150,24 +156,28 @@ export default (props: Props) => {
       scroll={{ x: '100%' }}
       search={false}
       toolBarRender={() => [
-        <Button
-          icon={<PlusOutlined />}
-          onClick={async () => {
-            let id = (Math.random() * 1000000).toFixed(0);
-            await actionRef.current?.addEditRecord(
-              {
-                id: id,
-                // title: '新的一行',
-              },
-              { position: 'top' }
-            );
-            setShowUploadButton(true);
-            tableRef.current.setExpandedRow(id);
-          }}
-          type="primary"
-        >
-          新建
-        </Button>,
+        <>
+          {!props.noCreate && (
+            <Button
+              icon={<PlusOutlined />}
+              onClick={async () => {
+                let id = (Math.random() * 1000000).toFixed(0);
+                await actionRef.current?.addEditRecord(
+                  {
+                    id: id,
+                    // title: '新的一行',
+                  },
+                  { position: 'top' }
+                );
+                setShowUploadButton(true);
+                tableRef.current.setExpandedRow(id);
+              }}
+              type="primary"
+            >
+              新建
+            </Button>
+          )}
+        </>,
       ]}
       editable={{
         onCancel: async (key: any, row: any, o: any, n: any) => {

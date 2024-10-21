@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 
-import { FormColumnsTypes, ProUpload, SearchSelect } from 'components';
+import {
+  FormColumnsTypes,
+  ProUpload,
+  SearchSelect,
+} from 'components';
 import { type ProColumns } from '@ant-design/pro-components';
 import { Select, DatePicker, Input } from 'antd';
 
@@ -10,7 +14,26 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 export default (tableRef: any, editableFormRef: any) => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { materialList, file, vehicle } = server;
+  const { materialList, subContractor, vehicle } = server;
+
+  // 分包单位选择下拉
+  const [subcontractorList, setSubcontractorList] = useState([]);
+
+  useEffect(() => {
+    getSelectOptions();
+  }, []);
+
+  // 通过接口获取下拉框的内容
+  const getSelectOptions = async () => {
+    const res1 = await subContractor.getAllSubContractor();
+    // console.log('分包商列表', res1);
+    const list1 = res1.map((item: any) => {
+      // return { label: item.realName, value: `${item.id}` };
+      return { label: item.realName, value: item.realName };
+    });
+    // console.log('分包商列表', list1);
+    setSubcontractorList(list1);
+  };
 
   const formColumns: FormColumnsTypes[] = [
     {
@@ -20,7 +43,9 @@ export default (tableRef: any, editableFormRef: any) => {
       formItemProps: {
         rules: [{ required: true, message: '请选择进场时间' }],
       },
-      formItem: <DatePicker showTime placeholder="请选择进场时间" />,
+      formItem: (
+        <DatePicker showTime placeholder="请选择进场时间" />
+      ),
     },
     {
       label: '退料人员',
@@ -61,6 +86,13 @@ export default (tableRef: any, editableFormRef: any) => {
       formItemProps: {
         rules: [{ required: true, message: '请输入购买单位' }],
       },
+      formItem: (
+        <Select
+          allowClear
+          placeholder="请选择分包商"
+          options={subcontractorList}
+        />
+      ),
     },
     {
       label: '退场原因',
@@ -82,7 +114,7 @@ export default (tableRef: any, editableFormRef: any) => {
           <SearchSelect
             // popupMatchSelectWidth={200}
             placeholder="请选择车牌号"
-            request={async (input) => {
+            request={async (input: any) => {
               const res = await vehicle.vehicleApproveList({
                 carNo: input,
               });
@@ -116,7 +148,7 @@ export default (tableRef: any, editableFormRef: any) => {
           <SearchSelect
             popupMatchSelectWidth={200}
             placeholder="请选择物料名称"
-            request={async (input) => {
+            request={async (input: any) => {
               const res = await materialList.getAllMaterialList({
                 materialName: input,
               });
@@ -131,7 +163,9 @@ export default (tableRef: any, editableFormRef: any) => {
             }}
             onChange={async (select: any) => {
               // console.log('物料名称发生改变', select);
-              const res = await materialList.getMaterialDetail({ id: select });
+              const res = await materialList.getMaterialDetail({
+                id: select,
+              });
               // 获取当前行 id
               const id = tableRef.current.getCurrentRow();
               // console.log('editableFormRef', id, res);
@@ -180,7 +214,7 @@ export default (tableRef: any, editableFormRef: any) => {
         return (
           <SearchSelect
             placeholder="请选择物料编号"
-            request={async (input) => {
+            request={async (input: any) => {
               const res = await materialList.getAllMaterialList({
                 materialCode: input,
               });
@@ -195,7 +229,9 @@ export default (tableRef: any, editableFormRef: any) => {
             }}
             onChange={async (select: any) => {
               // console.log('物料编号发生改变', select);
-              const res = await materialList.getMaterialDetail({ id: select });
+              const res = await materialList.getMaterialDetail({
+                id: select,
+              });
               // 获取当前行 id
               const id = tableRef.current.getCurrentRow();
               // console.log('editableFormRef', id, res);

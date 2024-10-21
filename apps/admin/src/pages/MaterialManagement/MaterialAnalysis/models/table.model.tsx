@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { type ProColumns } from '@ant-design/pro-components';
-import { Select } from 'antd';
+import { Select, DatePicker } from 'antd';
+const { RangePicker } = DatePicker;
+import DictSelect from '@/components/DictSelect';
 
 type objJson = Record<string, any>;
 
@@ -12,7 +14,7 @@ type MenusPropsType = {
 export default ({ server }: MenusPropsType) => {
   const { subContractor, certificate } = server as objJson;
 
-  const columnWidth = 213
+  const columnWidth = 213;
 
   // 分包单位选择下拉
   const [subcontractorList, setSubcontractorList] = useState([]);
@@ -50,62 +52,76 @@ export default ({ server }: MenusPropsType) => {
       width: 60,
     },
     {
-      title: '班组名称',
-      dataIndex: 'teamName',
+      title: '车牌',
+      dataIndex: 'carNo',
       ellipsis: true,
-      width: columnWidth,
+      // width: columnWidth,
+      // hideInSearch: true,
+      // onCell: (row, rowIndex) => {
+      //   if (rowIndex == 0 || (rowIndex && rowIndex % 2 == 0)) {
+      //     return { rowSpan: 2 };
+      //   } else {
+      //     return { rowSpan: 0 };
+      //   }
+      // },
+    },
+    {
+      title: '重量',
+      dataIndex: 'weight',
+      ellipsis: true,
+      // width: columnWidth,
       hideInSearch: true,
     },
     {
-      title: '分包单位名称',
-      dataIndex: 'subcontractorId',
+      title: '称重时间',
+      dataIndex: 'weighTime',
       ellipsis: true,
-      width: columnWidth,
-      render: (_, record) => {
-        return <span>{record.subcontractorName}</span>;
-      },
-      renderFormItem: () => {
-        return <Select placeholder="请选择分包单位" options={subcontractorList} />;
-      },
-    },
-    // {
-    //   title: '公司简称简拼',
-    //   dataIndex: 'corpCode',
-    //   ellipsis: true,
-    //   width: columnWidth,
-    //   hideInSearch: true,
-    // },
-    {
-      title: '班组长',
-      dataIndex: 'userId',
-      ellipsis: true,
-      width: columnWidth,
-      render: (_, record) => {
-        return <span>{record.userName}</span>;
-      },
-      renderFormItem: () => {
-        return <Select placeholder="请选择班组长" options={personInfoList} />;
-      },
-    },
-    {
-      title: '身份证号',
-      dataIndex: 'identityCard',
-      ellipsis: true,
-      width: columnWidth,
+      valueType: 'dateTime',
+      // width: columnWidth,
       hideInSearch: true,
     },
     {
-      title: '劳务工种',
-      dataIndex: 'workTypeName',
+      // 搜索
+      title: '称重时间',
+      dataIndex: 'weighTime',
       ellipsis: true,
-      width: columnWidth,
-      editable: false
+      valueType: 'dateTimeRange',
+      // width: columnWidth,
+      // hideInSearch: true,
+      hideInTable: true,
+      search: {
+        transform: (value) => {
+          return {
+            beginTime: value[0],
+            endTime: value[1],
+          };
+        },
+      },
     },
     {
-      title: '联系电话',
-      dataIndex: 'phone',
+      title: '方向',
+      dataIndex: 'direction',
       ellipsis: true,
-      width: columnWidth,
+      // width: columnWidth,
+      hideInSearch: true,
+      render: (_, record) => {
+        return (
+          <DictSelect
+            dictKey="vehicle_entry_exit"
+            value={record.direction}
+            type="text"
+          />
+        );
+      },
+      renderFormItem: () => {
+        return <DictSelect dictKey="vehicle_entry_exit" />;
+      },
+    },
+    {
+      title: '净重',
+      dataIndex: 'suttleWeight',
+      ellipsis: true,
+      // width: columnWidth,
       hideInSearch: true,
     },
   ];

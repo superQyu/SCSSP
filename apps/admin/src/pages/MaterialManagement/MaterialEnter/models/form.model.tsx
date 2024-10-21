@@ -7,8 +7,13 @@ import { Select, DatePicker, Input, Button } from 'antd';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-export default (tableRef: any, editableFormRef: any) => {
+export default (
+  tableRef: any,
+  editableFormRef: any,
+  status: string
+) => {
   const commonWidth = 100;
+  console.log('status', status);
 
   // api 相关
   const { server } = useBasicConfiguration();
@@ -45,6 +50,35 @@ export default (tableRef: any, editableFormRef: any) => {
 
   const formColumns: FormColumnsTypes[] = [
     {
+      label: '车牌号',
+      dataIndex: 'carNo',
+      colNum: 12,
+      disabled: status == '0' ? false : true,
+      formItemProps: {
+        rules: [{ required: true, message: '请选择车牌号' }],
+      },
+      formItem: (
+        <SearchSelect
+          // popupMatchSelectWidth={200}
+          disabled={status == '0' ? false : true}
+          placeholder="请选择车牌号"
+          request={async (input: string) => {
+            const res = await vehicle.vehicleApproveList({
+              carNo: input,
+            });
+            // console.log('车牌号下拉选项', res);
+            const options = res.list.map((item: any) => {
+              return {
+                label: item.carNo,
+                value: item.carNo,
+              };
+            });
+            return options;
+          }}
+        />
+      ),
+    },
+    {
       label: '进场时间',
       dataIndex: 'enterDate',
       colNum: 12,
@@ -52,13 +86,18 @@ export default (tableRef: any, editableFormRef: any) => {
         rules: [{ required: true, message: '请选择进场时间' }],
       },
       formItem: (
-        <DatePicker showTime placeholder="请选择进场时间" />
+        <DatePicker
+          disabled={status == '0' ? false : true}
+          showTime
+          placeholder="请选择进场时间"
+        />
       ),
     },
     {
       label: '送货人',
       dataIndex: 'deliveryMan',
       colNum: 12,
+      disabled: status == '0' ? false : true,
       formItemProps: {
         rules: [{ required: true, message: '请输入送货人' }],
       },
@@ -67,6 +106,7 @@ export default (tableRef: any, editableFormRef: any) => {
       label: '送货人联系方式',
       dataIndex: 'deliveryContact',
       colNum: 12,
+      disabled: status == '0' ? false : true,
       formItemProps: {
         rules: [
           { required: true, message: '请输入送货人联系方式' },
@@ -84,6 +124,7 @@ export default (tableRef: any, editableFormRef: any) => {
         <Select
           mode="multiple"
           allowClear
+          disabled={status == '0' ? false : true}
           placeholder="请选择验收人"
           options={personInfoList}
         />
@@ -114,6 +155,7 @@ export default (tableRef: any, editableFormRef: any) => {
       },
       formItem: (
         <Select
+          disabled={status == '0' ? false : true}
           allowClear
           placeholder="请选择分包商"
           options={subcontractorList}
@@ -122,34 +164,34 @@ export default (tableRef: any, editableFormRef: any) => {
     },
   ];
   const tableColumns: ProColumns[] = [
-    {
-      title: '车牌号',
-      dataIndex: 'carNo',
-      // ellipsis: true,
-      hideInSearch: true,
-      width: 150,
-      renderFormItem: () => {
-        return (
-          <SearchSelect
-            // popupMatchSelectWidth={200}
-            placeholder="请选择车牌号"
-            request={async (input) => {
-              const res = await vehicle.vehicleApproveList({
-                carNo: input,
-              });
-              // console.log('车牌号下拉选项', res);
-              const options = res.list.map((item: any) => {
-                return {
-                  label: item.carNo,
-                  value: item.carNo,
-                };
-              });
-              return options;
-            }}
-          />
-        );
-      },
-    },
+    // {
+    //   title: '车牌号',
+    //   dataIndex: 'carNo',
+    //   // ellipsis: true,
+    //   hideInSearch: true,
+    //   width: 150,
+    //   renderFormItem: () => {
+    //     return (
+    //       <SearchSelect
+    //         // popupMatchSelectWidth={200}
+    //         placeholder="请选择车牌号"
+    //         request={async (input) => {
+    //           const res = await vehicle.vehicleApproveList({
+    //             carNo: input,
+    //           });
+    //           // console.log('车牌号下拉选项', res);
+    //           const options = res.list.map((item: any) => {
+    //             return {
+    //               label: item.carNo,
+    //               value: item.carNo,
+    //             };
+    //           });
+    //           return options;
+    //         }}
+    //       />
+    //     );
+    //   },
+    // },
     {
       title: '物料清单id',
       dataIndex: 'materialsInventoryId',
@@ -165,9 +207,10 @@ export default (tableRef: any, editableFormRef: any) => {
       renderFormItem: () => {
         return (
           <SearchSelect
+            disabled={status == '0' ? false : true}
             popupMatchSelectWidth={300}
             placeholder="请选择物料名称"
-            request={async (input) => {
+            request={async (input: string) => {
               const res = await materialList.getAllMaterialList({
                 materialName: input,
               });
@@ -181,7 +224,7 @@ export default (tableRef: any, editableFormRef: any) => {
               });
               return options;
             }}
-            optionRender={(option) => {
+            optionRender={(option: any) => {
               return (
                 <div>
                   <span className="mr-4">
@@ -215,6 +258,7 @@ export default (tableRef: any, editableFormRef: any) => {
       title: '型号',
       dataIndex: 'materialType',
       width: 130,
+      readonly: status == '0' ? false : true,
       ellipsis: true,
       hideInSearch: true,
     },
@@ -247,9 +291,10 @@ export default (tableRef: any, editableFormRef: any) => {
       renderFormItem: () => {
         return (
           <SearchSelect
+            disabled={status == '0' ? false : true}
             popupMatchSelectWidth={100}
             placeholder="请选择物料编号"
-            request={async (input) => {
+            request={async (input: string) => {
               const res = await materialList.getAllMaterialList({
                 materialCode: input,
               });
@@ -287,12 +332,14 @@ export default (tableRef: any, editableFormRef: any) => {
       dataIndex: 'enterNumber',
       width: commonWidth,
       ellipsis: true,
+      readonly: status == '0' ? false : true,
       hideInSearch: true,
     },
     {
       title: '实际验收数量',
       dataIndex: 'acceptNumber',
       width: commonWidth,
+      readonly: status == '0' ? true : false,
       ellipsis: true,
       hideInSearch: true,
     },

@@ -19,7 +19,7 @@ type LoginType = 'phone' | 'account';
 
 const Login: React.FC = () => {
   const { server } = useBasicConfiguration();
-  const { signIn, saveUserInfor } = useContext(AuthContext);
+  const { signIn, saveUserInfor, saveRuoYi } = useContext(AuthContext);
   const navigator = useNavigate();
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(false);
@@ -62,13 +62,16 @@ const Login: React.FC = () => {
         .adminLogin({ ...values })
         .then(async (res: any) => {
           console.info('%c✔  登陆成功！！！ ==============', 'color: green; font-size: 14px;');
-
+          // console.log('返回的用户信息', res)
           const { accessToken } = res;
           navigator('/');
           // 储存令牌
           await signIn(dispatch, accessToken);
           // 保存用户信息
           await saveUserInfor(dispatch, res);
+          // 存储若依需要的token
+          // console.log('若依需要的token', res)
+          await saveRuoYi(res);
         })
         .catch(() => {
           getCaptchaVal();

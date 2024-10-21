@@ -27,11 +27,12 @@ export default ({ children }: any) => {
   // 获取路由列表
   const getRoutes = async () => {
     await U.adminGetRoute()
-      .then(({ menus: M, user }: any) => {
+      .then(({ menus: M, user, roles }: any) => {
         saveUserInfor(dispatch, {
           ...user,
           nickName: user.nickname,
           avatar: getAvatar('/test/loit-small.png'),
+          roles: roles
         });
         // 根据实际开发的项目的路由表提取路由
         const _M = M.filter((item: any) => item.id === PLATFORMID)[0]?.children || [];

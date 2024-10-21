@@ -41,13 +41,12 @@ const request = (url: string, setting: any) => {
   return new Promise((resolve, reject) => {
     fetch(url, opts)
       .then(async (res) => {
-
         const resObject =
           dataType === 'text'
             ? await res.text()
             : dataType === 'blob'
-              ? await res.blob()
-              : await res.json();
+            ? await res.blob()
+            : await res.json();
 
         // if (interceptor.response) interceptor.response(resObject);
 
@@ -55,7 +54,10 @@ const request = (url: string, setting: any) => {
 
         !res.ok
           ? reject(resObject)
-          : resolve(resObject[requested.dataKeyName || 'data'] || resObject);
+          : resolve(
+              resObject[requested.dataKeyName || 'data'] ||
+                resObject
+            );
       })
       .catch((e) => {
         netStatus(requested || {}, { code: -1, message: e });
@@ -69,22 +71,31 @@ const paramsApart = (obj: object = {}, os: stringKey = {}) => {
   const headers: stringKey = {};
   const excepted: stringKey = {};
   Object.entries(obj).forEach(([key, value], index) => {
-    fileds.indexOf(key) == -1 ? (headers[key] = value) : (excepted[key] = value);
+    fileds.indexOf(key) == -1
+      ? (headers[key] = value)
+      : (excepted[key] = value);
   });
   os['headers'] = { ...os['headers'], ...headers };
   return { ...excepted, ...os };
 };
 
 export const fetchRequest = {
-  async get(url: string, params: Object = {}, config = {}, cusParmas = {}) {
+  async get(
+    url: string,
+    params: Object = {},
+    config = {},
+    cusParmas = {}
+  ) {
     // get
     try {
+      // console.log('转换前的请求参数', params)
+      // console.log('转换后的请求参数', json2url({ url, params }));
       const res = await request(json2url({ url, params }), {
         method: 'GET',
         ...paramsApart(config, {
           headers: {},
         }),
-        ...cusParmas
+        ...cusParmas,
       });
       return new Promise((resolve) => {
         resolve(res);
@@ -93,7 +104,13 @@ export const fetchRequest = {
       return Promise.reject(err);
     }
   },
-  async post(url: string, params = {}, config = {}, cusParmas = {}, headerParams: any) {
+  async post(
+    url: string,
+    params = {},
+    config = {},
+    cusParmas = {},
+    headerParams: any
+  ) {
     // post
     try {
       const res = await request(url, {
@@ -103,9 +120,9 @@ export const fetchRequest = {
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',
           },
-          ...headerParams
+          ...headerParams,
         }),
-        ...cusParmas
+        ...cusParmas,
       });
       return new Promise((resolve, reject) => {
         resolve(res);
@@ -114,7 +131,12 @@ export const fetchRequest = {
       return Promise.reject(err);
     }
   },
-  async delete(url: string, params: Object = {}, config = {}, cusParmas = {}) {
+  async delete(
+    url: string,
+    params: Object = {},
+    config = {},
+    cusParmas = {}
+  ) {
     // delete
     try {
       const res = await request(json2url({ url, params }), {
@@ -122,7 +144,7 @@ export const fetchRequest = {
         ...paramsApart(config, {
           headers: {},
         }),
-        ...cusParmas
+        ...cusParmas,
       });
       return new Promise((resolve) => {
         resolve(res);
@@ -131,7 +153,12 @@ export const fetchRequest = {
       return Promise.reject(err);
     }
   },
-  async put(url: string, params = {}, config = {}, cusParmas = {}) {
+  async put(
+    url: string,
+    params = {},
+    config = {},
+    cusParmas = {}
+  ) {
     // post
     try {
       const res = await request(url, {
@@ -142,7 +169,7 @@ export const fetchRequest = {
             'Content-Type': 'application/json; charset=UTF-8',
           },
         }),
-        ...cusParmas
+        ...cusParmas,
       });
       return new Promise((resolve, reject) => {
         resolve(res);
@@ -151,7 +178,12 @@ export const fetchRequest = {
       return Promise.reject(err);
     }
   },
-  async patch(url: string, params = {}, config = {}, cusParmas = {}) {
+  async patch(
+    url: string,
+    params = {},
+    config = {},
+    cusParmas = {}
+  ) {
     // post
     try {
       const res = await request(url, {
@@ -162,7 +194,7 @@ export const fetchRequest = {
             'Content-Type': 'application/json; charset=UTF-8',
           },
         }),
-        ...cusParmas
+        ...cusParmas,
       });
       return new Promise((resolve, reject) => {
         resolve(res);

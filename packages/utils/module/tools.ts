@@ -44,7 +44,9 @@ export const url2json = (url = '?') => {
  * @return {boolean}
  */
 export const isArray = (arr: any) => {
-  return Object.prototype.toString.call(arr) === '[object Array]';
+  return (
+    Object.prototype.toString.call(arr) === '[object Array]'
+  );
 };
 
 /**
@@ -53,7 +55,9 @@ export const isArray = (arr: any) => {
  * @return {boolean}
  */
 export const isRegexp = (obj: any) => {
-  return Object.prototype.toString.call(obj) === '[object RegExp]';
+  return (
+    Object.prototype.toString.call(obj) === '[object RegExp]'
+  );
 };
 
 /**
@@ -64,7 +68,8 @@ export const isRegexp = (obj: any) => {
 export const isJSON = (obj: any) => {
   return (
     typeof obj == 'object' &&
-    Object.prototype.toString.call(obj).toLowerCase() == '[object object]' &&
+    Object.prototype.toString.call(obj).toLowerCase() ==
+      '[object object]' &&
     !obj.length
   );
 };
@@ -78,7 +83,9 @@ export const url2key = (url?: string) => {
   const { hostname, port } = window.location;
   if (!url) url = hostname + port;
   const [firstSegment] = url.split('/');
-  const numberString = parseInt(firstSegment.replace(/\./g, '').replace(/\:/g, ''));
+  const numberString = parseInt(
+    firstSegment.replace(/\./g, '').replace(/\:/g, '')
+  );
   return numberString.toString(36);
 };
 
@@ -106,7 +113,10 @@ export const buildTree = (arr: TreeNode[], params?: {}) => {
   for (const node of arr) {
     let curItem = map[node[defaultParams.idKey]];
 
-    if (defaultParams.intercept && typeof defaultParams.intercept === 'function') {
+    if (
+      defaultParams.intercept &&
+      typeof defaultParams.intercept === 'function'
+    ) {
       curItem = defaultParams.intercept(curItem);
     }
 
@@ -122,10 +132,15 @@ export const buildTree = (arr: TreeNode[], params?: {}) => {
       }
     }
   }
-  if (defaultParams.delEmptyRoutes) removeEmptyRoutes(roots, 'routes');
+  if (defaultParams.delEmptyRoutes)
+    removeEmptyRoutes(roots, 'routes');
   return roots;
 };
-export const RebuildTree = (arr: TreeNode[], params?: {}, roodId = 0) => {
+export const RebuildTree = (
+  arr: TreeNode[],
+  params?: {},
+  roodId = 0
+) => {
   const map: Record<number, TreeNode> = {};
   const roots: TreeNode[] = [];
   const defaultParams: TreeParam = {
@@ -144,7 +159,10 @@ export const RebuildTree = (arr: TreeNode[], params?: {}, roodId = 0) => {
   for (const node of arr) {
     let curItem = map[node[defaultParams.idKey]];
 
-    if (defaultParams.intercept && typeof defaultParams.intercept === 'function') {
+    if (
+      defaultParams.intercept &&
+      typeof defaultParams.intercept === 'function'
+    ) {
       curItem = defaultParams.intercept(curItem);
     }
 
@@ -159,7 +177,8 @@ export const RebuildTree = (arr: TreeNode[], params?: {}, roodId = 0) => {
       }
     }
   }
-  if (defaultParams.delEmptyRoutes) removeEmptyRoutes(roots, 'routes');
+  if (defaultParams.delEmptyRoutes)
+    removeEmptyRoutes(roots, 'routes');
   return roots;
 };
 /**
@@ -167,12 +186,16 @@ export const RebuildTree = (arr: TreeNode[], params?: {}, roodId = 0) => {
  * @param {}
  * @return {Array}
  */
-export const sortMenu = (arr: TreeNode[], sortByKey = 'orderNum'): MenuItem[] => {
+export const sortMenu = (
+  arr: TreeNode[],
+  sortByKey = 'orderNum'
+): MenuItem[] => {
   const sortedArr = [...arr]; // 创建副本数组
   return sortedArr
     .sort((a, b) => a[sortByKey] - b[sortByKey])
     .map((menu) => {
-      if (menu.routes && menu.routes.length > 0) menu = { ...menu, routes: sortMenu(menu.routes) };
+      if (menu.routes && menu.routes.length > 0)
+        menu = { ...menu, routes: sortMenu(menu.routes) };
       return menu as unknown as MenuItem;
     });
 };

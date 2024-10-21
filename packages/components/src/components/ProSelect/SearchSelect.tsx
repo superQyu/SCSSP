@@ -20,13 +20,15 @@ export interface DebounceSelectProps<ValueType = any>
 
 const DebounceSelect = forwardRef(
   (
-    {
-      fetchOptions,
-      debounceTimeout = 800,
-      ...props
-    }: DebounceSelectProps,
+    props: DebounceSelectProps,
     ref: React.Ref<RefSelectProps>
   ) => {
+    const {
+      fetchOptions,
+      debounceTimeout = 800,
+      ...others
+    } = props;
+
     // 只有第一次输入文字后，才会进行选项的加载
     const [fetching, setFetching] = useState(false);
     const [options, setOptions] = useState<any>([]);
@@ -63,7 +65,7 @@ const DebounceSelect = forwardRef(
         showSearch={true}
         onSearch={debounceFetcher}
         notFoundContent={fetching ? <Spin size="small" /> : null}
-        {...props}
+        {...others}
         options={options}
       />
     );
@@ -90,6 +92,7 @@ interface Props {
     option?: any,
     info?: { index: number }
   ) => React.ReactNode;
+  [key: string]: any;
 }
 
 export default forwardRef(
@@ -111,6 +114,7 @@ export default forwardRef(
         }}
         onFocus={onFocus}
         optionRender={props.optionRender}
+        disabled={props.disabled}
       />
     );
   }

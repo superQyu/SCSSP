@@ -112,7 +112,7 @@ export default ({ server }: MenusPropsType) => {
       title: '打卡时间',
       render: (_, record) => (
         <>
-          {dayjs(record.clockTime).format('YYYY-MM-DD hh:mm:ss')}
+          {dayjs(record.clockTime).format('YYYY-MM-DD HH:mm:ss')}
         </>
       ),
     },

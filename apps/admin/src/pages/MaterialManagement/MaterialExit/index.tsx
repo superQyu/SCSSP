@@ -27,7 +27,8 @@ export default ({ onChange }: any) => {
   const firstTableRef = useRef<ActionType>();
 
   // 控制弹窗的打开与关闭
-  const [dialogVisible, setDialogVisible] = useState<boolean>(false);
+  const [dialogVisible, setDialogVisible] =
+    useState<boolean>(false);
   // 控制详情表单
   const [detail, setDetail] = useState({});
 
@@ -40,19 +41,23 @@ export default ({ onChange }: any) => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    const res = await materialExit.updateFirst(params).then(async () => {
-      message.success('信息更新成功！');
-      await firstTableRef.current?.reload();
-    });
+    const res = await materialExit
+      .updateFirst(params)
+      .then(async () => {
+        message.success('信息更新成功！');
+        await firstTableRef.current?.reload();
+      });
     return res;
   };
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await materialExit.deleteExit({ id }).then(async () => {
-      message.success('信息删除成功！');
-      await firstTableRef.current?.reload();
-    });
+    const res = await materialExit
+      .deleteExit({ id })
+      .then(async () => {
+        message.success('信息删除成功！');
+        await firstTableRef.current?.reload();
+      });
     return res;
   };
 
@@ -69,7 +74,12 @@ export default ({ onChange }: any) => {
             width: 100,
             valueType: 'option',
             dataIndex: 'option',
-            render: (_text: any, record: any, _: any, action: any) => [
+            render: (
+              _text: any,
+              record: any,
+              _: any,
+              action: any
+            ) => [
               <a
                 key="editable"
                 onClick={() => {
@@ -96,7 +106,9 @@ export default ({ onChange }: any) => {
           // console.log('Table 查询参数', params)
           const res = await materialExit.getExitList(params);
           res.list = res.list.map((item: any) => {
-            item.exitDate = dayjs(item.exitDate).format('YYYY-MM-DD hh:mm:ss');
+            item.exitDate = dayjs(item.exitDate).format(
+              'YYYY-MM-DD HH:mm:ss'
+            );
             return item;
           });
           // console.log('物料进场列表', res);
@@ -113,7 +125,11 @@ export default ({ onChange }: any) => {
         scroll={{ y: 'auto' }}
         search={{
           labelWidth: 'auto',
-          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+          optionRender: (
+            { searchText }: any,
+            { form }: any,
+            dom: any
+          ) => {
             return [
               dom[0],
               <Button
@@ -128,15 +144,25 @@ export default ({ onChange }: any) => {
           },
         }}
         toolBarRender={() => [
-          <Styled.ExportButton api="exportMaterialsExit" fileName="物料退场导出" />,
-          <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
+          <Styled.ExportButton
+            api="exportMaterialsExit"
+            fileName="物料退场导出"
+          />,
+          <Button
+            icon={<PlusOutlined />}
+            onClick={() => setDialogVisible(true)}
+            type="primary"
+          >
             新建
           </Button>,
         ]}
         editable={{}}
         expandable={{
           expandedRowRender: (record: any) =>
-            ExpandTable({ record, server, cColumns, onChange }, firstTableRef),
+            ExpandTable(
+              { record, server, cColumns, onChange },
+              firstTableRef
+            ),
         }}
         pagination={{
           pageSize: 10,

@@ -107,10 +107,7 @@ const AdForm: React.FC<FormPropsTypes> = forwardRef(
     }, []);
 
     return (
-      <Spin
-        spinning={loading}
-        tip={loadingTitle}
-      >
+      <Spin spinning={loading} tip={loadingTitle}>
         <Form
           key={`${Object.entries(initialValues || {}).length}`}
           {..._layoutStyle}
@@ -136,6 +133,7 @@ const AdForm: React.FC<FormPropsTypes> = forwardRef(
                     {item.formItem || (
                       <Input
                         placeholder={`请输入${item.label}`}
+                        disabled={item.disabled}
                       />
                     )}
                   </Form.Item>

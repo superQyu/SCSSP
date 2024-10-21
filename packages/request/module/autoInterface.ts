@@ -20,17 +20,24 @@ interface Item {
 interface verifyedParam {
   params: jsonObject | string;
   config: jsonObject;
-  formData?: any
+  formData?: any;
 }
 interface IHttpFn<T = any> {
   (): Promise<T>;
 }
-const request = (url: string, setting: any) => { };
-const paramsValidate = (obj: object = {}, os: jsonObject = {}) => { };
+const request = (url: string, setting: any) => {};
+const paramsValidate = (
+  obj: object = {},
+  os: jsonObject = {}
+) => {};
 
 class AutoInterface {
   [prop: string]: any;
-  constructor(list: jsonObject, platformKey: string, cusParmas: jsonObject) {
+  constructor(
+    list: jsonObject,
+    platformKey: string,
+    cusParmas: jsonObject
+  ) {
     this.platformKey = platformKey;
     this.cusParmas = cusParmas || {};
     Object.entries(list).forEach((item, index) => {
@@ -63,7 +70,10 @@ class AutoInterface {
       const v: Item[] = param;
       v.forEach((item, index) => {
         if (!this.hasOwnProperty(key)) this[`${key}`] = {};
-        this[`${key}`][`${item.key}`] = this.mountedMethod(item, path);
+        this[`${key}`][`${item.key}`] = this.mountedMethod(
+          item,
+          path
+        );
       });
     }
   }
@@ -75,13 +85,18 @@ class AutoInterface {
     return (args: any = {}) => {
       /** 参数验证开始 */
       if (isJSON(args) || args instanceof FormData) {
-
         let verifyed: any = { params: {}, config: {} },
           unPassed: jsonObject[] = [],
           required: jsonObject[] = [];
 
         const isFormData = args instanceof FormData;
-        const { key, url, type, params = [], cusParmas = {} } = item;
+        const {
+          key,
+          url,
+          type,
+          params = [],
+          cusParmas = {},
+        } = item;
 
         for (let i = 0, j = params.length; i < j; i++) {
           // 校验主参数
@@ -94,11 +109,20 @@ class AutoInterface {
             description: desc,
           }: jsonObject = params[i];
           // 校验key 属性
-          const { mandatorykey, required: reqd, value: dv } = valueAttrs;
+          const {
+            mandatorykey,
+            required: reqd,
+            value: dv,
+          } = valueAttrs;
           let rdv: string | number = args[k] || dv || '';
           if (args[k] === 0) rdv = 0;
 
-          if (!args.hasOwnProperty(k) && !mandatorykey && location && location != 'header') {
+          if (
+            !args.hasOwnProperty(k) &&
+            !mandatorykey &&
+            location &&
+            location != 'header'
+          ) {
             unPassed = [...unPassed, params[i]];
           } else {
             const rtk: string = tk || k;
@@ -108,15 +132,24 @@ class AutoInterface {
               continue;
             }
             if (location === 'header') {
-              if (rtk.toLocaleLowerCase() === 'Authorization'.toLocaleLowerCase())
-                rdv = `Bearer ${rdv || getToken(_this.platformKey)}`;
+              if (
+                rtk.toLocaleLowerCase() ===
+                'Authorization'.toLocaleLowerCase()
+              )
+                rdv = `Bearer ${
+                  rdv || getToken(_this.platformKey)
+                }`;
               verifyed.config[rtk] = rdv;
             } else if (location === 'query' || !location) {
-              if (rdv != '' || `${rdv}` === '0') verifyed.params[rtk] = rdv;
-              if ((rdv == '' || `${rdv}` === '0') && mandatorykey) verifyed.params[rtk] = rdv;
+              if (rdv != '' || `${rdv}` === '0')
+                verifyed.params[rtk] = rdv;
+              if (
+                (rdv == '' || `${rdv}` === '0') &&
+                mandatorykey
+              )
+                verifyed.params[rtk] = rdv;
             }
           }
-
         }
         if (required.length > 0) {
           return _this.errorMethod(
@@ -135,45 +168,57 @@ class AutoInterface {
               })
               .join('、')}，请检查！！！`
           );
-        };
+        }
         /** 参数验证结束 */
-        if (isFormData) { verifyed['params'] = args };
+        if (isFormData) {
+          verifyed['params'] = args;
+        }
 
         // service
         const xhrType: Method = type.toLowerCase();
         const service: jsonObject = fetchService;
         if (service.hasOwnProperty(xhrType)) {
-          let headerParams = {}
+          let headerParams = {};
           // 添加固定参数
-          const { additionalParam } = _this.cusParmas
+          const { additionalParam } = _this.cusParmas;
           const aParams: jsonObject = {};
-          Object.entries(additionalParam).map(([ak, av], index) => {
-            if (typeof av === 'function') {
-              aParams[ak] = av();
-            } else {
-              aParams[ak] = av;
+          Object.entries(additionalParam).map(
+            ([ak, av], index) => {
+              if (typeof av === 'function') {
+                aParams[ak] = av();
+              } else {
+                aParams[ak] = av;
+              }
             }
-          })
+          );
           if (['post', 'put', 'patch'].indexOf(xhrType) != -1) {
             if (!isFormData) {
               _this.dayjsZone(verifyed.params);
-              verifyed.params = JSON.stringify({ ...verifyed.params, ...aParams });
+              verifyed.params = JSON.stringify({
+                ...verifyed.params,
+                ...aParams,
+              });
             } else {
               headerParams = {
                 headers: {},
-              }
-            };
+              };
+            }
           } else {
             verifyed.params = { ...verifyed.params, ...aParams };
-          };
+          }
 
-          return service[xhrType](url, verifyed.params, verifyed.config, { ..._this.cusParmas, ...cusParmas, }, headerParams);
-        };
+          return service[xhrType](
+            url,
+            verifyed.params,
+            verifyed.config,
+            { ..._this.cusParmas, ...cusParmas },
+            headerParams
+          );
+        }
         return _this.errorMethod(`请填写正确的请求类型!`);
-
       } else {
         return _this.errorMethod();
-      };
+      }
     };
   }
   /**
@@ -201,17 +246,21 @@ class AutoInterface {
       for (let key in obj) {
         if (typeof obj[key] === 'object' && obj[key] !== null) {
           if (dayjs.isDayjs(obj[key])) {
-            // obj[key] = dayjs(obj[key]).format('YYYY-MM-DD hh:mm:ss') 
-            obj[key] = dayjs(obj[key]).valueOf() // 2024-04-03T00:00:000z
+            // obj[key] = dayjs(obj[key]).format('YYYY-MM-DD HH:mm:ss')
+            obj[key] = dayjs(obj[key]).valueOf(); // 2024-04-03T00:00:000z
           } else {
             traverseObject(obj[key]);
           }
         }
       }
     }
-    traverseObject(params)
+    traverseObject(params);
   }
 }
-export const autoInterface = (list: jsonObject, platformKey: string, cusParmas: jsonObject) => {
+export const autoInterface = (
+  list: jsonObject,
+  platformKey: string,
+  cusParmas: jsonObject
+) => {
   return new AutoInterface(list, platformKey, cusParmas);
 };

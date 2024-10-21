@@ -21,15 +21,19 @@ interface Props {
   openModal: boolean;
   /** 监听 Modal 状态变化 */
   onStateChange: (state: boolean) => void;
-  // 当为详情表单时, 有该属性
+  /** 当为详情表单时, 有该属性 */
   detail?: MenusType;
+  /**
+   * 当前点击的哪个按钮
+   * 0: 点击编辑按钮, 此时仅有验收数量不可编辑
+   * 1: 点击验收按钮, 此时仅有验收数量和两个图片可编辑
+   */
+  status: string;
 }
 
-export default ({
-  openModal,
-  onStateChange,
-  detail = {},
-}: Props) => {
+export default (props: Props) => {
+  const { openModal, onStateChange, detail = {} } = props;
+
   // api 相关
   const { server } = useBasicConfiguration();
   const { materialEnter } = server;
@@ -56,11 +60,13 @@ export default ({
   // 只能放在外面, 因为调用该方法中使用 hook, 只能放在函数式组件的外部
   const { formColumns, tableColumns } = initColumns(
     tableRef,
-    editableFormRef
+    editableFormRef,
+    props.status
   );
 
   // 分包商信息表单的默认值
   const [formData, setFormData] = useState<MenusType>({
+    carNo: detail.carNo,
     enterDate: detail.enterDate && dayjs(detail.enterDate),
     deliveryMan: detail.deliveryMan,
     deliveryContact: detail.deliveryContact,
@@ -118,6 +124,12 @@ export default ({
 
     const table = tableRef.current?.getTableData();
     // console.log('所有表格数据', table);
+    if (!table.length) {
+      message.error(
+        '当前车辆未填写物料信息, 请至少添加一条物料信息'
+      );
+      return;
+    }
     const materialsEnterDetailsSaveReqVOS = table.map(
       (item: any) => {
         // console.log('item.attachment', item.attachment)
@@ -125,24 +137,44 @@ export default ({
           // 如果 id 为number, 则是编辑
           id: typeof item.id == 'number' ? item.id : undefined,
           materialEnterId: detail.id,
-          carNo: item.carNo,
+          // carNo: item.carNo,
           materialsInventoryId: item.materialsInventoryId,
           materialType: item.materialType,
           enterNumber: item.enterNumber,
+          acceptNumber: item.acceptNumber,
           attachment: item.attachment?.join('@'),
           acceptAttachment: item.acceptAttachment?.join('@'),
         };
       }
     );
+    // 验收时需要进行的校验
+    if (props.status == '1') {
+      try {
+        materialsEnterDetailsSaveReqVOS.map((item: any) => {
+          if (!item.acceptNumber) {
+            throw new Error(
+              '有物料的实际验收数量未填写, 请完善数据'
+            );
+          }
+        });
+      } catch (error: any) {
+        message.error(error.message);
+        return
+      }
+    }
     const values = {
       materialsEnterSaveReqVO,
       materialsEnterDetailsSaveReqVOS,
     };
     // console.log('表单提交时的数据', values);
     setLoading(true);
-    materialEnter[detail.id ? 'updateEnter' : 'createEnter'](
-      values
-    )
+    let api;
+    if (props.status == '0') {
+      api = detail.id ? 'updateEnter' : 'createEnter';
+    } else {
+      api = 'materialAccept';
+    }
+    materialEnter[api](values)
       .then(() => {
         message.success('操作成功！');
         setLoading(false);
@@ -160,10 +192,13 @@ export default ({
       message.warning(`数据提交中,请稍等...`);
       return;
     }
-    setStorageModalOpen(true);
-    // setOpen(false);
-    // onReset();
-    // onStateChange(false);
+    if (props.status == '0') {
+      setStorageModalOpen(true);
+    } else {
+      setOpen(false);
+      onReset();
+      onStateChange(false);
+    }
   };
 
   // 暂存表单信息至浏览器
@@ -195,7 +230,7 @@ export default ({
           // 但是为了加载缓存时取消关联性, 故存为 string
           id: `${item.id}`,
           // materialEnterId: detail.id,
-          carNo: item.carNo,
+          // carNo: item.carNo,
           materialsInventoryId: item.materialsInventoryId,
           materialType: item.materialType,
           enterNumber: item.enterNumber,
@@ -235,6 +270,7 @@ export default ({
       // console.log('转换后的数据', data);
       const formData = data.materialsEnterSaveReqVO || {};
       formRef.current?.setFieldsValue({
+        carNo: formData.carNo,
         enterDate:
           formData.enterDate && dayjs(formData.enterDate),
         deliveryMan: formData.deliveryMan,
@@ -269,15 +305,19 @@ export default ({
         onCancel={handleCancel}
         maskClosable={false}
         footer={[
-          <ReloadButton
-            type="primary"
-            key="reload"
-            onClick={() => setReloadModalOpen(true)}
-            disabled={loading}
-          >
-            加载暂存
-          </ReloadButton>,
+          <span key="reload">
+            {props.status == '0' && (
+              <ReloadButton
+                type="primary"
+                onClick={() => setReloadModalOpen(true)}
+                disabled={loading}
+              >
+                加载暂存
+              </ReloadButton>
+            )}
+          </span>,
           <Button
+            className="ml-8px"
             key="back"
             onClick={handleCancel}
             disabled={loading}
@@ -320,6 +360,7 @@ export default ({
           </div>
 
           <EditTable
+            noCreate={props.status == '0' ? false : true}
             actionRef={actionTableRef}
             tableRef={tableRef}
             editableFormRef={editableFormRef}

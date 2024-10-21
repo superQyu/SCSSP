@@ -96,6 +96,7 @@ const DictSelect: React.FC<Props> = (props, ref) => {
     const color = (() => {
       const color = curItem[0]?.colorType;
       if (color == 'primary') return 'processing';
+      else if (color == 'danger') return 'error';
       else return color;
     })();
 

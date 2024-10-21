@@ -29,7 +29,7 @@ export default (_: MenusPropsType) => {
       title: '区域名称',
       dataIndex: 'name',
       ellipsis: true,
-      width: 150
+      width: 150,
     },
     // {
     //   hideInTable: true,
@@ -51,7 +51,13 @@ export default (_: MenusPropsType) => {
       hideInSearch: true,
       title: '创建时间',
       dataIndex: 'createTime',
-      render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD hh:mm:ss')}</>,
+      render: (_, record) => (
+        <>
+          {dayjs(record.createTime).format(
+            'YYYY-MM-DD HH:mm:ss'
+          )}
+        </>
+      ),
     },
     {
       hideInSearch: true,

@@ -1,27 +1,66 @@
 import React, { Dispatch } from 'react';
-import { setUserToken, setUserInfor, setSiteInfor, setDict } from 'store';
+import {
+  setUserToken,
+  setUserInfor,
+  setSiteInfor,
+  setDict,
+} from 'store';
 
-import { setToken, getStorage, removeToken, removeStorage, setStorage, sleep, TOKEN } from 'utils';
+import {
+  setToken,
+  getStorage,
+  removeToken,
+  removeStorage,
+  setStorage,
+  sleep,
+  TOKEN,
+} from 'utils';
 
 interface AuthContextType {
-  signIn: (dispatch: Dispatch<any>, values: string) => Promise<unknown>;
-  saveUserInfor: (dispatch: Dispatch<any>, values: any) => Promise<unknown>;
-  saveSiteInfor: (dispatch: Dispatch<any>, values: any) => Promise<unknown>;
-  mockSignIn?: (dispatch: Dispatch<any>, values: string) => Promise<unknown>;
+  signIn: (
+    dispatch: Dispatch<any>,
+    values: string
+  ) => Promise<unknown>;
+  saveUserInfor: (
+    dispatch: Dispatch<any>,
+    values: any
+  ) => Promise<unknown>;
+  saveSiteInfor: (
+    dispatch: Dispatch<any>,
+    values: any
+  ) => Promise<unknown>;
+  mockSignIn?: (
+    dispatch: Dispatch<any>,
+    values: string
+  ) => Promise<unknown>;
   signOut: (dispatch: Dispatch<any>) => Promise<unknown>;
-  saveDicts: (dispatch: Dispatch<any>, values: any) => Promise<unknown>;
+  saveDicts: (
+    dispatch: Dispatch<any>,
+    values: any
+  ) => Promise<unknown>;
+  saveRuoYi: (values: string) => Promise<unknown>;
 }
+// 保存若依的 token, 用来 iframe 内嵌静默登录
+export const saveRuoYi = async (values: any) => {
+  setToken('RuoYi_token', values);
+};
 // 用户登录
 export const signIn = async (dispatch: any, values: string) => {
   setToken(TOKEN, values);
   dispatch(setUserToken(values));
 };
 // 保存用户信息
-export const saveUserInfor = async (dispatch: any, values: any) => {
+export const saveUserInfor = async (
+  dispatch: any,
+  values: any
+) => {
   dispatch(setUserInfor(values));
 };
 // 保存站点信息
-export const saveSiteInfor = async (dispatch: any, values: any) => {
+export const saveSiteInfor = async (
+  dispatch: any,
+  values: any
+) => {
   dispatch(setSiteInfor(values));
 };
 // 保存字典
@@ -31,7 +70,10 @@ export const saveDicts = async (dispatch: any, values: any) => {
 // 基础配置
 const BaseConf: object = { avatar: '', logo: '' };
 // 模拟登录
-export const mockSignIn = async (dispatch: any, values: string) => {
+export const mockSignIn = async (
+  dispatch: any,
+  values: string
+) => {
   await sleep(1000);
   setStorage(TOKEN, values, 1000 * 60 * 24);
   dispatch(setUserToken(getStorage(TOKEN)));
@@ -56,5 +98,6 @@ export const AuthContext = React.createContext<AuthContextType>({
   saveSiteInfor, //  保存站点信息
   mockSignIn, //模拟登录
   signOut, // 退出
-  saveDicts,// 保存字典数据
+  saveDicts, // 保存字典数据
+  saveRuoYi, // 保存若依的 token
 });

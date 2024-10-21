@@ -33,6 +33,13 @@ export default ({ server }: MenusPropsType) => {
       // width: commonWidth
     },
     {
+      title: '车牌号',
+      dataIndex: 'carNo',
+      ellipsis: true,
+      hideInSearch: true,
+      // width: commonWidth,
+    },
+    {
       title: '进场时间',
       dataIndex: 'enterDate',
       ellipsis: true,
@@ -93,13 +100,13 @@ export default ({ server }: MenusPropsType) => {
   ];
 
   const cColumns: ProColumns[] = [
-    {
-      title: '车牌号',
-      dataIndex: 'carNo',
-      ellipsis: true,
-      hideInSearch: true,
-      // width: commonWidth,
-    },
+    // {
+    //   title: '车牌号',
+    //   dataIndex: 'carNo',
+    //   ellipsis: true,
+    //   hideInSearch: true,
+    //   // width: commonWidth,
+    // },
     {
       title: '物料名称',
       dataIndex: 'materialName',
@@ -138,6 +145,13 @@ export default ({ server }: MenusPropsType) => {
     {
       title: '进场数量',
       dataIndex: 'enterNumber',
+      ellipsis: true,
+      editable: false,
+      // width: commonWidth,
+    },
+    {
+      title: '实际验收数量',
+      dataIndex: 'acceptNumber',
       ellipsis: true,
       editable: false,
       // width: commonWidth,
