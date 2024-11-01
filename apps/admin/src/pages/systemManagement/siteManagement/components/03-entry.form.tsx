@@ -230,10 +230,10 @@ const EntryCom: React.FC<Props> = forwardRef(
         dataIndex: 'dailyWage',
         formItemProps: {
           rules: [
-            {
-              pattern: /^[0-9]+([.]{1}[0-9]{1,2})?$/,
-              message: '请输入正确的每日工资',
-            },
+            // {
+            //   pattern: /^[0-9]+([.]{1}[0-9]{1,2})?$/,
+            //   message: '请输入正确的每日工资',
+            // },
           ],
         },
         colNum: 8,
