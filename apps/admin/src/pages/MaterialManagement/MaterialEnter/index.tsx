@@ -2,13 +2,18 @@ import { useRef, useState } from 'react';
 
 import { ProTable } from 'components';
 import { type ActionType } from '@ant-design/pro-components';
-import { Button, message, Popconfirm } from 'antd';
+import { Button, message, Popconfirm, Spin } from 'antd';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import EditDialog from './components/editdialog';
 import ExpandTable from './ExpandTable';
 import Styled from '@/components/Styled';
 
 import dayjs from 'dayjs';
+
+import './index.scss';
+
+// redux 相关
+import { useAppSelector } from 'hooks';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
@@ -20,6 +25,11 @@ export default ({ onChange }: any) => {
   const { server } = useBasicConfiguration();
   const { materialEnter } = server;
 
+  // 获取 redux 中存储的用户信息
+  const { user }: { user: any } = useAppSelector(
+    (state) => state
+  );
+
   // 初始化表格列
   const { fColumns, cColumns } = siteModel({ server });
 
@@ -27,9 +37,14 @@ export default ({ onChange }: any) => {
   const firstTableRef = useRef<ActionType>();
 
   // 控制弹窗的打开与关闭
-  const [dialogVisible, setDialogVisible] = useState<boolean>(false);
+  const [dialogVisible, setDialogVisible] =
+    useState<boolean>(false);
   // 控制详情表单
   const [detail, setDetail] = useState({});
+  // 流程状态
+  const [status, setStatus] = useState('0');
+  // 数据加载中，主要用于发起流程
+  const [spinning, setSpinning] = useState(false);
 
   // 修改表单打开关闭状态
   const handleModalStateChange = async (state: boolean) => {
@@ -40,110 +55,187 @@ export default ({ onChange }: any) => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    const res = await materialEnter.updateFirst(params).then(async () => {
-      message.success('信息更新成功！');
-      await firstTableRef.current?.reload();
-    });
+    const res = await materialEnter
+      .updateFirst(params)
+      .then(async () => {
+        message.success('信息更新成功！');
+        await firstTableRef.current?.reload();
+      });
     return res;
   };
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await materialEnter.deleteEnter({ id }).then(async () => {
-      message.success('信息删除成功！');
-      await firstTableRef.current?.reload();
-    });
+    const res = await materialEnter
+      .deleteEnter({ id })
+      .then(async () => {
+        message.success('信息删除成功！');
+        await firstTableRef.current?.reload();
+      });
     return res;
+  };
+
+  // 发起流程
+  const onBpm = async (id: number) => {
+    setSpinning(true);
+    materialEnter.startBpm({ materialsEnterId: id }).then(() => {
+      setSpinning(false);
+      firstTableRef.current?.reload();
+    });
   };
 
   return (
     <>
-      <ProTable
-        // rowKey="key"
-        actionRef={firstTableRef}
-        // headerTitle="证件列表"
-        columns={[
-          ...fColumns,
-          {
-            title: '操作',
-            width: 100,
-            valueType: 'option',
-            dataIndex: 'option',
-            render: (_text: any, record: any, _: any, action: any) => [
-              <a
-                key="editable"
-                onClick={() => {
-                  // console.log('点击了编辑')
-                  handleModalStateChange(true);
-                  setDetail(record);
-                }}
-              >
-                编辑
-              </a>,
-              <Popconfirm
-                key="delete"
-                title="删除此项"
-                onConfirm={() => onDelete(record.id)}
-                okText="确认"
-                cancelText="取消"
-              >
-                <a>删除</a>
-              </Popconfirm>,
-            ],
-          },
-        ]}
-        request={async (params = {}) => {
-          // console.log('Table 查询参数', params)
-          const res = await materialEnter.getEnterList(params);
-          res.list = res.list.map((item: any) => {
-            item.enterDate = dayjs(item.enterDate).format('YYYY-MM-DD hh:mm:ss');
-            return item;
-          });
-          // console.log('物料进场列表', res);
-          return {
-            // ...params,
-            // success: true,
-            data: res.list,
-            total: res.total,
-          };
-        }}
-        form={{
-          ignoreRules: false,
-        }}
-        scroll={{ y: 'auto' }}
-        search={{
-          labelWidth: 'auto',
-          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
-            return [
-              dom[0],
-              <Button
-                type="primary"
-                key="sub"
-                icon={<SearchOutlined />}
-                onClick={() => form?.submit()}
-              >
-                {searchText}
-              </Button>,
-            ];
-          },
-        }}
-        toolBarRender={() => [
-          <Styled.ExportButton api="exportMaterialsEnter" fileName="物料进场导出" />,
-          <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
-            新建
-          </Button>,
-        ]}
-        editable={{}}
-        expandable={{
-          expandedRowRender: (record: any) =>
-            ExpandTable({ record, server, cColumns, onChange }, firstTableRef),
-        }}
-        pagination={{
-          pageSize: 10,
-        }}
-      ></ProTable>
+      <Spin spinning={spinning}>
+        <ProTable
+          // rowKey="key"
+          actionRef={firstTableRef}
+          headerTitle="物料/机械进场"
+          columns={[
+            ...fColumns,
+            {
+              title: '操作',
+              width: 100,
+              valueType: 'option',
+              dataIndex: 'option',
+              render: (
+                _text: any,
+                record: any,
+                _: any,
+                action: any
+              ) => [
+                <div key="1">
+                  {record.status == '0' && (
+                    <Popconfirm
+                      title="发起申请后将无法编辑"
+                      onConfirm={() => onBpm(record.id)}
+                      okText="确认"
+                      cancelText="取消"
+                    >
+                      <a>发起申请</a>
+                    </Popconfirm>
+                  )}
+                </div>,
+                <div key="2">
+                  {record.status == '1' &&
+                    user.userInfor.roles.find(
+                      (item: string) => item == 'hg-dev'
+                    ) && (
+                      <a
+                        onClick={() => {
+                          // console.log('点击了编辑')
+                          setStatus('1');
+                          handleModalStateChange(true);
+                          setDetail(record);
+                        }}
+                      >
+                        验收
+                      </a>
+                    )}
+                </div>,
+                <div key="3">
+                  {record.status == '0' && (
+                    <a
+                      onClick={() => {
+                        // console.log('点击了编辑')
+                        setStatus('0');
+                        handleModalStateChange(true);
+                        setDetail(record);
+                      }}
+                    >
+                      编辑
+                    </a>
+                  )}
+                </div>,
+                <div key="4">
+                  {record.status == '0' && (
+                    <Popconfirm
+                      title="删除此项"
+                      onConfirm={() => onDelete(record.id)}
+                      okText="确认"
+                      cancelText="取消"
+                    >
+                      <a>删除</a>
+                    </Popconfirm>
+                  )}
+                </div>,
+              ],
+            },
+          ]}
+          request={async (params = {}) => {
+            // console.log('Table 查询参数', params)
+            const res = await materialEnter.getEnterList(params);
+            res.list = res.list.map((item: any) => {
+              item.enterDate = dayjs(item.enterDate).format(
+                'YYYY-MM-DD HH:mm:ss'
+              );
+              return item;
+            });
+            // console.log('物料进场列表', res);
+            return {
+              // ...params,
+              // success: true,
+              data: res.list,
+              total: res.total,
+            };
+          }}
+          form={{
+            ignoreRules: false,
+          }}
+          scroll={{ y: 'auto' }}
+          search={{
+            labelWidth: 'auto',
+            optionRender: (
+              { searchText }: any,
+              { form }: any,
+              dom: any
+            ) => {
+              return [
+                dom[0],
+                <Button
+                  type="primary"
+                  key="sub"
+                  icon={<SearchOutlined />}
+                  onClick={() => form?.submit()}
+                >
+                  {searchText}
+                </Button>,
+              ];
+            },
+          }}
+          toolBarRender={() => [
+            <Styled.ExportButton
+              api="exportMaterialsEnter"
+              fileName="物料进场导出"
+            />,
+            <Button
+              icon={<PlusOutlined />}
+              onClick={() => {
+                setStatus('0');
+                handleModalStateChange(true);
+                setDetail({});
+              }}
+              type="primary"
+            >
+              新建
+            </Button>,
+          ]}
+          editable={{ onSave }}
+          expandable={{
+            expandedRowRender: (record: any) =>
+              ExpandTable(
+                { record, server, cColumns, onChange },
+                firstTableRef
+              ),
+          }}
+          pagination={{
+            pageSize: 10,
+          }}
+        ></ProTable>
+      </Spin>
       <EditDialog
         key={`${dialogVisible}`}
+        status={status}
         detail={detail}
         openModal={dialogVisible}
         onStateChange={handleModalStateChange}

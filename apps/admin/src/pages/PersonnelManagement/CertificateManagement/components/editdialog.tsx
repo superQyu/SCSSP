@@ -44,18 +44,19 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
     basicFormRef,
     certificateFormRef,
     picture,
-    type
+    type,
+    detail
   );
 
   // 基础信息表单的默认值
   const [basicFormData] = useState<MenusType>({
     userId: detail.userId,
-    subcontractorId: detail.subcontractorId,
-    workerType: detail.workerType,
-    workTypeName: detail.workTypeName,
-    jobCategory: detail.jobCategory,
-    identityCard: detail.identityCard,
-    workYears: detail.workYears,
+    // subcontractorId: detail.subcontractorId,
+    // workerType: detail.workerType,
+    // workTypeName: detail.workTypeName,
+    // jobCategory: detail.jobCategory,
+    // identityCard: detail.identityCard,
+    // workYears: detail.workYears,
   });
   // 证件信息表单的默认值
   const [certificateFormData, setCertificateFormData] = useState<MenusType>({});

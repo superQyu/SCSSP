@@ -37,31 +37,43 @@ export default (_: MenusPropsType) => {
       title: '车型',
       dataIndex: 'carType',
       render: (_, record) => (
-        <DictSelect type={'text'} value={record.carType} dictKey={'cm_car_type'} />
+        <DictSelect
+          type={'text'}
+          value={record.carType}
+          dictKey={'cm_car_type'}
+        />
       ),
     },
-    {
-      hideInSearch: true,
-      title: '行驶证号',
-      dataIndex: 'carLicense',
-    },
-    { hideInSearch: true, title: '车辆品牌', width: 120, dataIndex: 'carBrand' },
-    {
-      hideInSearch: true,
-      title: '型号',
-      dataIndex: 'carModel',
-    },
+    // {
+    //   hideInSearch: true,
+    //   title: '行驶证号',
+    //   dataIndex: 'carLicense',
+    // },
+    // { hideInSearch: true, title: '车辆品牌', width: 120, dataIndex: 'carBrand' },
+    // {
+    //   hideInSearch: true,
+    //   title: '型号',
+    //   dataIndex: 'carModel',
+    // },
     {
       hideInSearch: true,
       width: 150,
       title: '报警时间',
-      render: (_, record) => <>{dayjs(record.alarmTime).format('YYYY-MM-DD hh:mm:ss')}</>,
+      render: (_, record) => (
+        <>
+          {dayjs(record.alarmTime).format('YYYY-MM-DD HH:mm:ss')}
+        </>
+      ),
     },
     {
       title: '报警类型',
       dataIndex: 'alarmType',
       render: (_, record) => (
-        <DictSelect type={'text'} value={record.alarmType + ''} dictKey={'alarm_type'} />
+        <DictSelect
+          type={'text'}
+          value={record.alarmType + ''}
+          dictKey={'alarm_type'}
+        />
       ),
       renderFormItem: () => {
         return <DictSelect dictKey={'alarm_type'} />;
@@ -87,7 +99,13 @@ export default (_: MenusPropsType) => {
       hideInSearch: true,
       width: 150,
       title: '处理时间',
-      render: (_, record) => <>{dayjs(record.disposeTime).format('YYYY-MM-DD hh:mm:ss')}</>,
+      render: (_, record) => (
+        <>
+          {dayjs(record.disposeTime).format(
+            'YYYY-MM-DD HH:mm:ss'
+          )}
+        </>
+      ),
     },
     {
       hideInTable: true,

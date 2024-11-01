@@ -96,8 +96,9 @@ export default () => {
 
           if (len === 0) SubmitEvent(params);
         })
-        .catch(() => {
+        .catch((error: any) => {
           setLoading(false);
+          console.log('表单提交错误信息', error);
           !isError && message.warning(`数据填写不完整,请完善!`);
           isError = true;
         });

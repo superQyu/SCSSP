@@ -70,7 +70,13 @@ export default (_: MenusPropsType) => {
       width: 180,
       dataIndex: 'expireTime',
       ellipsis: true,
-      render: (_, record) => <>{dayjs(record.expireTime).format('YYYY-MM-DD hh:mm:ss')}</>,
+      render: (_, record) => (
+        <>
+          {dayjs(record.expireTime).format(
+            'YYYY-MM-DD HH:mm:ss'
+          )}
+        </>
+      ),
     },
     {
       hideInSearch: true,
@@ -84,7 +90,13 @@ export default (_: MenusPropsType) => {
       dataIndex: 'status',
       valueType: 'select',
       render: (_, record) => (
-        <>{record.status == '0' ? <Tag color="green">开启</Tag> : <Tag color="red">关闭</Tag>}</>
+        <>
+          {record.status == '0' ? (
+            <Tag color="green">开启</Tag>
+          ) : (
+            <Tag color="red">关闭</Tag>
+          )}
+        </>
       ),
       renderFormItem: () => (
         <DictSelect
@@ -94,8 +106,10 @@ export default (_: MenusPropsType) => {
             '0': {
               text: (
                 <>
-                  
-                  <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
+                  <StarTwoTone
+                    twoToneColor="#50a14f"
+                    style={{ marginRight: '10px' }}
+                  />
                   显示
                 </>
               ),
@@ -103,8 +117,10 @@ export default (_: MenusPropsType) => {
             '1': {
               text: (
                 <>
-                  
-                  <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
+                  <StopTwoTone
+                    twoToneColor="red"
+                    style={{ marginRight: '10px' }}
+                  />
                   隐藏
                 </>
               ),
@@ -120,7 +136,13 @@ export default (_: MenusPropsType) => {
       editable: false,
       dataIndex: 'createTime',
       ellipsis: true,
-      render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD hh:mm:ss')}</>,
+      render: (_, record) => (
+        <>
+          {dayjs(record.createTime).format(
+            'YYYY-MM-DD HH:mm:ss'
+          )}
+        </>
+      ),
     },
   ];
 

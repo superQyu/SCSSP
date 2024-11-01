@@ -26,7 +26,10 @@ const materialEnter: ApiItem[] = [
     params: [
       { key: 'Authorization', location: 'header' },
       { key: 'materialsEnterSaveReqVO', cn: '进场相关信息' },
-      { key: 'materialsEnterDetailsSaveReqVOS', cn: '进场物料相关信息' },
+      {
+        key: 'materialsEnterDetailsSaveReqVOS',
+        cn: '进场物料相关信息',
+      },
     ],
   },
   {
@@ -38,7 +41,10 @@ const materialEnter: ApiItem[] = [
     params: [
       { key: 'Authorization', location: 'header' },
       { key: 'materialsEnterSaveReqVO', cn: '进场相关信息' },
-      { key: 'materialsEnterDetailsSaveReqVOS', cn: '进场物料相关信息' },
+      {
+        key: 'materialsEnterDetailsSaveReqVOS',
+        cn: '进场物料相关信息',
+      },
     ],
   },
   {
@@ -50,6 +56,32 @@ const materialEnter: ApiItem[] = [
     params: [
       { key: 'Authorization', location: 'header' },
       { key: 'id', cn: '数据库主键' },
+    ],
+  },
+  {
+    key: 'startBpm',
+    url: `${ADMIN_API}/wisdom/materials-enter/create-bpm`,
+    type: 'GET',
+    name: '物料进场列表',
+    description: '发起物料进场审核流程',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'materialsEnterId', cn: '物料进场id' },
+    ],
+  },
+  {
+    key: 'materialAccept',
+    url: `${ADMIN_API}/wisdom/materials-enter/pass-bpm`,
+    type: 'PUT',
+    name: '物料进场列表',
+    description: '物料进场审核, 填写实际验收数量',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'materialsEnterSaveReqVO', cn: '进场相关信息' },
+      {
+        key: 'materialsEnterDetailsSaveReqVOS',
+        cn: '进场物料相关信息',
+      },
     ],
   },
 ];

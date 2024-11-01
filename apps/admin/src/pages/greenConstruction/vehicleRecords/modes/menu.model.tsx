@@ -1,3 +1,4 @@
+import DictSelect from '@/components/DictSelect';
 import { type ProColumns } from '@ant-design/pro-components';
 
 import dayjs from 'dayjs';
@@ -56,13 +57,25 @@ export default (_: MenusPropsType) => {
       hideInSearch: true,
       title: '方向',
       dataIndex: 'direction',
-      render: (_, record) => (record.enterTime ? '进场' : '出场'),
+      render: (_, record) => {
+        return (
+          <DictSelect
+            dictKey="vehicle_entry_exit"
+            value={record.direction}
+            type="text"
+          />
+        );
+      },
     },
     {
       hideInSearch: true,
       title: '进出时间',
       render: (_, record) => (
-        <>{dayjs(record.enterTime || record.outTime).format('YYYY-MM-DD hh:mm:ss')}</>
+        <>
+          {dayjs(record.enterTime || record.outTime).format(
+            'YYYY-MM-DD HH:mm:ss'
+          )}
+        </>
       ),
     },
   ];

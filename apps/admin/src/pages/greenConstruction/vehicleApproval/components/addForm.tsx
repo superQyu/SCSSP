@@ -109,7 +109,7 @@ const AddMenus: React.FC<Props> = ({
 
   return (
     <Modal
-      width={'800px'}
+      width={'900px'}
       open={open}
       // title={title}
       title={subForm.id ? '编辑' : '新增'}
@@ -142,8 +142,8 @@ const AddMenus: React.FC<Props> = ({
         </Button>,
       ]}
     >
-      <div className="mr-8 ml-8">
-        <Row gutter={10} className="mt-5">
+      {/* <div className="mr-8 ml-8"> */}
+      {/* <Row gutter={10} className="mt-5">
           <Col span={4}>
             <Flex
               justify="center"
@@ -190,8 +190,22 @@ const AddMenus: React.FC<Props> = ({
               }}
             />
           </Col>
-        </Row>
-      </div>
+        </Row> */}
+      <AdForm
+        key={`${JSON.stringify(subForm)}`}
+        initialValues={formData}
+        loadingTitle="提交中..."
+        formRef={formRef}
+        loading={loading}
+        labelAlign="right"
+        onFormChange={onFormChange}
+        columns={formColumns}
+        // layoutStyle={{
+        //   labelCol: { span: 12 },
+        //   wrapperCol: { span: 12, flex: 1 },
+        // }}
+      />
+      {/* </div> */}
     </Modal>
   );
 };

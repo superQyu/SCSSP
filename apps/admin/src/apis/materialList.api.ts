@@ -46,8 +46,16 @@ const materialList: ApiItem[] = [
     description: '新增一级物料',
     params: [
       { key: 'Authorization', location: 'header' },
-      { key: 'levelCode', targetKey: 'firstLevelCode', cn: '一级物料编码' },
-      { key: 'levelName', targetKey: 'firstLevelName', cn: '一级物料名称' },
+      {
+        key: 'levelCode',
+        targetKey: 'firstLevelCode',
+        cn: '一级物料编码',
+      },
+      {
+        key: 'levelName',
+        targetKey: 'firstLevelName',
+        cn: '一级物料名称',
+      },
     ],
   },
   {
@@ -96,8 +104,16 @@ const materialList: ApiItem[] = [
     params: [
       { key: 'Authorization', location: 'header' },
       { key: 'firstLevelCode', cn: '一级物料编码' },
-      { key: 'levelCode', targetKey: 'secondLevelCode', cn: '二级物料编码' },
-      { key: 'levelName', targetKey: 'secondLevelName', cn: '二级物料名称' },
+      {
+        key: 'levelCode',
+        targetKey: 'secondLevelCode',
+        cn: '二级物料编码',
+      },
+      {
+        key: 'levelName',
+        targetKey: 'secondLevelName',
+        cn: '二级物料名称',
+      },
     ],
   },
   {
@@ -134,8 +150,16 @@ const materialList: ApiItem[] = [
     params: [
       { key: 'Authorization', location: 'header' },
       { key: 'secondLevelCode', cn: '二级物料编码' },
-      { key: 'levelCode', targetKey: 'thirdLevelCode', cn: '三级物料编码' },
-      { key: 'levelName', targetKey: 'thirdLevelName', cn: '三级物料名称' },
+      {
+        key: 'levelCode',
+        targetKey: 'thirdLevelCode',
+        cn: '三级物料编码',
+      },
+      {
+        key: 'levelName',
+        targetKey: 'thirdLevelName',
+        cn: '三级物料名称',
+      },
     ],
   },
   {
@@ -214,6 +238,19 @@ const materialList: ApiItem[] = [
       { key: 'initialEightBitCode', cn: '初始八位码' },
       { key: 'originalSixBitCode', cn: '原六位码' },
       { key: 'originalProvinceTenBitCode', cn: '原省十位码' },
+    ],
+  },
+  {
+    key: 'analysisList',
+    url: `${ADMIN_API}/wisdom/materials-enter/analyse-page`,
+    type: 'GET',
+    name: '物料智能分析',
+    description: '列表查询',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'carNo', cn: '车牌号' },
+      { key: 'beginTime', cn: '称重时间' },
+      { key: 'endTime', cn: '称重时间' },
     ],
   },
 ];

@@ -8,6 +8,7 @@ import {
   saveUserInfor,
   saveSiteInfor,
   saveDicts,
+  saveRuoYi
 } from './context';
 import KeepAlive from './KeepAlive';
 import useRoute from './route'
@@ -36,5 +37,6 @@ export {
   saveUserInfor,
   saveSiteInfor,
   saveDicts,
+  saveRuoYi,
   useRoute
 };

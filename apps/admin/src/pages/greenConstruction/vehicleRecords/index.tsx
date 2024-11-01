@@ -162,26 +162,26 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <div
-            className="cursor-pointer w-66px h-25px"
-            onClick={() => {
-              let id = (Math.random() * 1000000).toFixed(0);
-              actionRef.current?.addEditRecord(
-                {
-                  id: id,
-                  carNo: '苏B12346',
-                  plateColor: '红色',
-                  carType: '宝马',
-                  enterTime: +dayjs(),
-                  attachment:
-                    'http://192.168.10.77:9000/construction/c84e52a268911d39596d97512baabdabf9864380796112835e59170758c1848b.png',
-                },
-                { position: 'top', newRecordType: 'dataSource' }
-              );
-              actionRef.current?.cancelEditable(id);
-              // setIfAdd(true)
-            }}
-          ></div>,
+          // <div
+          //   className="cursor-pointer w-66px h-25px"
+          //   onClick={() => {
+          //     let id = (Math.random() * 1000000).toFixed(0);
+          //     actionRef.current?.addEditRecord(
+          //       {
+          //         id: id,
+          //         carNo: '苏B12346',
+          //         plateColor: '红色',
+          //         carType: '宝马',
+          //         enterTime: +dayjs(),
+          //         attachment:
+          //           'http://192.168.10.77:9000/construction/c84e52a268911d39596d97512baabdabf9864380796112835e59170758c1848b.png',
+          //       },
+          //       { position: 'top', newRecordType: 'dataSource' }
+          //     );
+          //     actionRef.current?.cancelEditable(id);
+          //     // setIfAdd(true)
+          //   }}
+          // ></div>,
           <Styled.ExportButton
             api="exportCarInOutRecord"
             fileName="车辆进出场"

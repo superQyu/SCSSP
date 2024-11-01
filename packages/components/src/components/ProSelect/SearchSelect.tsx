@@ -1,10 +1,18 @@
-import React, { useMemo, useRef, useState, forwardRef } from 'react';
+import React, {
+  useMemo,
+  useRef,
+  useState,
+  forwardRef,
+} from 'react';
 import { Select, Spin } from 'antd';
 import type { SelectProps, RefSelectProps } from 'antd';
 // import debounce from 'lodash/debounce';
 
 export interface DebounceSelectProps<ValueType = any>
-  extends Omit<SelectProps<ValueType | ValueType[]>, 'options' | 'children'> {
+  extends Omit<
+    SelectProps<ValueType | ValueType[]>,
+    'options' | 'children'
+  > {
   // fetchOptions: (search: string) => Promise<ValueType[]>;
   fetchOptions: (search: string) => any;
   debounceTimeout?: number;
@@ -12,9 +20,15 @@ export interface DebounceSelectProps<ValueType = any>
 
 const DebounceSelect = forwardRef(
   (
-    { fetchOptions, debounceTimeout = 800, ...props }: DebounceSelectProps,
+    props: DebounceSelectProps,
     ref: React.Ref<RefSelectProps>
   ) => {
+    const {
+      fetchOptions,
+      debounceTimeout = 800,
+      ...others
+    } = props;
+
     // 只有第一次输入文字后，才会进行选项的加载
     const [fetching, setFetching] = useState(false);
     const [options, setOptions] = useState<any>([]);
@@ -51,7 +65,7 @@ const DebounceSelect = forwardRef(
         showSearch={true}
         onSearch={debounceFetcher}
         notFoundContent={fetching ? <Spin size="small" /> : null}
-        {...props}
+        {...others}
         options={options}
       />
     );
@@ -73,25 +87,35 @@ interface Props {
   onFocus?: any;
   /** 选择器最小宽度 */
   popupMatchSelectWidth?: boolean | number;
+  /** 自定义渲染下拉选项 */
+  optionRender?: (
+    option?: any,
+    info?: { index: number }
+  ) => React.ReactNode;
+  [key: string]: any;
 }
 
-export default forwardRef((props: Props, ref: React.Ref<RefSelectProps>) => {
-  const { value, onChange, onFocus } = props;
-  return (
-    <DebounceSelect
-      ref={ref}
-      // mode="multiple"
-      style={{ width: '100%' }}
-      popupMatchSelectWidth={props.popupMatchSelectWidth}
-      placeholder={props.placeholder}
-      value={value}
-      fetchOptions={props.request}
-      onChange={(newValue) => {
-        // console.log('当前选择项', newValue)
-        // setValue(newValue as SelectOption[]);
-        onChange(newValue);
-      }}
-      onFocus={onFocus}
-    />
-  );
-});
+export default forwardRef(
+  (props: Props, ref: React.Ref<RefSelectProps>) => {
+    const { value, onChange, onFocus } = props;
+    return (
+      <DebounceSelect
+        ref={ref}
+        // mode="multiple"
+        style={{ width: '100%' }}
+        popupMatchSelectWidth={props.popupMatchSelectWidth}
+        placeholder={props.placeholder}
+        value={value}
+        fetchOptions={props.request}
+        onChange={(newValue) => {
+          // console.log('当前选择项', newValue)
+          // setValue(newValue as SelectOption[]);
+          onChange(newValue);
+        }}
+        onFocus={onFocus}
+        optionRender={props.optionRender}
+        disabled={props.disabled}
+      />
+    );
+  }
+);

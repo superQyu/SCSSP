@@ -90,10 +90,10 @@ const InfoCom: React.FC<Props> = forwardRef(
         formItemProps: {
           rules: [
             { required: true, message: '请输入联系电话' },
-            {
-              pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-              message: '请输入正确的联系电话',
-            },
+            // {
+            //   pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+            //   message: '请输入正确的联系电话',
+            // },
           ],
         },
         colNum: 8,
@@ -104,11 +104,11 @@ const InfoCom: React.FC<Props> = forwardRef(
         formItemProps: {
           rules: [
             { required: true, message: '请输入身份证号' },
-            {
-              pattern:
-                /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
-              message: '请输入正确的身份证号',
-            },
+            // {
+            //   pattern:
+            //     /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
+            //   message: '请输入正确的身份证号',
+            // },
           ],
         },
         colNum: 8,
@@ -139,10 +139,10 @@ const InfoCom: React.FC<Props> = forwardRef(
         dataIndex: 'emergencyContactMethod',
         formItemProps: {
           rules: [
-            {
-              pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-              message: '请输入正确的紧急联系方式',
-            },
+            // {
+            //   pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+            //   message: '请输入正确的紧急联系方式',
+            // },
           ],
         },
         colNum: 8,

@@ -58,6 +58,7 @@ export default ({
     supplierDepartment: detail.supplierDepartment,
     manufacturer: detail.manufacturer,
     purchaserDepartment: detail.purchaserDepartment,
+    exitReason: detail.exitReason
   });
 
   useEffect(() => {
@@ -149,7 +150,7 @@ export default ({
       <Modal
         open={open}
         title={detail.id ? '编辑' : '新增'}
-        width={1000}
+        width={'100%'}
         onOk={handleOk}
         onCancel={handleCancel}
         maskClosable={false}
@@ -183,14 +184,18 @@ export default ({
           className="h-70vh p-inline-4"
           style={{ overflow: 'hidden auto' }}
         >
-          <AdForm
-            loadingTitle="提交中..."
-            formRef={formRef}
-            initialValues={formData}
-            loading={loading}
-            labelAlign="left"
-            columns={formColumns}
-          />
+          <div className="flex justify-center">
+            <div className="w-1000px">
+              <AdForm
+                loadingTitle="提交中..."
+                formRef={formRef}
+                initialValues={formData}
+                loading={loading}
+                labelAlign="left"
+                columns={formColumns}
+              />
+            </div>
+          </div>
           <EditTable
             tableRef={tableRef}
             editableFormRef={editableFormRef}

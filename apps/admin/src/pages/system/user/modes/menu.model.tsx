@@ -90,8 +90,10 @@ export default (_: MenusPropsType) => {
             '0': {
               text: (
                 <>
-                  
-                  <StarTwoTone twoToneColor="#50a14f" style={{ marginRight: '10px' }} />
+                  <StarTwoTone
+                    twoToneColor="#50a14f"
+                    style={{ marginRight: '10px' }}
+                  />
                   开启
                 </>
               ),
@@ -100,7 +102,10 @@ export default (_: MenusPropsType) => {
               text: (
                 <>
                   {/* @ts-ignore */}
-                  <StopTwoTone twoToneColor="red" style={{ marginRight: '10px' }} />
+                  <StopTwoTone
+                    twoToneColor="red"
+                    style={{ marginRight: '10px' }}
+                  />
                   关闭
                 </>
               ),
@@ -110,7 +115,13 @@ export default (_: MenusPropsType) => {
         return <DictSelect {...p} />;
       },
       render: (_, record) => (
-        <>{record.status == '0' ? <Tag color="green">开启</Tag> : <Tag color="red">关闭</Tag>}</>
+        <>
+          {record.status == '0' ? (
+            <Tag color="green">开启</Tag>
+          ) : (
+            <Tag color="red">关闭</Tag>
+          )}
+        </>
       ),
       formItemProps: {
         rules: [{ required: true, message: '请选择状态' }],
@@ -123,7 +134,13 @@ export default (_: MenusPropsType) => {
       editable: false,
       dataIndex: 'createTime',
       ellipsis: true,
-      render: (_, record) => <>{dayjs(record.createTime).format('YYYY-MM-DD hh:mm:ss')}</>,
+      render: (_, record) => (
+        <>
+          {dayjs(record.createTime).format(
+            'YYYY-MM-DD HH:mm:ss'
+          )}
+        </>
+      ),
     },
   ];
 

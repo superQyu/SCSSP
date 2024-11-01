@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Flex } from 'antd';
-import { UserOutlined, ScheduleTwoTone } from '@ant-design/icons';
+import {
+  UserOutlined,
+  ScheduleTwoTone,
+} from '@ant-design/icons';
 import dayjs from 'dayjs';
 
 export default () => {
@@ -29,9 +32,9 @@ export default () => {
   const [time, setTime] = useState<string>();
 
   useEffect(() => {
-    setTime(dayjs().format('YYYY年M月D日 hh:mm:ss'));
+    setTime(dayjs().format('YYYY年M月D日 HH:mm:ss'));
     const intervalId = setInterval(() => {
-      setTime(dayjs().format('YYYY年M月D日 hh:mm:ss'));
+      setTime(dayjs().format('YYYY年M月D日 HH:mm:ss'));
     }, 1000);
 
     return () => {
@@ -40,10 +43,18 @@ export default () => {
   }, []);
 
   return (
-    <Flex gap="middle" vertical justify="space-between" className="h-full">
+    <Flex
+      gap="middle"
+      vertical
+      justify="space-between"
+      className="h-full"
+    >
       <div
         className="m-auto color-#6b9ce8 bg-#e0ecfe mt-[-10px] px-30px py-5px font-700"
-        style={{ clipPath: 'polygon(0 0, 100% 0 , calc(100% - 20px) 100%, 20px 100%)' }}
+        style={{
+          clipPath:
+            'polygon(0 0, 100% 0 , calc(100% - 20px) 100%, 20px 100%)',
+        }}
       >
         {time}
       </div>

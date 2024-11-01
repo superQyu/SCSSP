@@ -6,9 +6,13 @@ import ErrorPage from '@/pages/error-page';
 // import Login from '@/pages/login';
 import Login from '@/pages/login/Login';
 import MapDev from '@/pages/example/components/React-BMapGL';
+
 import PersonDetail from '@/pages/systemManagement/siteManagement';
+
 import AttendanceDetail from '@/pages/PersonnelManagement/AttendanceManagement/AttendanceDetail';
 import AttendanceRecord from '@/pages/PersonnelManagement/AttendanceManagement/AttendanceRecord';
+
+import FlowFormDesign from '@/pages/workflow/bpm/formDesign';
 
 // 防止路由丢失
 const PreventRouteLoss = () => (
@@ -33,6 +37,28 @@ const defaultRoutes: any = [
           {
             path: 'AttendanceRecord/:userId',
             element: <AttendanceRecord />,
+          },
+        ],
+      },
+      {
+        path: 'flow',
+        children: [
+          {
+            path: 'flow-form-design',
+            element: <FlowFormDesign />,
+          },
+          {
+            path: 'process-instance',
+            children: [
+              {
+                path: 'create',
+                element: <FlowFormDesign />,
+              },
+              {
+                path: 'detail',
+                element: <FlowFormDesign />,
+              },
+            ],
           },
         ],
       },

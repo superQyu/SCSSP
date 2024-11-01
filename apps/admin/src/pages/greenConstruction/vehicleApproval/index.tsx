@@ -93,7 +93,8 @@ export default () => {
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}
-        scroll={{ x: '1800px', y: 'auto' }}
+        // scroll={{ x: '1800px', y: 'auto' }}
+        scroll={{ y: 'auto' }}
         columns={[
           ...initColumns,
           {

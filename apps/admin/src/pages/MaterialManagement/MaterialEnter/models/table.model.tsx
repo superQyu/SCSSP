@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { type ProColumns } from '@ant-design/pro-components';
 import { Select, Image } from 'antd';
+import DictSelect from '@/components/DictSelect';
 
 type objJson = Record<string, any>;
 
@@ -21,13 +22,22 @@ export interface ColumnsParamsProps extends objJson {
 }
 
 export default ({ server }: MenusPropsType) => {
+  const commonWidth = 100;
+
   const fColumns: ProColumns[] = [
     {
       title: '序号',
       valueType: 'indexBorder',
       dataIndex: 'index',
       ellipsis: true,
-      // width: 50
+      // width: commonWidth
+    },
+    {
+      title: '车牌号',
+      dataIndex: 'carNo',
+      ellipsis: true,
+      hideInSearch: true,
+      // width: commonWidth,
     },
     {
       title: '进场时间',
@@ -42,73 +52,109 @@ export default ({ server }: MenusPropsType) => {
       // hideInSearch: true,
     },
     {
-      title: '材料员',
+      title: '送货人联系方式',
+      dataIndex: 'deliveryContact',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '验收人',
       dataIndex: 'materialMan',
       ellipsis: true,
       hideInSearch: true,
     },
-    {
-      title: '供应单位',
-      dataIndex: 'supplierDepartment',
-      ellipsis: true,
-      // hideInSearch: true,
-    },
-    {
-      title: '生产厂家',
-      dataIndex: 'manufacturer',
-      ellipsis: true,
-      hideInSearch: true,
-    },
+    // {
+    //   title: '供应单位',
+    //   dataIndex: 'supplierDepartment',
+    //   ellipsis: true,
+    //   // hideInSearch: true,
+    // },
+    // {
+    //   title: '生产厂家',
+    //   dataIndex: 'manufacturer',
+    //   ellipsis: true,
+    //   hideInSearch: true,
+    // },
     {
       title: '购买单位',
       dataIndex: 'purchaserDepartment',
       ellipsis: true,
       hideInSearch: true,
     },
+    {
+      title: '流程状态',
+      dataIndex: 'status',
+      ellipsis: true,
+      hideInSearch: true,
+      render: (text, record) => {
+        return (
+          <DictSelect
+            value={record.status}
+            type="text"
+            dictKey="flow_material_enter"
+            isTag
+          />
+        );
+      },
+    },
   ];
 
   const cColumns: ProColumns[] = [
-    {
-      title: '车牌号',
-      dataIndex: 'carNo',
-      ellipsis: true,
-      hideInSearch: true,
-    },
+    // {
+    //   title: '车牌号',
+    //   dataIndex: 'carNo',
+    //   ellipsis: true,
+    //   hideInSearch: true,
+    //   // width: commonWidth,
+    // },
     {
       title: '物料名称',
       dataIndex: 'materialName',
       ellipsis: true,
       hideInSearch: true,
+      // width: commonWidth,
     },
     {
       title: '型号',
       dataIndex: 'materialType',
       ellipsis: true,
       hideInSearch: true,
+      // width: commonWidth,
     },
     {
       title: '计量单位',
       dataIndex: 'measuringUnit',
       ellipsis: true,
       hideInSearch: true,
+      // width: commonWidth,
     },
     {
       title: '规格',
       dataIndex: 'specification',
       ellipsis: true,
       hideInSearch: true,
+      // width: commonWidth,
     },
     {
       title: '物料编号',
       dataIndex: 'materialCode',
       ellipsis: true,
       hideInSearch: true,
+      // width: commonWidth,
     },
     {
       title: '进场数量',
       dataIndex: 'enterNumber',
       ellipsis: true,
       editable: false,
+      // width: commonWidth,
+    },
+    {
+      title: '实际验收数量',
+      dataIndex: 'acceptNumber',
+      ellipsis: true,
+      editable: false,
+      // width: commonWidth,
     },
     {
       title: '合格证件',

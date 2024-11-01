@@ -168,7 +168,7 @@ export default ({ onChange }: any) => {
       <ProTable
         // rowKey="key"
         actionRef={firstTableRef}
-        // headerTitle="证件列表"
+        // headerTitle="物料清单"
         columns={leftColumns.firstColumns}
         request={async (params = {}) => {
           // console.log('Table 查询参数', params)

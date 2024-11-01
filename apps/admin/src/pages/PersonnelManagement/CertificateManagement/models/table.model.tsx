@@ -284,6 +284,7 @@ export default ({ server }: MenusPropsType) => {
       {
         title: '开始日期',
         dataIndex: 'validityStartDate',
+        valueType: 'date',
         ellipsis: true,
         width: columnWidth2,
         hideInSearch: true,
@@ -291,6 +292,7 @@ export default ({ server }: MenusPropsType) => {
       {
         title: '终止日期',
         dataIndex: 'validityEndDate',
+        valueType: 'date',
         ellipsis: true,
         width: columnWidth2,
         hideInSearch: true,
@@ -298,6 +300,7 @@ export default ({ server }: MenusPropsType) => {
       {
         title: '复核日期',
         dataIndex: 'reviewDate',
+        valueType: 'date',
         ellipsis: true,
         width: columnWidth2,
         hideInSearch: true,
@@ -305,6 +308,7 @@ export default ({ server }: MenusPropsType) => {
       {
         title: '网络核验日期',
         dataIndex: 'certificateDateSpecialWork',
+        valueType: 'date',
         ellipsis: true,
         width: columnWidth2,
         hideInSearch: true,
