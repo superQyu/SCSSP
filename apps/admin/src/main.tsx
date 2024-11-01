@@ -1,10 +1,19 @@
 import './main.css';
 
 import { ConfigProvider } from 'antd';
+import { BrowserRouter } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
 import { store, Provider } from 'store';
 
-import { AuthContext, signIn, signOut, saveUserInfor, saveSiteInfor, saveDicts, saveRuoYi } from 'hooks';
+import {
+  AuthContext,
+  signIn,
+  signOut,
+  saveUserInfor,
+  saveSiteInfor,
+  saveDicts,
+  saveRuoYi,
+} from 'hooks';
 
 // eslint-disable-next-line import/no-unresolved
 import 'virtual:uno.css';
@@ -18,20 +27,33 @@ import App from './app';
 
 import locale from 'antd/locale/zh_CN';
 import dayjs from 'dayjs';
-import weekday from "dayjs/plugin/weekday"
-import localeData from "dayjs/plugin/localeData"
+import weekday from 'dayjs/plugin/weekday';
+import localeData from 'dayjs/plugin/localeData';
 
 import 'dayjs/locale/zh-cn';
 
 dayjs.locale('zh-cn');
-dayjs.extend(weekday)
-dayjs.extend(localeData)
+dayjs.extend(weekday);
+dayjs.extend(localeData);
 
-const root = createRoot(document.getElementById('root') as HTMLDivElement);
+const root = createRoot(
+  document.getElementById('root') as HTMLDivElement
+);
 root.render(
   // 状态管理
+  // <BrowserRouter basename="">
+  // </BrowserRouter>
   <Provider store={store}>
-    <AuthContext.Provider value={{ signIn, signOut, saveUserInfor, saveSiteInfor, saveDicts, saveRuoYi }}>
+    <AuthContext.Provider
+      value={{
+        signIn,
+        signOut,
+        saveUserInfor,
+        saveSiteInfor,
+        saveDicts,
+        saveRuoYi,
+      }}
+    >
       {/* 消息提示 */}
       <SnackbarProvider>
         {/* 基础信息 */}
