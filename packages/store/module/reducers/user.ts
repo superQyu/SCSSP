@@ -28,6 +28,7 @@ export const userSlice: any = createSlice({
       state.token = action.payload;
     },
     setUserInfor: (state, action) => {
+      // console.log('在store中调用，保存用户信息');
       state.userInfor = action.payload;
     },
     setMenu: (state, action) => {
@@ -36,6 +37,7 @@ export const userSlice: any = createSlice({
   },
 });
 
-export const { setUserToken, setUserInfor, setMenu } = userSlice.actions;
+export const { setUserToken, setUserInfor, setMenu } =
+  userSlice.actions;
 
 export default userSlice.reducer;

@@ -1,4 +1,8 @@
-import React, { createContext, useContext, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext, useAppDispatch } from 'hooks';
 import { setMenu } from 'store';
@@ -11,22 +15,29 @@ interface PermissionsContextType {
   // eslint-disable-next-line no-unused-vars
 }
 
-const PermissionsContext = createContext<PermissionsContextType | undefined>(undefined);
+const PermissionsContext = createContext<
+  PermissionsContextType | undefined
+>(undefined);
 
 export const usePermissions = () => {
   const context = useContext(PermissionsContext);
   if (!context) {
-    throw new Error('usePermissions must be used within a PermissionsProvider');
+    throw new Error(
+      'usePermissions must be used within a PermissionsProvider'
+    );
   }
   return context;
 };
 
-export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const PermissionsProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const { server, config } = useBasicConfiguration();
   const { signOut } = useContext(AuthContext);
   //   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { saveUserInfor, saveSiteInfor } = useContext(AuthContext);
+  const { saveUserInfor, saveSiteInfor } =
+    useContext(AuthContext);
   const location = window.location;
 
   const { prefix, fieldConversion = {} } = config || {}; // 基本设置
@@ -60,7 +71,9 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
   // 获取路由列表
   const getRoutes = async () => {
-    await U.getRoute({ siteKey: TOKEN.replace(/^Qy_/, '') }).then((res: any) => {
+    await U.getRoute({
+      siteKey: TOKEN.replace(/^Qy_/, ''),
+    }).then((res: any) => {
       const menus = buildTree(res, {
         intercept: (item: { [key: string]: string }) => {
           return {
@@ -77,10 +90,18 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
   useEffect(() => {
     getUserInfor(() => {
       getSiteInfor();
+      // console.log('不走这个');
       getRoutes();
-      console.info('%c✔  初始化用户信息 ==============', 'color: green; font-size: 14px;');
+      console.info(
+        '%c✔  初始化用户信息 ==============',
+        'color: green; font-size: 14px;'
+      );
     });
   }, []);
 
-  return <PermissionsContext.Provider value={{}}>{children}</PermissionsContext.Provider>;
+  return (
+    <PermissionsContext.Provider value={{}}>
+      {children}
+    </PermissionsContext.Provider>
+  );
 };

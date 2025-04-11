@@ -77,7 +77,7 @@ const Login: React.FC = () => {
             '%c✔  登陆成功！！！ ==============',
             'color: green; font-size: 14px;'
           );
-          // console.log('返回的用户信息', res)
+          // console.log('返回的用户信息', res);
           const { accessToken } = res;
           navigator('/');
           // 储存令牌

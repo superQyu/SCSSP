@@ -63,6 +63,7 @@ const defaultRoutes: any = [
         ],
       },
     ],
+    // children: [],
   },
   {
     path: '/login',

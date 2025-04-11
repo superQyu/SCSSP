@@ -7,7 +7,9 @@ import { Text } from 'components';
 
 import styles from './style.module.scss';
 
-const PageHeaderContent: FC<{ currentUser: any }> = ({ currentUser }) => {
+const PageHeaderContent: FC<{ currentUser: any }> = ({
+  currentUser,
+}) => {
   return (
     <div className={styles.pageHeaderContent}>
       <div className={styles.avatar}>
@@ -42,14 +44,21 @@ const ExtraContent: FC<Record<string, any>> = () => (
 
 const Workplace: FC = () => {
   return (
+    // <div>55555555</div>
     <PageContainer
       // waterMarkProps={{ content: username }}
       // style={{ background: "#fff" }}
       content={
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
           <PageHeaderContent
             currentUser={{
-              avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
+              avatar:
+                'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
               name: '吴彦祖',
               userid: '00000001',
               email: 'antdesign@alipay.com',

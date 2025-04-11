@@ -26,7 +26,10 @@ function pathToLazyComponent(Ele: string) {
   if (!path) {
     return (
       <ErrorPage>
-        <Empty description={''} style={{ marginBottom: '20px' }} />
+        <Empty
+          description={''}
+          style={{ marginBottom: '20px' }}
+        />
         <Alert
           message={`${
             Ele || '未知组件：'
@@ -36,7 +39,9 @@ function pathToLazyComponent(Ele: string) {
       </ErrorPage>
     );
   }
-  const Components = lazy(() => import(/* @vite-ignore */ `../${Ele}`));
+  const Components = lazy(
+    () => import(/* @vite-ignore */ `../${Ele}`)
+  );
   return (
     <Suspense fallback={<Loading />}>
       <Components />
