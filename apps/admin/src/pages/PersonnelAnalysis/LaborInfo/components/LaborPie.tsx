@@ -1,22 +1,28 @@
 import { useEffect, useRef } from 'react';
 import { useECharts } from '@/context/EChartContext';
 
-const SomeChartComponent = () => {
+interface Props {
+  data?: any[];
+}
+
+const SomeChartComponent = (props: Props) => {
   const { getEChartsInstance } = useECharts();
   const chartRef = useRef(null);
-  const data1 = [
-    { value: 20, name: '本科' },
-    { value: 30, name: '高中' },
-    { value: 10, name: '硕士' },
+  const data1: any[] = [
+    // { value: 20, name: '本科' },
+    // { value: 30, name: '高中' },
+    // { value: 10, name: '硕士' },
   ];
 
-  const data2 = [
-    { value: 20, name: '20-30岁' },
-    { value: 30, name: '30-40岁' },
-    { value: 10, name: '40-50岁' },
-    { value: 10, name: '50-60岁' },
-    { value: 10, name: '60岁以上' },
-  ];
+  // const data2 = [
+  //   { value: 20, name: '20-30岁' },
+  //   { value: 30, name: '30-40岁' },
+  //   { value: 10, name: '40-50岁' },
+  //   { value: 10, name: '50-60岁' },
+  //   { value: 10, name: '60岁以上' },
+  // ];
+  console.log('chartData', props.data);
+  const data2 = props.data || [];
 
   let chartInstance: any = null;
 
@@ -59,7 +65,7 @@ const SomeChartComponent = () => {
           type: 'pie',
           radius: ['60%', '80%'],
           labelLine: {
-            length: 30,
+            // length: 30,
           },
           data: data2,
         },
@@ -73,7 +79,7 @@ const SomeChartComponent = () => {
   useEffect(() => {
     chartInstance = getEChartsInstance(chartRef);
     setOptions();
-  }, []);
+  }, [props.data]);
 
   useEffect(() => {
     window.addEventListener('resize', resizeChart);

@@ -21,6 +21,7 @@ import {
   useLocation,
   useNavigate,
   Link,
+  Outlet,
 } from 'react-router-dom';
 
 import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
@@ -163,8 +164,13 @@ const layout: React.FC<CommonObject> = (props: any) => {
     }, {} as CommonObject);
   };
 
+  // 只有动态路由发生变化时，才会触发该方法
   useEffect(() => {
     if (menu.length != 0) {
+      // console.log('传递给Layout组件的menus', {
+      //   ...menus,
+      //   routes: sortMenu([...menu]),
+      // });
       setMenus({ ...menus, routes: sortMenu([...menu]) });
     } else {
       // setMenus({ ...menus, routes: sortMenu([...[...route.routes, ...menu]]) });
@@ -377,6 +383,7 @@ const layout: React.FC<CommonObject> = (props: any) => {
                 disableUrlParams={false}
               />
             )}
+            {/* <Outlet /> */}
             <ErrorBoundary>
               {<KeepAlive include={[]} keys={[]} />}
             </ErrorBoundary>

@@ -51,8 +51,13 @@ export default () => {
     <Row gutter={20} className="h-full color-#458fff">
       {list.map((item: ListItem, index: number) => {
         return (
-          <Col span={6} className="h-full">
-            <Flex vertical justify="space-between" align="center" className="h-full">
+          <Col key={index} span={6} className="h-full">
+            <Flex
+              vertical
+              justify="space-between"
+              align="center"
+              className="h-full"
+            >
               <div
                 className="w-full h-25% text-center"
                 style={{
@@ -64,9 +69,16 @@ export default () => {
               >
                 NO.{index + 1}
               </div>
-              <Progress type="circle" strokeWidth={8} size={80} percent={item.per} />
+              <Progress
+                type="circle"
+                strokeWidth={8}
+                size={80}
+                percent={item.per}
+              />
               <div>
-                <span className="font-size-20px">{item.number}</span>
+                <span className="font-size-20px">
+                  {item.number}
+                </span>
                 <span className="color-#000">人</span>
               </div>
               <div>同比: {item.tongbi} %</div>

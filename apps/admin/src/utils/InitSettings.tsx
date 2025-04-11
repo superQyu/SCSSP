@@ -28,20 +28,30 @@ export default ({ children }: any) => {
   const getRoutes = async () => {
     await U.adminGetRoute()
       .then(({ menus: M, user, roles }: any) => {
+        // console.log(
+        //   '开始保存用户权限信息（user、roles、permissions、menus）'
+        // );
         saveUserInfor(dispatch, {
           ...user,
           nickName: user.nickname,
           avatar: getAvatar('/test/loit-small.png'),
-          roles: roles
+          roles: roles,
         });
         // 根据实际开发的项目的路由表提取路由
-        const _M = M.filter((item: any) => item.id === PLATFORMID)[0]?.children || [];
+        const _M =
+          M.filter((item: any) => item.id === PLATFORMID)[0]
+            ?.children || [];
 
         const menus = RebuildTree(flattenArray(_M), {
           intercept: (item: { [key: string]: string }) => {
             return {
               ...item,
-              icon: !item.icon || item.icon == '' ? '' : <IconShow ico={item.icon} />,
+              icon:
+                !item.icon || item.icon == '' ? (
+                  ''
+                ) : (
+                  <IconShow ico={item.icon} />
+                ),
               filepath: item.component,
               children: item.routes,
             };
@@ -64,7 +74,10 @@ export default ({ children }: any) => {
         const enumObj = dictDataMap.get(dictData.dictType);
         if (!enumObj) dictDataMap.set(dictData.dictType, []);
         const nEnumObj = dictDataMap.get(dictData.dictType);
-        dictDataMap.set(dictData.dictType, [...nEnumObj, dictData]);
+        dictDataMap.set(dictData.dictType, [
+          ...nEnumObj,
+          dictData,
+        ]);
       });
       saveDicts(dispatch, dictDataMap);
     });
@@ -72,8 +85,12 @@ export default ({ children }: any) => {
 
   useEffect(() => {
     getRoutes();
+    // console.log('走这个');
     getDictList();
-    console.info('%c✔  初始化基础信息成功！！！ =======', 'color: green; font-size: 14px;');
+    console.info(
+      '%c✔  初始化基础信息成功！！！ =======',
+      'color: green; font-size: 14px;'
+    );
     setLoading(false);
   }, []);
 

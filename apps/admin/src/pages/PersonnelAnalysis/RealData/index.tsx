@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Flex, Row, Col, Tag, Image } from 'antd';
-import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
+import {
+  LoginOutlined,
+  LogoutOutlined,
+} from '@ant-design/icons';
 import dayjs from 'dayjs';
 
 export default () => {
@@ -55,13 +58,25 @@ export default () => {
   return (
     <div className="position-relative h-full overflow-y-auto overflow-x-hidden">
       <Row gutter={10} className="position-absolute ">
-        {list.map((item) => {
+        {list.map((item, index) => {
           return (
-            <Col span={24} xxl={12} className="mb-2">
-              <div style={{ border: '1px solid #ecf0f6', borderRadius: '5px' }}>
-                <Row gutter={10} className="p-2 h-150px  border-rd-2">
+            <Col key={index} span={24} xxl={12} className="mb-2">
+              <div
+                style={{
+                  border: '1px solid #ecf0f6',
+                  borderRadius: '5px',
+                }}
+              >
+                <Row
+                  gutter={10}
+                  className="p-2 h-150px  border-rd-2"
+                >
                   <Col span={12} className="h-full">
-                    <Flex justify="center" align="center" className="w-full h-full">
+                    <Flex
+                      justify="center"
+                      align="center"
+                      className="w-full h-full"
+                    >
                       <Image
                         className="w-full h-full"
                         src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
@@ -69,7 +84,11 @@ export default () => {
                     </Flex>
                   </Col>
                   <Col span={12} className="h-full">
-                    <Flex vertical justify="space-between" className="h-full">
+                    <Flex
+                      vertical
+                      justify="space-between"
+                      className="h-full"
+                    >
                       <div>{item.companyName}</div>
                       <div> {item.jobCategory}</div>
                       <div> {item.personName}</div>
@@ -77,11 +96,17 @@ export default () => {
                         {item.receiveTime}
                       </div>
                       {item.inAndOutType == '0' ? (
-                        <Tag icon={<LoginOutlined />} color="#ff9c00">
+                        <Tag
+                          icon={<LoginOutlined />}
+                          color="#ff9c00"
+                        >
                           进场
                         </Tag>
                       ) : (
-                        <Tag icon={<LogoutOutlined />} color="#55acee">
+                        <Tag
+                          icon={<LogoutOutlined />}
+                          color="#55acee"
+                        >
                           出场
                         </Tag>
                       )}

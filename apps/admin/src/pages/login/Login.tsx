@@ -4,7 +4,17 @@ import {
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
-import { Col, Row, Avatar, Divider, Form, message, Space, Tabs, Button } from 'antd';
+import {
+  Col,
+  Row,
+  Avatar,
+  Divider,
+  Form,
+  message,
+  Space,
+  Tabs,
+  Button,
+} from 'antd';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,12 +29,14 @@ type LoginType = 'phone' | 'account';
 
 const Login: React.FC = () => {
   const { server } = useBasicConfiguration();
-  const { signIn, saveUserInfor, saveRuoYi } = useContext(AuthContext);
+  const { signIn, saveUserInfor, saveRuoYi } =
+    useContext(AuthContext);
   const navigator = useNavigate();
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(false);
   const [captcha, setcaptcha] = useState<string>('');
-  const [loginType, setLoginType] = useState<LoginType>('account');
+  const [loginType, setLoginType] =
+    useState<LoginType>('account');
 
   const items = [
     { label: '账号密码登录', key: 'account' },
@@ -51,7 +63,7 @@ const Login: React.FC = () => {
       });
   };
   useEffect(() => {
-    form.setFieldsValue({ username: 'hgzhjg', password: 'hgzhjg123', remember: false });
+    // form.setFieldsValue({ username: 'hgzhjg', password: 'hgzhjg123', remember: false });
     getCaptchaVal();
   }, []);
   const onFinish = async (values: any) => {
@@ -61,8 +73,11 @@ const Login: React.FC = () => {
       login
         .adminLogin({ ...values })
         .then(async (res: any) => {
-          console.info('%c✔  登陆成功！！！ ==============', 'color: green; font-size: 14px;');
-          // console.log('返回的用户信息', res)
+          console.info(
+            '%c✔  登陆成功！！！ ==============',
+            'color: green; font-size: 14px;'
+          );
+          // console.log('返回的用户信息', res);
           const { accessToken } = res;
           navigator('/');
           // 储存令牌
@@ -91,12 +106,17 @@ const Login: React.FC = () => {
       <img
         className="title-posit"
         width={'500'}
-        src={new URL('@/assets/login/title.svg', import.meta.url).href}
+        src={
+          new URL('@/assets/login/title.svg', import.meta.url)
+            .href
+        }
       />
       <img
         className="img-posit"
         width={'50%'}
-        src={new URL('@/assets/login/img.svg', import.meta.url).href}
+        src={
+          new URL('@/assets/login/img.svg', import.meta.url).href
+        }
       />
       <LoginFormPage
         form={form}
@@ -107,7 +127,10 @@ const Login: React.FC = () => {
         loading={loading ? true : undefined}
         actions={
           <>
-            <Styled.ToScreenButton className="mt-4 w-full h-40px" ghost>
+            <Styled.ToScreenButton
+              className="mt-4 w-full h-40px"
+              ghost
+            >
               数据大屏
             </Styled.ToScreenButton>
             {/* <FormOther>
@@ -127,7 +150,9 @@ const Login: React.FC = () => {
           className="display-none"
           centered
           activeKey={loginType}
-          onChange={(activeKey: any) => handlerTabsChange(activeKey as LoginType)}
+          onChange={(activeKey: any) =>
+            handlerTabsChange(activeKey as LoginType)
+          }
           items={items}
         ></Tabs>
         {loginType === 'account' && (
@@ -139,23 +164,40 @@ const Login: React.FC = () => {
                 prefix: (
                   <img
                     color="black"
-                    src={new URL('@/assets/login/user.svg', import.meta.url).href}
+                    src={
+                      new URL(
+                        '@/assets/login/user.svg',
+                        import.meta.url
+                      ).href
+                    }
                   />
                 ),
               }}
               placeholder={'用户名'}
-              rules={[{ required: true, message: '请输入用户名!' }]}
+              rules={[
+                { required: true, message: '请输入用户名!' },
+              ]}
               disabled={loading}
-              initialValue={{ username: 'admin', password: '123456', remember: false }}
             />
             <ProFormText.Password
               name="password"
               fieldProps={{
                 size: 'large',
-                prefix: <img src={new URL('@/assets/login/password.svg', import.meta.url).href} />,
+                prefix: (
+                  <img
+                    src={
+                      new URL(
+                        '@/assets/login/password.svg',
+                        import.meta.url
+                      ).href
+                    }
+                  />
+                ),
               }}
               placeholder={'密码'}
-              rules={[{ required: true, message: '请输入密码！' }]}
+              rules={[
+                { required: true, message: '请输入密码！' },
+              ]}
               disabled={loading}
             />
             {/* <Row>
@@ -192,7 +234,10 @@ const Login: React.FC = () => {
               placeholder={'手机号'}
               rules={[
                 { required: true, message: '请输入手机号！' },
-                { pattern: /^1\d{10}$/, message: '手机号格式错误！' },
+                {
+                  pattern: /^1\d{10}$/,
+                  message: '手机号格式错误！',
+                },
               ]}
             />
             <ProFormCaptcha
@@ -208,18 +253,30 @@ const Login: React.FC = () => {
                 return '获取验证码';
               }}
               name="phoneCaptcha"
-              rules={[{ required: true, message: '请输入验证码！' }]}
+              rules={[
+                { required: true, message: '请输入验证码！' },
+              ]}
               onGetCaptcha={async () => {
-                message.success('获取验证码成功！验证码为：1234');
+                message.success(
+                  '获取验证码成功！验证码为：1234'
+                );
               }}
             />
           </>
         )}
         <div className="bottom" style={{ marginBlockEnd: 60 }}>
-          <ProFormCheckbox noStyle name="autoLogin" disabled={loading} valuePropName="checked">
+          <ProFormCheckbox
+            noStyle
+            name="autoLogin"
+            disabled={loading}
+            valuePropName="checked"
+          >
             记住密码
           </ProFormCheckbox>
-          <a style={{ float: 'right', color: 'white' }}> 忘记密码</a>
+          <a style={{ float: 'right', color: 'white' }}>
+            {' '}
+            忘记密码
+          </a>
         </div>
       </LoginFormPage>
     </Styled.LoginContainer>

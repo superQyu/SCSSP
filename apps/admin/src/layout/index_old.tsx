@@ -19,7 +19,6 @@ import { setMenuTab } from 'store';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-import { Outlet } from 'react-router-dom';
 interface MenuTabItem {
   label: string;
   path: string;
@@ -149,7 +148,7 @@ const LayoutContext: React.FC = () => {
                 ...e,
                 routes: filterRoutes(e.routes || []),
               };
-              // console.log('传递给ProLayout的route', newRoute);
+              console.log('newRoute', newRoute);
               return newRoute;
             },
             menuItemRender: (
@@ -191,7 +190,6 @@ const LayoutContext: React.FC = () => {
             TokenKeys: [DP],
           }}
         />
-        {/* <Outlet /> */}
       </Spin>
     </Permissions>
   );
