@@ -233,7 +233,11 @@ const layout: React.FC<CommonObject> = (props: any) => {
                   style={SkeletonInputStyle}
                 />
               ) : (
-                (baseInfor as unknown as { avatar: '' })?.avatar
+                // (baseInfor as unknown as { avatar: '' })?.avatar
+                new URL(
+                  '../../assets/profile.jpg',
+                  import.meta.url
+                ).href
               ),
               title: loading ? (
                 <Skeleton.Input
@@ -335,7 +339,7 @@ const layout: React.FC<CommonObject> = (props: any) => {
                 return undefined;
               return (
                 <div>
-                  <div key={1} style={{ height: '135px' }}>
+                  {/* <div key={1} style={{ height: '135px' }}>
                     <Image
                       width={'100%'}
                       preview={false}
@@ -350,8 +354,8 @@ const layout: React.FC<CommonObject> = (props: any) => {
                         marginBlockStart: '32px',
                       }}
                     />
-                  </div>
-                  <div
+                  </div> */}
+                  {/* <div
                     style={{
                       textAlign: 'center',
                       paddingBlockStart: 12,
@@ -359,7 +363,7 @@ const layout: React.FC<CommonObject> = (props: any) => {
                   >
                     <div>© 2023 Made with love</div>
                     <div>by Designer Q_Y</div>
-                  </div>
+                  </div> */}
                 </div>
               );
             }}
