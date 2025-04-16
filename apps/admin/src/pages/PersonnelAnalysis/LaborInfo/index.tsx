@@ -9,8 +9,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 export default () => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { personAnalysis, person } = server;
-  console.log('person', personAnalysis, person);
+  const { personAnalysis } = server;
 
   const [laborInfo, setLaborInfo] = useState<any>([]);
   const [chartData, setChartData] = useState<any>([]);

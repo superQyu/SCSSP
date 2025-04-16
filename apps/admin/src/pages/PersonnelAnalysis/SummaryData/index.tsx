@@ -6,36 +6,85 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
+// api 相关
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+
 export default () => {
-  const list = [
-    {
-      label: '管理人员',
-      key: '1',
-      unit: '',
-    },
-    {
-      label: '出勤率',
-      key: '2',
-      unit: '%',
-    },
-    {
-      label: '普通工人',
-      key: '3',
-      unit: '',
-    },
-    {
-      label: '出勤率',
-      key: '4',
-      unit: '%',
-    },
-  ];
+  // api 相关
+  const { server } = useBasicConfiguration();
+  const { personAnalysis } = server;
+
+  // const list = [
+  //   {
+  //     label: '管理人员',
+  //     key: '1',
+  //     unit: '',
+  //   },
+  //   {
+  //     label: '出勤率',
+  //     key: '2',
+  //     unit: '%',
+  //   },
+  //   {
+  //     label: '普通工人',
+  //     key: '3',
+  //     unit: '',
+  //   },
+  //   {
+  //     label: '出勤率',
+  //     key: '4',
+  //     unit: '%',
+  //   },
+  // ];
   const [time, setTime] = useState<string>();
+  const [data, setData] = useState<any>([]);
+  const [list, setList] = useState<any>([]);
 
   useEffect(() => {
     setTime(dayjs().format('YYYY年M月D日 HH:mm:ss'));
     const intervalId = setInterval(() => {
       setTime(dayjs().format('YYYY年M月D日 HH:mm:ss'));
     }, 1000);
+
+    personAnalysis.getAttendanceMonitor().then((res: any) => {
+      setData(res);
+      const list = [
+        {
+          label: '管理人员',
+          key: '1',
+          value: res.managerTotal,
+          unit: '',
+        },
+        {
+          label: '出勤率',
+          key: '2',
+          value:
+            res.managerTotal == 0
+              ? 0
+              : (
+                  (res.presentManagerNum / res.managerTotal) *
+                  100
+                ).toFixed(),
+          unit: '%',
+        },
+        {
+          label: '普通工人',
+          key: '3',
+          value: res.workerTotal,
+          unit: '',
+        },
+        {
+          label: '出勤率',
+          key: '4',
+          value: (
+            (res.presentWorkerNum / res.workerTotal) *
+            100
+          ).toFixed(),
+          unit: '%',
+        },
+      ];
+      setList(list);
+    });
 
     return () => {
       clearInterval(intervalId);
@@ -64,13 +113,27 @@ export default () => {
           className="ml-4 mr-1 px-10px  font-size-30px color-#6b9ce8 font-700 "
           style={{ border: '1px solid #e0ecfe' }}
         >
-          0
+          {data.presentNum}
         </span>
         人
       </Flex>
       <Flex align="center">
         劳务总人数
-        <span
+        {data.total
+          ?.toString()
+          .split('')
+          .map((item: any) => {
+            return (
+              <span
+                key={item}
+                className="ml-4 mr-1 px-10px  font-size-30px color-#6b9ce8 font-700 "
+                style={{ border: '1px solid #e0ecfe' }}
+              >
+                {item}
+              </span>
+            );
+          })}
+        {/* <span
           className="ml-4 mr-1 px-10px  font-size-30px color-#6b9ce8 font-700 "
           style={{ border: '1px solid #e0ecfe' }}
         >
@@ -81,12 +144,12 @@ export default () => {
           style={{ border: '1px solid #e0ecfe' }}
         >
           4
-        </span>
+        </span> */}
         人
       </Flex>
 
       <div className="flex-1 grid grid-cols-2 grid-rows-2 gap-3 h-full bg-#fff">
-        {list.map((item, i: number) => {
+        {list.map((item: any, i: number) => {
           return (
             <Flex
               align="center"
@@ -101,7 +164,7 @@ export default () => {
               )}
               <div className="flex-1 ml-2">{item.label}</div>
               <div className="font-size-24px font-700 color-orange">
-                {item.key}
+                {item.value}
                 {item.unit}
               </div>
             </Flex>
