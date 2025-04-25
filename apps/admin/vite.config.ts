@@ -62,6 +62,11 @@ export default defineConfig(
             secure: false,
             rewrite: (path) => path.replace(/^\/static/, ''),
           },
+          '/monitor': {
+            target: 'http://58.214.33.54:8081',
+            secure: false,
+            // rewrite: (path) => path.replace(/^\/monitor/, ''),
+          },
         },
       },
       base: mode === 'development' ? '/' : `../${baseUrl}/`,

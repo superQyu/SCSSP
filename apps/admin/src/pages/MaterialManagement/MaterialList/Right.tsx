@@ -9,7 +9,6 @@ import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
 import siteModel from './models/table.model';
-import { stringify } from 'querystring';
 
 export default ({ code }: any) => {
   // console.log('当前第三类别码', code);
@@ -27,7 +26,9 @@ export default ({ code }: any) => {
     console.log('params', params);
     // id 为 string 时表示新增
     const res = await materialList[
-      typeof params.id == 'string' ? 'createMaterial' : 'updateMaterial'
+      typeof params.id == 'string'
+        ? 'createMaterial'
+        : 'updateMaterial'
     ](params).then(async () => {
       message.success('信息更新成功！');
       await actionRef.current?.reload();
@@ -41,7 +42,9 @@ export default ({ code }: any) => {
       actionRef={actionRef}
       className="w-full"
       params={{ thirdLevelCode: code }}
-      request={async (params = { thirdLevelCode: undefined }) => {
+      request={async (
+        params = { thirdLevelCode: undefined }
+      ) => {
         // console.log('Table 查询参数', params)
         if (params.thirdLevelCode) {
           const res = await materialList.getMaterialList(params);
@@ -67,7 +70,11 @@ export default ({ code }: any) => {
       headerTitle={false}
       search={{
         labelWidth: 'auto',
-        optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+        optionRender: (
+          { searchText }: any,
+          { form }: any,
+          dom: any
+        ) => {
           return [
             dom[0],
             <Button
@@ -96,7 +103,7 @@ export default ({ code }: any) => {
               actionRef.current?.addEditRecord?.(
                 {
                   id: (Math.random() * 1000000).toFixed(0),
-                  thirdLevelCode: code
+                  thirdLevelCode: code,
                   // title: '新的一行',
                 },
                 { position: 'top' }
