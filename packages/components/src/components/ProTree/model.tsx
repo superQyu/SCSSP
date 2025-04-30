@@ -410,7 +410,7 @@ export default () => {
     },
     {
       id: 2622,
-      name: '分包商新增',
+      name: '单位新增',
       parentId: 2596,
       type: 3,
     },
@@ -452,7 +452,7 @@ export default () => {
     },
     {
       id: 2648,
-      name: '分包商管理',
+      name: '单位管理',
       parentId: 2641,
       type: 2,
     },
@@ -770,7 +770,7 @@ export default () => {
     },
     {
       id: 2623,
-      name: '分包商修改',
+      name: '单位修改',
       parentId: 2596,
       type: 3,
     },
@@ -1004,7 +1004,7 @@ export default () => {
     },
     {
       id: 2624,
-      name: '分包商删除',
+      name: '单位删除',
       parentId: 2596,
       type: 3,
     },
@@ -1232,7 +1232,7 @@ export default () => {
     },
     {
       id: 2625,
-      name: '分包商查询',
+      name: '单位查询',
       parentId: 2596,
       type: 3,
     },
@@ -1568,7 +1568,7 @@ export default () => {
     },
     {
       id: 2596,
-      name: '分包商管理',
+      name: '单位管理',
       parentId: 2585,
       type: 2,
     },

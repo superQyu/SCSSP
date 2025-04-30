@@ -27,7 +27,7 @@ export default (subFormRef: any, entryAttachments: [] = [], exitAttachments: [] 
     };
   });
 
-  // 分包单位选择下拉
+  // 单位选择下拉
   const [subcontractorList, setSubcontractorList] = useState([]);
   // 班组长选择下拉
   const [personInfoList, setPersonInfoList] = useState([]);
@@ -59,11 +59,11 @@ export default (subFormRef: any, entryAttachments: [] = [], exitAttachments: [] 
   // 通过接口获取下拉框的内容
   const getSelectOptions = async () => {
     const res1 = await subContractor.getAllSubContractor();
-    // console.log('分包商列表', res1);
+    // console.log('单位列表', res1);
     const list1 = res1.map((item: any) => {
       return { label: item.realName, value: item.id };
     });
-    // console.log('分包商列表', list1);
+    // console.log('单位列表', list1);
     setSubcontractorList(list1);
     const res2 = await certificate.getPersonInfoList();
     // console.log('班组长列表', res2);
@@ -83,13 +83,13 @@ export default (subFormRef: any, entryAttachments: [] = [], exitAttachments: [] 
       },
     },
     {
-      label: '分包单位',
+      label: '单位',
       dataIndex: 'subcontractorId',
       colNum: 12,
       formItemProps: {
-        rules: [{ required: true, message: '请选择分包单位' }],
+        rules: [{ required: true, message: '请选择单位' }],
       },
-      formItem: <Select placeholder="请选择分包单位" options={subcontractorList} />,
+      formItem: <Select placeholder="请选择单位" options={subcontractorList} />,
     },
     {
       label: '班组长',

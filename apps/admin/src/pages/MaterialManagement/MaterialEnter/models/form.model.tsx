@@ -22,7 +22,7 @@ export default (
 
   // 隶属人员选择下拉
   const [personInfoList, setPersonInfoList] = useState([]);
-  // 分包单位选择下拉
+  // 单位选择下拉
   const [subcontractorList, setSubcontractorList] = useState([]);
 
   useEffect(() => {
@@ -32,12 +32,12 @@ export default (
   // 通过接口获取下拉框的内容
   const getSelectOptions = async () => {
     const res1 = await subContractor.getAllSubContractor();
-    // console.log('分包商列表', res1);
+    // console.log('单位列表', res1);
     const list1 = res1.map((item: any) => {
       // return { label: item.realName, value: `${item.id}` };
       return { label: item.realName, value: item.realName };
     });
-    // console.log('分包商列表', list1);
+    // console.log('单位列表', list1);
     setSubcontractorList(list1);
     const res2 = await certificate.getPersonInfoList();
     // console.log('人员列表', res2);
@@ -157,7 +157,7 @@ export default (
         <Select
           disabled={status == '0' ? false : true}
           allowClear
-          placeholder="请选择分包商"
+          placeholder="请选择单位"
           options={subcontractorList}
         />
       ),

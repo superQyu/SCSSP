@@ -48,7 +48,7 @@ const AddMenus: React.FC<Props> = ({
   const [picture, setPicture] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(openModal);
 
-  // 分包商信息表单的默认值
+  // 单位信息表单的默认值
   const [formData, setFormData] = useState<MenusType>({
     ...subForm,
     energyType: ToString(subForm.energyType),

@@ -58,7 +58,7 @@ export default ({ server }: MenusPropsType) => {
       valueType: 'indexBorder',
     },
     {
-      title: '分包单位',
+      title: '单位',
       dataIndex: 'subcontractorId',
       render: (text: any) => {
         const obj = Object.fromEntries(
@@ -72,7 +72,7 @@ export default ({ server }: MenusPropsType) => {
       renderFormItem: () => {
         return (
           <Select
-            placeholder="请选择分包单位"
+            placeholder="请选择单位"
             options={subcontractorList}
             allowClear
           />

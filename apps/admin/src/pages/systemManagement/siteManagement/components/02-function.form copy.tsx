@@ -132,7 +132,7 @@ const FunctionCom: React.FC<Props> = forwardRef(
               }}
             />
           </Col>
-          {/* <Col className="gutter-row" span={16}>
+          <Col className="gutter-row" span={16}>
             <Button
               className="pos-absolute"
               type="link"
@@ -149,7 +149,7 @@ const FunctionCom: React.FC<Props> = forwardRef(
             >
               修改信息
             </Button>
-          </Col> */}
+          </Col>
         </Row>
       </>
     );

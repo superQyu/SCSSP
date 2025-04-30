@@ -35,7 +35,7 @@ export default () => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    // console.log('编辑分包商时的参数', params);
+    // console.log('编辑单位时的参数', params);
     const res = await subContractor.updateSubContractor(params);
     return res;
   };
@@ -53,7 +53,7 @@ export default () => {
     <>
       <ProTable
         actionRef={actionRef}
-        headerTitle="分包商列表"
+        headerTitle="单位列表"
         columns={[
           ...initColumns,
           {
@@ -88,7 +88,7 @@ export default () => {
         ]}
         request={async (params = {}) => {
           const res = await subContractor.getSubContractorList(params);
-          // console.log('分包商列表', res.list);
+          // console.log('单位列表', res.list);
           res.list = res.list.map((item: any) => {
             item.subcontractorType = ToString(item.subcontractorType);
             item.corpType = ToString(item.corpType);
@@ -122,7 +122,7 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.ExportButton api="exportSubcontractorInfo" fileName="分包商导出" />,
+          <Styled.ExportButton api="exportSubcontractorInfo" fileName="单位导出" />,
           <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
             新建
           </Button>,

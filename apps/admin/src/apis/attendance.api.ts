@@ -39,7 +39,7 @@ const attendance: ApiItem[] = [
       { key: 'Authorization', location: 'header' },
       { key: 'current', targetKey: 'pageNo', cn: '页码' },
       { key: 'pageSize', cn: '每页条数' },
-      { key: 'subcontractorId', cn: '分包单位ID' },
+      { key: 'subcontractorId', cn: '单位ID' },
       { key: 'workTypeId', cn: '劳务工种ID' },
       { key: 'groupId', cn: '班组ID' },
       {
@@ -61,7 +61,7 @@ const attendance: ApiItem[] = [
       { key: 'Authorization', location: 'header' },
       // { key: 'current', targetKey: 'pageNo', cn: '页码' },
       // { key: 'pageSize', cn: '每页条数' },
-      { key: 'subcontractorId', cn: '分包单位ID' },
+      { key: 'subcontractorId', cn: '单位ID' },
       { key: 'workTypeId', cn: '劳务工种ID' },
       { key: 'groupId', cn: '班组ID' },
       {
@@ -83,7 +83,7 @@ const attendance: ApiItem[] = [
       { key: 'Authorization', location: 'header' },
       { key: 'current', targetKey: 'pageNo', cn: '页码' },
       { key: 'pageSize', cn: '每页条数' },
-      { key: 'subcontractorId', cn: '分包单位ID' },
+      { key: 'subcontractorId', cn: '单位ID' },
       { key: 'workTypeId', cn: '劳务工种ID' },
       { key: 'groupId', cn: '班组ID' },
       {

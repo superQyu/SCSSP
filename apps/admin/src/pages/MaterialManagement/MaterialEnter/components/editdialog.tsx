@@ -64,7 +64,7 @@ export default (props: Props) => {
     props.status
   );
 
-  // 分包商信息表单的默认值
+  // 单位信息表单的默认值
   const [formData, setFormData] = useState<MenusType>({
     carNo: detail.carNo,
     enterDate: detail.enterDate && dayjs(detail.enterDate),

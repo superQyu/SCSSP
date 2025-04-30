@@ -138,12 +138,12 @@ export default ({
     },
     {
       hideInTable: true,
-      title: '分包单位',
+      title: '单位',
       dataIndex: 'subcontractorId',
       renderFormItem: () => {
         return (
           <Select
-            placeholder="请选择分包单位"
+            placeholder="请选择单位"
             options={subcontractorList}
             allowClear
           />

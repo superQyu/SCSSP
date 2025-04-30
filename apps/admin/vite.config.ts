@@ -37,7 +37,7 @@ export default defineConfig(
         open: false,
         proxy: {
           [env.VITE_APP_ADMIN_API]: {
-            target: 'http://192.168.10.72:48083',
+            target: 'http://localhost:48083',
             // target: 'http://192.168.10.77:48081',
             secure: false,
             // bypass(req, res, options: any) {

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Button, Spin as AntSpin } from 'antd';
-import { UploadOutlined, PlusOutlined } from '@ant-design/icons';
+import { UploadOutlined, PlusOutlined, DownloadOutlined } from '@ant-design/icons';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 文件下载工具
@@ -49,8 +49,8 @@ const ExportButton = (props: FileProps) => {
 
 const ImportButton = styled(Button).attrs(() => ({
   // 静态属性
-  icon: <PlusOutlined />,
-  type: 'primary',
+  icon: <DownloadOutlined />,
+  // type: 'primary',
   children: '导入',
 }))(() => ({
   // 样式属性

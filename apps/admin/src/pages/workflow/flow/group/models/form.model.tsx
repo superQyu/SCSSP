@@ -21,11 +21,11 @@ export default (subFormRef: any) => {
   // 通过接口获取下拉框的内容
   const getSelectOptions = async () => {
     const res1 = await systemUser.getSimpleUserList();
-    // console.log('分包商列表', res1);
+    // console.log('单位列表', res1);
     const list1 = res1.map((item: any) => {
       return { label: item.nickname, value: item.id };
     });
-    // console.log('分包商列表', list1);
+    // console.log('单位列表', list1);
     setUserList(list1);
   };
 

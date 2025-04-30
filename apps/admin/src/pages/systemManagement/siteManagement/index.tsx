@@ -10,7 +10,7 @@ import type { FormInstance } from 'antd/es/form';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import { useLocation, useSearchParams } from 'react-router-dom';
 
-import WorkerCom from './components/WorkerCom';
+import WorkerCom from './components/WorkerCom.tsx';
 import type { ModesApi } from './modes/model';
 import { useRoute } from 'hooks';
 
@@ -81,6 +81,8 @@ export default () => {
     let len = FormList.length;
     let isError = false;
     setLoading(true);
+    // console.log('workerRef.current?.form', workerRef.current);
+
     Object.entries(formRef.current).map(([_, funs]) => {
       const { key, form } = funs || {};
       form
@@ -94,7 +96,21 @@ export default () => {
               });
           len--;
 
-          if (len === 0) SubmitEvent(params);
+          if (len === 0) {
+            workerRef.current?.form
+              ?.validateFields()
+              .then((values) => {
+                // console.log('values', values);
+                SubmitEvent(params);
+              })
+              .catch((error: any) => {
+                setLoading(false);
+                console.log('表单提交错误信息', error);
+                !isError &&
+                  message.warning(`请选择工人类型或管理岗位`);
+                isError = true;
+              });
+          }
         })
         .catch((error: any) => {
           setLoading(false);
@@ -103,7 +119,7 @@ export default () => {
           isError = true;
         });
     });
-    goBack();
+    // goBack();
   };
 
   // 返回列表页面
@@ -111,6 +127,12 @@ export default () => {
     const id = routerParams.get('id');
     if (id) {
       deleteTab(`人员详情${id}`, false);
+      tabNavigate({
+        namePath: '项目人员管理/信息管理',
+        routePath: '/PM/IM',
+      });
+    }else {
+      deleteTab(`信息采集`, false);
       tabNavigate({
         namePath: '项目人员管理/信息管理',
         routePath: '/PM/IM',
@@ -144,6 +166,7 @@ export default () => {
       });
       message.success('信息采集成功');
       resetForm();
+      goBack();
     } catch (error: any) {
       message.error('信息采集失败');
       throw new Error(error.message);
@@ -205,7 +228,7 @@ export default () => {
         >
           确定
         </Button>
-        {Object.keys(detail).length ? (
+        {/* {Object.keys(detail).length ? (
           <Button
             size="large"
             key="reset"
@@ -225,7 +248,25 @@ export default () => {
           >
             重置
           </Button>
-        )}
+        )} */}
+        <Button
+          size="large"
+          key="cancle"
+          htmlType="reset"
+          onClick={goBack}
+          disabled={loading}
+        >
+          取消
+        </Button>
+        <Button
+          size="large"
+          key="reset"
+          htmlType="reset"
+          onClick={onReset}
+          disabled={loading}
+        >
+          重置
+        </Button>
       </Flex>
 
       <WorkerCom

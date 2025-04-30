@@ -33,7 +33,7 @@ export default ({ openModal, onStateChange }: Props) => {
   // 只能放在外面, 因为调用该方法中使用 hook, 只能放在函数式组件的外部
   const formColumns = initColumns(formRef);
 
-  // 分包商信息表单的默认值
+  // 单位信息表单的默认值
   const [initValue] = useState<MenusType>({
     type: '1',
   });

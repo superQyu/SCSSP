@@ -40,7 +40,7 @@ const EntryCom: React.FC<Props> = forwardRef(
 
     const [formKey, _] = useState<string>('entryInfoSaveReqVO');
     const [subForm, setSubForm] = useState({});
-    // 分包单位选择下拉
+    // 单位选择下拉
     const [groupList, setGroupList] = useState([]);
 
     useEffect(() => {
@@ -144,17 +144,17 @@ const EntryCom: React.FC<Props> = forwardRef(
         ),
       },
       // {
-      //   label: '分包单位',
+      //   label: '单位',
       //   dataIndex: 'subcontractorId',
       //   formItem: <DictSelect dictKey={'subcontractor_type'} />,
       //   colNum: 8,
       // },
-      {
-        label: '进场状态',
-        dataIndex: 'entryStatus',
-        formItem: <DictSelect dictKey={'pm_entry_status'} />,
-        colNum: 8,
-      },
+      // {
+      //   label: '进场状态',
+      //   dataIndex: 'entryStatus',
+      //   formItem: <DictSelect dictKey={'pm_entry_status'} />,
+      //   colNum: 8,
+      // },
       {
         label: '进场日期',
         dataIndex: 'entryDate',
@@ -170,103 +170,103 @@ const EntryCom: React.FC<Props> = forwardRef(
         colNum: 8,
       },
 
-      {
-        label: '邮政编码',
-        dataIndex: 'postalCode',
-        colNum: 8,
-      },
+      // {
+      //   label: '邮政编码',
+      //   dataIndex: 'postalCode',
+      //   colNum: 8,
+      // },
 
-      {
-        label: '考勤卡号',
-        dataIndex: 'attendanceCardNumber',
-        colNum: 8,
-      },
+      // {
+      //   label: '考勤卡号',
+      //   dataIndex: 'attendanceCardNumber',
+      //   colNum: 8,
+      // },
       {
         label: '是否购买工伤或意外伤害保险',
         dataIndex: 'hasInsurance',
         formItem: <DictSelect dictKey={'pm_has_insurance'} />,
         colNum: 8,
       },
-      {
-        label: '加入公会时间',
-        dataIndex: 'unionJoinDate',
-        formItem: (
-          <DatePicker className="w-full" format="YYYY-MM-DD" />
-        ),
-        formItemProps: {
-          getValueFromEvent: (...[, dateString]) => dateString,
-          getValueProps: (value) => ({
-            value: value ? dayjs(value) : undefined,
-          }),
-        },
-        colNum: 8,
-      },
-      {
-        label: '劳动合同状态',
-        dataIndex: 'laborContractStatus',
-        formItem: (
-          <DictSelect dictKey={'pm_labor_contract_status'} />
-        ),
-        colNum: 8,
-      },
-      {
-        label: '上传政府平台状态',
-        dataIndex: 'governmentPlatformUpload',
-        formItem: (
-          <DictSelect
-            dictKey={'pm_government_platform_upload'}
-          />
-        ),
-        colNum: 8,
-      },
-      {
-        label: '计价方式',
-        dataIndex: 'valuationMethod',
-        formItem: <DictSelect dictKey={'pm_valuation_method'} />,
-        colNum: 8,
-      },
-      {
-        label: '每日工资',
-        dataIndex: 'dailyWage',
-        formItemProps: {
-          rules: [
-            // {
-            //   pattern: /^[0-9]+([.]{1}[0-9]{1,2})?$/,
-            //   message: '请输入正确的每日工资',
-            // },
-          ],
-        },
-        colNum: 8,
-      },
-      {
-        label: '开户银行',
-        dataIndex: 'bankName',
-        colNum: 8,
-      },
-      {
-        label: '银行联号',
-        dataIndex: 'bankLinkNumber',
-        colNum: 8,
-      },
-      {
-        label: '银行卡号',
-        dataIndex: 'bankCardNumber',
-        colNum: 8,
-      },
-      {
-        label: '发卡时间',
-        dataIndex: 'cardIssuanceDate',
-        formItem: (
-          <DatePicker className="w-full" format="YYYY-MM-DD" />
-        ),
-        formItemProps: {
-          getValueFromEvent: (...[, dateString]) => dateString,
-          getValueProps: (value) => ({
-            value: value ? dayjs(value) : undefined,
-          }),
-        },
-        colNum: 8,
-      },
+      // {
+      //   label: '加入公会时间',
+      //   dataIndex: 'unionJoinDate',
+      //   formItem: (
+      //     <DatePicker className="w-full" format="YYYY-MM-DD" />
+      //   ),
+      //   formItemProps: {
+      //     getValueFromEvent: (...[, dateString]) => dateString,
+      //     getValueProps: (value) => ({
+      //       value: value ? dayjs(value) : undefined,
+      //     }),
+      //   },
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '劳动合同状态',
+      //   dataIndex: 'laborContractStatus',
+      //   formItem: (
+      //     <DictSelect dictKey={'pm_labor_contract_status'} />
+      //   ),
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '上传政府平台状态',
+      //   dataIndex: 'governmentPlatformUpload',
+      //   formItem: (
+      //     <DictSelect
+      //       dictKey={'pm_government_platform_upload'}
+      //     />
+      //   ),
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '计价方式',
+      //   dataIndex: 'valuationMethod',
+      //   formItem: <DictSelect dictKey={'pm_valuation_method'} />,
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '每日工资',
+      //   dataIndex: 'dailyWage',
+      //   formItemProps: {
+      //     rules: [
+      //       // {
+      //       //   pattern: /^[0-9]+([.]{1}[0-9]{1,2})?$/,
+      //       //   message: '请输入正确的每日工资',
+      //       // },
+      //     ],
+      //   },
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '开户银行',
+      //   dataIndex: 'bankName',
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '银行联号',
+      //   dataIndex: 'bankLinkNumber',
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '银行卡号',
+      //   dataIndex: 'bankCardNumber',
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '发卡时间',
+      //   dataIndex: 'cardIssuanceDate',
+      //   formItem: (
+      //     <DatePicker className="w-full" format="YYYY-MM-DD" />
+      //   ),
+      //   formItemProps: {
+      //     getValueFromEvent: (...[, dateString]) => dateString,
+      //     getValueProps: (value) => ({
+      //       value: value ? dayjs(value) : undefined,
+      //     }),
+      //   },
+      //   colNum: 8,
+      // },
       // {
       //   label: '',
       //   dataIndex: 'teamName',

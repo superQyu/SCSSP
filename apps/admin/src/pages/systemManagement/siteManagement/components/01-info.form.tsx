@@ -5,7 +5,7 @@ import React, {
   useState,
   useEffect,
 } from 'react';
-import { DatePicker, Col, Row, Flex } from 'antd';
+import { DatePicker, Col, Row, Flex, Input } from 'antd';
 import type { UploadFile } from 'antd';
 import DictSelect from '@/components/DictSelect';
 import type { FormInstance } from 'antd/es/form';
@@ -21,6 +21,46 @@ interface Props {
   detail: Record<string, any>;
 }
 
+const calculateAgeFromID = (idCard) => {
+  // 验证身份证号长度
+  if (!/^\d{17}[\dXx]$/.test(idCard)) {
+    return '身份证号格式错误';
+  }
+
+  // 提取出生日期字符串（第7-14位）
+  const birthDateStr = idCard.substring(6, 14);
+  const year = parseInt(birthDateStr.substring(0, 4), 10);
+  const month = parseInt(birthDateStr.substring(4, 6), 10) - 1; // JS月份从0开始
+  const day = parseInt(birthDateStr.substring(6, 8), 10);
+
+  // 验证日期有效性
+  const birthDate = new Date(year, month, day);
+  if (
+    birthDate.getFullYear() !== year ||
+    birthDate.getMonth() !== month ||
+    birthDate.getDate() !== day
+  ) {
+    return '身份证生日信息无效';
+  }
+
+  // 获取当前日期
+  const today = new Date();
+
+  // 计算年龄
+  let age = today.getFullYear() - year;
+
+  // 判断是否已过生日
+  const hasBirthday =
+    today.getMonth() > month ||
+    (today.getMonth() === month && today.getDate() >= day);
+
+  if (!hasBirthday) {
+    age--;
+  }
+
+  return age;
+};
+
 const InfoCom: React.FC<Props> = forwardRef(
   ({ detail }: Props, ref) => {
     const { server } = useBasicConfiguration();
@@ -34,6 +74,14 @@ const InfoCom: React.FC<Props> = forwardRef(
       (UploadFile & { url?: string })[]
     >([]);
     const [subForm, setSubForm] = useState<any>({});
+
+    const getAge = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const { value: inputValue } = e.target;
+      // console.log('input改变', inputValue)
+      formRef.current?.setFieldsValue({
+        age: calculateAgeFromID(inputValue),
+      });
+    };
 
     useEffect(() => {
       // console.log('detail发生变化', detail);
@@ -111,6 +159,9 @@ const InfoCom: React.FC<Props> = forwardRef(
             // },
           ],
         },
+        formItem: (
+          <Input placeholder="请输入身份证号" onBlur={getAge} />
+        ),
         colNum: 8,
       },
       // {
@@ -129,47 +180,47 @@ const InfoCom: React.FC<Props> = forwardRef(
       //   },
       //   colNum: 8,
       // },
-      {
-        label: '紧急联系人姓名',
-        dataIndex: 'emergencyContactName',
-        colNum: 8,
-      },
-      {
-        label: '紧急联系方式',
-        dataIndex: 'emergencyContactMethod',
-        formItemProps: {
-          rules: [
-            // {
-            //   pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-            //   message: '请输入正确的紧急联系方式',
-            // },
-          ],
-        },
-        colNum: 8,
-      },
-      {
-        label: '工龄',
-        dataIndex: 'workYears',
-        colNum: 8,
-      },
-      {
-        label: '职业健康',
-        dataIndex: 'occupationalHealth',
-        colNum: 8,
-      },
-      {
-        label: '是否有重大病史',
-        dataIndex: 'hasMajorMedicalHistory',
-        formItem: (
-          <DictSelect dictKey={'pm_has_major_medical_history'} />
-        ),
-        colNum: 8,
-      },
-      {
-        label: '工号',
-        dataIndex: 'jobNo',
-        colNum: 8,
-      },
+      // {
+      //   label: '紧急联系人姓名',
+      //   dataIndex: 'emergencyContactName',
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '紧急联系方式',
+      //   dataIndex: 'emergencyContactMethod',
+      //   formItemProps: {
+      //     rules: [
+      //       // {
+      //       //   pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+      //       //   message: '请输入正确的紧急联系方式',
+      //       // },
+      //     ],
+      //   },
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '工龄',
+      //   dataIndex: 'workYears',
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '职业健康',
+      //   dataIndex: 'occupationalHealth',
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '是否有重大病史',
+      //   dataIndex: 'hasMajorMedicalHistory',
+      //   formItem: (
+      //     <DictSelect dictKey={'pm_has_major_medical_history'} />
+      //   ),
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '工号',
+      //   dataIndex: 'jobNo',
+      //   colNum: 8,
+      // },
       {
         label: '年龄',
         dataIndex: 'age',
@@ -181,67 +232,70 @@ const InfoCom: React.FC<Props> = forwardRef(
             },
           ],
         },
-        colNum: 8,
-      },
-      {
-        label: '出生日期',
-        dataIndex: 'birthday',
         formItem: (
-          <DatePicker className="w-full" format="YYYY-MM-DD" />
+          <Input placeholder="请输入身份证号" disabled />
         ),
-        formItemProps: {
-          getValueFromEvent: (...[, dateString]) => dateString,
-          getValueProps: (value) => ({
-            value: value ? dayjs(value) : undefined,
-          }),
-        },
         colNum: 8,
       },
-      {
-        label: '电子邮件',
-        dataIndex: 'email',
-        formItemProps: {
-          rules: [
-            {
-              type: 'email',
-              message: '请输入正确的电子邮件',
-            },
-          ],
-        },
-        colNum: 8,
-      },
+      // {
+      //   label: '出生日期',
+      //   dataIndex: 'birthday',
+      //   formItem: (
+      //     <DatePicker className="w-full" format="YYYY-MM-DD" />
+      //   ),
+      //   formItemProps: {
+      //     getValueFromEvent: (...[, dateString]) => dateString,
+      //     getValueProps: (value) => ({
+      //       value: value ? dayjs(value) : undefined,
+      //     }),
+      //   },
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '电子邮件',
+      //   dataIndex: 'email',
+      //   formItemProps: {
+      //     rules: [
+      //       {
+      //         type: 'email',
+      //         message: '请输入正确的电子邮件',
+      //       },
+      //     ],
+      //   },
+      //   colNum: 8,
+      // },
       // {
       //   label: '联系人',
       //   dataIndex: 'contact',
       //   colNum: 8,
       // },
-      {
-        label: '文化程度',
-        dataIndex: 'educational',
-        formItem: <DictSelect dictKey={'pm_educational'} />,
-        colNum: 8,
-      },
-      {
-        label: '政治面貌',
-        dataIndex: 'policitalStatus',
-        colNum: 8,
-      },
-      {
-        label: '民族',
-        dataIndex: 'nationality',
-        formItem: <DictSelect dictKey={'pm_nationality'} />,
-        colNum: 8,
-      },
-      {
-        label: '户口所在地',
-        dataIndex: 'registeredPlace',
-        colNum: 8,
-      },
-      {
-        label: '详细地址',
-        dataIndex: 'address',
-        colNum: 8,
-      },
+      // {
+      //   label: '文化程度',
+      //   dataIndex: 'educational',
+      //   formItem: <DictSelect dictKey={'pm_educational'} />,
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '政治面貌',
+      //   dataIndex: 'policitalStatus',
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '民族',
+      //   dataIndex: 'nationality',
+      //   formItem: <DictSelect dictKey={'pm_nationality'} />,
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '户口所在地',
+      //   dataIndex: 'registeredPlace',
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '详细地址',
+      //   dataIndex: 'address',
+      //   colNum: 8,
+      // },
       // {
       //   label: '身份证到期时间',
       //   dataIndex: 'expiressEnd',
@@ -254,28 +308,28 @@ const InfoCom: React.FC<Props> = forwardRef(
       //   },
       //   colNum: 8,
       // },
-      {
-        label: '职称',
-        dataIndex: 'competent',
-        colNum: 8,
-      },
-      {
-        label: '公司角色',
-        dataIndex: 'companyType',
-        formItem: <DictSelect dictKey={'pm_company_type'} />,
-        colNum: 8,
-      },
-      {
-        label: '职能',
-        dataIndex: 'function',
-        colNum: 8,
-      },
-      {
-        label: '在岗情况',
-        dataIndex: 'jobState',
-        formItem: <DictSelect dictKey={'pm_job_state'} />,
-        colNum: 8,
-      },
+      // {
+      //   label: '职称',
+      //   dataIndex: 'competent',
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '公司角色',
+      //   dataIndex: 'companyType',
+      //   formItem: <DictSelect dictKey={'pm_company_type'} />,
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '职能',
+      //   dataIndex: 'function',
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '在岗情况',
+      //   dataIndex: 'jobState',
+      //   formItem: <DictSelect dictKey={'pm_job_state'} />,
+      //   colNum: 8,
+      // },
       // {
       //   label: '发证机关',
       //   dataIndex: 'issuingAuthority',
@@ -305,29 +359,29 @@ const InfoCom: React.FC<Props> = forwardRef(
       //   },
       //   colNum: 8,
       // },
-      {
-        label: '婚姻状况',
-        dataIndex: 'maritalStatus',
-        formItem: <DictSelect dictKey={'pm_marital_status'} />,
-        colNum: 8,
-      },
-      {
-        label: '特长',
-        dataIndex: 'specialty',
-        colNum: 8,
-      },
-      {
-        label: '是否启用',
-        dataIndex: 'enabled',
-        formItem: <DictSelect dictKey={'pm_enabled'} />,
-        colNum: 8,
-      },
-      {
-        label: '',
-        dataIndex: 'passportPhoto',
-        formItem: <div className="hidden"></div>,
-        colNum: 8,
-      },
+      // {
+      //   label: '婚姻状况',
+      //   dataIndex: 'maritalStatus',
+      //   formItem: <DictSelect dictKey={'pm_marital_status'} />,
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '特长',
+      //   dataIndex: 'specialty',
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '是否启用',
+      //   dataIndex: 'enabled',
+      //   formItem: <DictSelect dictKey={'pm_enabled'} />,
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '',
+      //   dataIndex: 'passportPhoto',
+      //   formItem: <div className="hidden"></div>,
+      //   colNum: 8,
+      // },
     ];
 
     useImperativeHandle(ref, () => ({
@@ -342,7 +396,7 @@ const InfoCom: React.FC<Props> = forwardRef(
       <>
         <SingleTitle label="基础信息" />
         <Row gutter={16} className="mt-5">
-          <Col className="gutter-row" span={4}>
+          {/* <Col className="gutter-row" span={4}>
             <Flex
               justify="center"
               align="center"
@@ -371,8 +425,8 @@ const InfoCom: React.FC<Props> = forwardRef(
                 />
               </div>
             </Flex>
-          </Col>
-          <Col className="gutter-row" span={20}>
+          </Col> */}
+          <Col className="gutter-row" span={24}>
             <AdForm
               key={`${JSON.stringify(subForm)}`}
               name={formKey}
@@ -380,9 +434,13 @@ const InfoCom: React.FC<Props> = forwardRef(
               formRef={formRef}
               labelAlign="right"
               columns={columns}
+              // layoutStyle={{
+              //   labelCol: { span: 10 },
+              //   wrapperCol: { span: 14, flex: 1 },
+              // }}
               layoutStyle={{
-                labelCol: { span: 10 },
-                wrapperCol: { span: 14, flex: 1 },
+                labelCol: { span: 12 },
+                wrapperCol: { span: 12, flex: 1 },
               }}
             />
           </Col>

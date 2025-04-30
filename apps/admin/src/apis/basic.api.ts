@@ -112,8 +112,8 @@ const user: ApiItem[] = [
     key: 'exportSubcontractorInfo',
     url: `${ADMIN_API}/wisdom/subcontractor-info/export-excel`,
     type: 'GET',
-    name: '分包商模板导出',
-    description: '分包商模板导出',
+    name: '单位模板导出',
+    description: '单位模板导出',
     cusParmas: {
       dataType: 'blob'
     },

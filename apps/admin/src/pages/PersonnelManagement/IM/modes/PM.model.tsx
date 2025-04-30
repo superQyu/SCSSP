@@ -106,11 +106,13 @@ export default ({ server }: MenusPropsType) => {
     {
       title: '电话号码',
       dataIndex: 'phone',
+      hideInSearch: true,
     },
     {
       title: '家庭住址',
       // key: 'address',
       dataIndex: 'address',
+      hideInSearch: true,
     },
     {
       hideInSearch: true,

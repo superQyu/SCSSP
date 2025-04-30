@@ -34,7 +34,7 @@ export default ({ server }: MenusPropsType) => {
       width: 170,
     },
     {
-      title: '分包商类型',
+      title: '单位类型',
       dataIndex: 'subcontractorType',
       ellipsis: true,
       width: 170,
@@ -46,7 +46,7 @@ export default ({ server }: MenusPropsType) => {
       },
     },
     {
-      title: '分包单位名称',
+      title: '单位名称',
       dataIndex: 'realName',
       ellipsis: true,
       width: 170,
