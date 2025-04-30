@@ -66,7 +66,7 @@ export default (props: Props) => {
     quality: detail.quality,
     nameSpell: detail.nameSpell,
     corpCode: detail.corpCode,
-    picture: detail.picture,
+    url: detail.url,
   });
   // 注册地信息表单的默认值
   const [addressInitialValues] = useState<MenusType>({
@@ -78,7 +78,7 @@ export default (props: Props) => {
 
   useEffect(() => {
     setOpen(openModal);
-    detail.picture && setPicture(detail.picture?.split('@'));
+    detail.url && setPicture(detail.url?.split('@'));
   }, [openModal]);
 
   // 点击重置
@@ -96,9 +96,8 @@ export default (props: Props) => {
     try {
       const subFormValues: MenusType =
         await subFormRef.current?.validateFields();
-      subFormValues.picture =
-        subFormValues.picture &&
-        subFormValues.picture?.join('@');
+      subFormValues.url =
+        subFormValues.url && subFormValues.url?.join('@');
       const addressFormValues: MenusType =
         await addressFormRef.current?.validateFields();
       const params = {

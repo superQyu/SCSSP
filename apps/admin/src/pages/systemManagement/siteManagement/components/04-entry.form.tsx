@@ -191,8 +191,22 @@ const EntryCom: React.FC<Props> = forwardRef(
       },
       {
         label: '是否进行三级教育',
-        dataIndex: 'test',
-        formItem: <DictSelect dictKey={'pm_has_insurance'} />,
+        dataIndex: 'isEducated',
+        formItem: (
+          <Select
+            placeholder="请选择"
+            options={[
+              {
+                label: '是',
+                value: 1,
+              },
+              {
+                label: '否',
+                value: 0,
+              },
+            ]}
+          />
+        ),
         colNum: 8,
       },
       // {

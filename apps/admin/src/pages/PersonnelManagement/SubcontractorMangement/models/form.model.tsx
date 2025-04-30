@@ -200,7 +200,7 @@ export default (subFormRef: any, picture: string[]) => {
     // },
     {
       label: '保险单',
-      dataIndex: 'picture',
+      dataIndex: 'url',
       colNum: 12,
       formItem: (
         <ProUpload
@@ -213,7 +213,7 @@ export default (subFormRef: any, picture: string[]) => {
             const list = res.map((item: any) => item.url);
             subFormRef.current.setFieldsValue({
               // 证件图片
-              picture: list,
+              url: list,
             });
           }}
           defaultFileList={() => fileList}

@@ -15,6 +15,8 @@ const menus: ApiItem[] = [
       { key: 'name', cn: '姓名' },
       { key: 'phone', cn: '电话号码' },
       { key: 'address', cn: '家庭住址' },
+      { key: 'isOverAge', cn: '家庭住址' },
+      { key: 'isCertificated', cn: '家庭住址' },
     ],
   },
   {
@@ -26,6 +28,13 @@ const menus: ApiItem[] = [
       { key: 'Authorization', location: 'header' },
       { key: 'id', cn: '需要删除的主键id' },
     ],
+  },
+  {
+    key: 'deletePersonnelInfo',
+    url: `${ADMIN_API}/wisdom/personnel-info/getOverAgeAndNotCertificatedCount`,
+    type: 'GET',
+    description: '获取超龄及证书缺失人数',
+    params: [{ key: 'Authorization', location: 'header' }],
   },
 ];
 export default menus;

@@ -85,6 +85,32 @@ export default ({ server }: MenusPropsType) => {
       ellipsis: true,
     },
     {
+      title: '是否超龄',
+      dataIndex: 'isOverAge',
+      hideInTable: true,
+      valueEnum: {
+        0: {
+          text: '否',
+        },
+        1: {
+          text: '是',
+        },
+      },
+    },
+    {
+      title: '是否有证书',
+      dataIndex: 'isCertificated',
+      hideInTable: true,
+      valueEnum: {
+        0: {
+          text: '否',
+        },
+        1: {
+          text: '是',
+        },
+      },
+    },
+    {
       width: 120,
       hideInSearch: true,
       title: '性别',
