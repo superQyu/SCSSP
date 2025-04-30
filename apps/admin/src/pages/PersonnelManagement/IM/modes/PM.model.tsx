@@ -7,11 +7,12 @@ import {
   TableDropdown,
   type ProColumns,
 } from '@ant-design/pro-components';
-import { message, Avatar, Tag } from 'antd';
+import { message, Avatar, Tag, Select } from 'antd';
 
 import { IconSelect, IconShow } from 'ui';
 import DictSelect from '@/components/DictSelect';
 import DictText from '@/components/DictSelect/DictText';
+import { useEffect, useState } from 'react';
 
 type objJson = Record<string, any>;
 
@@ -32,7 +33,22 @@ const url =
   'https://img1.baidu.com/it/u=1377073336,1053961489&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500';
 
 export default ({ server }: MenusPropsType) => {
-  const { menus: M } = server as objJson;
+  const { menus: M, subContractor } = server as objJson;
+
+  const [subcontractorList, setSubcontractorList] = useState([]);
+
+  // 通过接口获取下拉框的内容
+  const getSelectOptions = async () => {
+    const res1 = await subContractor.getAllSubContractor();
+    const list1 = res1.map((item: any) => {
+      return { label: item.realName, value: `${item.id}` };
+    });
+    setSubcontractorList(list1);
+  };
+
+  useEffect(() => {
+    getSelectOptions();
+  }, []);
 
   const columns: ProColumns[] = [
     {
@@ -124,6 +140,10 @@ export default ({ server }: MenusPropsType) => {
       hideInSearch: true,
       title: '所属单位',
       dataIndex: 'companyName',
+      valueType: 'select',
+      fieldProps: {
+        options: subcontractorList,
+      },
     },
     {
       hideInSearch: true,

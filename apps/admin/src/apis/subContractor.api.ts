@@ -12,8 +12,8 @@ const subContractor: ApiItem[] = [
       { key: 'Authorization', location: 'header' },
       { key: 'realName', cn: '单位名称' },
       { key: 'subcontractorType', cn: '单位类型' },
-      {key: 'current', targetKey: 'pageNo'}, 
-      {key: 'pageSize'}, 
+      { key: 'current', targetKey: 'pageNo' },
+      { key: 'pageSize' },
     ],
   },
   {
@@ -22,8 +22,17 @@ const subContractor: ApiItem[] = [
     type: 'GET',
     name: '单位管理',
     description: '获取单位列表(不分页)',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'getSubContractorDetail',
+    url: `${ADMIN_API}/wisdom/subcontractor-info/get`,
+    type: 'GET',
+    name: '单位管理',
+    description: '获取单位详情',
     params: [
       { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: '所属市' },
     ],
   },
   {

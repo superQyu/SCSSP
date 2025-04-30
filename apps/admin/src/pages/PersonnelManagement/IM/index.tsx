@@ -299,7 +299,7 @@ export default () => {
       <Modal
         open={openModal}
         title={
-          <div className='flex items-center'>
+          <div className="flex items-center">
             <div>上传文件</div>
             <div className="ml-3">
               <Button
@@ -338,7 +338,7 @@ export default () => {
               }}
               type="primary"
             >
-              下载数据模板
+              确认导入
             </Button>
           </div>
         </div>

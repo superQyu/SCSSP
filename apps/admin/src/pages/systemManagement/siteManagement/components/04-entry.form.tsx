@@ -184,6 +184,14 @@ const EntryCom: React.FC<Props> = forwardRef(
       {
         label: '是否购买工伤或意外伤害保险',
         dataIndex: 'hasInsurance',
+        formItem: (
+          <DictSelect dictKey={'pm_has_insurance'} disabled />
+        ),
+        colNum: 8,
+      },
+      {
+        label: '是否进行三级教育',
+        dataIndex: 'test',
         formItem: <DictSelect dictKey={'pm_has_insurance'} />,
         colNum: 8,
       },

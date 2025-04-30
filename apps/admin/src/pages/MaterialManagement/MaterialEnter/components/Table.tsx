@@ -123,7 +123,7 @@ export default (props: Props) => {
             >
               编辑
             </a>,
-            <>
+            <div key="delete">
               {!props.noCreate && (
                 <Popconfirm
                   key="delete"
@@ -138,7 +138,7 @@ export default (props: Props) => {
                   <a>删除</a>
                 </Popconfirm>
               )}
-            </>,
+            </div>,
           ],
         },
       ]}
