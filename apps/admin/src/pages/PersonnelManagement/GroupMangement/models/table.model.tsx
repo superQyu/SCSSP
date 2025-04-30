@@ -12,7 +12,7 @@ type MenusPropsType = {
 export default ({ server }: MenusPropsType) => {
   const { subContractor, certificate } = server as objJson;
 
-  const columnWidth = 213
+  const columnWidth = 213;
 
   // 单位选择下拉
   const [subcontractorList, setSubcontractorList] = useState([]);
@@ -26,7 +26,6 @@ export default ({ server }: MenusPropsType) => {
   // 通过接口获取下拉框的内容
   const getSelectOptions = async () => {
     const res1 = await subContractor.getAllSubContractor();
-    // console.log('单位列表', res1);
     const list1 = res1.map((item: any) => {
       return { label: item.realName, value: item.id };
     });
@@ -65,7 +64,12 @@ export default ({ server }: MenusPropsType) => {
         return <span>{record.subcontractorName}</span>;
       },
       renderFormItem: () => {
-        return <Select placeholder="请选择单位" options={subcontractorList} />;
+        return (
+          <Select
+            placeholder="请选择单位"
+            options={subcontractorList}
+          />
+        );
       },
     },
     // {
@@ -84,7 +88,12 @@ export default ({ server }: MenusPropsType) => {
         return <span>{record.userName}</span>;
       },
       renderFormItem: () => {
-        return <Select placeholder="请选择班组长" options={personInfoList} />;
+        return (
+          <Select
+            placeholder="请选择班组长"
+            options={personInfoList}
+          />
+        );
       },
     },
     {
@@ -99,7 +108,7 @@ export default ({ server }: MenusPropsType) => {
       dataIndex: 'workTypeName',
       ellipsis: true,
       width: columnWidth,
-      editable: false
+      editable: false,
     },
     {
       title: '联系电话',
