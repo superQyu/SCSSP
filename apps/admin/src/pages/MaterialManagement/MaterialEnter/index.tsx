@@ -105,21 +105,73 @@ export default ({ onChange }: any) => {
                 action: any
               ) => [
                 <div key="1">
-                  {record.status == '0' && (
-                    <Popconfirm
-                      title="发起申请后将无法编辑"
-                      onConfirm={() => onBpm(record.id)}
-                      okText="确认"
-                      cancelText="取消"
-                    >
-                      <a>发起申请</a>
-                    </Popconfirm>
-                  )}
+                  {record.status == '0' &&
+                    user.userInfor.roles.find(
+                      (item: string) => item == 'plan'
+                    ) && (
+                      <Popconfirm
+                        title="发起申请后将无法编辑"
+                        onConfirm={() => onBpm(record.id)}
+                        okText="确认"
+                        cancelText="取消"
+                      >
+                        <a>发起申请</a>
+                      </Popconfirm>
+                    )}
                 </div>,
                 <div key="2">
+                  {record.status == '0' &&
+                    user.userInfor.roles.find(
+                      (item: string) => item == 'plan'
+                    ) && (
+                      <a
+                        onClick={() => {
+                          // console.log('点击了编辑')
+                          setStatus('0');
+                          handleModalStateChange(true);
+                          setDetail(record);
+                        }}
+                      >
+                        编辑
+                      </a>
+                    )}
+                </div>,
+                <div key="3">
+                  {record.status == '0' &&
+                    user.userInfor.roles.find(
+                      (item: string) => item == 'plan'
+                    ) && (
+                      <Popconfirm
+                        title="删除此项"
+                        onConfirm={() => onDelete(record.id)}
+                        okText="确认"
+                        cancelText="取消"
+                      >
+                        <a>删除</a>
+                      </Popconfirm>
+                    )}
+                </div>,
+                <div key="4">
+                  {record.status == '11' &&
+                    user.userInfor.roles.find(
+                      (item: string) => item == 'project-manager'
+                    ) && (
+                      <a
+                        onClick={() => {
+                          // console.log('点击了编辑')
+                          setStatus('1');
+                          handleModalStateChange(true);
+                          setDetail(record);
+                        }}
+                      >
+                        审核
+                      </a>
+                    )}
+                </div>,
+                <div key="5">
                   {record.status == '1' &&
                     user.userInfor.roles.find(
-                      (item: string) => item == 'hg-dev'
+                      (item: string) => item == 'wlys'
                     ) && (
                       <a
                         onClick={() => {
@@ -132,32 +184,6 @@ export default ({ onChange }: any) => {
                         验收
                       </a>
                     )}
-                </div>,
-                <div key="3">
-                  {record.status == '0' && (
-                    <a
-                      onClick={() => {
-                        // console.log('点击了编辑')
-                        setStatus('0');
-                        handleModalStateChange(true);
-                        setDetail(record);
-                      }}
-                    >
-                      编辑
-                    </a>
-                  )}
-                </div>,
-                <div key="4">
-                  {record.status == '0' && (
-                    <Popconfirm
-                      title="删除此项"
-                      onConfirm={() => onDelete(record.id)}
-                      okText="确认"
-                      cancelText="取消"
-                    >
-                      <a>删除</a>
-                    </Popconfirm>
-                  )}
                 </div>,
               ],
             },
@@ -203,23 +229,33 @@ export default ({ onChange }: any) => {
               ];
             },
           }}
-          toolBarRender={() => [
-            <Styled.ExportButton
-              api="exportMaterialsEnter"
-              fileName="物料进场导出"
-            />,
-            <Button
-              icon={<PlusOutlined />}
-              onClick={() => {
-                setStatus('0');
-                handleModalStateChange(true);
-                setDetail({});
-              }}
-              type="primary"
-            >
-              新建
-            </Button>,
-          ]}
+          toolBarRender={() => {
+            if (
+              user.userInfor.roles.find(
+                (item: string) => item == 'plan'
+              )
+            ) {
+              return [
+                // <Styled.ExportButton
+                //   api="exportMaterialsEnter"
+                //   fileName="物料进场导出"
+                // />,
+                <Button
+                  icon={<PlusOutlined />}
+                  onClick={() => {
+                    setStatus('0');
+                    handleModalStateChange(true);
+                    setDetail({});
+                  }}
+                  type="primary"
+                >
+                  新建
+                </Button>,
+              ];
+            } else {
+              return [];
+            }
+          }}
           editable={{ onSave }}
           expandable={{
             expandedRowRender: (record: any) =>

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { FormColumnsTypes, ProUpload } from 'components';
 import { Select, DatePicker, Input } from 'antd';
 
+import dayjs from 'dayjs'
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
@@ -51,7 +52,7 @@ export default (
     const res = await certificate.getPersonInfoDetail({
       id: value,
     });
-    // console.log('人员信息', res);
+    console.log('人员信息', res);
     subFormRef.current.setFieldsValue({
       // 劳务工种
       workTypeName: res.personnelInfoRespVO.workTypeName,
@@ -60,9 +61,9 @@ export default (
       // 联系方式
       phone: res.personnelInfoRespVO.phone,
       // 进场日期
-      entryDate: res.entryInfoRespVO.entryDate,
+      entryDate: res.entryInfoRespVO.entryDate? dayjs(res.entryInfoRespVO.entryDate) : undefined,
       // 退场日期
-      exitDate: res.entryInfoRespVO.exitDate,
+      // exitDate: res.entryInfoRespVO.exitDate,
     });
   };
 
