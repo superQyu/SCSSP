@@ -73,7 +73,7 @@ const materialEnter: ApiItem[] = [
     key: 'materialAccept',
     url: `${ADMIN_API}/wisdom/materials-enter/pass-bpm`,
     type: 'PUT',
-    name: '物料进场列表',
+    name: '物料验收(验收员)',
     description: '物料进场审核, 填写实际验收数量',
     params: [
       { key: 'Authorization', location: 'header' },
@@ -81,6 +81,21 @@ const materialEnter: ApiItem[] = [
       {
         key: 'materialsEnterDetailsSaveReqVOS',
         cn: '进场物料相关信息',
+      },
+    ],
+  },
+  {
+    key: 'materialExamine',
+    url: `${ADMIN_API}/wisdom/materials-enter/confirm-bpm`,
+    type: 'GET',
+    name: '物料审核(项目经理)',
+    description: '物料进场审核, 填写实际验收数量',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'materialsEnterId', cn: '传id' },
+      {
+        key: 'isConfirm',
+        cn: '传通过/驳回',
       },
     ],
   },

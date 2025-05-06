@@ -103,12 +103,16 @@ export default ({ onChange }: any) => {
                 record: any,
                 _: any,
                 action: any
-              ) => [
-                <div key="1">
-                  {record.status == '0' &&
-                    user.userInfor.roles.find(
-                      (item: string) => item == 'plan'
-                    ) && (
+              ) => {
+                if (
+                  // 计划员,进行新增/编辑/删除/发起申请
+                  record.status == '0' &&
+                  user.userInfor.roles.find(
+                    (item: string) => item == 'plan'
+                  )
+                ) {
+                  return [
+                    <div key="1">
                       <Popconfirm
                         title="发起申请后将无法编辑"
                         onConfirm={() => onBpm(record.id)}
@@ -117,13 +121,8 @@ export default ({ onChange }: any) => {
                       >
                         <a>发起申请</a>
                       </Popconfirm>
-                    )}
-                </div>,
-                <div key="2">
-                  {record.status == '0' &&
-                    user.userInfor.roles.find(
-                      (item: string) => item == 'plan'
-                    ) && (
+                    </div>,
+                    <div key="2">
                       <a
                         onClick={() => {
                           // console.log('点击了编辑')
@@ -134,13 +133,8 @@ export default ({ onChange }: any) => {
                       >
                         编辑
                       </a>
-                    )}
-                </div>,
-                <div key="3">
-                  {record.status == '0' &&
-                    user.userInfor.roles.find(
-                      (item: string) => item == 'plan'
-                    ) && (
+                    </div>,
+                    <div key="3">
                       <Popconfirm
                         title="删除此项"
                         onConfirm={() => onDelete(record.id)}
@@ -149,43 +143,52 @@ export default ({ onChange }: any) => {
                       >
                         <a>删除</a>
                       </Popconfirm>
-                    )}
-                </div>,
-                <div key="4">
-                  {record.status == '11' &&
-                    user.userInfor.roles.find(
-                      (item: string) => item == 'project-manager'
-                    ) && (
+                    </div>,
+                  ];
+                } else if (
+                  // 项目经理,进行审核
+                  record.status == '11' &&
+                  user.userInfor.roles.find(
+                    (item: string) => item == 'project-manager'
+                  )
+                ) {
+                  return [
+                    <div key="4">
                       <a
                         onClick={() => {
                           // console.log('点击了编辑')
-                          setStatus('1');
+                          setStatus('11');
                           handleModalStateChange(true);
                           setDetail(record);
                         }}
                       >
                         审核
                       </a>
-                    )}
-                </div>,
-                <div key="5">
-                  {record.status == '1' &&
-                    user.userInfor.roles.find(
-                      (item: string) => item == 'wlys'
-                    ) && (
-                      <a
-                        onClick={() => {
-                          // console.log('点击了编辑')
-                          setStatus('1');
-                          handleModalStateChange(true);
-                          setDetail(record);
-                        }}
-                      >
-                        验收
-                      </a>
-                    )}
-                </div>,
-              ],
+                    </div>,
+                  ];
+                } else {
+                  // 验收员,进行验收,填写验收数量等内容
+                  return [
+                    <div key="5">
+                      {record.status == '1' &&
+                        user.userInfor.roles.find(
+                          (item: string) => item == 'wlys'
+                        ) && (
+                          <a
+                            onClick={() => {
+                              // console.log('点击了编辑')
+                              setStatus('1');
+                              handleModalStateChange(true);
+                              setDetail(record);
+                            }}
+                          >
+                            验收
+                          </a>
+                        )}
+                    </div>,
+                  ];
+                }
+              },
             },
           ]}
           request={async (params = {}) => {
