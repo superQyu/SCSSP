@@ -30,7 +30,7 @@ const menus: ApiItem[] = [
     ],
   },
   {
-    key: 'deletePersonnelInfo',
+    key: 'getOverAgeAndNotCertificatedCount',
     url: `${ADMIN_API}/wisdom/personnel-info/getOverAgeAndNotCertificatedCount`,
     type: 'GET',
     description: '获取超龄及证书缺失人数',

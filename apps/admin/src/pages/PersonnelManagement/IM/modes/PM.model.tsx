@@ -110,6 +110,39 @@ export default ({ server }: MenusPropsType) => {
         },
       },
     },
+    // {
+    //   width: 80,
+    //   hideInSearch: true,
+    //   title: '民族',
+    //   ellipsis: true,
+    //   dataIndex: 'nationality',
+    //   render: (_, record) => (
+    //     <DictText
+    //       value={record.nationality}
+    //       dictKey={`pm_nationality`}
+    //     />
+    //   ),
+    // },
+    // {
+    //   hideInSearch: true,
+    //   title: '出生日期',
+    //   dataIndex: 'birthday',
+    // },
+    {
+      hideInSearch: true,
+      valueType: 'date',
+      title: '进场日期',
+      dataIndex: 'entryDate',
+    },
+    {
+      hideInSearch: true,
+      title: '所属单位',
+      dataIndex: 'companyName',
+      valueType: 'select',
+      fieldProps: {
+        options: subcontractorList,
+      },
+    },
     {
       width: 120,
       hideInSearch: true,
@@ -126,50 +159,6 @@ export default ({ server }: MenusPropsType) => {
       editable: false,
       title: '身份证号',
       dataIndex: 'identityCard',
-    },
-    {
-      width: 80,
-      hideInSearch: true,
-      title: '民族',
-      ellipsis: true,
-      dataIndex: 'nationality',
-      render: (_, record) => (
-        <DictText
-          value={record.nationality}
-          dictKey={`pm_nationality`}
-        />
-      ),
-    },
-    {
-      hideInSearch: true,
-      title: '出生日期',
-      dataIndex: 'birthday',
-    },
-    {
-      title: '电话号码',
-      dataIndex: 'phone',
-      hideInSearch: true,
-    },
-    {
-      title: '家庭住址',
-      // key: 'address',
-      dataIndex: 'address',
-      hideInSearch: true,
-    },
-    {
-      hideInSearch: true,
-      valueType: 'date',
-      title: '进场日期',
-      dataIndex: 'entryDate',
-    },
-    {
-      hideInSearch: true,
-      title: '所属单位',
-      dataIndex: 'companyName',
-      valueType: 'select',
-      fieldProps: {
-        options: subcontractorList,
-      },
     },
     {
       hideInSearch: true,
@@ -210,6 +199,17 @@ export default ({ server }: MenusPropsType) => {
           dictKey={`pm_is_team_leader`}
         />
       ),
+    },
+    {
+      title: '电话号码',
+      dataIndex: 'phone',
+      hideInSearch: true,
+    },
+    {
+      title: '家庭住址',
+      // key: 'address',
+      dataIndex: 'address',
+      hideInSearch: true,
     },
     // {
     //   hideInSearch: true,

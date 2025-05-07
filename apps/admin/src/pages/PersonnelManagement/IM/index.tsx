@@ -151,7 +151,8 @@ export default () => {
   const { tabNavigate } = useRoute();
 
   useEffect(() => {
-    PMIM.deletePersonnelInfo().then((res) => {
+    notification.destroy();
+    PMIM.getOverAgeAndNotCertificatedCount().then((res) => {
       notification.warning({
         message: '请注意!',
         description: (
