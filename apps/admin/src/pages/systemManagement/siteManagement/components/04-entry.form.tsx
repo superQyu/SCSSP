@@ -12,14 +12,17 @@ import dayjs from 'dayjs';
 import { ToString } from '@/utils/transform';
 
 import DictSelect from '@/components/DictSelect';
-import { FormColumnsTypes, AdForm } from 'components';
+import { FormColumnsTypes, AdForm, ProUpload } from 'components';
 import AsyncSelect from '@/components/DictSelect/AsyncSelect';
 import SingleTitle from '@/components/SingleTitle';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import type { UploadFile } from 'antd';
 
 interface Props {
   /** 表单初始化 */
   detail: Record<string, any>;
+  /** 图片数组 */
+  educatedProveUrl: string[];
 }
 
 const CustomsDiv = styled.div`
@@ -33,15 +36,19 @@ const CustomsDiv = styled.div`
 `;
 
 const EntryCom: React.FC<Props> = forwardRef(
-  ({ detail }: Props, ref) => {
+  ({ detail, educatedProveUrl }: Props, ref) => {
     const { server } = useBasicConfiguration();
-    const { group } = server;
+    const { group, file } = server;
     const formRef = useRef<FormInstance>(null);
 
     const [formKey, _] = useState<string>('entryInfoSaveReqVO');
     const [subForm, setSubForm] = useState({});
     // 单位选择下拉
     const [groupList, setGroupList] = useState([]);
+    // 用来初始化图片列表的初始值
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
+    /** 是否选择三级教育 */
+    const [isEducated, setIsEducated] = useState<number>();
 
     useEffect(() => {
       getSelectOptions();
@@ -64,6 +71,20 @@ const EntryCom: React.FC<Props> = forwardRef(
         subForm.governmentPlatformUpload = ToString(
           subForm.governmentPlatformUpload
         );
+
+        subForm.educatedProveUrl =
+          subForm.educatedProveUrl?.split('@');
+        const list = subForm.educatedProveUrl?.map(
+          (item: string, index: number) => {
+            return {
+              uid: `${index}`,
+              name: item?.split('/')?.slice(-1)[0],
+              url: item,
+            };
+          }
+        );
+        // console.log('当前list', list);
+        setFileList(list);
         // console.log('subForm', subForm);
         setSubForm(subForm);
       }
@@ -205,9 +226,43 @@ const EntryCom: React.FC<Props> = forwardRef(
                 value: 0,
               },
             ]}
+            onChange={(value) => {
+              setIsEducated(value);
+            }}
           />
         ),
         colNum: 8,
+      },
+      {
+        show: isEducated == 1,
+        label: '图片上传',
+        dataIndex: 'educatedProveUrl',
+        colNum: 8,
+        formItemProps: {
+          rules: [
+            {
+              required: isEducated == 1,
+              message: '请上传三级教育图片',
+            },
+          ],
+        },
+        formItem: (
+          <ProUpload
+            key={fileList?.length}
+            onRequest={async (params: any) =>
+              await file.fileUpload(params)
+            }
+            onListChange={(res: any) => {
+              // console.log('文件列表改变', res);
+              const list = res?.map((item: any) => item.url);
+              formRef.current?.setFieldsValue({
+                // 证件图片
+                educatedProveUrl: list,
+              });
+            }}
+            defaultFileList={() => fileList}
+          />
+        ),
       },
       // {
       //   label: '加入公会时间',
