@@ -207,10 +207,20 @@ export default () => {
         actionRef={actionRef}
         rowClassName={(record) => {
           if (
-            record.isOverAge == 1 ||
+            record.isOverAge == 1 &&
             record.isCertificated == 0
           ) {
             return 'color-red';
+          } else if (
+            record.isOverAge == 1 &&
+            record.isCertificated == 1
+          ) {
+            return 'color-yellow';
+          } else if (
+            record.isOverAge == 0 &&
+            record.isCertificated == 0
+          ) {
+            return 'color-orange';
           } else {
             return '';
           }
@@ -270,7 +280,15 @@ export default () => {
           pageSize: 30,
         }}
         rowKey="id"
-        headerTitle="人员管理"
+        headerTitle={
+          <>
+            <div>人员管理</div>
+            <Styled.Tooltip>
+              黄色表示超龄, 橙色表示证书缺失,
+              红色表示既超龄也缺失证书
+            </Styled.Tooltip>
+          </>
+        }
         columnsState={{
           persistenceKey: 'pro-table-pm-im',
           persistenceType: 'localStorage',

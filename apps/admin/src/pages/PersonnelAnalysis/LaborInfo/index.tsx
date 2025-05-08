@@ -44,7 +44,7 @@ export default () => {
   };
 
   return (
-    <Row className="h-full">
+    <Row className="h-50%">
       <Col span={10} className="h-full">
         {/* <div className="grid grid-rows-3  gap-5 h-full color-#333"> */}
         <div className="flex flex-col justify-center h-full color-#333">
