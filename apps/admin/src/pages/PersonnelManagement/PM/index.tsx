@@ -65,7 +65,7 @@ export default () => {
         }}
         actionRef={actionRef}
         scroll={{ x: 1900, y: 'auto' }}
-        onSubmit={async (params: {}) => {}}
+        onSubmit={async (params: {}) => { }}
         pagination={{
           pageSize: 30,
         }}
@@ -74,7 +74,7 @@ export default () => {
         columnsState={{
           persistenceKey: 'pro-table-pm-pm',
           persistenceType: 'localStorage',
-          onChange(_: any) {},
+          onChange(_: any) { },
         }}
         form={{
           syncToUrl: (values: any, _: string) => ({ ...values }),
@@ -103,7 +103,9 @@ export default () => {
             key="button"
             icon={<PlusOutlined />}
             onClick={() => {
-              setSubForm({});
+              const localStorageData = localStorage.getItem('formData')
+              console.log('nwe',localStorageData)
+              setSubForm(localStorageData ? JSON.parse(localStorageData) : {});
               setFormModal(true);
             }}
             type="primary"
@@ -126,6 +128,7 @@ export default () => {
                   setFullLoding(true);
                   const res = await P.getProjectUnity({ id: record.id });
                   setFullLoding(false);
+                  console.log('在修改', { ...res })
                   setSubForm({ ...res });
                   setFormModal(true);
                 }}
@@ -148,9 +151,9 @@ export default () => {
                         await P.deleteProjectUnity({ id: record.id });
                         action.reload();
                       },
-                      onCancel() {},
+                      onCancel() { },
                     });
-                  } catch (errorInfo) {}
+                  } catch (errorInfo) { }
                 }}
               >
                 删除

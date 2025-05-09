@@ -31,13 +31,13 @@ export default ({ server }: MenusPropsType) => {
       dataIndex: 'index',
       fixed: 'left',
       ellipsis: true,
-      width: 170,
+      width: 80,
     },
     {
       title: '单位类型',
       dataIndex: 'subcontractorType',
       ellipsis: true,
-      width: 170,
+      width: 120,
       render: (_, record) => {
         return <DictText value={record.subcontractorType} dictKey="subcontractor_type" />;
       },
@@ -49,59 +49,86 @@ export default ({ server }: MenusPropsType) => {
       title: '单位名称',
       dataIndex: 'realName',
       ellipsis: true,
-      width: 170,
+      width: 200,
       order: 1,
     },
     {
       title: '统一社会信用代码',
       dataIndex: 'corpCode',
       ellipsis: true,
-      width: 170,
+      width: 200,
       hideInSearch: true,
     },
     {
-      title: '法人',
-      dataIndex: 'legalRepresentative',
+      title: '所属省',
+      dataIndex: 'province',
       ellipsis: true,
-      width: 170,
+      width: 100,
       hideInSearch: true,
+    },
+
+    {
+      title: '所属市',
+      dataIndex: 'city',
+      ellipsis: true,
+      width: 100,
+      hideInSearch: true,
+
     },
     {
-      title: '注册资金(万元)',
-      dataIndex: 'registeredCapital',
+      title: '参建单位类型',
+      dataIndex: 'corpType',
       ellipsis: true,
-      width: 170,
+      width: 120,
       hideInSearch: true,
+      render: (_, record) => {
+        return <DictText value={record.corpType} dictKey="corp_type" />;
+      },
     },
-    {
-      title: '地址',
-      dataIndex: 'unitAddress',
-      ellipsis: true,
-      width: 170,
-      hideInSearch: true,
-    },
+
+    // {
+    //   title: '法人',
+    //   dataIndex: 'legalRepresentative',
+    //   ellipsis: true,
+    //   width: 170,
+    //   hideInSearch: true,
+    // },
+    // {
+    //   title: '注册资金(万元)',
+    //   dataIndex: 'registeredCapital',
+    //   ellipsis: true,
+    //   width: 170,
+    //   hideInSearch: true,
+    // },
+    // {
+    //   title: '地址',
+    //   dataIndex: 'unitAddress',
+    //   ellipsis: true,
+    //   width: 170,
+    //   hideInSearch: true,
+    // },
     {
       title: '联系人',
       dataIndex: 'principal',
       ellipsis: true,
-      width: 170,
+      width: 130,
       hideInSearch: true,
     },
-    {
-      title: '联系电话',
-      dataIndex: 'principalTel',
-      ellipsis: true,
-      width: 170,
-      hideInSearch: true,
-    },
-    {
-      title: '公司简称简拼',
-      dataIndex: 'nameSpell',
-      ellipsis: true,
-      width: 170,
-      hideInSearch: true,
-      editable: false,
-    },
+    // {
+    //   title: '联系电话',
+    //   dataIndex: 'principalTel',
+    //   ellipsis: true,
+    //   width: 170,
+    //   hideInSearch: true,
+    // },
+    // {
+    //   title: '公司简称简拼',
+    //   dataIndex: 'nameSpell',
+    //   ellipsis: true,
+    //   width: 170,
+    //   hideInSearch: true,
+    //   editable: false,
+    // },
   ];
 
   return columns;

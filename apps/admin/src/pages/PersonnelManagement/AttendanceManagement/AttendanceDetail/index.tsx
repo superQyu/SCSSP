@@ -30,7 +30,7 @@ export default () => {
 
   const initColumns = siteModel({ server, month });
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   return (
     <>
@@ -67,7 +67,7 @@ export default () => {
         columnsState={{
           persistenceKey: 'pro-table-singe-role',
           persistenceType: 'localStorage',
-          onChange(_: any) {},
+          onChange(_: any) { },
         }}
         pagination={{
           pageSize: 30,

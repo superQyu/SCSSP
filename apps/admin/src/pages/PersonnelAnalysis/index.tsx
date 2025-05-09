@@ -98,7 +98,7 @@ export default () => {
               defaultValue="1"
             >
               <Radio.Button value="1">工种</Radio.Button>
-              <Radio.Button value="2">班组</Radio.Button>
+              {/* <Radio.Button value="2">班组</Radio.Button> */}
             </Radio.Group>
           }
         >
