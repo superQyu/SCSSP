@@ -7,11 +7,12 @@ import {
   TableDropdown,
   type ProColumns,
 } from '@ant-design/pro-components';
-import { message, Avatar, Tag } from 'antd';
+import { message, Avatar, Tag, Select } from 'antd';
 
 import { IconSelect, IconShow } from 'ui';
 import DictSelect from '@/components/DictSelect';
 import DictText from '@/components/DictSelect/DictText';
+import { useEffect, useState } from 'react';
 
 type objJson = Record<string, any>;
 
@@ -32,7 +33,22 @@ const url =
   'https://img1.baidu.com/it/u=1377073336,1053961489&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500';
 
 export default ({ server }: MenusPropsType) => {
-  const { menus: M } = server as objJson;
+  const { menus: M, subContractor } = server as objJson;
+
+  const [subcontractorList, setSubcontractorList] = useState([]);
+
+  // 通过接口获取下拉框的内容
+  const getSelectOptions = async () => {
+    const res1 = await subContractor.getAllSubContractor();
+    const list1 = res1.map((item: any) => {
+      return { label: item.realName, value: `${item.id}` };
+    });
+    setSubcontractorList(list1);
+  };
+
+  useEffect(() => {
+    getSelectOptions();
+  }, []);
 
   const columns: ProColumns[] = [
     {
@@ -69,6 +85,65 @@ export default ({ server }: MenusPropsType) => {
       ellipsis: true,
     },
     {
+      title: '是否超龄',
+      dataIndex: 'isOverAge',
+      hideInTable: true,
+      valueEnum: {
+        0: {
+          text: '否',
+        },
+        1: {
+          text: '是',
+        },
+      },
+    },
+    {
+      title: '是否有证书',
+      dataIndex: 'isCertificated',
+      hideInTable: true,
+      valueEnum: {
+        0: {
+          text: '否',
+        },
+        1: {
+          text: '是',
+        },
+      },
+    },
+    // {
+    //   width: 80,
+    //   hideInSearch: true,
+    //   title: '民族',
+    //   ellipsis: true,
+    //   dataIndex: 'nationality',
+    //   render: (_, record) => (
+    //     <DictText
+    //       value={record.nationality}
+    //       dictKey={`pm_nationality`}
+    //     />
+    //   ),
+    // },
+    // {
+    //   hideInSearch: true,
+    //   title: '出生日期',
+    //   dataIndex: 'birthday',
+    // },
+    {
+      hideInSearch: true,
+      valueType: 'date',
+      title: '进场日期',
+      dataIndex: 'entryDate',
+    },
+    {
+      hideInSearch: true,
+      title: '所属单位',
+      dataIndex: 'companyName',
+      valueType: 'select',
+      fieldProps: {
+        options: subcontractorList,
+      },
+    },
+    {
       width: 120,
       hideInSearch: true,
       title: '性别',
@@ -84,44 +159,6 @@ export default ({ server }: MenusPropsType) => {
       editable: false,
       title: '身份证号',
       dataIndex: 'identityCard',
-    },
-    {
-      width: 80,
-      hideInSearch: true,
-      title: '民族',
-      ellipsis: true,
-      dataIndex: 'nationality',
-      render: (_, record) => (
-        <DictText
-          value={record.nationality}
-          dictKey={`pm_nationality`}
-        />
-      ),
-    },
-    {
-      hideInSearch: true,
-      title: '出生日期',
-      dataIndex: 'birthday',
-    },
-    {
-      title: '电话号码',
-      dataIndex: 'phone',
-    },
-    {
-      title: '家庭住址',
-      // key: 'address',
-      dataIndex: 'address',
-    },
-    {
-      hideInSearch: true,
-      valueType: 'date',
-      title: '进场日期',
-      dataIndex: 'entryDate',
-    },
-    {
-      hideInSearch: true,
-      title: '所属单位',
-      dataIndex: 'companyName',
     },
     {
       hideInSearch: true,
@@ -162,6 +199,17 @@ export default ({ server }: MenusPropsType) => {
           dictKey={`pm_is_team_leader`}
         />
       ),
+    },
+    {
+      title: '电话号码',
+      dataIndex: 'phone',
+      hideInSearch: true,
+    },
+    {
+      title: '家庭住址',
+      // key: 'address',
+      dataIndex: 'address',
+      hideInSearch: true,
     },
     // {
     //   hideInSearch: true,

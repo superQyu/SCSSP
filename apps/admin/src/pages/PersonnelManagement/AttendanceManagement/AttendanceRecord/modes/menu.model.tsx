@@ -55,10 +55,10 @@ export default ({ server }: MenusPropsType) => {
     },
     // {
     //   hideInTable: true,
-    //   title: '分包单位',
+    //   title: '单位',
     //   dataIndex: 'subcontractorId',
     //   renderFormItem: () => {
-    //     return <Select placeholder="请选择分包单位" options={subcontractorList} allowClear />;
+    //     return <Select placeholder="请选择单位" options={subcontractorList} allowClear />;
     //   },
     // },
     // {
@@ -100,14 +100,14 @@ export default ({ server }: MenusPropsType) => {
       },
     },
     {
-      width: 180,
+      // width: 180,
       hideInSearch: true,
       title: '证件号码',
       dataIndex: 'identityCard',
     },
 
     {
-      width: 150,
+      // width: 150,
       hideInSearch: true,
       title: '打卡时间',
       render: (_, record) => (
@@ -142,28 +142,28 @@ export default ({ server }: MenusPropsType) => {
         );
       },
     },
-    {
-      hideInSearch: true,
-      title: '体温',
-      dataIndex: 'temperature',
-    },
+    // {
+    //   hideInSearch: true,
+    //   title: '体温',
+    //   dataIndex: 'temperature',
+    // },
 
-    {
-      hideInSearch: true,
-      title: '酒精含量',
-      dataIndex: 'alcoholContent',
-    },
+    // {
+    //   hideInSearch: true,
+    //   title: '酒精含量',
+    //   dataIndex: 'alcoholContent',
+    // },
 
-    {
-      hideInSearch: true,
-      title: '血压',
-      dataIndex: 'bloodPressure',
-    },
-    {
-      hideInSearch: true,
-      title: '血氧',
-      dataIndex: 'bloodOxygen',
-    },
+    // {
+    //   hideInSearch: true,
+    //   title: '血压',
+    //   dataIndex: 'bloodPressure',
+    // },
+    // {
+    //   hideInSearch: true,
+    //   title: '血氧',
+    //   dataIndex: 'bloodOxygen',
+    // },
   ];
 
   return columns;

@@ -19,19 +19,26 @@ import {
   Space,
   Table,
   Alert,
+  Modal,
   Popconfirm,
+  Upload,
+  notification,
 } from 'antd';
+import type { UploadProps } from 'antd';
 import Styled from '@/components/Styled';
 
 import {
   PlusOutlined,
   SearchOutlined,
   UploadOutlined,
+  DownloadOutlined,
+  InboxOutlined,
 } from '@ant-design/icons';
 
 import { useAppSelector } from 'hooks';
 
 const { RangePicker } = DatePicker;
+const { Dragger } = Upload;
 
 const valueEnum = {
   0: 'close',
@@ -97,16 +104,45 @@ import PMmodel, {
   type ColumnsParamsProps,
 } from './modes/PM.model';
 
+const uploadProps: UploadProps = {
+  name: 'file',
+  multiple: true,
+  action:
+    'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
+  onChange(info) {
+    const { status } = info.file;
+    if (status !== 'uploading') {
+      console.log(info.file, info.fileList);
+    }
+    if (status === 'done') {
+      message.success(
+        `${info.file.name} file uploaded successfully.`
+      );
+    } else if (status === 'error') {
+      message.error(`${info.file.name} file upload failed.`);
+    }
+  },
+  onDrop(e) {
+    console.log('Dropped files', e.dataTransfer.files);
+  },
+};
+
 export default () => {
   const {
     common: { dictionary },
   } = useAppSelector((state) => state) as {
     common: { dictionary: Record<string, any> };
   };
+  const [api, contextHolder2] = notification.useNotification();
+
+  const [modal, contextHolder] = Modal.useModal();
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [openApi, setOpenApi] = useState<boolean>(false);
+
   const actionRef = useRef<ActionType>();
   const { server } = useBasicConfiguration();
   //  api server
-  const { PMIM: P, menus: M } = server;
+  const { PMIM, menus: M } = server;
 
   // 初始化 表格列表项
   const initColumns = PMmodel({ server });
@@ -114,9 +150,31 @@ export default () => {
   // 路由跳转
   const { tabNavigate } = useRoute();
 
+  useEffect(() => {
+    notification.destroy();
+    PMIM.getOverAgeAndNotCertificatedCount().then((res) => {
+      notification.warning({
+        message: '请注意!',
+        description: (
+          <div className="font-size-18px color-red">
+            <div>
+              <span className="mr-3">超龄人数</span>
+              <span>{res.overAgeCount}人</span>
+            </div>
+            <div>
+              <span className="mr-3">证书缺失人数</span>
+              <span>{res.notCertificatedCount}人</span>
+            </div>
+          </div>
+        ),
+        duration: 0,
+      });
+    });
+  }, []);
+
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await P.deletePersonnelInfo({ id: id }).then(
+    const res = await PMIM.deletePersonnelInfo({ id: id }).then(
       async () => {
         message.success('操作成功!');
         await actionRef.current?.reload();
@@ -136,14 +194,41 @@ export default () => {
     });
     return res;
   };
+  // 点击取消
+  const handleCancel = () => {
+    setOpenModal(false);
+  };
 
   return (
     <>
       {/* <Alert message="表格字典为同步" type="warning" showIcon /> */}
+      {contextHolder}
       <ProTable
         actionRef={actionRef}
+        rowClassName={(record) => {
+          if (
+            record.isOverAge == 1 &&
+            record.isCertificated == 0
+          ) {
+            return 'color-red';
+          } else if (
+            record.isOverAge == 1 &&
+            record.isCertificated == 1
+          ) {
+            return 'color-yellow';
+          } else if (
+            record.isOverAge == 0 &&
+            record.isCertificated == 0
+          ) {
+            return 'color-orange';
+          } else {
+            return '';
+          }
+        }}
         request={async (params = {}) => {
-          const res = await P.personnelInfoList({ ...params });
+          const res = await PMIM.personnelInfoList({
+            ...params,
+          });
           return {
             ...params,
             data: res.list,
@@ -171,7 +256,7 @@ export default () => {
                   tabNavigate({
                     namePath: `项目人员管理/人员详情${record.id}`,
                     routePath: `/PersonDetail/?id=${record.id}`,
-                    activeMenu: '/PM/IM'
+                    activeMenu: '/PM/IM',
                   });
                 }}
               >
@@ -195,7 +280,15 @@ export default () => {
           pageSize: 30,
         }}
         rowKey="id"
-        headerTitle="人员管理"
+        headerTitle={
+          <>
+            <div>人员管理</div>
+            <Styled.Tooltip>
+              黄色表示超龄, 橙色表示证书缺失,
+              红色表示既超龄也缺失证书
+            </Styled.Tooltip>
+          </>
+        }
         columnsState={{
           persistenceKey: 'pro-table-pm-im',
           persistenceType: 'localStorage',
@@ -227,6 +320,13 @@ export default () => {
           },
         }}
         toolBarRender={() => [
+          <Styled.ImportButton
+            key="button"
+            onClick={() => {
+              setOpenModal(true);
+            }}
+            type="primary"
+          />,
           <Styled.ExportButton
             api="exportPersonnelInfo"
             fileName="人员信息导出"
@@ -236,9 +336,14 @@ export default () => {
             icon={<PlusOutlined />}
             onClick={() => {
               // console.log(dictionary);
+              // tabNavigate({
+              //   namePath: '项目人员管理/信息采集',
+              //   routePath: '/PM/IA',
+              // });
               tabNavigate({
-                namePath: '项目人员管理/信息采集',
-                routePath: '/PM/IA',
+                namePath: `项目人员管理/信息采集`,
+                routePath: `/PersonDetail`,
+                activeMenu: '/PM/IM',
               });
             }}
             type="primary"
@@ -247,6 +352,53 @@ export default () => {
           </Button>,
         ]}
       />
+      <Modal
+        open={openModal}
+        title={
+          <div className="flex items-center">
+            <div>上传文件</div>
+            <div className="ml-3">
+              <Button
+                key="button"
+                icon={<DownloadOutlined />}
+                onClick={() => {
+                  console.log('下载');
+                }}
+                type="primary"
+              >
+                下载数据模板
+              </Button>
+            </div>
+          </div>
+        }
+        width={1000}
+        onCancel={handleCancel}
+        maskClosable={false}
+        footer={null}
+      >
+        <div>
+          <Dragger {...uploadProps}>
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">
+              点击或拖拽文件至此区域进行上传
+            </p>
+          </Dragger>
+          <div className="flex justify-center mt-3">
+            <Button
+              key="button"
+              icon={<DownloadOutlined />}
+              onClick={() => {
+                console.log('下载');
+              }}
+              type="primary"
+            >
+              确认导入
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 };

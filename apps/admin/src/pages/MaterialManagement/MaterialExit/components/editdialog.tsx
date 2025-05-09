@@ -50,7 +50,7 @@ export default ({
     editableFormRef
   );
 
-  // 分包商信息表单的默认值
+  // 单位信息表单的默认值
   const [formData, setFormData] = useState<MenusType>({
     exitDate: detail.exitDate && dayjs(detail.exitDate),
     exitPersonnel: detail.exitPersonnel,

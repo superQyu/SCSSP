@@ -19,6 +19,11 @@ interface Props {
   tableData?: any[];
   /** 是否可以新增表格行 */
   noCreate?: boolean;
+  /**
+   * 流程状态
+   *
+   */
+  status?: string;
 }
 
 export default (props: Props) => {
@@ -101,45 +106,73 @@ export default (props: Props) => {
             record: any,
             _: any,
             action: any
-          ) => [
-            <a
-              key="editable"
-              onClick={async () => {
-                // console.log('点击了编辑')
-                setAttachment(record.attachment);
-                setAcceptAttachment(record.acceptAttachment);
-                // 开启行编辑
-                await action?.startEditable?.(record.id);
-                // 设置是否展示上传按钮
-                setShowUploadButton(true);
-                // 展开该行
-                // 获取当前编辑的行 id
-                const id = tableRef.current.getCurrentRow();
-                if (record.id == id) {
-                  // 如果当前编辑行的id 和 点击编辑的那一行是同一行
-                  tableRef.current.setExpandedRow(id);
-                }
-              }}
-            >
-              编辑
-            </a>,
-            <>
-              {!props.noCreate && (
-                <Popconfirm
-                  key="delete"
-                  title="删除此项"
-                  onConfirm={() => {
-                    // console.log('tableRef', tableRef);
-                    tableRef.current?.removeRow(record);
+          ) => {
+            if (props.status == '0') {
+              return [
+                <a
+                  key="editable"
+                  onClick={async () => {
+                    // console.log('点击了编辑')
+                    setAttachment(record.attachment);
+                    setAcceptAttachment(record.acceptAttachment);
+                    // 开启行编辑
+                    await action?.startEditable?.(record.id);
+                    // 设置是否展示上传按钮
+                    setShowUploadButton(true);
+                    // 展开该行
+                    // 获取当前编辑的行 id
+                    const id = tableRef.current.getCurrentRow();
+                    if (record.id == id) {
+                      // 如果当前编辑行的id 和 点击编辑的那一行是同一行
+                      tableRef.current.setExpandedRow(id);
+                    }
                   }}
-                  okText="确认"
-                  cancelText="取消"
                 >
-                  <a>删除</a>
-                </Popconfirm>
-              )}
-            </>,
-          ],
+                  编辑
+                </a>,
+                <div key="delete">
+                  <Popconfirm
+                    key="delete"
+                    title="删除此项"
+                    onConfirm={() => {
+                      // console.log('tableRef', tableRef);
+                      tableRef.current?.removeRow(record);
+                    }}
+                    okText="确认"
+                    cancelText="取消"
+                  >
+                    <a>删除</a>
+                  </Popconfirm>
+                </div>,
+              ];
+            } else if (props.status == '11') {
+              return [];
+            } else {
+              return [
+                <a
+                  key="editable"
+                  onClick={async () => {
+                    // console.log('点击了编辑')
+                    setAttachment(record.attachment);
+                    setAcceptAttachment(record.acceptAttachment);
+                    // 开启行编辑
+                    await action?.startEditable?.(record.id);
+                    // 设置是否展示上传按钮
+                    setShowUploadButton(true);
+                    // 展开该行
+                    // 获取当前编辑的行 id
+                    const id = tableRef.current.getCurrentRow();
+                    if (record.id == id) {
+                      // 如果当前编辑行的id 和 点击编辑的那一行是同一行
+                      tableRef.current.setExpandedRow(id);
+                    }
+                  }}
+                >
+                  编辑
+                </a>,
+              ];
+            }
+          },
         },
       ]}
       request={async (params = {}) => {
@@ -157,7 +190,7 @@ export default (props: Props) => {
       search={false}
       toolBarRender={() => [
         <>
-          {!props.noCreate && (
+          {props.status == '0' && (
             <Button
               icon={<PlusOutlined />}
               onClick={async () => {

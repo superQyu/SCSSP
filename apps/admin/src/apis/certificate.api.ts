@@ -34,7 +34,7 @@ const certificate: ApiItem[] = [
       // 暂定以信息采集为准
       // 0：项目管理；1：安全员；2：特殊工种)
       { key: 'certificateCategory', cn: '证书分类(tab)' },
-      { key: 'subcontractorId', cn: '分包单位' },
+      { key: 'subcontractorId', cn: '单位' },
       { key: 'userId', cn: '隶属人员名称' },
       { key: 'current', targetKey: 'pageNo' },
       { key: 'pageSize' },

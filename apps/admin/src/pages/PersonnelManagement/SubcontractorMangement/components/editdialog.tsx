@@ -32,14 +32,19 @@ export default (props: Props) => {
 
   const [open, setOpen] = useState<boolean>(openModal);
   const [loading, setLoading] = useState<boolean>(false);
+  // 对传入的图片进行控制
+  const [picture, setPicture] = useState<string[]>([]);
 
   const subFormRef = useRef<FormInstance>(null);
   const addressFormRef = useRef<FormInstance>(null);
 
   // 表单项配置
-  const { subColumns, addressColumns } = initColumns(subFormRef);
+  const { subColumns, addressColumns } = initColumns(
+    subFormRef,
+    picture
+  );
 
-  // 分包商信息表单的默认值
+  // 单位信息表单的默认值
   const [subInitialValues] = useState<MenusType>({
     realName: detail.realName,
     shortName: detail.shortName,
@@ -61,6 +66,7 @@ export default (props: Props) => {
     quality: detail.quality,
     nameSpell: detail.nameSpell,
     corpCode: detail.corpCode,
+    url: detail.url,
   });
   // 注册地信息表单的默认值
   const [addressInitialValues] = useState<MenusType>({
@@ -72,6 +78,7 @@ export default (props: Props) => {
 
   useEffect(() => {
     setOpen(openModal);
+    detail.url && setPicture(detail.url?.split('@'));
   }, [openModal]);
 
   // 点击重置
@@ -87,12 +94,22 @@ export default (props: Props) => {
   // 点击保存
   const handleOk = async () => {
     try {
-      const subFormValues: MenusType = await subFormRef.current?.validateFields();
-      const addressFormValues: MenusType = await addressFormRef.current?.validateFields();
-      const params = { id: detail.id, ...subFormValues, ...addressFormValues };
-      // console.log('创建分包商的请求参数', params)
+      const subFormValues: MenusType =
+        await subFormRef.current?.validateFields();
+      subFormValues.url =
+        subFormValues.url && subFormValues.url?.join('@');
+      const addressFormValues: MenusType =
+        await addressFormRef.current?.validateFields();
+      const params = {
+        id: detail.id,
+        ...subFormValues,
+        ...addressFormValues,
+      };
+      // console.log('创建单位的请求参数', params)
       setLoading(true);
-      subContractor[detail.id ? 'updateSubContractor' : 'createSubContractor'](params)
+      subContractor[
+        detail.id ? 'updateSubContractor' : 'createSubContractor'
+      ](params)
         .then(() => {
           message.success('操作成功！');
           setLoading(false);
@@ -127,18 +144,35 @@ export default (props: Props) => {
         onCancel={handleCancel}
         maskClosable={false}
         footer={[
-          <Button key="back" onClick={handleCancel} disabled={loading}>
+          <Button
+            key="back"
+            onClick={handleCancel}
+            disabled={loading}
+          >
             取消
           </Button>,
-          <Button key="reset" htmlType="reset" onClick={onReset} disabled={loading}>
+          <Button
+            key="reset"
+            htmlType="reset"
+            onClick={onReset}
+            disabled={loading}
+          >
             重置
           </Button>,
-          <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
+          <Button
+            key="submit"
+            type="primary"
+            loading={loading}
+            onClick={handleOk}
+          >
             {detail.id ? '更新' : '提交'}
           </Button>,
         ]}
       >
-        <div className="h-70vh p-inline-4" style={{ overflow: 'hidden auto' }}>
+        <div
+          className="h-70vh p-inline-4"
+          style={{ overflow: 'hidden auto' }}
+        >
           <AdForm
             loadingTitle="提交中..."
             formRef={subFormRef}
@@ -147,16 +181,15 @@ export default (props: Props) => {
             labelAlign="left"
             columns={subColumns}
           />
-          <SingleTitle label="注册地" />
-          {/* <div>注册地</div> */}
-          <AdForm
+          {/* <SingleTitle label="注册地" /> */}
+          {/* <AdForm
             loadingTitle="提交中..."
             formRef={addressFormRef}
             initialValues={addressInitialValues}
             loading={loading}
             labelAlign="left"
             columns={addressColumns}
-          />
+          /> */}
         </div>
       </Modal>
     </>

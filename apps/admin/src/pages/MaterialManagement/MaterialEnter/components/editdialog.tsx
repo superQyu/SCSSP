@@ -64,7 +64,7 @@ export default (props: Props) => {
     props.status
   );
 
-  // 分包商信息表单的默认值
+  // 单位信息表单的默认值
   const [formData, setFormData] = useState<MenusType>({
     carNo: detail.carNo,
     enterDate: detail.enterDate && dayjs(detail.enterDate),
@@ -159,7 +159,7 @@ export default (props: Props) => {
         });
       } catch (error: any) {
         message.error(error.message);
-        return
+        return;
       }
     }
     const values = {
@@ -168,22 +168,39 @@ export default (props: Props) => {
     };
     // console.log('表单提交时的数据', values);
     setLoading(true);
-    let api;
-    if (props.status == '0') {
-      api = detail.id ? 'updateEnter' : 'createEnter';
+    if (props.status == '11') {
+      materialEnter
+        .materialExamine({
+          materialsEnterId: detail.id,
+          isConfirm: '通过',
+        })
+        .then(() => {
+          message.success('操作成功！');
+          setLoading(false);
+          onStateChange(false);
+          onReset();
+        })
+        .catch(() => {
+          setLoading(false);
+        });
     } else {
-      api = 'materialAccept';
+      let api;
+      if (props.status == '0') {
+        api = detail.id ? 'updateEnter' : 'createEnter';
+      } else {
+        api = 'materialAccept';
+      }
+      materialEnter[api](values)
+        .then(() => {
+          message.success('操作成功！');
+          setLoading(false);
+          onStateChange(false);
+          onReset();
+        })
+        .catch(() => {
+          setLoading(false);
+        });
     }
-    materialEnter[api](values)
-      .then(() => {
-        message.success('操作成功！');
-        setLoading(false);
-        onStateChange(false);
-        onReset();
-      })
-      .catch(() => {
-        setLoading(false);
-      });
   };
 
   // 点击取消
@@ -358,9 +375,9 @@ export default (props: Props) => {
               />
             </div>
           </div>
-
           <EditTable
             noCreate={props.status == '0' ? false : true}
+            status={props.status}
             actionRef={actionTableRef}
             tableRef={tableRef}
             editableFormRef={editableFormRef}

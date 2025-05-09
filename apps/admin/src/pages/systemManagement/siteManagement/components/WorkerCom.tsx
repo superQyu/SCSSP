@@ -112,7 +112,9 @@ const FunctionCom: React.FC<Props> = forwardRef(
           };
         });
       } else {
-        const { list } = await P.workType();
+        const { list } = await P.workType({
+          pageSize: -1
+        });
         options = list.map((item: workTypeItem) => {
           return {
             label: item.name,
@@ -292,6 +294,12 @@ const FunctionCom: React.FC<Props> = forwardRef(
     const setFormModal = (value: boolean) => setOpen(value);
 
     useEffect(() => {
+      // setOpen(true);
+      // setOpen(false);
+      init('workTypeId')
+    }, []);
+
+    useEffect(() => {
       if (fileList.length > (collapseItem?.length as number)) {
         // console.log('fileList 增加', fileList, collapseItem.current);
         const newFileList = fileList?.filter((newI) => {
@@ -325,10 +333,16 @@ const FunctionCom: React.FC<Props> = forwardRef(
     }, [delIndex]);
 
     useEffect(() => {
-      const key =
-        subForm.workerType == '2' ? 'jobCategory' : 'workTypeId';
-      setFunctionKey(key);
-      init(key);
+      // setOpen(true);
+      // setOpen(false);
+      if (subForm?.workerType) {
+        const key =
+          subForm.workerType == '2'
+            ? 'jobCategory'
+            : 'workTypeId';
+        setFunctionKey(key);
+        init(key);
+      }
     }, [subForm]);
 
     useEffect(() => {
@@ -362,12 +376,14 @@ const FunctionCom: React.FC<Props> = forwardRef(
     }, [detail]);
 
     useImperativeHandle(ref, () => ({
+      form: formRef.current,
       resetAll,
       setFormModal,
     }));
 
     return (
       <Modal
+        forceRender={true}
         open={open}
         title={title}
         onOk={handleOk}

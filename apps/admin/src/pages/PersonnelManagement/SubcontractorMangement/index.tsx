@@ -23,7 +23,8 @@ export default () => {
   const initColumns = siteModel({ server });
   const actionRef = useRef<ActionType>();
 
-  const [dialogVisible, setDialogVisible] = useState<boolean>(false);
+  const [dialogVisible, setDialogVisible] =
+    useState<boolean>(false);
   const [detail, setDetail] = useState({});
 
   // 修改表单打开关闭状态
@@ -35,17 +36,19 @@ export default () => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    // console.log('编辑分包商时的参数', params);
+    // console.log('编辑单位时的参数', params);
     const res = await subContractor.updateSubContractor(params);
     return res;
   };
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await subContractor.deleteSubContractor({ id }).then(async () => {
-      message.success('信息删除成功！');
-      await actionRef.current?.reload();
-    });
+    const res = await subContractor
+      .deleteSubContractor({ id })
+      .then(async () => {
+        message.success('信息删除成功！');
+        await actionRef.current?.reload();
+      });
     return res;
   };
 
@@ -53,7 +56,7 @@ export default () => {
     <>
       <ProTable
         actionRef={actionRef}
-        headerTitle="分包商列表"
+        headerTitle="单位列表"
         columns={[
           ...initColumns,
           {
@@ -62,7 +65,12 @@ export default () => {
             fixed: 'right',
             valueType: 'option',
             dataIndex: 'option',
-            render: (_text: any, record: any, _: any, action: any) => [
+            render: (
+              _text: any,
+              record: any,
+              _: any,
+              action: any
+            ) => [
               <a
                 key="editable"
                 onClick={() => {
@@ -87,10 +95,13 @@ export default () => {
           },
         ]}
         request={async (params = {}) => {
-          const res = await subContractor.getSubContractorList(params);
-          // console.log('分包商列表', res.list);
+          const res = await subContractor.getSubContractorList(
+            params
+          );
           res.list = res.list.map((item: any) => {
-            item.subcontractorType = ToString(item.subcontractorType);
+            item.subcontractorType = ToString(
+              item.subcontractorType
+            );
             item.corpType = ToString(item.corpType);
             item.overallMerit = ToString(item.overallMerit);
             item.isConformity = ToString(item.isConformity);
@@ -107,7 +118,11 @@ export default () => {
         scroll={{ y: 'auto' }}
         search={{
           labelWidth: 'auto',
-          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+          optionRender: (
+            { searchText }: any,
+            { form }: any,
+            dom: any
+          ) => {
             return [
               dom[0],
               <Button
@@ -122,8 +137,15 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.ExportButton api="exportSubcontractorInfo" fileName="分包商导出" />,
-          <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
+          <Styled.ExportButton
+            api="exportSubcontractorInfo"
+            fileName="单位导出"
+          />,
+          <Button
+            icon={<PlusOutlined />}
+            onClick={() => setDialogVisible(true)}
+            type="primary"
+          >
             新建
           </Button>,
         ]}

@@ -337,7 +337,7 @@ export default (props) => {
       colNum: 8,
     },
     {
-      label: '分包单位',
+      label: '单位',
       dataIndex: 'subcontractorId',
       formItem: <DictSelect dictKey={'subcontractor_type'} />,
       colNum: 8,

@@ -46,6 +46,8 @@ const person: ApiItem[] = [
     description: '工种信息',
     params: [
       { key: 'Authorization', location: 'header' },
+      { key: 'current', targetKey: 'pageNo' },
+      { key: 'pageSize' },
     ],
   },
   {

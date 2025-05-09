@@ -12,9 +12,9 @@ type MenusPropsType = {
 export default ({ server }: MenusPropsType) => {
   const { subContractor, certificate } = server as objJson;
 
-  const columnWidth = 213
+  const columnWidth = 213;
 
-  // 分包单位选择下拉
+  // 单位选择下拉
   const [subcontractorList, setSubcontractorList] = useState([]);
   // 班组长选择下拉
   const [personInfoList, setPersonInfoList] = useState([]);
@@ -26,7 +26,6 @@ export default ({ server }: MenusPropsType) => {
   // 通过接口获取下拉框的内容
   const getSelectOptions = async () => {
     const res1 = await subContractor.getAllSubContractor();
-    // console.log('分包商列表', res1);
     const list1 = res1.map((item: any) => {
       return { label: item.realName, value: item.id };
     });
@@ -57,7 +56,7 @@ export default ({ server }: MenusPropsType) => {
       hideInSearch: true,
     },
     {
-      title: '分包单位名称',
+      title: '单位名称',
       dataIndex: 'subcontractorId',
       ellipsis: true,
       width: columnWidth,
@@ -65,7 +64,12 @@ export default ({ server }: MenusPropsType) => {
         return <span>{record.subcontractorName}</span>;
       },
       renderFormItem: () => {
-        return <Select placeholder="请选择分包单位" options={subcontractorList} />;
+        return (
+          <Select
+            placeholder="请选择单位"
+            options={subcontractorList}
+          />
+        );
       },
     },
     // {
@@ -84,7 +88,12 @@ export default ({ server }: MenusPropsType) => {
         return <span>{record.userName}</span>;
       },
       renderFormItem: () => {
-        return <Select placeholder="请选择班组长" options={personInfoList} />;
+        return (
+          <Select
+            placeholder="请选择班组长"
+            options={personInfoList}
+          />
+        );
       },
     },
     {
@@ -99,7 +108,7 @@ export default ({ server }: MenusPropsType) => {
       dataIndex: 'workTypeName',
       ellipsis: true,
       width: columnWidth,
-      editable: false
+      editable: false,
     },
     {
       title: '联系电话',

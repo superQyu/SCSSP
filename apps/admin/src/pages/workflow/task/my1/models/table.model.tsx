@@ -15,7 +15,7 @@ export default ({ server }: MenusPropsType) => {
 
   const columnWidth = 160;
 
-  // 分包单位选择下拉
+  // 单位选择下拉
   const [subcontractorList, setSubcontractorList] = useState([]);
   // 班组长选择下拉
   const [personInfoList, setPersonInfoList] = useState([]);
@@ -27,7 +27,7 @@ export default ({ server }: MenusPropsType) => {
   // 通过接口获取下拉框的内容
   const getSelectOptions = async () => {
     const res1 = await subContractor.getAllSubContractor();
-    // console.log('分包商列表', res1);
+    // console.log('单位列表', res1);
     const list1 = res1.map((item: any) => {
       return { label: item.realName, value: item.id };
     });

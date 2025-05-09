@@ -184,6 +184,7 @@ export default (props: Props) => {
         expandable={props.expandable}
         onRow={props.onRow}
         onReset={props.onReset}
+        rowClassName={props.rowClassName}
       />
     </div>
   );

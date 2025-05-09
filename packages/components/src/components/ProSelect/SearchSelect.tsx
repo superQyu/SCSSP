@@ -39,6 +39,7 @@ const DebounceSelect = forwardRef(
       // 文本框输入值变化时的回调
 
       const loadOptions = (value: string) => {
+        // console.log('输入框变化的值', value);
         // fetchRef.current += 1;
         // const fetchId = fetchRef.current;
         setOptions([]);
