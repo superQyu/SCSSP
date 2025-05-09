@@ -49,6 +49,7 @@ export default () => {
               .endOf('date')
               .format('YYYY-MM-DD HH:mm:ss') : dayjs().format('YYYY-MM-DD 23:59:59'),
             ...params,
+            username:params.name
           });
           return {
             ...params,

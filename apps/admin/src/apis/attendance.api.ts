@@ -86,6 +86,7 @@ const attendance: ApiItem[] = [
       { key: 'subcontractorId', cn: '单位ID' },
       { key: 'workTypeId', cn: '劳务工种ID' },
       { key: 'groupId', cn: '班组ID' },
+      { key: 'username', cn: '姓名' },
       {
         key: 'beginTime',
         cn: '开始时间',

@@ -142,7 +142,6 @@ export default (props: Props) => {
         }}
         rowKey={props.rowKey || 'id'}
         search={
-
           props.search
             ? {
               collapsed: false,
