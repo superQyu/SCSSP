@@ -130,26 +130,28 @@ export default (props: Props) => {
               defaultDom.cancel,
               // 只有在传入 onDelete 时，才会渲染删除按钮
               props.editable?.onDelete &&
-                cloneElement(
-                  defaultDom.delete as React.ReactElement,
-                  {
-                    onDelete: onDelete.bind(null, config),
-                  }
-                ),
+              cloneElement(
+                defaultDom.delete as React.ReactElement,
+                {
+                  onDelete: onDelete.bind(null, config),
+                }
+              ),
               // defaultDom.delete,
             ];
           },
         }}
         rowKey={props.rowKey || 'id'}
         search={
+
           props.search
             ? {
-                ...props.search,
-                onCollapse: (v) => initSrcollY(),
-              } || {
-                labelWidth: 'auto',
-                onCollapse: (v) => initSrcollY(),
-              }
+              collapsed: false,
+              ...props.search,
+              onCollapse: (v) => initSrcollY(),
+            } || {
+              labelWidth: 'auto',
+              onCollapse: (v) => initSrcollY(),
+            }
             : false
         }
         options={
@@ -174,9 +176,9 @@ export default (props: Props) => {
           props.hasOwnProperty('pagination')
             ? props.pagination
             : {
-                pageSize: 5,
-                onChange: (page) => console.log(page),
-              }
+              pageSize: 5,
+              onChange: (page) => console.log(page),
+            }
         }
         dateFormatter="string"
         headerTitle={props.headerTitle}

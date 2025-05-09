@@ -104,7 +104,7 @@ export default () => {
             icon={<PlusOutlined />}
             onClick={() => {
               const localStorageData = localStorage.getItem('formData')
-              console.log('nwe',localStorageData)
+              console.log('nwe',JSON.parse(localStorageData) )
               setSubForm(localStorageData ? JSON.parse(localStorageData) : {});
               setFormModal(true);
             }}

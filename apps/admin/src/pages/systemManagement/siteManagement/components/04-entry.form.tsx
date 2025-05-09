@@ -51,7 +51,7 @@ const EntryCom: React.FC<Props> = forwardRef(
     const [isEducated, setIsEducated] = useState<number>();
 
     useEffect(() => {
-      getSelectOptions();
+      // getSelectOptions();
     }, []);
     useEffect(() => {
       if (Object.keys(detail).length) {

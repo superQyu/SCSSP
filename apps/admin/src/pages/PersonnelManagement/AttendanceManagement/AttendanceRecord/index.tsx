@@ -29,7 +29,7 @@ export default () => {
     Number(userIdInParams) || undefined
   );
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   return (
     <>
@@ -41,14 +41,13 @@ export default () => {
           dateTime: date,
         }}
         request={async (params: ModesApi.ParamsType) => {
-          // console.log('请求参数', params);
           const { list, total } = await A.attendanceRecordList({
-            beginTime: dayjs(params.dateTime, 'YYYY-MM-DD')
+            beginTime: params.dateTime ? dayjs(params.dateTime, 'YYYY-MM-DD')
               .startOf('date')
-              .format('YYYY-MM-DD HH:mm:ss'),
-            endTime: dayjs(params.dateTime, 'YYYY-MM-DD')
+              .format('YYYY-MM-DD HH:mm:ss') : dayjs().format('YYYY-MM-DD 00:00:00'),
+            endTime: params.dateTime ? dayjs(params.dateTime, 'YYYY-MM-DD')
               .endOf('date')
-              .format('YYYY-MM-DD HH:mm:ss'),
+              .format('YYYY-MM-DD HH:mm:ss') : dayjs().format('YYYY-MM-DD 23:59:59'),
             ...params,
           });
           return {
@@ -61,7 +60,7 @@ export default () => {
         columnsState={{
           persistenceKey: 'pro-table-singe-role',
           persistenceType: 'localStorage',
-          onChange(_: any) {},
+          onChange(_: any) { },
         }}
         pagination={{
           pageSize: 20,
