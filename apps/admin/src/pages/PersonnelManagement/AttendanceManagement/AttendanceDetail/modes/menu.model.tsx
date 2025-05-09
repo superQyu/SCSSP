@@ -40,15 +40,15 @@ export default ({
     });
     setLaborList(options);
 
-    const res2 = await G.getGroupList({ pageSize: '100' });
+    // const res2 = await G.getGroupList({ pageSize: '100' });
 
-    const list2 = res2.list.map((item: any) => {
-      return {
-        label: item.teamName,
-        value: item.id,
-      };
-    });
-    setGroupList(list2);
+    // const list2 = res2.list.map((item: any) => {
+    //   return {
+    //     label: item.teamName,
+    //     value: item.id,
+    //   };
+    // });
+    // setGroupList(list2);
   };
 
   useEffect(() => {

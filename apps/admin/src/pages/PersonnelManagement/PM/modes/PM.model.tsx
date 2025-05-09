@@ -48,6 +48,7 @@ export default ({ server }: MenusPropsType) => {
     {
       width: 120,
       hideInSearch: true,
+      hideInTable: true,
       title: '总造价(万元)',
       ellipsis: true,
       dataIndex: 'projectCost',
@@ -55,6 +56,7 @@ export default ({ server }: MenusPropsType) => {
     {
       width: 120,
       hideInSearch: true,
+      hideInTable: true,
       title: '总面积(㎡)',
       dataIndex: 'projectArea',
       ellipsis: true,
@@ -94,14 +96,15 @@ export default ({ server }: MenusPropsType) => {
       title: '项目状态',
       dataIndex: 'projectStatus',
       render: (_, { projectStatus }) => (
+
         <DictSelect
           type={'text'}
           value={projectStatus}
-          dictKey={`structure_type`}
+          dictKey={`project_status`}
           dropdownExtend={false}
         />
       ),
-      renderFormItem: () => <DictSelect dictKey={`structure_type`} dropdownExtend={false} />,
+      renderFormItem: () => <DictSelect dictKey={`project_status`} dropdownExtend={false} />,
     },
   ];
 

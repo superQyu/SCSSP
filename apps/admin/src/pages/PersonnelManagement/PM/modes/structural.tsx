@@ -5,6 +5,7 @@ import type { FormInstance } from 'antd/es/form';
 import { clearStorage, sleep } from 'utils';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import { json } from 'stream/consumers';
 
 const FormArray = import.meta.glob('../components/**/*.form.tsx');
 // [0], Object.entries(FormArray)[1]
@@ -120,41 +121,36 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
       });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     try {
       setLoading(true);
       let formData = {}
-      Object.entries(formRef.current).map(async([_, funs]) => {
+      await Object.entries(formRef.current).map(async ([_, funs]) => {
         const { key, sourceKey, form, transform } = funs || {};
         if (form?.getFieldsValue) {
-          Object.assign(formData,{
-            [key]: form.getFieldsValue()
+          if (formData[sourceKey]) {
+            formData[sourceKey] = {
+              ...formData[sourceKey],
+              ...form.getFieldsValue()
+            }
+          }
+          else {
+            Object.assign(formData, {
+              [sourceKey]: form.getFieldsValue()
+            })
+          }
+        } else {
+          const data = await form.validateFields()
+          Object.assign(formData, {
+            [sourceKey]:data
           })
-        }else {
-          console.log(key)
-        // const data = await  form.validateFields()
-        // console.log('data',data)
-        // console.log(transform(data))
         }
-        // if( key == 'projectBuildingInfoSaveReqVOList') {
-        //   console.log(form,transform)
-
-        // }
-        // console.log(transform)
-        // console.log(sourceKey)
-        // console.log(form.getFieldsValue())
-        // console.log('key',key)
-        // 
-        // console.log(2)
-        //  localStorage.setItem(key, JSON.stringify(form.getFieldsValue()))
-
       });
-console.log('暂存结果',formData)
+      console.log('暂存结果', formData)
       localStorage.setItem('formData', JSON.stringify(formData))
       message.success(`数据暂存成功`);
       setLoading(false);
     } catch (errorInfo) {
-      console.log(55, errorInfo)
       setLoading(false);
     }
   }

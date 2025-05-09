@@ -117,12 +117,14 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
                 okType: 'danger',
                 cancelText: '取消',
                 onOk: async () => {
+                  console.log(record)
                   if (record.id || record.id === 0) await P.deleteBuildingInfo({ id: record.id });
-                  setDataSource(dataSource.filter((item) => item.id !== record.id));
+
+                  setDataSource(dataSource.filter((item) => item.id !== record.id || item._id !== record._id));
                 },
-                onCancel() {},
+                onCancel() { },
               });
-            } catch (errorInfo) {}
+            } catch (errorInfo) { }
           }}
         >
           删除
@@ -132,18 +134,21 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
   ];
 
   useEffect(() => {
+    if (!!dataSource.length) return
     const isEmpty = !!Object.entries(subForm).length;
     const records =
       isEmpty && subForm.hasOwnProperty(getFormKey) ? [...(subForm[getFormKey] || [])] : [];
     const transRecords = records.map((item: any) => ({
       ...item,
-      _id: item.id,
+      _id: item.id || item._id,
       isPublic: `${item.isPublic ? '1' : '0'}`,
       typeCode: `${item.typeCode}`,
     }));
+
     setDataSource(transRecords);
     setDefaultData(transRecords);
   }, [subForm]);
+
 
   useImperativeHandle(ref, () => ({
     key: formKey,
@@ -177,7 +182,7 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm }, ref) => {
           position: 'bottom',
           record: () => ({ _id: Date.now() }),
           creatorButtonText: '新增数据',
-          onClick: () => {},
+          onClick: () => { },
         }}
         loading={false}
         toolBarRender={false}
