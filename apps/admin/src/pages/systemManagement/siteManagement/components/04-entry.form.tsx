@@ -102,68 +102,68 @@ const EntryCom: React.FC<Props> = forwardRef(
     };
 
     const columns: FormColumnsTypes[] = [
-      {
-        label: '是否班组长',
-        dataIndex: 'isTeamLeader',
-        formItemProps: {
-          rules: [
-            { required: true, message: '请选择是否班组长' },
-          ],
-        },
-        formItem: <DictSelect dictKey={'pm_is_team_leader'} />,
-        colNum: 8,
-      },
-      {
-        label: '班组名称',
-        dataIndex: 'teamId',
-        formItemProps: {
-          rules: [{ required: true, message: '请选择班组名称' }],
-        },
-        colNum: 8,
-        // formItem: (
-        //   <AsyncSelect
-        //     dropdownExtend={true}
-        //     asyncData={async () => {
-        //       const { list } = await G.getGroupList();
-        //       return list.map((item: { teamName: string; id: number }) => {
-        //         return {
-        //           label: item.teamName,
-        //           value: item.id,
-        //         };
-        //       });
-        //     }}
-        //     onChange={async (val) => {
-        //       console.log('val', val, typeof val);
+      // {
+      //   label: '是否班组长',
+      //   dataIndex: 'isTeamLeader',
+      //   formItemProps: {
+      //     rules: [
+      //       { required: true, message: '请选择是否班组长' },
+      //     ],
+      //   },
+      //   formItem: <DictSelect dictKey={'pm_is_team_leader'} />,
+      //   colNum: 8,
+      // },
+      // {
+      //   label: '班组名称',
+      //   dataIndex: 'teamId',
+      //   formItemProps: {
+      //     rules: [{ required: true, message: '请选择班组名称' }],
+      //   },
+      //   colNum: 8,
+      //   // formItem: (
+      //   //   <AsyncSelect
+      //   //     dropdownExtend={true}
+      //   //     asyncData={async () => {
+      //   //       const { list } = await G.getGroupList();
+      //   //       return list.map((item: { teamName: string; id: number }) => {
+      //   //         return {
+      //   //           label: item.teamName,
+      //   //           value: item.id,
+      //   //         };
+      //   //       });
+      //   //     }}
+      //   //     onChange={async (val) => {
+      //   //       console.log('val', val, typeof val);
 
-        //       if (typeof val == 'string') {
-        //         formRef.current?.setFieldsValue({
-        //           teamName: val,
-        //         });
-        //         formRef.current?.setFieldsValue({
-        //           teamId: null,
-        //         });
-        //       } else {
-        //         const { list } = await G.getGroupList();
-        //         const name = list.find(
-        //           (item: { label: string; value: number }) => item.value == val
-        //         )?.label;
-        //         formRef.current?.setFieldsValue({
-        //           teamId: val,
-        //         });
-        //         formRef.current?.setFieldsValue({
-        //           teamName: name,
-        //         });
-        //       }
-        //     }}
-        //   />
-        // ),
-        formItem: (
-          <Select
-            placeholder="请选择班组名称"
-            options={groupList}
-          />
-        ),
-      },
+      //   //       if (typeof val == 'string') {
+      //   //         formRef.current?.setFieldsValue({
+      //   //           teamName: val,
+      //   //         });
+      //   //         formRef.current?.setFieldsValue({
+      //   //           teamId: null,
+      //   //         });
+      //   //       } else {
+      //   //         const { list } = await G.getGroupList();
+      //   //         const name = list.find(
+      //   //           (item: { label: string; value: number }) => item.value == val
+      //   //         )?.label;
+      //   //         formRef.current?.setFieldsValue({
+      //   //           teamId: val,
+      //   //         });
+      //   //         formRef.current?.setFieldsValue({
+      //   //           teamName: name,
+      //   //         });
+      //   //       }
+      //   //     }}
+      //   //   />
+      //   // ),
+      //   formItem: (
+      //     <Select
+      //       placeholder="请选择班组名称"
+      //       options={groupList}
+      //     />
+      //   ),
+      // },
       // {
       //   label: '单位',
       //   dataIndex: 'subcontractorId',
@@ -364,11 +364,11 @@ const EntryCom: React.FC<Props> = forwardRef(
       <>
         <SingleTitle
           label="进场信息"
-          subLabel={
-            <CustomsDiv>
-              首先录入班组长（是否班组长选【是】），再录入其他工人
-            </CustomsDiv>
-          }
+        // subLabel={
+        //   <CustomsDiv>
+        //     首先录入班组长（是否班组长选【是】），再录入其他工人
+        //   </CustomsDiv>
+        // }
         />
         <div className="mt-5">
           <AdForm

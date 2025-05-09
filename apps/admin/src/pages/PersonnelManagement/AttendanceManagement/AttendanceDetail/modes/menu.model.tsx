@@ -137,6 +137,20 @@ export default ({
       align: 'center',
     },
     {
+      width: 100,
+      title: '人员名称',
+      dataIndex: 'username',
+      fixed: 'left',
+      align: 'center',
+    },
+    {
+      hideInTable: true,
+      title: '年月',
+      valueType: 'dateMonth',
+      dataIndex: 'yearAndMonth',
+    },
+
+    {
       hideInTable: true,
       title: '单位',
       dataIndex: 'subcontractorId',
@@ -172,6 +186,7 @@ export default ({
     },
     {
       hideInTable: true,
+      hideInSearch: true,
       title: '班组名称',
       dataIndex: 'groupId',
       renderFormItem: () => {
@@ -184,19 +199,7 @@ export default ({
         );
       },
     },
-    {
-      hideInTable: true,
-      title: '年月',
-      valueType: 'dateMonth',
-      dataIndex: 'yearAndMonth',
-    },
-    {
-      width: 100,
-      title: '人员名称',
-      dataIndex: 'username',
-      fixed: 'left',
-      align: 'center',
-    },
+
     {
       width: 100,
       hideInSearch: true,

@@ -34,7 +34,7 @@ export default ({ server }: MenusPropsType) => {
     });
     setLaborList(options);
 
-    const res2 = await G.getGroupList({pageSize: '100'});
+    const res2 = await G.getGroupList({ pageSize: '100' });
 
     const list2 = res2.list.map((item: any) => {
       return {
@@ -60,15 +60,43 @@ export default ({ server }: MenusPropsType) => {
     {
       title: '单位',
       dataIndex: 'subcontractorId',
-      render: (text: any) => {
+      render: (text: any, row) => {
         const obj = Object.fromEntries(
           subcontractorList.map(({ value, label }) => [
             value,
             label,
           ])
         );
-        return <span>{obj[text] || '-'}</span>;
+        return (
+          obj[text] ?
+            <a
+
+              onClick={() => {
+
+                // action?.startEditable?.(record.id);
+                tabNavigate({
+                  tabName: '考勤明细',
+                  namePath: `项目人员管理/考勤管理/${row.time}${obj[text]}考勤明细`,
+                  // routePath: `/PM/AttendanceManagement/AttendanceDetail/${row.teamId}?searchMonth=${row.time}`,
+                  routePath: `/attendance/AttendanceDetail/${row.workTypeId}?searchMonth=${row.time}&subcontractorId=${row.subcontractorId}`,
+                  activeMenu:
+                    '/PM/AttendanceManagement/AttendanceDetail',
+                });
+              }}
+            >
+
+            </a> : <span>-</span>
+        );
       },
+      // render: (text: any) => {
+      //   const obj = Object.fromEntries(
+      //     subcontractorList.map(({ value, label }) => [
+      //       value,
+      //       label,
+      //     ])
+      //   );
+      //   return <span>{obj[text] || '-'}</span>;
+      // },
       renderFormItem: () => {
         return (
           <Select
@@ -86,8 +114,28 @@ export default ({ server }: MenusPropsType) => {
       //   const obj = Object.fromEntries(laborList.map(({ value, label }) => [value, label]));
       //   return <span>{obj[text] || '-'}</span>;
       // },
-      render: (text: any, record) => {
-        return <span>{record.workTypeName || '-'}</span>;
+      // render: (text: any, record) => {
+      //   return <span>{record.workTypeName || '-'}</span>;
+      // },
+      render: (text: any, row) => {
+        return (
+          <a
+            key="editable"
+            onClick={() => {
+              // action?.startEditable?.(record.id);
+              tabNavigate({
+                tabName: '考勤明细',
+                namePath: `项目人员管理/考勤管理/${row.time}${row.workTypeName}考勤明细`,
+                // routePath: `/PM/AttendanceManagement/AttendanceDetail/${row.teamId}?searchMonth=${row.time}`,
+                routePath: `/attendance/AttendanceDetail/${row.workTypeId}?searchMonth=${row.time}&workTypeId=${row.workTypeId}`,
+                activeMenu:
+                  '/PM/AttendanceManagement/AttendanceDetail',
+              });
+            }}
+          >
+            {row.workTypeName || '-'}
+          </a>
+        );
       },
       renderFormItem: () => {
         return (
@@ -98,9 +146,11 @@ export default ({ server }: MenusPropsType) => {
           />
         );
       },
+
     },
     {
       hideInTable: true,
+      hideInSearch: true,
       title: '班组名称',
       dataIndex: 'groupId',
       renderFormItem: () => {
@@ -115,6 +165,7 @@ export default ({ server }: MenusPropsType) => {
     },
     {
       hideInSearch: true,
+      hideInTable: true,
       title: '班组名称',
       dataIndex: 'teamId',
       // render: (text: any) => {

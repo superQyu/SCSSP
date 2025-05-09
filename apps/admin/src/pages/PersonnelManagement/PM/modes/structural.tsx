@@ -2,7 +2,7 @@ import React, { lazy, Suspense, useState, useEffect, useRef } from 'react';
 import { Button, message, Modal, Row, Col, Spin } from 'antd';
 
 import type { FormInstance } from 'antd/es/form';
-import { sleep } from 'utils';
+import { clearStorage, sleep } from 'utils';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
@@ -106,6 +106,7 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
   const SubmitEvent = (params: MenusType) => {
     P[isCreate ? 'createProjectUnity' : 'updateProjectUnity']({ ...params })
       .then(async () => {
+        localStorage.removeItem('formData',)
         message.success('操作成功！');
         onReset();
 
@@ -118,6 +119,45 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
         setLoading(false);
       });
   };
+
+  const handleSave = () => {
+    try {
+      setLoading(true);
+      let formData = {}
+      Object.entries(formRef.current).map(async([_, funs]) => {
+        const { key, sourceKey, form, transform } = funs || {};
+        if (form?.getFieldsValue) {
+          Object.assign(formData,{
+            [key]: form.getFieldsValue()
+          })
+        }else {
+          console.log(key)
+        // const data = await  form.validateFields()
+        // console.log('data',data)
+        // console.log(transform(data))
+        }
+        // if( key == 'projectBuildingInfoSaveReqVOList') {
+        //   console.log(form,transform)
+
+        // }
+        // console.log(transform)
+        // console.log(sourceKey)
+        // console.log(form.getFieldsValue())
+        // console.log('key',key)
+        // 
+        // console.log(2)
+        //  localStorage.setItem(key, JSON.stringify(form.getFieldsValue()))
+
+      });
+console.log('暂存结果',formData)
+      localStorage.setItem('formData', JSON.stringify(formData))
+      message.success(`数据暂存成功`);
+      setLoading(false);
+    } catch (errorInfo) {
+      console.log(55, errorInfo)
+      setLoading(false);
+    }
+  }
 
   const handleCancel = () => {
     if (loading) {
@@ -182,6 +222,9 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
       onCancel={handleCancel}
       maskClosable={false}
       footer={[
+        <Button key="save" onClick={handleSave} disabled={loading}>
+          暂存
+        </Button>,
         <Button key="back" onClick={handleCancel} disabled={loading}>
           取消
         </Button>,
