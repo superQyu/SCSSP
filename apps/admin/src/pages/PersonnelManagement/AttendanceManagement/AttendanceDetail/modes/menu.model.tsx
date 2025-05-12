@@ -27,15 +27,16 @@ export default ({
   const init = async () => {
     const res1 = await S.getAllSubContractor();
     const list1 = res1.map((item: any) => {
-      return { label: item.realName, value: item.id };
+      return { label: item.realName, value: `${item.id}` };
     });
+
     setSubcontractorList(list1);
 
     const { list } = await P.workType();
     const options = list.map((item: any) => {
       return {
         label: item.name,
-        value: item.id,
+        value: `${item.id}`,
       };
     });
     setLaborList(options);
