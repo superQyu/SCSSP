@@ -67,8 +67,9 @@ export default ({ server }: MenusPropsType) => {
             label,
           ])
         );
+        const name = obj[`${text}`]
         return (
-          obj[text] ?
+          name ?
             <a
 
               onClick={() => {
@@ -76,7 +77,7 @@ export default ({ server }: MenusPropsType) => {
                 // action?.startEditable?.(record.id);
                 tabNavigate({
                   tabName: '考勤明细',
-                  namePath: `项目人员管理/考勤管理/${row.time}${obj[text]}考勤明细`,
+                  namePath: `项目人员管理/考勤管理/${row.time}${name}考勤明细`,
                   // routePath: `/PM/AttendanceManagement/AttendanceDetail/${row.teamId}?searchMonth=${row.time}`,
                   routePath: `/attendance/AttendanceDetail/${row.workTypeId}?searchMonth=${row.time}&subcontractorId=${row.subcontractorId}`,
                   activeMenu:
@@ -84,7 +85,7 @@ export default ({ server }: MenusPropsType) => {
                 });
               }}
             >
-
+              {name}
             </a> : <span>-</span>
         );
       },
