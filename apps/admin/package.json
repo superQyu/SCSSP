@@ -28,7 +28,6 @@
     "apis": "workspace:*",
     "clipboard": "^2.0.11",
     "components": "workspace:*",
-    "dayjs": "^1.11.10",
     "echarts": "^5.5.0",
     "hls.js": "^1.6.2",
     "hooks": "workspace:*",

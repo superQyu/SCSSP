@@ -25,18 +25,14 @@ import { EChartsProvider } from '@/context/EChartContext';
 
 import App from './app';
 
-import zhCN from 'antd/locale/zh_CN';
+// import zhCN from 'antd/locale/en_US';
 import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
 import localeData from 'dayjs/plugin/localeData';
-import setIntl from '@ant-design/pro-layout';
 
-setIntl({
-  locale: zhCN,
-});
-// import 'dayjs/locale/zh-cn';
+import 'dayjs/locale/zh-cn';
 
-// dayjs.locale('zh-cn');
+dayjs.locale('zh-cn');
 dayjs.extend(weekday);
 dayjs.extend(localeData);
 

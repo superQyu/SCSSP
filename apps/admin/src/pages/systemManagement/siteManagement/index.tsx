@@ -99,9 +99,9 @@ export default () => {
           !key || key == ''
             ? (params = { ...params, ...value })
             : (params[key] = {
-                ...(params[key] || {}),
-                ...value,
-              });
+              ...(params[key] || {}),
+              ...value,
+            });
           len--;
 
           // 因为要跳过证书的校验,所以是1,而不是 0
@@ -139,12 +139,22 @@ export default () => {
   // 返回列表页面
   const goBack = () => {
     const id = routerParams.get('id');
+    const missing = routerParams.get('missing');
     if (id) {
       deleteTab(`人员详情${id}`, false);
-      tabNavigate({
-        namePath: '项目人员管理/信息管理',
-        routePath: '/PM/IM',
-      });
+      if (missing) {
+        tabNavigate({
+          namePath: `项目人员管理/信息缺失人员`,
+          routePath: `/PM/MIPersonInfo`,
+          activeMenu: '/PM/IM',
+        });
+      } else {
+        tabNavigate({
+          namePath: '项目人员管理/信息管理',
+          routePath: '/PM/IM',
+        });
+      }
+
     } else {
       deleteTab(`信息采集`, false);
       tabNavigate({
