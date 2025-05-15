@@ -36,7 +36,8 @@ import {
 } from '@ant-design/icons';
 
 import { useAppSelector } from 'hooks';
-
+// 文件下载工具
+import { downFiles } from 'utils';
 const { RangePicker } = DatePicker;
 const { Dragger } = Upload;
 
@@ -86,7 +87,7 @@ for (let i = 0; i < 50; i += 1) {
       creators[Math.floor(Math.random() * creators.length)],
     status:
       valueEnum[
-        ((Math.floor(Math.random() * 10) % 4) + '') as '0'
+      ((Math.floor(Math.random() * 10) % 4) + '') as '0'
       ],
     createdAt: Date.now() - Math.floor(Math.random() * 100000),
     memo:
@@ -104,28 +105,31 @@ import PMmodel, {
   type ColumnsParamsProps,
 } from './modes/PM.model';
 
-const uploadProps: UploadProps = {
-  name: 'file',
-  multiple: true,
-  action:
-    'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-  onChange(info) {
-    const { status } = info.file;
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (status === 'done') {
-      message.success(
-        `${info.file.name} file uploaded successfully.`
-      );
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-  onDrop(e) {
-    console.log('Dropped files', e.dataTransfer.files);
-  },
-};
+// const uploadProps: UploadProps = {
+//   name: 'file',
+//   maxCount: 1,
+//   customRequest: (options) => {
+// console.log('options',options)
+//   },
+
+//   onChange(info) {
+//     console.log(2222, info.file)
+//     // const { status } = info.file;
+//     // if (status !== 'uploading') {
+//     //   console.log(info.file, info.fileList);
+//     // }
+//     // if (status === 'done') {
+//     //   message.success(
+//     //     `${info.file.name} file uploaded successfully.`
+//     //   );
+//     // } else if (status === 'error') {
+//     //   message.error(`${info.file.name} file upload failed.`);
+//     // }
+//   },
+//   onDrop(e) {
+//     console.log('err', e.dataTransfer.files);
+//   },
+// };
 
 export default () => {
   const {
@@ -149,6 +153,18 @@ export default () => {
 
   // 路由跳转
   const { tabNavigate } = useRoute();
+
+  const [fileList, setFileList] = useState<any[]>([]);
+
+  const customRequest = (options: any) => {
+    setFileList([...fileList, {
+      file: options.file,
+      uid: Date.now(),
+      name: options.file.name,
+      status: 'done', // 设为已完成状态，这样会在列表中显示
+    }]);
+  };
+
 
   useEffect(() => {
     notification.destroy();
@@ -249,33 +265,33 @@ export default () => {
               _: any,
               action: any
             ) => [
-              <a
-                key="editable"
-                onClick={() => {
-                  // action?.startEditable?.(record.id);
-                  tabNavigate({
-                    namePath: `项目人员管理/人员详情${record.id}`,
-                    routePath: `/PersonDetail/?id=${record.id}`,
-                    activeMenu: '/PM/IM',
-                  });
-                }}
-              >
-                编辑
-              </a>,
-              <Popconfirm
-                key="delete"
-                title="删除此项"
-                onConfirm={() => onDelete(record.id)}
-                okText="确认"
-                cancelText="取消"
-              >
-                <a>删除</a>
-              </Popconfirm>,
-            ],
+                <a
+                  key="editable"
+                  onClick={() => {
+                    // action?.startEditable?.(record.id);
+                    tabNavigate({
+                      namePath: `项目人员管理/人员详情${record.id}`,
+                      routePath: `/PersonDetail/?id=${record.id}`,
+                      activeMenu: '/PM/IM',
+                    });
+                  }}
+                >
+                  编辑
+                </a>,
+                <Popconfirm
+                  key="delete"
+                  title="删除此项"
+                  onConfirm={() => onDelete(record.id)}
+                  okText="确认"
+                  cancelText="取消"
+                >
+                  <a>删除</a>
+                </Popconfirm>,
+              ],
           },
         ]}
         scroll={{ x: 1900, y: 'auto' }}
-        onSubmit={async (params: {}) => {}}
+        onSubmit={async (params: {}) => { }}
         pagination={{
           pageSize: 30,
         }}
@@ -292,7 +308,7 @@ export default () => {
         columnsState={{
           persistenceKey: 'pro-table-pm-im',
           persistenceType: 'localStorage',
-          onChange(_: any) {},
+          onChange(_: any) { },
         }}
         form={{
           syncToUrl: (values: any, _: string) => ({ ...values }),
@@ -335,11 +351,6 @@ export default () => {
             key="button"
             icon={<PlusOutlined />}
             onClick={() => {
-              // console.log(dictionary);
-              // tabNavigate({
-              //   namePath: '项目人员管理/信息采集',
-              //   routePath: '/PM/IA',
-              // });
               tabNavigate({
                 namePath: `项目人员管理/信息采集`,
                 routePath: `/PersonDetail`,
@@ -349,6 +360,21 @@ export default () => {
             type="primary"
           >
             新建
+          </Button>,
+          <Button
+            key="button"
+            danger
+            icon={<SearchOutlined />}
+            onClick={() => {
+              tabNavigate({
+                namePath: `项目人员管理/信息缺失人员`,
+                routePath: `/PM/MIPersonInfo`,
+                activeMenu: '/PM/IM',
+              });
+            }}
+            type="primary"
+          >
+            信息缺失人员
           </Button>,
         ]}
       />
@@ -362,7 +388,10 @@ export default () => {
                 key="button"
                 icon={<DownloadOutlined />}
                 onClick={() => {
-                  console.log('下载');
+                  PMIM.exportModelInfo({
+                  }).then((data: any) => {
+                    downFiles.excel(data, '信息管理数据模板');
+                  })
                 }}
                 type="primary"
               >
@@ -377,20 +406,42 @@ export default () => {
         footer={null}
       >
         <div>
-          <Dragger {...uploadProps}>
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">
-              点击或拖拽文件至此区域进行上传
-            </p>
+          <Dragger
+            name="file"
+            fileList={fileList}
+            customRequest={customRequest}
+            onRemove={(file) => {
+              const index = fileList.indexOf(file);
+              const newFileList = fileList.slice();
+              newFileList.splice(index, 1);
+              setFileList(newFileList);
+            }}
+          >
+            {fileList.length == 0 ?
+              <div>
+                <p className="ant-upload-drag-icon">
+                  <InboxOutlined />
+                </p>
+                <p className="ant-upload-text">
+                  点击或拖拽文件至此区域进行上传
+                </p>
+              </div> : ''
+            }
           </Dragger>
           <div className="flex justify-center mt-3">
             <Button
+              disabled={fileList.length < 1}
               key="button"
               icon={<DownloadOutlined />}
-              onClick={() => {
-                console.log('下载');
+              onClick={async () => {
+                const formData = new FormData();
+                formData.append('file', fileList[0].file)
+                try {
+                  await PMIM.importByModel(formData)
+                  message.success('导入成功！')
+                } catch {
+                  message.warning('导入失败！')
+                }
               }}
               type="primary"
             >
