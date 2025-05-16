@@ -1,45 +1,27 @@
 import {
-  cloneElement,
   useRef,
   useState,
-  useEffect,
 } from 'react';
 import { useRoute } from 'hooks';
 
 import { ProTable } from 'components';
-// import { ProTable } from '@ant-design/pro-components';
 import type {
-  ProColumns,
   ActionType,
 } from '@ant-design/pro-components';
 import {
   Button,
   message,
-  DatePicker,
-  Space,
-  Table,
-  Alert,
   Modal,
   Popconfirm,
-  Upload,
   notification,
 } from 'antd';
 import type { UploadProps } from 'antd';
-import Styled from '@/components/Styled';
 
 import {
-  PlusOutlined,
-  SearchOutlined,
-  UploadOutlined,
-  DownloadOutlined,
-  InboxOutlined,
   RollbackOutlined
 } from '@ant-design/icons';
 
 import { useAppSelector } from 'hooks';
-
-const { RangePicker } = DatePicker;
-const { Dragger } = Upload;
 
 const valueEnum = {
   0: 'close',
@@ -47,13 +29,6 @@ const valueEnum = {
   2: 'online',
   3: 'error',
 };
-
-const ProcessMap = {
-  close: 'normal',
-  running: 'active',
-  online: 'success',
-  error: 'exception',
-} as const;
 
 export type TableListItem = {
   key: number;
