@@ -7,7 +7,7 @@ import {
   TableDropdown,
   type ProColumns,
 } from '@ant-design/pro-components';
-import { message, Avatar, Tag, Select } from 'antd';
+import { message, Avatar, Image, Tag, Select } from 'antd';
 
 import { IconSelect, IconShow } from 'ui';
 import DictSelect from '@/components/DictSelect';
@@ -71,7 +71,13 @@ export default ({ server }: MenusPropsType) => {
           icon={<UserOutlined />}
           src={
             record.passportPhoto || (
-              <img src={url} alt={record.name} />
+              <Image
+                src={`/src/assets/avatar/${record.jobNo}_1.jpg` }
+                fallback={url}
+                onError={()=>{
+                  return url
+                }}
+              />
             )
           }
         />

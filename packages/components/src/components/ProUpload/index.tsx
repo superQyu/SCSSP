@@ -121,7 +121,7 @@ const ProUpload: React.FC<Props> = (props: Props) => {
         message.success('上传成功！');
         onSuccess();
       } catch (error) {
-        message.error('上传失败!');
+        // message.error('上传失败!');
         onUploadError && onUploadError(file);
         onError();
       }

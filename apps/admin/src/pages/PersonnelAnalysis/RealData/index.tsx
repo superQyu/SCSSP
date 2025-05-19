@@ -97,8 +97,8 @@ export default () => {
                     >
                       <Image
                         className="w-full h-full"
-                        // src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                        src={
+                        src={`/src/assets/avatar/${item.jobNo}_1.jpg`}
+                        fallback={
                           new URL(
                             '@/assets/images/PA/person.jpg',
                             import.meta.url

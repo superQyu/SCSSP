@@ -90,6 +90,7 @@ export default () => {
     formRef.current['certificate'].handleOk();
     setLoading(true);
     // console.log('workerRef.current?.form', workerRef.current);
+    console.log('formRef.current?.form', formRef.current);
 
     Object.entries(formRef.current).forEach(([_, funs]) => {
       const { key, form } = funs || {};

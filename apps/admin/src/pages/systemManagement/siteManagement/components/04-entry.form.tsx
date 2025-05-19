@@ -88,6 +88,8 @@ const EntryCom: React.FC<Props> = forwardRef(
         // console.log('subForm', subForm);
         setSubForm(subForm);
       }
+      if (detail && detail.entryInfoRespVO)
+        setIsEducated(detail.entryInfoRespVO.isEducated);
     }, [detail]);
 
     // 通过接口获取下拉框的内容
@@ -235,7 +237,7 @@ const EntryCom: React.FC<Props> = forwardRef(
       },
       {
         show: isEducated == 1,
-        label: '图片上传',
+        label: '三级教育图片上传',
         dataIndex: 'educatedProveUrl',
         colNum: 8,
         formItemProps: {
@@ -249,15 +251,18 @@ const EntryCom: React.FC<Props> = forwardRef(
         formItem: (
           <ProUpload
             key={fileList?.length}
-            onRequest={async (params: any) =>
-              await file.fileUpload(params)
-            }
+            onRequest={async (params: any) => {
+              const res = await file.fileUpload(params);
+              formRef.current?.setFieldsValue({
+                educatedProveUrl: res,
+              });
+              return res;
+            }}
             onListChange={(res: any) => {
-              // console.log('文件列表改变', res);
               const list = res?.map((item: any) => item.url);
               formRef.current?.setFieldsValue({
                 // 证件图片
-                educatedProveUrl: list,
+                educatedProveUrl: list && list[0] ? list[0] : '',
               });
             }}
             defaultFileList={() => fileList}
@@ -364,11 +369,11 @@ const EntryCom: React.FC<Props> = forwardRef(
       <>
         <SingleTitle
           label="进场信息"
-        // subLabel={
-        //   <CustomsDiv>
-        //     首先录入班组长（是否班组长选【是】），再录入其他工人
-        //   </CustomsDiv>
-        // }
+          // subLabel={
+          //   <CustomsDiv>
+          //     首先录入班组长（是否班组长选【是】），再录入其他工人
+          //   </CustomsDiv>
+          // }
         />
         <div className="mt-5">
           <AdForm
