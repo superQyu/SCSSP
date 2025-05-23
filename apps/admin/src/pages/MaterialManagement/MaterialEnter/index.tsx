@@ -95,7 +95,7 @@ export default ({ onChange }: any) => {
             ...fColumns,
             {
               title: '操作',
-              width: 100,
+              width: 160,
               valueType: 'option',
               dataIndex: 'option',
               render: (

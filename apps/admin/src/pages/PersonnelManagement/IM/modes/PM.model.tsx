@@ -29,8 +29,6 @@ export interface ColumnsParamsProps extends objJson {
   isDelete: '0' | '1';
 }
 
-const url =
-  'https://img1.baidu.com/it/u=1377073336,1053961489&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500';
 
 export default ({ server }: MenusPropsType) => {
   const { menus: M, subContractor } = server as objJson;
@@ -67,15 +65,16 @@ export default ({ server }: MenusPropsType) => {
       editable: false,
       dataIndex: 'passportPhoto',
       render: (_, record) => (
+
         <Avatar
           icon={<UserOutlined />}
           src={
             record.passportPhoto || (
               <Image
-                src={`/src/assets/avatar/${record.jobNo}_1.jpg` }
-                fallback={url}
-                onError={()=>{
-                  return url
+                src={record.jobNo ? `/src/assets/avatar/${record.jobNo}_1.jpg` : `/src/assets/avatar/default.png`}
+                fallback={`/src/assets/avatar/default.png`}
+                onError={() => {
+                  return true
                 }}
               />
             )

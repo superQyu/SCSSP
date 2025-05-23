@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { FormColumnsTypes, SearchSelect } from 'components';
 import { type ProColumns } from '@ant-design/pro-components';
-import { Select, DatePicker, Input, Button } from 'antd';
+import { Select, DatePicker, Input, } from 'antd';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
@@ -53,7 +53,7 @@ export default (
       colNum: 12,
       disabled: status == '0' ? false : true,
       formItemProps: {
-        rules: [{ required: true, message: '请选择车牌号' }],
+        // rules: [{ required: true, message: '请选择车牌号' }],
       },
       formItem: (
         <SearchSelect
@@ -327,7 +327,26 @@ export default (
       },
     },
     {
-      title: '进场数量',
+      title: '是否特种作业',
+      dataIndex: 'isSpecialWork',
+      width: commonWidth,
+      ellipsis: true,
+      readonly: status == '0' ? false : true,
+      hideInSearch: true,
+      renderFormItem: () => {
+        return <Select
+          style={{ width: '100%' }}
+          placeholder="请选择是否特种作业"
+          options={[
+            { value: 1, label: '是' },
+            { value: 2, label: '否' },
+          ]}
+        />;
+      },
+    },
+
+    {
+      title: '计划进场数量',
       dataIndex: 'enterNumber',
       width: commonWidth,
       ellipsis: true,

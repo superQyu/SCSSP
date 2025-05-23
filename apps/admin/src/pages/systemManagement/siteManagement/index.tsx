@@ -64,7 +64,7 @@ export default () => {
 
   const getDetail = async (id: any) => {
     const res = await C.getPersonInfoDetail({ id });
-    // console.log('res', res);
+    console.log('res', res);
     setDetail(res);
   };
 
