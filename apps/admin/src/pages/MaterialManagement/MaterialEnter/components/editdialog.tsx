@@ -251,6 +251,7 @@ export default (props: Props) => {
           materialsInventoryId: item.materialsInventoryId,
           materialType: item.materialType,
           enterNumber: item.enterNumber,
+          isSpecialWork: item.isSpecialWork,
           attachment: item.attachment?.join('@'),
           acceptAttachment: item.acceptAttachment?.join('@'),
         };
@@ -281,7 +282,7 @@ export default (props: Props) => {
   // 将暂存信息加载至表单中
   const handleReloadOk = () => {
     const res = localStorage.getItem('materialEnter');
-    // console.log('浏览器缓存数据', res);
+    console.log('浏览器缓存数据', res);
     if (res) {
       const data = JSON.parse(res);
       // console.log('转换后的数据', data);

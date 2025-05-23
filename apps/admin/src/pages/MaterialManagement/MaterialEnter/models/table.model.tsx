@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { type ProColumns } from '@ant-design/pro-components';
-import { Select, Image } from 'antd';
+import { Select, Image, Tag } from 'antd';
 import DictSelect from '@/components/DictSelect';
 
 type objJson = Record<string, any>;
@@ -94,6 +94,27 @@ export default ({ server }: MenusPropsType) => {
             dictKey="flow_material_enter"
             isTag
           />
+        );
+      },
+    },
+    {
+      title: '下一节点',
+      dataIndex: 'status',
+      ellipsis: true,
+      hideInSearch: true,
+      render: (text, record) => {
+        const state = {
+        
+          '1': '验收员', //待验收
+          '10': '验收员', //驳回
+          '444': '验收员', //验收超时
+          '2': '', //已验收
+          '11': '项目经理', //待确认
+
+        }
+        console.log('@@', record.status)
+        return (record.status == '2'  || record.status == '0' ? '--' :
+          <Tag color="processing">{state[record.status]}</Tag>
         );
       },
     },
@@ -199,6 +220,11 @@ export default ({ server }: MenusPropsType) => {
           return <div className="color-red">暂无图片</div>;
         }
       },
+      // formItemProps: {
+      //   rules: [
+      //     { required: true, message: '请上传验收单' },
+      //   ],
+      // },
     },
   ];
 

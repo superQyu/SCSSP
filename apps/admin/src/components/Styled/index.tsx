@@ -15,6 +15,8 @@ interface FileProps {
   api: string;
   /** 下载文件名 */
   fileName: string;
+  /** 下载参数 */
+  params?: any;
 }
 
 const CusUploadButton = styled(Button)(() => ({
@@ -38,7 +40,7 @@ const ExportButton = (props: FileProps) => {
       onClick={(e) => {
         if (props.onClick) props.onClick(e);
         else
-          basic[props.api]().then((data: any) => {
+          basic[props.api](props.params || {}).then((data: any) => {
             downFiles.excel(data, props.fileName);
           });
       }}

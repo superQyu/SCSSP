@@ -104,6 +104,7 @@ import type { ModesApi } from './modes/model';
 import PMmodel, {
   type ColumnsParamsProps,
 } from './modes/PM.model';
+import { divide } from 'lodash';
 
 // const uploadProps: UploadProps = {
 //   name: 'file',
@@ -137,10 +138,17 @@ export default () => {
   } = useAppSelector((state) => state) as {
     common: { dictionary: Record<string, any> };
   };
+  // 获取 redux 中存储的用户信息
+  const { user }: { user: any } = useAppSelector(
+    (state) => state
+  );
   const [api, contextHolder2] = notification.useNotification();
 
   const [modal, contextHolder] = Modal.useModal();
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+
+
   const [openApi, setOpenApi] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
@@ -155,6 +163,10 @@ export default () => {
   const { tabNavigate } = useRoute();
 
   const [fileList, setFileList] = useState<any[]>([]);
+  const [searchParams, setSearchParams] = useState<any>({
+    isOverAge: '',
+    isCertificated: ''
+  });
 
   const customRequest = (options: any) => {
     setFileList([...fileList, {
@@ -242,9 +254,15 @@ export default () => {
           }
         }}
         request={async (params = {}) => {
+          const { isOverAge, isCertificated } = params
           const res = await PMIM.personnelInfoList({
             ...params,
           });
+          setSearchParams({
+            ...searchParams,
+            isOverAge: isOverAge,
+            isCertificated: isCertificated
+          })
           return {
             ...params,
             data: res.list,
@@ -264,7 +282,21 @@ export default () => {
               record: any,
               _: any,
               action: any
-            ) => [
+            ) => {
+              const btns = [
+                <a
+                  key="editable"
+                  onClick={() => {
+                    tabNavigate({
+                      namePath: `项目人员管理/审核人员信息`,
+                      routePath: `/PersonDetail/?id=${record.id}&ifEdit=${true}`,
+                      activeMenu: '/PM/IM',
+ 
+                    });
+                  }}
+                >
+                  审核
+                </a>,
                 <a
                   key="editable"
                   onClick={() => {
@@ -287,7 +319,12 @@ export default () => {
                 >
                   <a>删除</a>
                 </Popconfirm>,
-              ],
+              ]
+
+              return user.userInfor.roles.find(
+                (item: string) => item == 'project-manager' || item == 'super_admin'
+              ) && !record.status ? btns : btns.slice(1)
+            }
           },
         ]}
         scroll={{ x: 1900, y: 'auto' }}
@@ -346,6 +383,7 @@ export default () => {
           <Styled.ExportButton
             api="exportPersonnelInfo"
             fileName="人员信息导出"
+            params={searchParams}
           />,
           <Button
             key="button"
@@ -449,6 +487,35 @@ export default () => {
             </Button>
           </div>
         </div>
+      </Modal>
+
+      <Modal
+        open={open}
+        title={<div>审批人员信息</div>}
+        // onOk={handleOk}
+        // onCancel={handleCancel}
+        maskClosable={false}
+      // footer={[
+      //   <Button key="back" onClick={handleCancel} disabled={loading}>
+      //     取消
+      //   </Button>,
+      //   <Button key="reset" htmlType="reset" onClick={onReset} disabled={loading}>
+      //     通过
+      //   </Button>,
+      //   <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
+      //     驳回
+      //   </Button>,
+      // ]}
+      >
+        {/* <AdForm
+        loadingTitle="提交中..."
+        formRef={formRef}
+        initialValues={{ ...menus }}
+        loading={loading}
+        labelAlign="left"
+        onFormChange={onFormChange}
+        columns={columns}
+      /> */}
       </Modal>
     </>
   );

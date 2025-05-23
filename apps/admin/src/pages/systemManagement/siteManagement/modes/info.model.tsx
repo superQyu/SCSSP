@@ -563,6 +563,7 @@ export default (props) => {
         <DatePicker className="w-full" format="YYYY-MM-DD" />
       ),
       formItemProps: {
+        rules: [{ required: true, message: '请选择有效期起' }],
         getValueFromEvent: (...[, dateString]) => dateString,
         getValueProps: (value) => ({
           value: value ? dayjs(value) : undefined,
@@ -574,9 +575,11 @@ export default (props) => {
       label: '有效期止',
       dataIndex: 'validityEndDate',
       formItem: (
+
         <DatePicker className="w-full" format="YYYY-MM-DD" />
       ),
       formItemProps: {
+        rules: [{ required: true, message: '请选择有效期止' }],
         getValueFromEvent: (...[, dateString]) => dateString,
         getValueProps: (value) => ({
           value: value ? dayjs(value) : undefined,

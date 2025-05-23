@@ -1,160 +1,82 @@
-import { useRef, useState } from 'react';
+import FunctionBar from './components/FunctionBar';
 
-import { ProTable } from 'components';
-import { type ActionType } from '@ant-design/pro-components';
-import { Button, message, Popconfirm } from 'antd';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { Form, } from 'antd';
+import type { RadioChangeEvent } from 'antd';
+import { Radio } from 'antd';
 
-import EditDialog from './components/editdialog';
-
-// api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-// 表格相关
-import siteModel from './models/table.model';
+import { useEffect, useState } from 'react';
+import { esESIntl } from '@ant-design/pro-components';
 
 export default () => {
   // api 相关
   const { server } = useBasicConfiguration();
+  const { attendance } = server;
   const { materialList } = server;
+  const [chartData, setChartData] = useState<any>([]);
+  const [form] = Form.useForm();
+  const [params, setParams] = useState<any>({
+    enterOrExit: 'enter',
+    type: '1'
+  });
 
-  // 初始化表格列
-  const initColumns = siteModel({ server });
-  const actionRef = useRef<ActionType>();
+  useEffect(() => {
+    loadData();
+  }, []);
 
-  const [dialogVisible, setDialogVisible] =
-    useState<boolean>(false);
-  const [detail, setDetail] = useState({});
-
-  // 修改表单打开关闭状态
-  const handleModalStateChange = async (state: boolean) => {
-    setDetail({});
-    setDialogVisible(state);
-    await actionRef.current?.reload();
+  const loadData = async () => {
+    const { list } = await materialList
+      .analysisList(params)
+    const resultMap = {};
+    list.forEach(item => {
+      const materialName = item.materialName;
+      const enterNumber = item.enterNumber;
+      if (resultMap[materialName]) {
+        resultMap[materialName] += enterNumber;
+      } else {
+        resultMap[materialName] = enterNumber;
+      }
+    });
+    const resultArray = [];
+    for (const [name, value] of Object.entries(resultMap)) {
+      resultArray.push({ name, value: value.toFixed(2) * 1 });
+    }
+    setChartData(resultArray)
   };
 
-  // 点击保存
-  const onSave = async (params: any) => {
-    const res = await materialList
-      .updatematerialList(params)
-      .then(async () => {
-        message.success('信息更新成功！');
-        await actionRef.current?.reload();
-      });
-    return res;
+  const onChange = (e: RadioChangeEvent) => {
+    setParams({
+      ...params,
+      [e.target.name]: e.target.value
+    })
+    console.log(e.target.value)
+    setTimeout(() => {
+      console.log('params', params)
+    }, 1000);
   };
-
-  // 删除行
-  const onDelete = async (id: number) => {
-    const res = await materialList
-      .deletematerialList({ id })
-      .then(async () => {
-        message.success('信息删除成功！');
-        await actionRef.current?.reload();
-      });
-    return res;
-  };
-
   return (
-    <>
-      <ProTable
-        actionRef={actionRef}
-        headerTitle="班组列表"
-        columns={[
-          ...initColumns,
-          // {
-          //   title: '操作',
-          //   width: 100,
-          //   fixed: 'right',
-          //   valueType: 'option',
-          //   dataIndex: 'option',
-          //   render: (
-          //     _text: any,
-          //     record: any,
-          //     _: any,
-          //     action: any
-          //   ) => [
-          //     <a
-          //       key="editable"
-          //       onClick={() => {
-          //         // console.log('点击了编辑')
-          //         handleModalStateChange(true);
-          //         // action?.startEditable?.(record.id);
-          //         setDetail(record);
-          //       }}
-          //     >
-          //       编辑
-          //     </a>,
-          //     <Popconfirm
-          //       key="delete"
-          //       title="删除此项"
-          //       onConfirm={() => onDelete(record.id)}
-          //       okText="确认"
-          //       cancelText="取消"
-          //     >
-          //       <a>删除</a>
-          //     </Popconfirm>,
-          //   ],
-          // },
-        ]}
-        request={async (params = {}) => {
-          // console.log('请求参数', params)
-          const res = await materialList.analysisList(params);
-          res.list = res.list.map(
-            (item: any, index: number) => ({
-              ...item,
-              id: index,
-            })
-          );
-          // console.log('工种列表', res);
-          return {
-            data: res.list,
-            total: res.total,
-          };
-        }}
-        form={{
-          ignoreRules: false,
-        }}
-        scroll={{ y: 'auto' }}
-        search={{
-          labelWidth: 'auto',
-          optionRender: (
-            { searchText }: any,
-            { form }: any,
-            dom: any
-          ) => {
-            return [
-              dom[0],
-              <Button
-                type="primary"
-                key="sub"
-                icon={<SearchOutlined />}
-                onClick={() => form?.submit()}
-              >
-                {searchText}
-              </Button>,
-            ];
-          },
-        }}
-        // toolBarRender={() => [
-        //   <Button
-        //     icon={<PlusOutlined />}
-        //     onClick={() => setDialogVisible(true)}
-        //     type="primary"
-        //   >
-        //     新建
-        //   </Button>,
-        // ]}
-        editable={{ onDelete, onSave }}
-        pagination={{
-          pageSize: 10,
-        }}
-      ></ProTable>
-      <EditDialog
-        key={`${dialogVisible}`}
-        detail={detail}
-        openModal={dialogVisible}
-        onStateChange={handleModalStateChange}
-      />
-    </>
+    <div className='p-20px'>
+      {/* <Form className='pl-40px' form={form} layout="inline" >
+        <Form.Item>
+          <Radio.Group size='large' onChange={onChange} defaultValue="enter" name="enterOrExit">
+            <Radio.Button value="enter">进场</Radio.Button>
+            <Radio.Button value="exit">出场</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item>
+          <Radio.Group size='large' onChange={onChange} defaultValue="1" name="type">
+            <Radio.Button value="1">重量</Radio.Button>
+            <Radio.Button value="2">数量</Radio.Button>
+          </Radio.Group>
+        </Form.Item>
+      </Form> */}
+
+      <div style={{ height: '700px' }}>
+        <FunctionBar data={chartData} unit={params.type == '1' ? 't' : '个'} />
+      </div>
+
+    </div>
+
   );
+
 };

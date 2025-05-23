@@ -49,7 +49,8 @@ const EntryCom: React.FC<Props> = forwardRef(
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     /** 是否选择三级教育 */
     const [isEducated, setIsEducated] = useState<number>();
-
+    // 用来体检证明的初始值
+    const [healthProveFile, setHealthProveFile] = useState<UploadFile[]>([]);
     useEffect(() => {
       // getSelectOptions();
     }, []);
@@ -83,8 +84,21 @@ const EntryCom: React.FC<Props> = forwardRef(
             };
           }
         );
-        // console.log('当前list', list);
         setFileList(list);
+
+
+        subForm.healthProve =
+          subForm.healthProve?.split('@');
+        const list2 = subForm.healthProve?.map(
+          (item: string, index: number) => {
+            return {
+              uid: `${index}`,
+              name: item?.split('/')?.slice(-1)[0],
+              url: item,
+            };
+          }
+        );
+        setHealthProveFile(list2);
         // console.log('subForm', subForm);
         setSubForm(subForm);
       }
@@ -208,10 +222,17 @@ const EntryCom: React.FC<Props> = forwardRef(
         label: '是否购买工伤或意外伤害保险',
         dataIndex: 'hasInsurance',
         formItem: (
-          <DictSelect dictKey={'pm_has_insurance'} disabled />
+          <DictSelect dictKey={'pm_has_insurance'} />
         ),
+        formItemProps: {
+          rules: [
+            { required: true, message: '请选择是否购买工伤或意外伤害保险' },
+          ],
+        },
         colNum: 8,
       },
+
+
       {
         label: '是否进行三级教育',
         dataIndex: 'isEducated',
@@ -233,13 +254,18 @@ const EntryCom: React.FC<Props> = forwardRef(
             }}
           />
         ),
+        formItemProps: {
+          rules: [
+            { required: true, message: '请选择是否进行三级教育' },
+          ],
+        },
         colNum: 8,
       },
       {
         show: isEducated == 1,
         label: '三级教育图片上传',
         dataIndex: 'educatedProveUrl',
-        colNum: 8,
+        colNum: isEducated == 1 ? 8 : 0,
         formItemProps: {
           rules: [
             {
@@ -268,6 +294,37 @@ const EntryCom: React.FC<Props> = forwardRef(
             defaultFileList={() => fileList}
           />
         ),
+
+      },
+      {
+
+        label: '体检证明上传',
+        dataIndex: 'healthProve',
+        colNum: 8,
+        formItemProps: {
+
+        },
+        formItem: (
+          <ProUpload
+            key={healthProveFile?.length}
+            onRequest={async (params: any) => {
+              const res = await file.fileUpload(params);
+              formRef.current?.setFieldsValue({
+                healthProve: res,
+              });
+              return res;
+            }}
+            onListChange={(res: any) => {
+              const list = res?.map((item: any) => item.url);
+              formRef.current?.setFieldsValue({
+                // 证件图片
+                healthProve: list && list[0] ? list[0] : '',
+              });
+            }}
+            defaultFileList={() => healthProveFile}
+          />
+        ),
+
       },
       // {
       //   label: '加入公会时间',
@@ -369,11 +426,11 @@ const EntryCom: React.FC<Props> = forwardRef(
       <>
         <SingleTitle
           label="进场信息"
-          // subLabel={
-          //   <CustomsDiv>
-          //     首先录入班组长（是否班组长选【是】），再录入其他工人
-          //   </CustomsDiv>
-          // }
+        // subLabel={
+        //   <CustomsDiv>
+        //     首先录入班组长（是否班组长选【是】），再录入其他工人
+        //   </CustomsDiv>
+        // }
         />
         <div className="mt-5">
           <AdForm

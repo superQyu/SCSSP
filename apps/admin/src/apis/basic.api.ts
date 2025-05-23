@@ -128,7 +128,10 @@ const user: ApiItem[] = [
     cusParmas: {
       dataType: 'blob'
     },
-    params: [{ key: 'Authorization', location: "header" }]
+    params: [{ key: 'Authorization', location: "header" },
+      { key: 'isOverAge', cn: '是否超龄' },
+      { key: 'isCertificated', cn: '是否有证书' },
+    ]
   },
 
   {

@@ -100,7 +100,7 @@ export default () => {
                         src={`/src/assets/avatar/${item.jobNo}_1.jpg`}
                         fallback={
                           new URL(
-                            '@/assets/images/PA/person.jpg',
+                            '@/assets/avatar/default.png',
                             import.meta.url
                           ).href
                         }

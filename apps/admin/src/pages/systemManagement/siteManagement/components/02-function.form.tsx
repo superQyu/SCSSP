@@ -254,7 +254,6 @@ const FunctionCom: React.FC<Props> = forwardRef(
                 workerType: workerType,
               }}
               onSelect={(val: string) => {
-                console.log('选择的工种或管理岗位', val);
                 if (workerType == '1') {
                   formRef.current?.setFieldsValue({
                     workTypeId: val,
