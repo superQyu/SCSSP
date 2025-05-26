@@ -29,6 +29,8 @@ interface Props {
   openModel: Function;
   server: any;
   otherFormRef: any;
+  // 是否可修改
+  ifEdit: Boolean
 }
 
 const CustomsDiv = styled.div`
@@ -42,7 +44,7 @@ const CustomsDiv = styled.div`
 `;
 
 const FunctionCom: React.FC<Props> = forwardRef(
-  ({ detail, openModel, server, otherFormRef }: Props, ref) => {
+  ({ detail, openModel, server, otherFormRef, ifEdit }: Props, ref) => {
     const { subContractor, person } = server;
 
     const formRef = useRef<FormInstance>(null);
@@ -229,9 +231,10 @@ const FunctionCom: React.FC<Props> = forwardRef(
                 labelCol: { span: 12 },
                 wrapperCol: { span: 12, flex: 1 },
               }}
+              disabled={ifEdit}
             />
           </Col>
-          <Col className="gutter-row" span={16}>
+          {!ifEdit ? <Col className="gutter-row" span={16}>
             {/* <Button
               className="pos-absolute"
               type="link"
@@ -265,7 +268,8 @@ const FunctionCom: React.FC<Props> = forwardRef(
                 }
               }}
             />
-          </Col>
+          </Col> : ''}
+
         </Row>
       </>
     );

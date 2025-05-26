@@ -30,10 +30,14 @@ function App() {
   const cloneDefaultRoutes = cloneDeep(defaultRoutes);
   const { path } =
     JSON.parse(getToken('BREADCRUMBS') || '{}') || {};
+    
 
   const ROUTETREE = filepathToElement(menu);
   // console.log('处理后的动态路由', ROUTETREE);
   const firstTo = path || GetFirstPath(ROUTETREE);
+  console.log('path', path);
+  console.log('firstTo', firstTo);
+
 
   /** 预处理 / 默认跳转路由  默认为用户路由 列表的第一项 */
   cloneDefaultRoutes[0].children = [
@@ -42,7 +46,7 @@ function App() {
     // { index: true, element: <Navigate to={firstTo} /> },
     ...cloneDefaultRoutes[0].children,
   ];
-  // console.log('所有路由', [...cloneDefaultRoutes]);
+  console.log('所有路由', [...cloneDefaultRoutes]);
   const router = createBrowserRouter([...cloneDefaultRoutes]);
 
   useEffect(() => {}, [menu]);

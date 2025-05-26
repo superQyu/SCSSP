@@ -4,7 +4,7 @@ import {
   useRouteLoaderData,
 } from 'react-router-dom';
 import { setMenuTab } from 'store';
-import { getToken, setToken, filter, flattenArray } from 'utils';
+import { getToken, setToken, filter, flattenArray, removeToken } from 'utils';
 import { useAppDispatch, useAppSelector } from './index';
 import { getMenuData } from '@ant-design/pro-components';
 
@@ -147,5 +147,11 @@ export default () => {
     return name;
   };
 
-  return { tabNavigate, deleteTab, getRouteName };
+  const clearTab = () => {
+
+    dispatch(setMenuTab([]));
+    removeToken('BREADCRUMBS');
+  }
+
+  return { tabNavigate, deleteTab, getRouteName, clearTab };
 };

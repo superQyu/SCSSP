@@ -291,7 +291,7 @@ export default () => {
                       namePath: `项目人员管理/审核人员信息`,
                       routePath: `/PersonDetail/?id=${record.id}&ifEdit=${true}`,
                       activeMenu: '/PM/IM',
- 
+
                     });
                   }}
                 >
@@ -303,7 +303,7 @@ export default () => {
                     // action?.startEditable?.(record.id);
                     tabNavigate({
                       namePath: `项目人员管理/人员详情${record.id}`,
-                      routePath: `/PersonDetail/?id=${record.id}`,
+                      routePath: `/PersonDetail/?id=${record.id}&status=${record.status}`,
                       activeMenu: '/PM/IM',
                     });
                   }}
@@ -323,7 +323,9 @@ export default () => {
 
               return user.userInfor.roles.find(
                 (item: string) => item == 'project-manager' || item == 'super_admin'
-              ) && !record.status ? btns : btns.slice(1)
+              ) && (record.status == '0' || !record.status || record.status == '11') ? btns :
+                record.status == '2' ? btns.slice(2) :
+                  btns.slice(1)
             }
           },
         ]}
@@ -489,34 +491,7 @@ export default () => {
         </div>
       </Modal>
 
-      <Modal
-        open={open}
-        title={<div>审批人员信息</div>}
-        // onOk={handleOk}
-        // onCancel={handleCancel}
-        maskClosable={false}
-      // footer={[
-      //   <Button key="back" onClick={handleCancel} disabled={loading}>
-      //     取消
-      //   </Button>,
-      //   <Button key="reset" htmlType="reset" onClick={onReset} disabled={loading}>
-      //     通过
-      //   </Button>,
-      //   <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
-      //     驳回
-      //   </Button>,
-      // ]}
-      >
-        {/* <AdForm
-        loadingTitle="提交中..."
-        formRef={formRef}
-        initialValues={{ ...menus }}
-        loading={loading}
-        labelAlign="left"
-        onFormChange={onFormChange}
-        columns={columns}
-      /> */}
-      </Modal>
+
     </>
   );
 };

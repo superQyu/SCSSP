@@ -32,6 +32,7 @@ export const userSlice: any = createSlice({
       state.userInfor = action.payload;
     },
     setMenu: (state, action) => {
+      console.log('#####',action.payload)
       state.menu = action.payload;
     },
   },

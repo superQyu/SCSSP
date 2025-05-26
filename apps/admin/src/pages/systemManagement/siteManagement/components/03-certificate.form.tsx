@@ -42,6 +42,8 @@ interface Props {
   onSubmit: (state: any) => void;
   /** 编辑时的证书详情 */
   detail?: Record<string, any>;
+  // 是否可修改
+  ifEdit: Boolean
 }
 
 interface FileItem {
@@ -61,7 +63,7 @@ type MenusType = {
 };
 
 const FunctionCom: React.FC<Props> = forwardRef(
-  ({ subForm, onSubmit, detail }: Props, ref) => {
+  ({ subForm, onSubmit, detail, ifEdit }: Props, ref) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [open, setOpen] = useState<boolean>(false);
 
@@ -188,12 +190,13 @@ const FunctionCom: React.FC<Props> = forwardRef(
                   initialValues={subForm}
                   layout="horizontal"
                   formRef={(el: any) =>
-                    (certificateRef.current[collapseItemIdx] =
-                      el)
+                  (certificateRef.current[collapseItemIdx] =
+                    el)
                   }
                   columns={certificateColumns}
+                  disabled={ifEdit}
                 />
-                <Flex justify="flex-end">
+                {!ifEdit ? <Flex justify="flex-end">
                   <Popconfirm
                     key="delete"
                     title="删除此项"
@@ -212,7 +215,7 @@ const FunctionCom: React.FC<Props> = forwardRef(
                       删除
                     </Button>
                   </Popconfirm>
-                </Flex>
+                </Flex> : ""}
               </>
             ),
           },
@@ -517,7 +520,7 @@ const FunctionCom: React.FC<Props> = forwardRef(
           label="证书信息"
           subLabel={
             <div className="ml-3">
-              <ProUpload
+              {!ifEdit ? <ProUpload
                 buttonRender={
                   <Button
                     icon={<AuditOutlined />}
@@ -549,7 +552,7 @@ const FunctionCom: React.FC<Props> = forwardRef(
                 }}
                 maxCount={false}
                 showUploadList={false}
-              />
+              /> : ''}
             </div>
           }
         />

@@ -13,7 +13,6 @@ export default (
   status: string
 ) => {
   const commonWidth = 100;
-  console.log('status', status);
 
   // api 相关
   const { server } = useBasicConfiguration();

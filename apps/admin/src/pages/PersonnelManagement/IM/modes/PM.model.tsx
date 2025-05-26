@@ -216,6 +216,46 @@ export default ({ server }: MenusPropsType) => {
       dataIndex: 'address',
       hideInSearch: true,
     },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      // valueType: 'select',
+      // valueEnum: {
+      //   2: {
+      //     text: '审核通过',
+      //     status: 'success',
+      //   },
+      //   11: {
+      //     text: '待审核',
+      //     status: 'processing',
+      //   },
+      //   0: {
+      //     text: '待审核',
+      //     status: 'processing',
+      //   },
+      //   10: {
+      //     text: '驳回',
+      //     status: 'error',
+
+      //   },
+      // },
+      hideInSearch: true,
+      render: (_, record) => {
+        if (record.status == '2') {
+          return (
+            <Tag color="success">审核通过</Tag>
+          );
+        } else if (record.status == '11' || record.status == '0' || !record.status) {
+         return  <Tag color="processing">待审核</Tag>
+        } else {
+          // 管理人员
+          return (
+            <Tag color="error">驳回</Tag>
+          );
+        }
+      },
+
+    },
     // {
     //   hideInSearch: true,
     //   title: '计价方式',

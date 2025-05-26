@@ -167,10 +167,10 @@ const layout: React.FC<CommonObject> = (props: any) => {
   // 只有动态路由发生变化时，才会触发该方法
   useEffect(() => {
     if (menu.length != 0) {
-      // console.log('传递给Layout组件的menus', {
-      //   ...menus,
-      //   routes: sortMenu([...menu]),
-      // });
+      console.log('传递给Layout组件的menus', {
+        ...menus,
+        routes: sortMenu([...menu]),
+      });
       setMenus({ ...menus, routes: sortMenu([...menu]) });
     } else {
       // setMenus({ ...menus, routes: sortMenu([...[...route.routes, ...menu]]) });
@@ -261,7 +261,7 @@ const layout: React.FC<CommonObject> = (props: any) => {
                   }
                 >
                   <div>
-                    {}
+                    { }
                     {
                       (
                         baseInfor as unknown as {
@@ -290,7 +290,7 @@ const layout: React.FC<CommonObject> = (props: any) => {
               if (typeof window === 'undefined') return [];
               return [
                 props.layout !== 'side' &&
-                document.body.clientWidth > 1400 ? (
+                  document.body.clientWidth > 1400 ? (
                   <SearchInput />
                 ) : undefined,
                 <Tooltip placement="bottom" title={'主题切换'}>
