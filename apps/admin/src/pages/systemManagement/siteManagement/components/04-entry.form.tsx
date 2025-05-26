@@ -23,6 +23,8 @@ interface Props {
   detail: Record<string, any>;
   /** 图片数组 */
   educatedProveUrl: string[];
+  // 是否可修改
+  ifEdit: Boolean
 }
 
 const CustomsDiv = styled.div`
@@ -36,7 +38,7 @@ const CustomsDiv = styled.div`
 `;
 
 const EntryCom: React.FC<Props> = forwardRef(
-  ({ detail, educatedProveUrl }: Props, ref) => {
+  ({ detail, educatedProveUrl, ifEdit }: Props, ref) => {
     const { server } = useBasicConfiguration();
     const { group, file } = server;
     const formRef = useRef<FormInstance>(null);
@@ -443,6 +445,7 @@ const EntryCom: React.FC<Props> = forwardRef(
               labelCol: { span: 12 },
               wrapperCol: { span: 12, flex: 1 },
             }}
+            disabled={ifEdit}
           />
         </div>
       </>

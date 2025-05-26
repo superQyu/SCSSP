@@ -10,12 +10,13 @@ import {
 import { removeToken } from 'utils';
 
 import { AuthContext, useAppDispatch } from 'hooks';
-
+import { useRoute } from 'hooks';
 import './profile.scss';
 
 const Profile: React.FC<{ user: any; tokenKeys: any[] }> = (
   props
 ) => {
+  const { clearTab } = useRoute();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { signOut } = useContext(AuthContext);
@@ -82,6 +83,8 @@ const Profile: React.FC<{ user: any; tokenKeys: any[] }> = (
               onClick={async () => {
                 await signOut(dispatch);
                 navigate('/');
+                clearTab();
+                // removeToken('BREADCRUMBS')
                 tokenKeys.map((keyName) => removeToken(keyName));
               }}
             >

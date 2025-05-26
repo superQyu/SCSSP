@@ -39,6 +39,40 @@ const person: ApiItem[] = [
     ],
   },
   {
+    key: 'confirmPersonInfo',
+    url: `${ADMIN_API}/wisdom/personnel-info/confirm-bpm`,
+    type: 'GET',
+    name: '项目经理审核人员信息',
+    description: '项目经理审核人员信息',
+    params: [
+      {
+        key: 'tenant-id', location: 'header', value: "1", valueAttrs: {
+          value: "1"
+        }
+      },
+      { key: 'Authorization', location: 'header' },
+      { key: 'personnelInfoId', cn: '用户基础信息' },
+      { key: 'isConfirm', cn: '通过或者驳回' },
+
+    ],
+  },
+  {
+    key: 'createPersonInfo',
+    url: `${ADMIN_API}/wisdom/personnel-info/create-bpm`,
+    type: 'GET',
+    name: '驳回后再次提交人员信息',
+    description: '驳回后再次提交人员信息',
+    params: [
+      {
+        key: 'tenant-id', location: 'header', value: "1", valueAttrs: {
+          value: "1"
+        }
+      },
+      { key: 'Authorization', location: 'header' },
+      { key: 'personnelInfoId', cn: '用户基础信息' },
+    ],
+  },
+  {
     key: 'workType',
     url: `${ADMIN_API}/wisdom/work-type-info/page`,
     type: 'GET',

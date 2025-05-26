@@ -31,7 +31,7 @@ const FormList = Object.entries(list).map(([key, val]) => {
     Component: lazy(val as () => Promise<any>),
   };
 });
-console.log('组件列表', FormList);
+// console.log('组件列表', FormList);
 
 export default () => {
   const { tabNavigate, deleteTab } = useRoute();
@@ -51,6 +51,9 @@ export default () => {
   };
   // 详情数据
   const [detail, setDetail] = useState<any>({});
+  const [ifEdit, setIfEdit] = useState<Boolean>(false);
+
+
   /** 额外的参数，主要是人员的工种(workTypeId)或职位(jobCategory) */
   const [extraParam, setExtraParam] = useState<any>({});
   // api 相关
@@ -58,6 +61,7 @@ export default () => {
 
   useEffect(() => {
     const id = routerParams.get('id');
+    setIfEdit(routerParams.get('ifEdit') || false)
     // console.log('id', id);
     if (id) getDetail(id);
   }, [routerParams]);
@@ -137,6 +141,42 @@ export default () => {
     // goBack();
   };
 
+  // 点击通过或者驳回人员信息
+  const handleConfirm = async (status: string) => {
+    try {
+      await P.confirmPersonInfo({
+        personnelInfoId: routerParams.get('id'),
+        isConfirm: status
+      })
+      message.success('操作成功');
+      resetForm();
+      goBack();
+    } catch (error: any) {
+      message.error('操作失败');
+      throw new Error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // 点击重新提交人员信息
+  const handleSubmit = async () => {
+    try {
+      await P.createPersonInfo({
+        personnelInfoId: routerParams.get('id'),
+      })
+      message.success('操作成功');
+      resetForm();
+      goBack();
+    } catch (error: any) {
+      message.error('操作失败');
+      throw new Error(error.message);
+    } finally {
+      setLoading(false);
+    }
+
+  }
+
   // 返回列表页面
   const goBack = () => {
     const id = routerParams.get('id');
@@ -204,6 +244,8 @@ export default () => {
     }
   };
 
+
+
   // 点击重置按钮
   const onReset = () => {
     if (loading) {
@@ -247,33 +289,64 @@ export default () => {
               subForm={{
                 workerType: workerType,
               }}
+              ifEdit={ifEdit}
               onSubmit={(data) => onSubmitCertificate(data)}
             />
           </Suspense>
         );
       })}
 
-      <Flex gap="middle" justify="center" className="py-10">
-        <Button
-          size="large"
-          key="submit"
-          type="primary"
-          loading={loading}
-          onClick={handleOk}
-        >
-          确定
-        </Button>
-        {/* {Object.keys(detail).length ? (
+      {
+        !ifEdit ? <Flex gap="middle" justify="center" className="py-10">
+          {routerParams.get('status') == '10' ? <Button
+            size="large"
+            key="submit"
+            type="primary"
+            loading={loading}
+            onClick={handleSubmit}
+          >
+            重新提交
+          </Button> : <Button
+            size="large"
+            key="submit"
+            type="primary"
+            loading={loading}
+            onClick={handleOk}
+          >
+            确定
+          </Button>
+          }
+
+          {/* {Object.keys(detail).length ? (
+    <Button
+      size="large"
+      key="reset"
+      htmlType="reset"
+      onClick={goBack}
+      disabled={loading}
+    >
+      取消
+    </Button>
+  ) : (
+    <Button
+      size="large"
+      key="reset"
+      htmlType="reset"
+      onClick={onReset}
+      disabled={loading}
+    >
+      重置
+    </Button>
+  )} */}
           <Button
             size="large"
-            key="reset"
+            key="cancle"
             htmlType="reset"
             onClick={goBack}
             disabled={loading}
           >
             取消
           </Button>
-        ) : (
           <Button
             size="large"
             key="reset"
@@ -283,26 +356,38 @@ export default () => {
           >
             重置
           </Button>
-        )} */}
-        <Button
-          size="large"
-          key="cancle"
-          htmlType="reset"
-          onClick={goBack}
-          disabled={loading}
-        >
-          取消
-        </Button>
-        <Button
-          size="large"
-          key="reset"
-          htmlType="reset"
-          onClick={onReset}
-          disabled={loading}
-        >
-          重置
-        </Button>
-      </Flex>
+        </Flex> : <Flex gap="middle" justify="center" className="py-10">
+          <Button
+            size="large"
+            key="submit"
+            type="primary"
+            loading={loading}
+            onClick={() => handleConfirm('通过')}
+          >
+            通过
+          </Button>
+          <Button
+            size="large"
+            key="reset"
+            htmlType="reset"
+            onClick={() => handleConfirm('驳回')}
+            disabled={loading}
+            danger
+          >
+            驳回
+          </Button>
+          <Button
+            size="large"
+            key="cancle"
+            htmlType="reset"
+            onClick={goBack}
+            disabled={loading}
+          >
+            取消
+          </Button>
+
+        </Flex>
+      }
 
       {/* <WorkerCom
         subForm={{

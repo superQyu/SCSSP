@@ -85,6 +85,7 @@ const AdForm: React.FC<FormPropsTypes> = forwardRef(
       ],
       formRef = useRef<FormInstance>(null),
       onFormChange,
+      disabled = false
     }: FormPropsTypes = props;
 
     const [menus, setMenus] = useState<FieldType>({});
@@ -119,6 +120,7 @@ const AdForm: React.FC<FormPropsTypes> = forwardRef(
           onValuesChange={onFormChange}
           colon={false}
           initialValues={{ ...initialValues }}
+          disabled={disabled}
         >
           <Row gutter={16}>
             {columns.map((item: FormColumnsTypes) => (

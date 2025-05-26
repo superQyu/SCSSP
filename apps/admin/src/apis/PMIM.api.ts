@@ -15,8 +15,9 @@ const menus: ApiItem[] = [
       { key: 'name', cn: '姓名' },
       { key: 'phone', cn: '电话号码' },
       { key: 'address', cn: '家庭住址' },
-      { key: 'isOverAge', cn: '家庭住址' },
-      { key: 'isCertificated', cn: '家庭住址' },
+      { key: 'isOverAge', cn: '是否超龄' },
+      { key: 'isCertificated', cn: '是否有证书' },
+      { key: 'status', cn: '状态' },
     ],
   },
   {

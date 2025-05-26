@@ -19,6 +19,8 @@ import { ToString } from '@/utils/transform';
 interface Props {
   /** 表单初始化 */
   detail: Record<string, any>;
+  // 是否可修改
+  ifEdit: Boolean
 }
 
 const calculateAgeFromID = (idCard) => {
@@ -62,7 +64,7 @@ const calculateAgeFromID = (idCard) => {
 };
 
 const InfoCom: React.FC<Props> = forwardRef(
-  ({ detail }: Props, ref) => {
+  ({ detail, ifEdit }: Props, ref) => {
     const { server } = useBasicConfiguration();
     const { file: F } = server;
 
@@ -111,6 +113,7 @@ const InfoCom: React.FC<Props> = forwardRef(
         );
         setDefaultUrl(list);
         setSubForm(subForm);
+
       }
     }, [detail]);
 
@@ -434,6 +437,7 @@ const InfoCom: React.FC<Props> = forwardRef(
               formRef={formRef}
               labelAlign="right"
               columns={columns}
+              disabled={ifEdit}
               // layoutStyle={{
               //   labelCol: { span: 10 },
               //   wrapperCol: { span: 14, flex: 1 },

@@ -112,7 +112,6 @@ export default ({ server }: MenusPropsType) => {
           '11': '项目经理', //待确认
 
         }
-        console.log('@@', record.status)
         return (record.status == '2'  || record.status == '0' ? '--' :
           <Tag color="processing">{state[record.status]}</Tag>
         );
