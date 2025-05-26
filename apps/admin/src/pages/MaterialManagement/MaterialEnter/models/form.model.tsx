@@ -332,16 +332,28 @@ export default (
       ellipsis: true,
       readonly: status == '0' ? false : true,
       hideInSearch: true,
-      renderFormItem: () => {
-        return <Select
-          style={{ width: '100%' }}
-          placeholder="请选择是否特种作业"
-          options={[
-            { value: 1, label: '是' },
-            { value: 2, label: '否' },
-          ]}
-        />;
+      valueType: 'select',
+      valueEnum: {
+
+        '1': {
+          text: '是',
+          status: 'warning',
+        },
+        '2': {
+          text: '否',
+          status: 'processing',
+        },
       },
+      // renderFormItem: () => {
+      //   return <Select
+      //     style={{ width: '100%' }}
+      //     placeholder="请选择是否特种作业"
+      //     options={[
+      //       { value: '1', label: '是' },
+      //       { value: '2', label: '否' },
+      //     ]}
+      //   />;
+      // },
     },
 
     {

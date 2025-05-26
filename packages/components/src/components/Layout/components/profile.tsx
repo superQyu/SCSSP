@@ -84,7 +84,6 @@ const Profile: React.FC<{ user: any; tokenKeys: any[] }> = (
                 await signOut(dispatch);
                 navigate('/');
                 clearTab();
-                // removeToken('BREADCRUMBS')
                 tokenKeys.map((keyName) => removeToken(keyName));
               }}
             >
