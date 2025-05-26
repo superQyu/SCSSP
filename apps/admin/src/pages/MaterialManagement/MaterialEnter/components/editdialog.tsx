@@ -251,7 +251,7 @@ export default (props: Props) => {
           materialsInventoryId: item.materialsInventoryId,
           materialType: item.materialType,
           enterNumber: item.enterNumber,
-          isSpecialWork: item.isSpecialWork,
+          isSpecialWork: `${item.isSpecialWork}`,
           attachment: item.attachment?.join('@'),
           acceptAttachment: item.acceptAttachment?.join('@'),
         };

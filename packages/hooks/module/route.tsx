@@ -148,7 +148,6 @@ export default () => {
   };
 
   const clearTab = () => {
-
     dispatch(setMenuTab([]));
     removeToken('BREADCRUMBS');
   }

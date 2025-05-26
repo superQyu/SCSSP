@@ -68,6 +68,11 @@ export default defineConfig(
             secure: false,
             // rewrite: (path) => path.replace(/^\/monitor/, ''),
           },
+          '/gitLog': {
+            target: 'http://localhost:26011/',
+            secure: false,
+            rewrite: (path) => path.replace('/gitLog', ''),
+          },
         },
       },
       base: mode === 'development' ? '/' : `../${baseUrl}/`,

@@ -479,6 +479,8 @@ export default () => {
                 try {
                   await PMIM.importByModel(formData)
                   message.success('导入成功！')
+                  await actionRef.current?.reload();
+                  setOpenModal(false);
                 } catch {
                   message.warning('导入失败！')
                 }

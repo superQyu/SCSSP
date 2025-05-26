@@ -14,6 +14,9 @@ import AttendanceRecord from '@/pages/PersonnelManagement/AttendanceManagement/A
 
 import FlowFormDesign from '@/pages/workflow/bpm/formDesign';
 
+import UpdateLog from '@/pages/SynchronizeData';
+
+
 // 防止路由丢失
 const PreventRouteLoss = () => (
   <Navigate to={useLocation().pathname} />
@@ -76,6 +79,10 @@ const defaultRoutes: any = [
         <MapDev />
       </div>
     ),
+  },
+  {
+    path: '/update-log',
+    element: <UpdateLog />,
   },
 ];
 
