@@ -65,7 +65,6 @@ export default ({ server }: MenusPropsType) => {
       editable: false,
       dataIndex: 'passportPhoto',
       render: (_, record) => (
-
         <Avatar
           icon={<UserOutlined />}
           src={
@@ -246,7 +245,7 @@ export default ({ server }: MenusPropsType) => {
             <Tag color="success">审核通过</Tag>
           );
         } else if (record.status == '11' || record.status == '0' || !record.status) {
-         return  <Tag color="processing">待审核</Tag>
+          return <Tag color="processing">待审核</Tag>
         } else {
           // 管理人员
           return (
