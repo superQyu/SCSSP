@@ -3,7 +3,7 @@ import {
   useNavigate,
   useRouteLoaderData,
 } from 'react-router-dom';
-import { setMenuTab } from 'store';
+import { setMenuTab, setMenu } from 'store';
 import { getToken, setToken, filter, flattenArray, removeToken } from 'utils';
 import { useAppDispatch, useAppSelector } from './index';
 import { getMenuData } from '@ant-design/pro-components';
@@ -149,6 +149,7 @@ export default () => {
 
   const clearTab = () => {
     dispatch(setMenuTab([]));
+    dispatch(setMenu([]));
     removeToken('BREADCRUMBS');
   }
 

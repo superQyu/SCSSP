@@ -99,6 +99,8 @@ export const PermissionsProvider: React.FC<{
     });
   }, []);
 
+
+
   return (
     <PermissionsContext.Provider value={{}}>
       {children}
