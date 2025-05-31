@@ -29,7 +29,6 @@ export interface ColumnsParamsProps extends objJson {
   isDelete: '0' | '1';
 }
 
-
 export default ({ server }: MenusPropsType) => {
   const { menus: M, subContractor } = server as objJson;
 
@@ -70,10 +69,14 @@ export default ({ server }: MenusPropsType) => {
           src={
             record.passportPhoto || (
               <Image
-                src={record.jobNo ? `/src/assets/avatar/${record.jobNo}_1.jpg` : `/src/assets/avatar/default.png`}
+                src={
+                  record.jobNo
+                    ? `/src/assets/avatar/${record.jobNo}_1.jpg`
+                    : `/src/assets/avatar/default.png`
+                }
                 fallback={`/src/assets/avatar/default.png`}
                 onError={() => {
-                  return true
+                  return true;
                 }}
               />
             )
@@ -87,6 +90,7 @@ export default ({ server }: MenusPropsType) => {
       dataIndex: 'name',
       width: 120,
       ellipsis: true,
+      fixed: 'left',
     },
     {
       title: '是否超龄',
@@ -133,38 +137,7 @@ export default ({ server }: MenusPropsType) => {
     //   dataIndex: 'birthday',
     // },
     {
-      hideInSearch: true,
-      valueType: 'date',
-      title: '进场日期',
-      dataIndex: 'entryDate',
-    },
-    {
-      hideInSearch: true,
-      title: '所属单位',
-      dataIndex: 'companyName',
-      valueType: 'select',
-      fieldProps: {
-        options: subcontractorList,
-      },
-    },
-    {
-      width: 120,
-      hideInSearch: true,
-      title: '性别',
-      dataIndex: 'gender',
-      // type='text'
-      render: (_, record) => (
-        <DictText value={record.gender} dictKey={`pm_gender`} />
-      ),
-    },
-    {
-      width: 160,
-      hideInSearch: true,
-      editable: false,
-      title: '身份证号',
-      dataIndex: 'identityCard',
-    },
-    {
+      width: 140,
       hideInSearch: true,
       title: '劳务工种',
       dataIndex: 'workTypeName',
@@ -187,6 +160,39 @@ export default ({ server }: MenusPropsType) => {
       //     );
       //   }
       // },
+    },
+    {
+      width: 140,
+      hideInSearch: true,
+      valueType: 'date',
+      title: '进场日期',
+      dataIndex: 'entryDate',
+    },
+    {
+      hideInSearch: true,
+      title: '所属单位',
+      dataIndex: 'companyName',
+      valueType: 'select',
+      fieldProps: {
+        options: subcontractorList,
+      },
+    },
+    {
+      width: 80,
+      hideInSearch: true,
+      title: '性别',
+      dataIndex: 'gender',
+      // type='text'
+      render: (_, record) => (
+        <DictText value={record.gender} dictKey={`pm_gender`} />
+      ),
+    },
+    {
+      width: 160,
+      hideInSearch: true,
+      editable: false,
+      title: '身份证号',
+      dataIndex: 'identityCard',
     },
     // {
     //   hideInSearch: true,
@@ -218,42 +224,45 @@ export default ({ server }: MenusPropsType) => {
     {
       title: '状态',
       dataIndex: 'status',
-      // valueType: 'select',
-      // valueEnum: {
-      //   2: {
-      //     text: '审核通过',
-      //     status: 'success',
-      //   },
-      //   11: {
-      //     text: '待审核',
-      //     status: 'processing',
-      //   },
-      //   0: {
-      //     text: '待审核',
-      //     status: 'processing',
-      //   },
-      //   10: {
-      //     text: '驳回',
-      //     status: 'error',
-
-      //   },
-      // },
-      hideInSearch: true,
+      fixed: 'right',
+      valueType: 'select',
+      valueEnum: {
+        2: {
+          text: <Tag color="success">打卡正常</Tag>,
+          status: 'success',
+        },
+        444: {
+          text: <Tag color="error">打卡异常</Tag>,
+          status: 'error',
+        },
+        11: {
+          text: <Tag color="processing">审核中</Tag>,
+          status: 'processing',
+        },
+        10: {
+          text: <Tag color="warning">驳回</Tag>,
+          status: 'warning',
+        },
+      },
+      // hideInSearch: true,
       render: (_, record) => {
         if (record.status == '2') {
+          return <Tag color="success">打卡正常</Tag>;
+        } else if (
+          record.status == '11' ||
+          record.status == '0' ||
+          !record.status
+        ) {
+          return <Tag color="processing">审核中</Tag>;
+        } else if (record.status == '444') {
           return (
-            <Tag color="success">审核通过</Tag>
+            <Tag color="error">打卡异常(连续三天未打卡)</Tag>
           );
-        } else if (record.status == '11' || record.status == '0' || !record.status) {
-          return <Tag color="processing">待审核</Tag>
         } else {
           // 管理人员
-          return (
-            <Tag color="error">驳回</Tag>
-          );
+          return <Tag color="warning">驳回</Tag>;
         }
       },
-
     },
     // {
     //   hideInSearch: true,

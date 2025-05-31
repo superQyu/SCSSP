@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Select } from 'antd';
 import { type ProColumns } from '@ant-design/pro-components';
 import dayjs from 'dayjs';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams,  } from 'react-router-dom';
 import { useRoute } from 'hooks';
 
 type MenusPropsType = {
@@ -62,6 +62,7 @@ export default ({
   const endOfMonth = dayjs(searchMonth, 'YYYY-MM').endOf(
     'month'
   );
+
   const daysInMonth = endOfMonth.diff(startOfMonth, 'days') + 1;
   const days: ProColumns[] = [...Array(daysInMonth).keys()].map(
     (i: number) => {

@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Button } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { type ActionType } from '@ant-design/pro-components';
@@ -12,7 +13,13 @@ import dayjs from 'dayjs';
 import type { ModesApi } from './modes/model';
 import siteModel from './modes/menu.model';
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 export default () => {
+  let query = useQuery();
+  let paramName = query.get('username');
   const { server } = useBasicConfiguration();
   const { attendance: A } = server;
 
@@ -20,6 +27,7 @@ export default () => {
   const [params] = useSearchParams();
 
   const actionRef = useRef<ActionType>();
+
   // 示例: 2024-05
   const [month, setMonth] = useState<string | undefined>(
     params.get('searchMonth') || dayjs().format('YYYY-MM')
@@ -27,10 +35,14 @@ export default () => {
   const [groupId, setGroupId] = useState<number | undefined>(
     Number(teamId) || undefined
   );
+  const [_paramName, setparamName] = useState<any>(paramName);
+  const [_subcontractorIde, setsubcontractorId] =
+    useState<any>('');
+  const [_workTypeId, setworkTypeId] = useState<any>('');
 
   const initColumns = siteModel({ server, month });
 
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -47,9 +59,11 @@ export default () => {
         params={{
           groupId: groupId,
           yearAndMonth: month,
+          username: _paramName,
+          subcontractorId: _subcontractorIde,
+          workTypeId: _workTypeId,
         }}
         request={async (params: ModesApi.ParamsType) => {
-          // console.log('所有请求参数', params, month);
           const list = await A.attendanceDetailList(params);
           const res = list.map((item: any, i: number) => {
             item.workingHours = item.workingHours.toFixed(2);
@@ -58,6 +72,7 @@ export default () => {
             });
           });
           // console.log('处理后的表格数据', res);
+          // console.log('所有请求参数', params, month);
           return {
             ...params,
             data: res || [],
@@ -67,7 +82,7 @@ export default () => {
         columnsState={{
           persistenceKey: 'pro-table-singe-role',
           persistenceType: 'localStorage',
-          onChange(_: any) { },
+          onChange(_: any) {},
         }}
         pagination={{
           pageSize: 30,
@@ -80,18 +95,39 @@ export default () => {
             dom: any
           ) => {
             return [
-              dom[0],
+              // dom[0],
+              <Button
+                key="sub1"
+                onClick={() => {
+                  setMonth(dayjs().format('YYYY-MM'));
+                  setparamName('');
+                  setsubcontractorId('');
+                  setworkTypeId('');
+                  form?.resetFields();
+                  form?.setFieldValue('username', '');
+                  form?.submit();
+                }}
+              >
+                重置
+              </Button>,
               <Button
                 type="primary"
                 key="sub"
                 icon={<SearchOutlined />}
                 onClick={() => {
-                  const { yearAndMonth, groupId } =
-                    form.getFieldsValue();
+                  const {
+                    yearAndMonth,
+                    groupId,
+                    username,
+                    subcontractorId,
+                    workTypeId,
+                  } = form.getFieldsValue();
                   yearAndMonth &&
                     setMonth(yearAndMonth.format('YYYY-MM'));
                   groupId && setGroupId(groupId);
-
+                  setparamName(username);
+                  setsubcontractorId(subcontractorId);
+                  setworkTypeId(workTypeId);
                   form?.submit();
                 }}
               >
@@ -103,6 +139,7 @@ export default () => {
         scroll={{ x: '1800px', y: 'auto' }}
         columns={[...initColumns]}
         onReset={() => {
+          setparamName('');
           setMonth(undefined);
           setGroupId(undefined);
         }}

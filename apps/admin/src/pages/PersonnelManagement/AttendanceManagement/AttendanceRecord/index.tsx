@@ -18,6 +18,12 @@ export default () => {
   const { userId: userIdInParams } = useParams();
   const [params] = useSearchParams();
 
+  const [downloadParams, setDownloadParams] = useState<any>({
+    name: '',
+    beginTime: '',
+    endTime: '',
+  });
+
   const initColumns = siteModel({ server });
 
   const actionRef = useRef<ActionType>();
@@ -29,7 +35,7 @@ export default () => {
     Number(userIdInParams) || undefined
   );
 
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -42,15 +48,20 @@ export default () => {
         }}
         request={async (params: ModesApi.ParamsType) => {
           const { list, total } = await A.attendanceRecordList({
-            beginTime: params.dateTime ? dayjs(params.dateTime, 'YYYY-MM-DD')
-              .startOf('date')
-              .format('YYYY-MM-DD HH:mm:ss') : dayjs().format('YYYY-MM-DD 00:00:00'),
-            endTime: params.dateTime ? dayjs(params.dateTime, 'YYYY-MM-DD')
-              .endOf('date')
-              .format('YYYY-MM-DD HH:mm:ss') : dayjs().format('YYYY-MM-DD 23:59:59'),
+            beginTime: params.dateTime
+              ? dayjs(params.dateTime, 'YYYY-MM-DD')
+                  .startOf('date')
+                  .format('YYYY-MM-DD HH:mm:ss')
+              : dayjs().format('YYYY-MM-DD 00:00:00'),
+            endTime: params.dateTime
+              ? dayjs(params.dateTime, 'YYYY-MM-DD')
+                  .endOf('date')
+                  .format('YYYY-MM-DD HH:mm:ss')
+              : dayjs().format('YYYY-MM-DD 23:59:59'),
             ...params,
-            username:params.name
+            username: params.name,
           });
+          setDownloadParams(params);
           return {
             ...params,
             total: total || 0,
@@ -61,7 +72,7 @@ export default () => {
         columnsState={{
           persistenceKey: 'pro-table-singe-role',
           persistenceType: 'localStorage',
-          onChange(_: any) { },
+          onChange(_: any) {},
         }}
         pagination={{
           pageSize: 20,
@@ -107,9 +118,17 @@ export default () => {
           //     // setIfAdd(true)
           //   }}
           // ></div>,
+
+          // console.log('params',params)
           <Styled.ExportButton
             api="exportPersonnelAttendance"
             fileName="考勤导出"
+            params={{
+              username: downloadParams.name,
+              beginTime: downloadParams.beginTime,
+              endTime: downloadParams.endTime,
+              ...params,
+            }}
           />,
         ]}
         scroll={{ x: '1000px', y: 'auto' }}

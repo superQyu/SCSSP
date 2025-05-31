@@ -52,6 +52,7 @@ export default () => {
   // 详情数据
   const [detail, setDetail] = useState<any>({});
   const [ifEdit, setIfEdit] = useState<Boolean>(false);
+  const [ifView, setIfView] = useState<Boolean>(false);
 
 
   /** 额外的参数，主要是人员的工种(workTypeId)或职位(jobCategory) */
@@ -62,13 +63,13 @@ export default () => {
   useEffect(() => {
     const id = routerParams.get('id');
     setIfEdit(routerParams.get('ifEdit') || false)
+    setIfView(routerParams.get('view') || false)
     // console.log('id', id);
     if (id) getDetail(id);
   }, [routerParams]);
 
   const getDetail = async (id: any) => {
     const res = await C.getPersonInfoDetail({ id });
-    console.log('res', res);
     setDetail(res);
   };
 
@@ -297,7 +298,8 @@ export default () => {
       })}
 
       {
-        !ifEdit ? <Flex gap="middle" justify="center" className="py-10">
+        (!ifEdit ) ?
+        <Flex gap="middle" justify="center" className="py-10">
           {routerParams.get('status') == '10' ? <Button
             size="large"
             key="submit"
@@ -356,37 +358,50 @@ export default () => {
           >
             重置
           </Button>
-        </Flex> : <Flex gap="middle" justify="center" className="py-10">
-          <Button
-            size="large"
-            key="submit"
-            type="primary"
-            loading={loading}
-            onClick={() => handleConfirm('通过')}
-          >
-            通过
-          </Button>
-          <Button
-            size="large"
-            key="reset"
-            htmlType="reset"
-            onClick={() => handleConfirm('驳回')}
-            disabled={loading}
-            danger
-          >
-            驳回
-          </Button>
-          <Button
-            size="large"
-            key="cancle"
-            htmlType="reset"
-            onClick={goBack}
-            disabled={loading}
-          >
-            取消
-          </Button>
+        </Flex> : ifView
+        ?
+        <Flex gap="middle" justify="center" className="py-10"> <Button
+        size="large"
+        key="cancle"
+        htmlType="reset"
+        onClick={goBack}
+        disabled={loading}
+      >
+        返回
+      </Button> 
+      </Flex>:
+        
+        <Flex gap="middle" justify="center" className="py-10">
+        <Button
+          size="large"
+          key="submit"
+          type="primary"
+          loading={loading}
+          onClick={() => handleConfirm('通过')}
+        >
+          通过
+        </Button>
+        <Button
+          size="large"
+          key="reset"
+          htmlType="reset"
+          onClick={() => handleConfirm('驳回')}
+          disabled={loading}
+          danger
+        >
+          驳回
+        </Button>
+        <Button
+          size="large"
+          key="cancle"
+          htmlType="reset"
+          onClick={goBack}
+          disabled={loading}
+        >
+          取消
+        </Button>
 
-        </Flex>
+      </Flex>
       }
 
       {/* <WorkerCom

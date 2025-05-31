@@ -87,7 +87,7 @@ for (let i = 0; i < 50; i += 1) {
       creators[Math.floor(Math.random() * creators.length)],
     status:
       valueEnum[
-      ((Math.floor(Math.random() * 10) % 4) + '') as '0'
+        ((Math.floor(Math.random() * 10) % 4) + '') as '0'
       ],
     createdAt: Date.now() - Math.floor(Math.random() * 100000),
     memo:
@@ -148,7 +148,6 @@ export default () => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
 
-
   const [openApi, setOpenApi] = useState<boolean>(false);
 
   const actionRef = useRef<ActionType>();
@@ -165,18 +164,20 @@ export default () => {
   const [fileList, setFileList] = useState<any[]>([]);
   const [searchParams, setSearchParams] = useState<any>({
     isOverAge: '',
-    isCertificated: ''
+    isCertificated: '',
   });
 
   const customRequest = (options: any) => {
-    setFileList([...fileList, {
-      file: options.file,
-      uid: Date.now(),
-      name: options.file.name,
-      status: 'done', // 设为已完成状态，这样会在列表中显示
-    }]);
+    setFileList([
+      ...fileList,
+      {
+        file: options.file,
+        uid: Date.now(),
+        name: options.file.name,
+        status: 'done', // 设为已完成状态，这样会在列表中显示
+      },
+    ]);
   };
-
 
   useEffect(() => {
     notification.destroy();
@@ -254,15 +255,16 @@ export default () => {
           }
         }}
         request={async (params = {}) => {
-          const { isOverAge, isCertificated } = params
+          const { isOverAge, isCertificated } = params;
           const res = await PMIM.personnelInfoList({
             ...params,
           });
           setSearchParams({
             ...searchParams,
             isOverAge: isOverAge,
-            isCertificated: isCertificated
-          })
+            isCertificated: isCertificated,
+            ...params
+          });
           return {
             ...params,
             data: res.list,
@@ -273,7 +275,7 @@ export default () => {
           ...initColumns,
           {
             title: '操作',
-            width: 140,
+            width: 180,
             valueType: 'option',
             key: 'option',
             fixed: 'right',
@@ -289,9 +291,10 @@ export default () => {
                   onClick={() => {
                     tabNavigate({
                       namePath: `项目人员管理/审核人员信息`,
-                      routePath: `/PersonDetail/?id=${record.id}&ifEdit=${true}`,
+                      routePath: `/PersonDetail/?id=${
+                        record.id
+                      }&ifEdit=${true}`,
                       activeMenu: '/PM/IM',
-
                     });
                   }}
                 >
@@ -312,25 +315,65 @@ export default () => {
                 </a>,
                 <Popconfirm
                   key="delete"
-                  title="删除此项"
+                  title="删除记录"
                   onConfirm={() => onDelete(record.id)}
                   okText="确认"
                   cancelText="取消"
                 >
                   <a>删除</a>
                 </Popconfirm>,
-              ]
+                <a
+                  key="editable"
+                  onClick={() => {
+                    tabNavigate({
+                      namePath: `项目人员管理/审核人员信息`,
+                      routePath: `/PersonDetail/?id=${
+                        record.id
+                      }&ifEdit=${true}&view=${true}`,
+                      activeMenu: '/PM/IM',
+                    });
+                  }}
+                >
+                  详情
+                </a>,
+              ];
 
-              return user.userInfor.roles.find(
-                (item: string) => item == 'project-manager' || item == 'super_admin'
-              ) && (record.status == '0' || !record.status || record.status == '11') ? btns :
-                record.status == '2' ? btns.slice(2) :
-                  btns.slice(1)
-            }
+              return [
+                record.status == '444' ? (
+                  <a
+                    key="editable"
+                    onClick={() => {
+                      // action?.startEditable?.(record.id);
+                      tabNavigate({
+                        namePath: `考勤明细`,
+                        routePath: `/PM/AttendanceManagement/AttendanceDetail/?username=${record.name}`,
+                        activeMenu: '/PM/AttendanceManagement/AttendanceDetail',
+                      });
+                    }}
+                  >
+                    考勤记录
+                  </a>
+                ) : (
+                  ''
+                ),
+                ...(user.userInfor.roles.find(
+                  (item: string) =>
+                    item == 'project-manager' ||
+                    item == 'super_admin'
+                ) &&
+                (record.status == '0' ||
+                  !record.status ||
+                  record.status == '11')
+                  ? btns
+                  : record.status == '2'
+                  ? btns.slice(2)
+                  : btns.slice(1)),
+              ];
+            },
           },
         ]}
         scroll={{ x: 1900, y: 'auto' }}
-        onSubmit={async (params: {}) => { }}
+        onSubmit={async (params: {}) => {}}
         pagination={{
           pageSize: 30,
         }}
@@ -347,7 +390,7 @@ export default () => {
         columnsState={{
           persistenceKey: 'pro-table-pm-im',
           persistenceType: 'localStorage',
-          onChange(_: any) { },
+          onChange(_: any) {},
         }}
         form={{
           syncToUrl: (values: any, _: string) => ({ ...values }),
@@ -428,10 +471,9 @@ export default () => {
                 key="button"
                 icon={<DownloadOutlined />}
                 onClick={() => {
-                  PMIM.exportModelInfo({
-                  }).then((data: any) => {
+                  PMIM.exportModelInfo({}).then((data: any) => {
                     downFiles.excel(data, '信息管理数据模板');
-                  })
+                  });
                 }}
                 type="primary"
               >
@@ -457,7 +499,7 @@ export default () => {
               setFileList(newFileList);
             }}
           >
-            {fileList.length == 0 ?
+            {fileList.length == 0 ? (
               <div>
                 <p className="ant-upload-drag-icon">
                   <InboxOutlined />
@@ -465,8 +507,10 @@ export default () => {
                 <p className="ant-upload-text">
                   点击或拖拽文件至此区域进行上传
                 </p>
-              </div> : ''
-            }
+              </div>
+            ) : (
+              ''
+            )}
           </Dragger>
           <div className="flex justify-center mt-3">
             <Button
@@ -475,14 +519,14 @@ export default () => {
               icon={<DownloadOutlined />}
               onClick={async () => {
                 const formData = new FormData();
-                formData.append('file', fileList[0].file)
+                formData.append('file', fileList[0].file);
                 try {
-                  await PMIM.importByModel(formData)
-                  message.success('导入成功！')
+                  await PMIM.importByModel(formData);
+                  message.success('导入成功！');
                   await actionRef.current?.reload();
                   setOpenModal(false);
                 } catch {
-                  message.warning('导入失败！')
+                  message.warning('导入失败！');
                 }
               }}
               type="primary"
@@ -492,8 +536,6 @@ export default () => {
           </div>
         </div>
       </Modal>
-
-
     </>
   );
 };

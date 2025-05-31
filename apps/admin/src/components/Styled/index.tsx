@@ -1,6 +1,11 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Button, Spin as AntSpin } from 'antd';
-import { UploadOutlined, PlusOutlined, DownloadOutlined } from '@ant-design/icons';
+import {
+  UploadOutlined,
+  PlusOutlined,
+  DownloadOutlined,
+} from '@ant-design/icons';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 文件下载工具
@@ -32,17 +37,25 @@ const ExportButton = (props: FileProps) => {
   // api 相关
   const { server } = useBasicConfiguration();
   const { basic } = server;
-
+  const [params, setParams] = useState<any>({
+    beginTime: '',
+    endTime: '',
+    username: ''
+  });
+  useEffect(() => { }, [props]);
   return (
     <CusUploadButton
       icon={<UploadOutlined />}
       type="primary"
-      onClick={(e) => {
+      onClick={(e:any) => {
+        console.log(props);
         if (props.onClick) props.onClick(e);
         else
-          basic[props.api](props.params || {}).then((data: any) => {
-            downFiles.excel(data, props.fileName);
-          });
+          basic[props.api](props.params || {}).then(
+            (data: any) => {
+              downFiles.excel(data, props.fileName);
+            }
+          );
       }}
       children="导出"
     />
@@ -75,7 +88,7 @@ const Spin = styled(AntSpin).attrs(() => ({
   // 样式属性
   '&& .ant-spin-container': {
     height: '100% !important',
-    display: 'none'
+    display: 'none',
   },
 }));
 
