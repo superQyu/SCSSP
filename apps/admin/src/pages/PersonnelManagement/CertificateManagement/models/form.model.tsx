@@ -102,15 +102,15 @@ export default (
   // 基本信息
   const basicColumns: FormColumnsTypes[] = [
     {
-      label: '隶属人员',
+      label: '人员',
       dataIndex: 'userId',
       colNum: 12,
       formItemProps: {
-        rules: [{ required: true, message: '请选择隶属人员' }],
+        rules: [{ required: true, message: '请选择人员' }],
       },
       formItem: (
         <Select
-          placeholder="请选择隶属人员"
+          placeholder="请选择人员"
           options={personInfoList}
           onChange={getPersonInfo}
           disabled={detail.userId ? true : false}
@@ -121,7 +121,7 @@ export default (
       label: '所属单位',
       dataIndex: 'companyName',
       colNum: 12,
-      formItem: <Input placeholder="请选择隶属人员" disabled />,
+      formItem: <Input placeholder="请所属单位" disabled />,
     },
     {
       label: '人员类型',

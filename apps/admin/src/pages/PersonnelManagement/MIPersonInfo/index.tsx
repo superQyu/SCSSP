@@ -1,13 +1,8 @@
-import {
-  useRef,
-  useState,
-} from 'react';
+import { useRef, useState } from 'react';
 import { useRoute } from 'hooks';
 
 import { ProTable } from 'components';
-import type {
-  ActionType,
-} from '@ant-design/pro-components';
+import type { ActionType } from '@ant-design/pro-components';
 import {
   Button,
   message,
@@ -16,10 +11,9 @@ import {
   notification,
 } from 'antd';
 import type { UploadProps } from 'antd';
+import Styled from '@/components/Styled';
 
-import {
-  RollbackOutlined
-} from '@ant-design/icons';
+import { RollbackOutlined } from '@ant-design/icons';
 
 import { useAppSelector } from 'hooks';
 
@@ -62,7 +56,7 @@ for (let i = 0; i < 50; i += 1) {
       creators[Math.floor(Math.random() * creators.length)],
     status:
       valueEnum[
-      ((Math.floor(Math.random() * 10) % 4) + '') as '0'
+        ((Math.floor(Math.random() * 10) % 4) + '') as '0'
       ],
     createdAt: Date.now() - Math.floor(Math.random() * 100000),
     memo:
@@ -126,8 +120,6 @@ export default () => {
   // 路由跳转
   const { tabNavigate } = useRoute();
 
-
-
   // 删除行
   const onDelete = async (id: number) => {
     const res = await PMIM.deletePersonnelInfo({ id: id }).then(
@@ -168,7 +160,6 @@ export default () => {
           return {
             ...params,
             data: res,
-
           } as unknown as ModesApi.pageItemType;
         }}
         columns={[
@@ -185,40 +176,41 @@ export default () => {
               _: any,
               action: any
             ) => [
-                <a
-                  key="editable"
-                  onClick={() => {
-                    // action?.startEditable?.(record.id);
-                    tabNavigate({
-                      namePath: `项目人员管理/人员详情${record.id}`,
-                      routePath: `/PersonDetail/?id=${record.id}&missing=${true}`,
-                      activeMenu: '/PM/IM',
-                    });
-                  }}
-                >
-                  编辑
-                </a>,
-                <Popconfirm
-                  key="delete"
-                  title="删除此项"
-                  onConfirm={() => onDelete(record.id)}
-                  okText="确认"
-                  cancelText="取消"
-                >
-                  <a>删除</a>
-                </Popconfirm>,
-              ],
+              <a
+                key="editable"
+                onClick={() => {
+                  // action?.startEditable?.(record.id);
+                  tabNavigate({
+                    namePath: `项目人员管理/人员详情${record.id}`,
+                    routePath: `/PersonDetail/?id=${
+                      record.id
+                    }&missing=${true}`,
+                    activeMenu: '/PM/IM',
+                  });
+                }}
+              >
+                编辑
+              </a>,
+              <Popconfirm
+                key="delete"
+                title="删除此项"
+                onConfirm={() => onDelete(record.id)}
+                okText="确认"
+                cancelText="取消"
+              >
+                <a>删除</a>
+              </Popconfirm>,
+            ],
           },
         ]}
         scroll={{ x: 1900, y: 'auto' }}
-        onSubmit={async (params: {}) => { }}
+        onSubmit={async (params: {}) => {}}
         pagination={false}
         rowKey="id"
-
         columnsState={{
           persistenceKey: 'pro-table-pm-im',
           persistenceType: 'localStorage',
-          onChange(_: any) { },
+          onChange(_: any) {},
         }}
         form={{
           syncToUrl: (values: any, _: string) => ({ ...values }),
@@ -227,7 +219,6 @@ export default () => {
         editable={{ onSave }}
         headerTitle={
           <Button
-
             type="primary"
             icon={<RollbackOutlined />}
             onClick={() => {
@@ -241,9 +232,16 @@ export default () => {
             返回
           </Button>
         }
-
+        toolBarRender={() => [
+          <Styled.ExportButton
+            api="exportPersonnelInfo"
+            fileName="人员导出"
+            params={{
+              exportType: '2',
+            }}
+          />,
+        ]}
       />
-
     </>
   );
 };

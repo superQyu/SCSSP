@@ -132,6 +132,7 @@ const user: ApiItem[] = [
       { key: 'isOverAge', cn: '是否超龄' },
       { key: 'isCertificated', cn: '是否有证书' },
       { key: 'status', cn: '状态' },
+      { key: 'exportType', cn: '信息缺失' },
     ]
   },
 

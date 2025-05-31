@@ -55,35 +55,19 @@ export default ({ server }: MenusPropsType) => {
 
   const columns: Record<string, ProColumns[]> = {
     0: [
+      // {
+      //   title: '序号',
+      //   valueType: 'indexBorder',
+      //   dataIndex: 'index',
+      //   fixed: 'left',
+      //   width: columnWidth0,
+      //   ellipsis: true,
+      // },
       {
-        title: '序号',
-        valueType: 'indexBorder',
-        dataIndex: 'index',
-        fixed: 'left',
-        width: columnWidth0,
-        ellipsis: true,
-      },
-      {
-        title: '单位',
-        dataIndex: 'subcontractorId',
-        ellipsis: true,
-        width: columnWidth0,
-        render: (text, record) => {
-          return <span>{record.realName}</span>;
-        },
-        renderFormItem: () => {
-          return (
-            <Select
-              placeholder="请选择单位"
-              options={subcontractorList}
-            />
-          );
-        },
-      },
-      {
-        title: '隶属人员',
+        title: '人员名称',
         dataIndex: 'userId',
         ellipsis: true,
+        fixed: 'left',
         width: columnWidth0,
         render: (text, record) => {
           return <span>{record.userName}</span>;
@@ -91,8 +75,25 @@ export default ({ server }: MenusPropsType) => {
         renderFormItem: () => {
           return (
             <Select
-              placeholder="请选择隶属人员"
+              placeholder="请选择人员"
               options={personInfoList}
+            />
+          );
+        },
+      },
+      {
+        title: '隶属单位',
+        dataIndex: 'subcontractorId',
+        ellipsis: true,
+        width: 220,
+        render: (text, record) => {
+          return <span>{record.realName}</span>;
+        },
+        renderFormItem: () => {
+          return (
+            <Select
+              placeholder="请选择隶属单位"
+              options={subcontractorList}
             />
           );
         },
@@ -158,33 +159,16 @@ export default ({ server }: MenusPropsType) => {
       },
     ],
     1: [
+      // {
+      //   title: '序号',
+      //   valueType: 'indexBorder',
+      //   dataIndex: 'index',
+      //   fixed: 'left',
+      //   width: columnWidth1,
+      //   ellipsis: true,
+      // },
       {
-        title: '序号',
-        valueType: 'indexBorder',
-        dataIndex: 'index',
-        fixed: 'left',
-        width: columnWidth1,
-        ellipsis: true,
-      },
-      {
-        title: '单位',
-        dataIndex: 'subcontractorId',
-        ellipsis: true,
-        width: columnWidth1,
-        render: (text, record) => {
-          return <span>{record.realName}</span>;
-        },
-        renderFormItem: () => {
-          return (
-            <Select
-              placeholder="请选择单位"
-              options={subcontractorList}
-            />
-          );
-        },
-      },
-      {
-        title: '隶属人员',
+        title: '人员名称',
         dataIndex: 'userId',
         ellipsis: true,
         width: columnWidth1,
@@ -194,8 +178,25 @@ export default ({ server }: MenusPropsType) => {
         renderFormItem: () => {
           return (
             <Select
-              placeholder="请选择隶属人员"
+              placeholder="请选择人员"
               options={personInfoList}
+            />
+          );
+        },
+      },
+      {
+        title: '隶属单位',
+        dataIndex: 'subcontractorId',
+        ellipsis: true,
+        width: 220,
+        render: (text, record) => {
+          return <span>{record.realName}</span>;
+        },
+        renderFormItem: () => {
+          return (
+            <Select
+              placeholder="请选择隶属单位"
+              options={subcontractorList}
             />
           );
         },
@@ -251,33 +252,16 @@ export default ({ server }: MenusPropsType) => {
       },
     ],
     2: [
+      // {
+      //   title: '序号',
+      //   valueType: 'indexBorder',
+      //   dataIndex: 'index',
+      //   fixed: 'left',
+      //   width: columnWidth2,
+      //   ellipsis: true,
+      // },
       {
-        title: '序号',
-        valueType: 'indexBorder',
-        dataIndex: 'index',
-        fixed: 'left',
-        width: columnWidth2,
-        ellipsis: true,
-      },
-      {
-        title: '单位',
-        dataIndex: 'subcontractorId',
-        ellipsis: true,
-        width: columnWidth2,
-        render: (text, record) => {
-          return <span>{record.realName}</span>;
-        },
-        renderFormItem: () => {
-          return (
-            <Select
-              placeholder="请选择单位"
-              options={subcontractorList}
-            />
-          );
-        },
-      },
-      {
-        title: '隶属人员',
+        title: '人员名称',
         dataIndex: 'userId',
         ellipsis: true,
         width: columnWidth2,
@@ -287,8 +271,25 @@ export default ({ server }: MenusPropsType) => {
         renderFormItem: () => {
           return (
             <Select
-              placeholder="请选择隶属人员"
+              placeholder="请选择人员"
               options={personInfoList}
+            />
+          );
+        },
+      },
+      {
+        title: '隶属单位',
+        dataIndex: 'subcontractorId',
+        ellipsis: true,
+        width: 220,
+        render: (text, record) => {
+          return <span>{record.realName}</span>;
+        },
+        renderFormItem: () => {
+          return (
+            <Select
+              placeholder="请选择隶属单位"
+              options={subcontractorList}
             />
           );
         },
