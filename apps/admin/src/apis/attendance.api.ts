@@ -63,6 +63,7 @@ const attendance: ApiItem[] = [
       // { key: 'pageSize', cn: '每页条数' },
       { key: 'subcontractorId', cn: '单位ID' },
       { key: 'workTypeId', cn: '劳务工种ID' },
+      { key: 'jobCategoryId', cn: '管理员ID' },
       { key: 'groupId', cn: '班组ID' },
       {
         key: 'yearAndMonth',

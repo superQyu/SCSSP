@@ -67,26 +67,25 @@ export default ({ server }: MenusPropsType) => {
             label,
           ])
         );
-        const name = obj[`${text}`]
-        return (
-          name ?
-            <a
-
-              onClick={() => {
-
-                // action?.startEditable?.(record.id);
-                tabNavigate({
-                  tabName: '考勤明细',
-                  namePath: `项目人员管理/考勤管理/${row.time}${name}考勤明细`,
-                  // routePath: `/PM/AttendanceManagement/AttendanceDetail/${row.teamId}?searchMonth=${row.time}`,
-                  routePath: `/attendance/AttendanceDetail/${row.workTypeId}?searchMonth=${row.time}&subcontractorId=${row.subcontractorId}`,
-                  activeMenu:
-                    '/PM/AttendanceManagement/AttendanceDetail',
-                });
-              }}
-            >
-              {name}
-            </a> : <span>-</span>
+        const name = obj[`${text}`];
+        return name ? (
+          <a
+            onClick={() => {
+              // action?.startEditable?.(record.id);
+              tabNavigate({
+                tabName: '考勤明细',
+                namePath: `项目人员管理/考勤管理/${row.time}${name}考勤明细`,
+                // routePath: `/PM/AttendanceManagement/AttendanceDetail/${row.teamId}?searchMonth=${row.time}`,
+                routePath: `/attendance/AttendanceDetail/${row.workTypeId}?searchMonth=${row.time}&subcontractorId=${row.subcontractorId}`,
+                activeMenu:
+                  '/PM/AttendanceManagement/AttendanceDetail',
+              });
+            }}
+          >
+            {name}
+          </a>
+        ) : (
+          <span>-</span>
         );
       },
       // render: (text: any) => {
@@ -124,11 +123,27 @@ export default ({ server }: MenusPropsType) => {
             key="editable"
             onClick={() => {
               // action?.startEditable?.(record.id);
+              const {
+                workerType,
+                time,
+                workTypeName,
+                workTypeId,
+              } = row;
+              let routePath = `/attendance/AttendanceDetail/${workTypeId}?yearAndMonth=${
+                row.time
+              }&${
+                workerType == '1'
+                  ? 'workTypeId'
+                  : workerType == '2'
+                  ? 'jobCategoryId'
+                  : 'otherId'
+              }=${row.workTypeId}`;
+
               tabNavigate({
-                tabName: '考勤明细',
-                namePath: `项目人员管理/考勤管理/${row.time}${row.workTypeName}考勤明细`,
+                tabName: `${workTypeName}考勤明细`,
+                namePath: `项目人员管理/考勤管理/${time}${workTypeName}考勤明细`,
                 // routePath: `/PM/AttendanceManagement/AttendanceDetail/${row.teamId}?searchMonth=${row.time}`,
-                routePath: `/attendance/AttendanceDetail/${row.workTypeId}?searchMonth=${row.time}&workTypeId=${row.workTypeId}`,
+                routePath,
                 activeMenu:
                   '/PM/AttendanceManagement/AttendanceDetail',
               });
@@ -147,7 +162,6 @@ export default ({ server }: MenusPropsType) => {
           />
         );
       },
-
     },
     {
       hideInTable: true,

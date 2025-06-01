@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Select } from 'antd';
 import { type ProColumns } from '@ant-design/pro-components';
 import dayjs from 'dayjs';
-import { useSearchParams,  } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useRoute } from 'hooks';
 
 type MenusPropsType = {
@@ -32,7 +32,9 @@ export default ({
 
     setSubcontractorList(list1);
 
-    const { list } = await P.workType();
+    const { list } = await P.workType({
+      pageSize: -1,
+    });
     const options = list.map((item: any) => {
       return {
         label: item.name,

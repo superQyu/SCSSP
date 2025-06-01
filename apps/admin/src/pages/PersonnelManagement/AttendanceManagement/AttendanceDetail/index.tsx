@@ -30,7 +30,7 @@ export default () => {
 
   // 示例: 2024-05
   const [month, setMonth] = useState<string | undefined>(
-    params.get('searchMonth') || dayjs().format('YYYY-MM')
+    query.get('yearAndMonth') || dayjs().format('YYYY-MM')
   );
   const [groupId, setGroupId] = useState<number | undefined>(
     Number(teamId) || undefined
@@ -38,7 +38,12 @@ export default () => {
   const [_paramName, setparamName] = useState<any>(paramName);
   const [_subcontractorIde, setsubcontractorId] =
     useState<any>('');
-  const [_workTypeId, setworkTypeId] = useState<any>('');
+  const [_workTypeId, setworkTypeId] = useState<any>(
+    query.get('workTypeId')
+  );
+  const [_jobCategoryId, setjobCategoryId] = useState<any>(
+    query.get('jobCategoryId')
+  );
 
   const initColumns = siteModel({ server, month });
 
@@ -62,6 +67,7 @@ export default () => {
           username: _paramName,
           subcontractorId: _subcontractorIde,
           workTypeId: _workTypeId,
+          jobCategoryId: _jobCategoryId,
         }}
         request={async (params: ModesApi.ParamsType) => {
           const list = await A.attendanceDetailList(params);
@@ -99,11 +105,12 @@ export default () => {
               <Button
                 key="sub1"
                 onClick={() => {
-                  setMonth(dayjs().format('YYYY-MM'));
                   setparamName('');
                   setsubcontractorId('');
                   setworkTypeId('');
+                  setjobCategoryId('');
                   form?.resetFields();
+                  setMonth(dayjs().format('YYYY-MM'));
                   form?.setFieldValue('username', '');
                   form?.submit();
                 }}
@@ -123,7 +130,11 @@ export default () => {
                     workTypeId,
                   } = form.getFieldsValue();
                   yearAndMonth &&
-                    setMonth(yearAndMonth.format('YYYY-MM'));
+                    setMonth(
+                      typeof yearAndMonth == 'string'
+                        ? yearAndMonth
+                        : yearAndMonth.format('YYYY-MM')
+                    );
                   groupId && setGroupId(groupId);
                   setparamName(username);
                   setsubcontractorId(subcontractorId);
@@ -140,6 +151,7 @@ export default () => {
         columns={[...initColumns]}
         onReset={() => {
           setparamName('');
+          setjobCategoryId('');
           setMonth(undefined);
           setGroupId(undefined);
         }}
