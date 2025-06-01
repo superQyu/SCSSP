@@ -41,7 +41,16 @@ const menus: ApiItem[] = [
       { key: 'id', cn: '需要删除的主键id' },
     ],
   },
-
+  {
+    key: 'unfreeze',
+    url: `${ADMIN_API}/wisdom/personnel-info/unfreeze`,
+    type: 'GET',
+    description: '项目人员信息状态更新',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'personnelInfoId', cn: '需要更新的主键id' },
+    ],
+  },
   {
     key: 'getOverAgeAndNotCertificatedCount',
     url: `${ADMIN_API}/wisdom/personnel-info/getOverAgeAndNotCertificatedCount`,

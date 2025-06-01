@@ -7,7 +7,15 @@ import {
   TableDropdown,
   type ProColumns,
 } from '@ant-design/pro-components';
-import { message, Avatar, Image, Tag, Select } from 'antd';
+import {
+  message,
+  Avatar,
+  Image,
+  Tag,
+  Select,
+  Button,
+  Popconfirm,
+} from 'antd';
 
 import { IconSelect, IconShow } from 'ui';
 import DictSelect from '@/components/DictSelect';
@@ -235,6 +243,10 @@ export default ({ server }: MenusPropsType) => {
           text: <Tag color="error">打卡异常</Tag>,
           status: 'error',
         },
+        222: {
+          text: <Tag color="gold">已解除限制</Tag>,
+          status: 'gold',
+        },
         11: {
           text: <Tag color="processing">审核中</Tag>,
           status: 'processing',
@@ -258,7 +270,9 @@ export default ({ server }: MenusPropsType) => {
           return (
             <Tag color="error">打卡异常(连续三天未打卡)</Tag>
           );
-        } else {
+        }  else if (record.status == '222') {
+          return <Tag color="gold">已解除限制</Tag>;
+        }else {
           // 管理人员
           return <Tag color="warning">驳回</Tag>;
         }

@@ -211,6 +211,15 @@ export default () => {
     );
     return res;
   };
+  const onResetStatus = async (id: number) => {
+    const res = await PMIM.unfreeze({ personnelInfoId: id }).then(
+      async () => {
+        message.success('操作成功!');
+        await actionRef.current?.reload();
+      }
+    );
+    return res;
+  };
 
   const onSave = async (params: any) => {
     const res = await M.updateMenu(
@@ -263,7 +272,7 @@ export default () => {
             ...searchParams,
             isOverAge: isOverAge,
             isCertificated: isCertificated,
-            ...params
+            ...params,
           });
           return {
             ...params,
@@ -275,7 +284,7 @@ export default () => {
           ...initColumns,
           {
             title: '操作',
-            width: 180,
+            width: 280,
             valueType: 'option',
             key: 'option',
             fixed: 'right',
@@ -347,7 +356,8 @@ export default () => {
                       tabNavigate({
                         namePath: `考勤明细`,
                         routePath: `/PM/AttendanceManagement/AttendanceDetail/?username=${record.name}`,
-                        activeMenu: '/PM/AttendanceManagement/AttendanceDetail',
+                        activeMenu:
+                          '/PM/AttendanceManagement/AttendanceDetail',
                       });
                     }}
                   >
@@ -368,6 +378,30 @@ export default () => {
                   : record.status == '2'
                   ? btns.slice(2)
                   : btns.slice(1)),
+                record.status == '444' ? (
+                  <Popconfirm
+                    placement="left"
+                    title="解除限制"
+                    description="是否解除考勤限制？"
+                    okText="解除"
+                    cancelText="取消"
+                    
+                  onConfirm={() => onResetStatus(record.id)}
+                  >
+                    <Button
+                      style={{
+                        height: '24px',
+                        padding: '0 15px',
+                      }}
+                      type="primary"
+                      danger
+                    >
+                      解除限制!
+                    </Button>
+                  </Popconfirm>
+                ) : (
+                  ''
+                ),
               ];
             },
           },
