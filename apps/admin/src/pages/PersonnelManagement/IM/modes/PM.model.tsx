@@ -236,11 +236,11 @@ export default ({ server }: MenusPropsType) => {
       valueType: 'select',
       valueEnum: {
         2: {
-          text: <Tag color="success">打卡正常</Tag>,
+          text: <Tag color="success">考勤正常</Tag>,
           status: 'success',
         },
         444: {
-          text: <Tag color="error">打卡异常</Tag>,
+          text: <Tag color="error">考勤异常</Tag>,
           status: 'error',
         },
         222: {
@@ -259,7 +259,7 @@ export default ({ server }: MenusPropsType) => {
       // hideInSearch: true,
       render: (_, record) => {
         if (record.status == '2') {
-          return <Tag color="success">打卡正常</Tag>;
+          return <Tag color="success">考勤正常</Tag>;
         } else if (
           record.status == '11' ||
           record.status == '0' ||
@@ -268,7 +268,7 @@ export default ({ server }: MenusPropsType) => {
           return <Tag color="processing">审核中</Tag>;
         } else if (record.status == '444') {
           return (
-            <Tag color="error">打卡异常(连续三天未打卡)</Tag>
+            <Tag color="error">考勤异常(连续三天未考勤)</Tag>
           );
         }  else if (record.status == '222') {
           return <Tag color="gold">已解除限制</Tag>;
