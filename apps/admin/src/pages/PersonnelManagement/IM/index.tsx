@@ -212,12 +212,12 @@ export default () => {
     return res;
   };
   const onResetStatus = async (id: number) => {
-    const res = await PMIM.unfreeze({ personnelInfoId: id }).then(
-      async () => {
-        message.success('操作成功!');
-        await actionRef.current?.reload();
-      }
-    );
+    const res = await PMIM.unfreeze({
+      personnelInfoId: id,
+    }).then(async () => {
+      message.success('操作成功!');
+      await actionRef.current?.reload();
+    });
     return res;
   };
 
@@ -236,6 +236,59 @@ export default () => {
   const handleCancel = () => {
     setOpenModal(false);
   };
+
+  const btns = [
+    <a
+      key="editable"
+      onClick={() => {
+        tabNavigate({
+          namePath: `项目人员管理/审核人员信息`,
+          routePath: `/PersonDetail/?id=${
+            record.id
+          }&ifEdit=${true}`,
+          activeMenu: '/PM/IM',
+        });
+      }}
+    >
+      审核
+    </a>,
+    <a
+      key="editable"
+      onClick={() => {
+        // action?.startEditable?.(record.id);
+        tabNavigate({
+          namePath: `项目人员管理/人员详情${record.id}`,
+          routePath: `/PersonDetail/?id=${record.id}&status=${record.status}`,
+          activeMenu: '/PM/IM',
+        });
+      }}
+    >
+      编辑
+    </a>,
+    <Popconfirm
+      key="delete"
+      title="删除记录"
+      onConfirm={() => onDelete(record.id)}
+      okText="确认"
+      cancelText="取消"
+    >
+      <a>删除</a>
+    </Popconfirm>,
+    <a
+      key="editable"
+      onClick={() => {
+        tabNavigate({
+          namePath: `项目人员管理/审核人员信息`,
+          routePath: `/PersonDetail/?id=${
+            record.id
+          }&ifEdit=${true}&view=${true}`,
+          activeMenu: '/PM/IM',
+        });
+      }}
+    >
+      详情
+    </a>,
+  ];
 
   return (
     <>
@@ -294,78 +347,7 @@ export default () => {
               _: any,
               action: any
             ) => {
-              const btns = [
-                <a
-                  key="editable"
-                  onClick={() => {
-                    tabNavigate({
-                      namePath: `项目人员管理/审核人员信息`,
-                      routePath: `/PersonDetail/?id=${
-                        record.id
-                      }&ifEdit=${true}`,
-                      activeMenu: '/PM/IM',
-                    });
-                  }}
-                >
-                  审核
-                </a>,
-                <a
-                  key="editable"
-                  onClick={() => {
-                    // action?.startEditable?.(record.id);
-                    tabNavigate({
-                      namePath: `项目人员管理/人员详情${record.id}`,
-                      routePath: `/PersonDetail/?id=${record.id}&status=${record.status}`,
-                      activeMenu: '/PM/IM',
-                    });
-                  }}
-                >
-                  编辑
-                </a>,
-                <Popconfirm
-                  key="delete"
-                  title="删除记录"
-                  onConfirm={() => onDelete(record.id)}
-                  okText="确认"
-                  cancelText="取消"
-                >
-                  <a>删除</a>
-                </Popconfirm>,
-                <a
-                  key="editable"
-                  onClick={() => {
-                    tabNavigate({
-                      namePath: `项目人员管理/审核人员信息`,
-                      routePath: `/PersonDetail/?id=${
-                        record.id
-                      }&ifEdit=${true}&view=${true}`,
-                      activeMenu: '/PM/IM',
-                    });
-                  }}
-                >
-                  详情
-                </a>,
-              ];
-
               return [
-                record.status == '444' ? (
-                  <a
-                    key="editable"
-                    onClick={() => {
-                      // action?.startEditable?.(record.id);
-                      tabNavigate({
-                        namePath: `考勤明细`,
-                        routePath: `/PM/AttendanceManagement/AttendanceDetail/?username=${record.name}`,
-                        activeMenu:
-                          '/PM/AttendanceManagement/AttendanceDetail',
-                      });
-                    }}
-                  >
-                    考勤记录
-                  </a>
-                ) : (
-                  ''
-                ),
                 ...(user.userInfor.roles.find(
                   (item: string) =>
                     item == 'project-manager' ||
@@ -379,26 +361,42 @@ export default () => {
                   ? btns.slice(2)
                   : btns.slice(1)),
                 record.status == '444' ? (
-                  <Popconfirm
-                    placement="left"
-                    title="解除限制"
-                    description="是否解除考勤限制？"
-                    okText="解除"
-                    cancelText="取消"
-                    
-                  onConfirm={() => onResetStatus(record.id)}
-                  >
-                    <Button
-                      style={{
-                        height: '24px',
-                        padding: '0 15px',
+                  <>
+                    {' '}
+                    <a
+                      key="editable"
+                      onClick={() => {
+                        // action?.startEditable?.(record.id);
+                        tabNavigate({
+                          namePath: `考勤明细`,
+                          routePath: `/PM/AttendanceManagement/AttendanceDetail/?username=${record.name}`,
+                          activeMenu:
+                            '/PM/AttendanceManagement/AttendanceDetail',
+                        });
                       }}
-                      type="primary"
-                      danger
                     >
-                      解除限制!
-                    </Button>
-                  </Popconfirm>
+                      考勤记录
+                    </a>
+                    <Popconfirm
+                      placement="left"
+                      title="解除限制"
+                      description="是否解除考勤限制？"
+                      okText="解除"
+                      cancelText="取消"
+                      onConfirm={() => onResetStatus(record.id)}
+                    >
+                      <Button
+                        style={{
+                          height: '24px',
+                          padding: '0 15px',
+                        }}
+                        type="primary"
+                        danger
+                      >
+                        解除限制!
+                      </Button>
+                    </Popconfirm>
+                  </>
                 ) : (
                   ''
                 ),
