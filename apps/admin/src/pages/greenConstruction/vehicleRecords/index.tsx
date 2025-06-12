@@ -8,6 +8,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import DetailForm from './components/detail';
 import Styled from '@/components/Styled';
 import dayjs from 'dayjs';
+import SingleTitle from '@/components/SingleTitle';
 export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
@@ -45,9 +46,9 @@ export default () => {
   };
 
   return (
-    <>
+    <div className='h-full m-18px'>
       <ProTable
-        headerTitle="车辆进出记录"
+        headerTitle={<SingleTitle label="车辆进出记录" />}
         request={async (params: any) => {
           const { list, total } = await V.vehicleRecord(params);
           return {
@@ -189,6 +190,6 @@ export default () => {
         ]}
       ></ProTable>
       <DetailForm subForm={subForm} ref={detailModal} />
-    </>
+    </div>
   );
 };

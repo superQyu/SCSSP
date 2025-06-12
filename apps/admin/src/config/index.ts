@@ -34,6 +34,10 @@ const jobCategoryDanger = [
     label: '安全监理工程师',
     value: '3'
   },
+  {
+    label: '安全员',
+    value: '15'
+  },
 ]
 
 

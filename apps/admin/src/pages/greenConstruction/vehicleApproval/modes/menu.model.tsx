@@ -28,6 +28,9 @@ export default (_: MenusPropsType) => {
       title: '序号',
       dataIndex: 'index',
       valueType: 'indexBorder',
+      render: (text: any, record: any, index: number) => {
+        return index + 1;
+      },
     },
     {
       title: '车牌号',

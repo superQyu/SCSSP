@@ -7,12 +7,14 @@ import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 
 import EditDialog from './components/editdialog';
 import Styled from '@/components/Styled';
-
+import SingleTitle from '@/components/SingleTitle';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
 import siteModel from './models/table.model';
 import { ToString } from '@/utils/transform';
+
+
 
 export default () => {
   // api 相关
@@ -53,10 +55,10 @@ export default () => {
   };
 
   return (
-    <>
+    <div className='h-full m-18px'>
       <ProTable
         actionRef={actionRef}
-        headerTitle="单位列表"
+        headerTitle={<SingleTitle label="单位列表" />}
         columns={[
           ...initColumns,
           {
@@ -71,27 +73,27 @@ export default () => {
               _: any,
               action: any
             ) => [
-              <a
-                key="editable"
-                onClick={() => {
-                  // console.log('点击了编辑')
-                  // action?.startEditable?.(record.id);
-                  setDialogVisible(true);
-                  setDetail(record);
-                }}
-              >
-                编辑
-              </a>,
-              <Popconfirm
-                key="delete"
-                title="删除此项"
-                onConfirm={() => onDelete(record.id)}
-                okText="确认"
-                cancelText="取消"
-              >
-                <a>删除</a>
-              </Popconfirm>,
-            ],
+                <a
+                  key="editable"
+                  onClick={() => {
+                    // console.log('点击了编辑')
+                    // action?.startEditable?.(record.id);
+                    setDialogVisible(true);
+                    setDetail(record);
+                  }}
+                >
+                  编辑
+                </a>,
+                <Popconfirm
+                  key="delete"
+                  title="删除此项"
+                  onConfirm={() => onDelete(record.id)}
+                  okText="确认"
+                  cancelText="取消"
+                >
+                  <a>删除</a>
+                </Popconfirm>,
+              ],
           },
         ]}
         request={async (params = {}) => {
@@ -160,6 +162,6 @@ export default () => {
         openModal={dialogVisible}
         onStateChange={handleModalStateChange}
       />
-    </>
+    </div>
   );
 };

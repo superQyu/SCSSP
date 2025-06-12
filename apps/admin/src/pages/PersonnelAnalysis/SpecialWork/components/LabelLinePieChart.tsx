@@ -34,7 +34,7 @@ export default (props: Props) => {
 
   const [spinning, setSpinning] = useState(true);
   const [config, setConfig] = useState<Config>({
-    leftDistance: 50,
+    leftDistance: 35,
     color: [
       '#fb497b',
       '#fec760',
@@ -97,18 +97,28 @@ export default (props: Props) => {
         bottom: '3%',
         containLabel: true,
       },
-      // legend: {},
+      legend: {
+        type: 'scroll',
+        top: 20,
+        bottom: 20,
+        right: 20,
+        orient: 'vertical',
+        backgroundColor: 'rgba(89, 141, 210, 0.13)',
+        borderRadius: 10,
+        padding: 10,
+        itemGap: 5,
+        itemWidth: 8,
+        itemHeight: 8,
+      },
       tooltip: {},
       series: [
         {
           name: '人数',
           type: 'pie',
           center: [`${config.leftDistance}%`, '50%'],
-          radius: ['45%', '55%'],
+          radius: ['35%', '50%'],
           // roseType: 'area',
-          itemStyle: {
-            borderRadius: 20,
-          },
+
           label: {
             formatter: (params: any) => {
               return params.name + params.value + '人';
@@ -133,8 +143,8 @@ export default (props: Props) => {
     const _filter =
       list.length > 0
         ? list.sort((a, b) => {
-            return b.value - a.value;
-          })
+          return b.value - a.value;
+        })
         : [];
     _filter.forEach((item, index) => {
       item['itemStyle'] = {
@@ -158,9 +168,8 @@ export default (props: Props) => {
           <div className="color-#409eff">暂无数据</div>
         )}
         <div
-          className={`w-full h-full ${
-            !chartData.length && 'hidden'
-          }`}
+          className={`w-full h-full ${!chartData.length && 'hidden'
+            }`}
           ref={chartRef}
         ></div>
       </div>

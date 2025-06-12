@@ -10,7 +10,7 @@ import { type MenuDataItem } from '@ant-design/pro-layout';
 import { TOKEN, getToken, setToken, filterRoutes } from 'utils';
 
 import { Select, Spin } from 'antd';
-
+import styled from 'styled-components';
 import { Layout } from 'components';
 import InitSettings from '@/utils/InitSettings';
 import LayoutConfig from '@/config/LayoutConfig';
@@ -20,6 +20,23 @@ import { setMenuTab } from 'store';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 import { Outlet } from 'react-router-dom';
+const CustomHeader = styled.div`
+  padding:0;
+  .title {
+    display:flex;
+    height: 45px;
+    align-items: center;
+    
+    .text {
+      margin-left: 2px;
+      font-weight: bold;
+      font-size: 16px;
+      color: #FFFFFF;
+  }
+}
+
+`;
+
 interface MenuTabItem {
   label: string;
   path: string;
@@ -32,6 +49,7 @@ type MenusType = {
 // 左上角logo
 import myImage from '@/assets/logo/64-64.png'; // 导入图片
 import { Breadcrumb, TabCom } from 'components';
+import { divide } from 'lodash';
 
 // 验证权限
 const Permissions = ({ children }: any) => {
@@ -123,7 +141,7 @@ const LayoutContext: React.FC = () => {
     dispatch(setMenuTab([initialMenuTab]));
   }, []);
 
-  useEffect(() => {}, [menuTab]);
+  useEffect(() => { }, [menuTab]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -138,6 +156,14 @@ const LayoutContext: React.FC = () => {
           key={key}
           {...{
             ...LayoutConfig(),
+
+            menuHeaderRender: (logo) => (<CustomHeader>
+              <div className='title'>
+                {logo}
+                <div className='text'>{LayoutConfig().title}</div>
+              </div>
+
+            </CustomHeader>),
             onMenuHeaderClick: (
               _: React.MouseEvent<HTMLDivElement>
             ) => {
@@ -163,12 +189,13 @@ const LayoutContext: React.FC = () => {
               return (
                 <>
                   <div
-                    className="flex flex-justify-between items-center"
+                    className="flex flex-justify-between items-center bg-#fff"
                     style={{ padding: '7px 15px' }}
                   >
                     <Breadcrumb routes={breadcrumbList} />
                     <Select
-                      style={{ minWidth: '180px' }}
+                      variant="borderless"
+                      style={{ minWidth: '180px', }}
                       placeholder="切换项目"
                       value={projectShow}
                       onChange={(value) => {
@@ -184,14 +211,27 @@ const LayoutContext: React.FC = () => {
                       }))}
                     />
                   </div>
-                  <TabCom />
+                  {/* <TabCom /> */}
                 </>
               );
             },
             TokenKeys: [DP],
+            token: {
+              bgLayout: '#f6faff',
+              sider: {
+                colorMenuItemDivider: '#444D64',
+                colorBgCollapsedButton: '#fff',
+                colorMenuBackground: '#26324f',
+                colorTextMenuSelected: '#4b9cf6',
+                colorTextMenuItemHover: '#4b9cf6',
+                colorTextMenu: '#fff',
+              },
+              header: {
+
+              }
+            },
           }}
         />
-        {/* <Outlet /> */}
       </Spin>
     </Permissions>
   );

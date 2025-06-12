@@ -15,7 +15,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import AddForm from './components/addForm';
 // import ApproveForm from './components/approveForm';
 import Styled from '@/components/Styled';
-
+import SingleTitle from '@/components/SingleTitle';
 export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
@@ -68,9 +68,9 @@ export default () => {
   useEffect(() => {}, []);
 
   return (
-    <>
+    <div className='h-full m-18px'>
       <ProTable
-        headerTitle="车辆进出场备案审批"
+        headerTitle={<SingleTitle label="车辆进出场备案审批" />}
         request={async (params: any) => {
           const { list, total } = await V.vehicleApproveList(
             params
@@ -194,6 +194,6 @@ export default () => {
         openModal={approveFormModal}
         onStateChange={handleModalStateChange}
       /> */}
-    </>
+    </div>
   );
 };

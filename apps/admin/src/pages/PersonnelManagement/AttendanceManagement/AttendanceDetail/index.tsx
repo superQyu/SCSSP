@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 
 import type { ModesApi } from './modes/model';
 import siteModel from './modes/menu.model';
-
+import SingleTitle from '@/components/SingleTitle';
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
@@ -47,19 +47,12 @@ export default () => {
 
   const initColumns = siteModel({ server, month });
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   return (
-    <>
+    <div className='h-full m-18px'>
       <ProTable
-        headerTitle={
-          <>
-            <div>考勤明细</div>
-            <Styled.Tooltip>
-              红色表示没有考勤记录, 绿色表示考勤正常,
-              橙色表示考勤异常
-            </Styled.Tooltip>
-          </>
+        headerTitle={<SingleTitle label="考勤明细" />
         }
         params={{
           groupId: groupId,
@@ -77,8 +70,6 @@ export default () => {
               id: i,
             });
           });
-          // console.log('处理后的表格数据', res);
-          // console.log('所有请求参数', params, month);
           return {
             ...params,
             data: res || [],
@@ -88,7 +79,7 @@ export default () => {
         columnsState={{
           persistenceKey: 'pro-table-singe-role',
           persistenceType: 'localStorage',
-          onChange(_: any) {},
+          onChange(_: any) { },
         }}
         pagination={{
           pageSize: 30,
@@ -156,6 +147,6 @@ export default () => {
           setGroupId(undefined);
         }}
       ></ProTable>
-    </>
+    </div>
   );
 };

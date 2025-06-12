@@ -11,7 +11,7 @@ import Styled from '@/components/Styled';
 import type { ModesApi } from './modes/model';
 import siteModel from './modes/menu.model';
 import dayjs from 'dayjs';
-
+import SingleTitle from '@/components/SingleTitle';
 export default () => {
   const { server } = useBasicConfiguration();
   const { attendance: A } = server;
@@ -38,9 +38,10 @@ export default () => {
   useEffect(() => {}, []);
 
   return (
-    <>
+    <div className='h-full m-18px'>
       <ProTable
-        headerTitle="考勤记录"
+           headerTitle={<SingleTitle label="考勤记录" />}
+   
         // params={{ifAdd: ifAdd}}
         params={{
           userId: userId,
@@ -134,6 +135,6 @@ export default () => {
         scroll={{ x: '1000px', y: 'auto' }}
         columns={[...initColumns]}
       ></ProTable>
-    </>
+    </div>
   );
 };

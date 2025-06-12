@@ -190,7 +190,9 @@ const layout: React.FC<CommonObject> = (props: any) => {
       setShouldRender(true);
     setLoading(false);
   }, [user, site]);
+  
   useEffect(() => {
+    console.log('==========',props)
     const newSettings = filteredObject(
       settings as CommonObject,
       props

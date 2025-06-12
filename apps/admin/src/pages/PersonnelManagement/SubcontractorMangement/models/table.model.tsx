@@ -32,6 +32,9 @@ export default ({ server }: MenusPropsType) => {
       fixed: 'left',
       ellipsis: true,
       width: 80,
+      render: (text: any, record: any, index: number) => {
+        return index + 1;
+      },
     },
     {
       title: '单位类型',

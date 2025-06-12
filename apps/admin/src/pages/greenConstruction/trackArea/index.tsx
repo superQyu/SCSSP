@@ -9,6 +9,7 @@ import siteModel from './modes/menu.model';
 import DetailForm from './components/detail';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import AddForm from './components/addForm';
+import SingleTitle from '@/components/SingleTitle';
 export default () => {
   const { server } = useBasicConfiguration();
   const actionRef = useRef<ActionType>();
@@ -37,9 +38,9 @@ export default () => {
   
 
   return (
-    <>
+    <div className='h-full m-18px'>
       <ProTable
-        headerTitle="轨迹区域管理"
+        headerTitle={<SingleTitle label="轨迹区域管理" />}
         request={async (params: ModesApi.ParamsType) => {
           const res = await V.vehicleTrackList({ ...params, pageNo: params?.current || 0 });
           res['list'] = res?.list.map((item: ModesApi.ParamsType) => {
@@ -123,6 +124,6 @@ export default () => {
       ></ProTable>
       <AddForm  openModal={formModal}  onStateChange={handleModalStateChange} />
       <DetailForm subForm={subForm} ref={detailModal} />
-    </>
+    </div>
   );
 };

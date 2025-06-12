@@ -7,7 +7,7 @@ import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import EditDialog from './components/editdialog';
 import ExpandTable from './ExpandTable';
 import Styled from '@/components/Styled';
-
+import SingleTitle from '@/components/SingleTitle';
 import dayjs from 'dayjs';
 
 import './index.scss';
@@ -85,12 +85,12 @@ export default ({ onChange }: any) => {
   };
 
   return (
-    <>
+    <div className='h-full m-18px'>
       <Spin spinning={spinning}>
         <ProTable
           // rowKey="key"
           actionRef={firstTableRef}
-          headerTitle="物料/机械进场"
+          headerTitle={<SingleTitle label="物料/机械进场" />}
           columns={[
             ...fColumns,
             {
@@ -279,6 +279,6 @@ export default ({ onChange }: any) => {
         openModal={dialogVisible}
         onStateChange={handleModalStateChange}
       />
-    </>
+    </div>
   );
 };

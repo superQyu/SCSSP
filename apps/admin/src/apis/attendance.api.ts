@@ -20,7 +20,7 @@ const attendance: ApiItem[] = [
     key: 'attendanceCountWithTotalWorkType',
     url: `${ADMIN_API}/wisdom/personnel-attendance/getPresentWorkTypeCount`,
     type: 'GET',
-    description: '现场统计(全场工种)',
+    description: '现场统计获取在场工种及对应人数',
     params: [{ key: 'Authorization', location: 'header' }],
   },
   {
@@ -42,14 +42,15 @@ const attendance: ApiItem[] = [
       { key: 'subcontractorId', cn: '单位ID' },
       { key: 'workTypeId', cn: '劳务工种ID' },
       { key: 'groupId', cn: '班组ID' },
-      {
-        key: 'beginTime',
-        cn: '开始时间',
-      },
-      {
-        key: 'endTime',
-        cn: '结束时间',
-      },
+      { key: 'yearAndMonth', cn: '年月' },
+      // {
+      //   key: 'beginTime',
+      //   cn: '开始时间',
+      // },
+      // {
+      //   key: 'endTime',
+      //   cn: '结束时间',
+      // },
     ],
   },
   {
@@ -105,6 +106,51 @@ const attendance: ApiItem[] = [
         cn: '姓名',
       },
     ],
+  },
+  {
+    key: 'attendanceRecordList',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/getAttendanceRecordsPage`,
+    type: 'GET',
+    description: '考勤记录列表',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'current', targetKey: 'pageNo', cn: '页码' },
+      { key: 'pageSize', cn: '每页条数' },
+      { key: 'subcontractorId', cn: '单位ID' },
+      { key: 'workTypeId', cn: '劳务工种ID' },
+      { key: 'groupId', cn: '班组ID' },
+      { key: 'username', cn: '姓名' },
+      {
+        key: 'beginTime',
+        cn: '开始时间',
+      },
+      {
+        key: 'endTime',
+        cn: '结束时间',
+      },
+      {
+        key: 'username',
+        cn: '姓名',
+      },
+      {
+        key: 'userId',
+        cn: '姓名',
+      },
+    ],
+  },
+  {
+    key: 'getAttendanceCount',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/getAttendanceCount`,
+    type: 'GET',
+    description: '现场统计获取在场或出勤人数',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'getSafetyManagerAttendanceCount',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/getSafetyManagerAttendanceCount`,
+    type: 'GET',
+    description: '获取安全员在场时长',
+    params: [{ key: 'Authorization', location: 'header' }],
   },
 ];
 export default attendance;

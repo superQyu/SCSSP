@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { Button, message } from 'antd';
 
 import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
-
+import SingleTitle from '@/components/SingleTitle';
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
 
@@ -20,9 +20,9 @@ export default () => {
   const detailModal = useRef();
 
   return (
-    <>
+    <div className='h-full m-18px'>
       <ProTable
-        headerTitle="车辆智能分析"
+           headerTitle={<SingleTitle label="车辆智能分析" />}
         request={async (params: ModesApi.ParamsType) => {
           const { list, total } = await V.vehicleIntelligentList(params);
           return {
@@ -81,6 +81,6 @@ export default () => {
         }}
       ></ProTable>
       <DetailForm subForm={subForm} ref={detailModal} />
-    </>
+    </div>
   );
 };

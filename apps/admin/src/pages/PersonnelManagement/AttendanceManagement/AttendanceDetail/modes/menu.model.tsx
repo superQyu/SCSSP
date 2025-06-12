@@ -68,13 +68,10 @@ export default ({
   const daysInMonth = endOfMonth.diff(startOfMonth, 'days') + 1;
   const days: ProColumns[] = [...Array(daysInMonth).keys()].map(
     (i: number) => {
-      // 0~30
-      // console.log('当前日期', i)
       const day = i + 1;
       const date = `${searchMonth}-${day
         .toString()
         .padStart(2, '0')}`;
-      // console.log('当前日期', date);
       return {
         width: day == 1 ? 70 : 50,
         hideInSearch: true,
@@ -139,6 +136,9 @@ export default ({
       valueType: 'indexBorder',
       fixed: 'left',
       align: 'center',
+      render: (text: any, record: any, index: number) => {
+        return index + 1;
+      },
     },
     {
       width: 100,
