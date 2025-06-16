@@ -1,117 +1,30 @@
 import React from 'react';
-import { Form, Input } from 'antd-mobile';
+import { Form, Input, Button, Space } from 'antd-mobile';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+
 import siteModel, { FormColumnVO } from './modes/form.model';
+import styled from 'styled-components';
+const FooterDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-block: 30px;
+`;
 
 export default function () {
+  const navigate = useNavigate();
   const { formColumns, MaterialColumns } = siteModel();
-  const initialValues = {
-    id: 168,
-    projectId: 19,
-    enterDate: 1749596400000,
-    deliveryMan: '罗光文',
-    carNo: null,
-    deliveryContact: '15760163600',
-    materialMan: '贾之方',
-    manufacturer: null,
-    supplierDepartment: null,
-    purchaserDepartment: '华昕设计集团有限公司',
-    enterTheme: null,
-    purchaser: null,
-    accepter: null,
-    putinUser: null,
-    recorder: null,
-    processInstanceId: 'f7420510-468c-11f0-b993-fa163e4541aa',
-    status: '1',
-    remark: null,
-    materialsDetailsWithInventoryRespVOS: [
-      {
-        id: 173,
-        materialEnterId: 168,
-        materialsInventoryId: '26462',
-        materialType: null,
-        enterNumber: 21,
-        acceptNumber: null,
-        weighNumber: null,
-        attachment: null,
-        acceptAttachment: null,
-        remark: null,
-        status: null,
-        carNo: null,
-        createTime: null,
-        materialName: '预拌混凝土(泵送型)',
-        specification: 'C30',
-        measuringUnit: 'm3',
-        materialCode: '80212105',
-      },
-      {
-        id: 174,
-        materialEnterId: 168,
-        materialsInventoryId: '26460',
-        materialType: null,
-        enterNumber: 53,
-        acceptNumber: null,
-        weighNumber: null,
-        attachment: null,
-        acceptAttachment: null,
-        remark: null,
-        status: null,
-        carNo: null,
-        createTime: null,
-        materialName: '预拌混凝土(泵送型)',
-        specification: 'C20',
-        measuringUnit: 'm3',
-        materialCode: '80212103',
-      },
-    ],
-  };
+  const [searchParams] = useSearchParams();
+  const detail = JSON.parse(searchParams.get('detail'));
+  const type =searchParams.get('type');
 
-  const initialMaterialValues = [
-    {
-      id: 173,
-      materialEnterId: 168,
-      materialsInventoryId: '26462',
-      materialType: null,
-      enterNumber: 21,
-      acceptNumber: null,
-      weighNumber: null,
-      attachment: null,
-      acceptAttachment: null,
-      remark: null,
-      status: null,
-      carNo: null,
-      createTime: null,
-      materialName: '预拌混凝土(泵送型)',
-      specification: 'C30',
-      measuringUnit: 'm3',
-      materialCode: '80212105',
-    },
-    {
-      id: 174,
-      materialEnterId: 168,
-      materialsInventoryId: '26460',
-      materialType: null,
-      enterNumber: 53,
-      acceptNumber: null,
-      weighNumber: null,
-      attachment: null,
-      acceptAttachment: null,
-      remark: null,
-      status: null,
-      carNo: null,
-      createTime: null,
-      materialName: '预拌混凝土(泵送型)',
-      specification: 'C20',
-      measuringUnit: 'm3',
-      materialCode: '80212103',
-    },
-  ];
-
+  const onSubmit = () => {};
   return (
     <div className="bg-#f8f8f8">
       <Form
         layout="horizontal"
         mode="card"
-        initialValues={initialValues}
+        initialValues={detail}
       >
         {formColumns.map((item: FormColumnVO) => {
           return (
@@ -126,28 +39,59 @@ export default function () {
         })}
       </Form>
 
-      {initialMaterialValues.map((el, i) => {
-        return (
-          <Form
-            layout="horizontal"
-            mode="card"
-            initialValues={el}
-          >
-            {!i ? <Form.Header>物料列表</Form.Header> : ''}
-            {MaterialColumns.map((item: FormColumnVO) => {
-              return (
-                <Form.Item
-                  label={item.label}
-                  name={item.key}
-                  key={item.key}
-                >
-                  <Input disabled={item.disabled} />
-                </Form.Item>
-              );
-            })}
-          </Form>
-        );
-      })}
+      {detail.materialsDetailsWithInventoryRespVOS.map(
+        (el: any, i: number) => {
+          return (
+            <Form
+              layout="horizontal"
+              mode="card"
+              initialValues={el}
+            >
+              <Form.Header>物料{i + 1}</Form.Header>
+              {MaterialColumns.map((item: FormColumnVO) => {
+                return (
+                  <Form.Item
+                    label={item.label}
+                    name={item.key}
+                    key={item.key}
+                  >
+                    {item.formProp ? (
+                      item.formProp(el)
+                    ) : (
+                      <Input disabled={item.disabled} />
+                    )}
+                  </Form.Item>
+                );
+              })}
+            </Form>
+          );
+        }
+      )}
+      {type == 'check' ? (
+        <FooterDiv>
+          <div className="w-80px">
+            <Button
+              block
+              onClick={() => navigate(-1)}
+              size="small"
+            >
+              取消
+            </Button>
+          </div>
+          <div className="w-80px">
+            <Button
+              block
+              color="primary"
+              onClick={onSubmit}
+              size="small"
+            >
+              提交
+            </Button>
+          </div>
+        </FooterDiv>
+      ) : (
+        ''
+      )}
     </div>
   );
 }

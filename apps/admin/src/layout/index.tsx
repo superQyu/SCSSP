@@ -21,20 +21,19 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 import { Outlet } from 'react-router-dom';
 const CustomHeader = styled.div`
-  padding:0;
+  padding: 0;
   .title {
-    display:flex;
+    display: flex;
     height: 45px;
     align-items: center;
-    
+
     .text {
       margin-left: 2px;
       font-weight: bold;
       font-size: 16px;
-      color: #FFFFFF;
+      color: #ffffff;
+    }
   }
-}
-
 `;
 
 interface MenuTabItem {
@@ -141,7 +140,7 @@ const LayoutContext: React.FC = () => {
     dispatch(setMenuTab([initialMenuTab]));
   }, []);
 
-  useEffect(() => { }, [menuTab]);
+  useEffect(() => {}, [menuTab]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -157,13 +156,16 @@ const LayoutContext: React.FC = () => {
           {...{
             ...LayoutConfig(),
 
-            menuHeaderRender: (logo) => (<CustomHeader>
-              <div className='title'>
-                {logo}
-                <div className='text'>{LayoutConfig().title}</div>
-              </div>
-
-            </CustomHeader>),
+            menuHeaderRender: (logo) => (
+              <CustomHeader>
+                <div className="title">
+                  {logo}
+                  <div className="text">
+                    {LayoutConfig().title}
+                  </div>
+                </div>
+              </CustomHeader>
+            ),
             onMenuHeaderClick: (
               _: React.MouseEvent<HTMLDivElement>
             ) => {
@@ -184,7 +186,9 @@ const LayoutContext: React.FC = () => {
             ) => (
               <div onClick={() => menuClick(item)}>{dom}</div>
             ),
-            contentStyle: { padding: '0' },
+            contentStyle: {
+              padding: '0',
+            },
             slot: (): React.ReactElement => {
               return (
                 <>
@@ -195,7 +199,7 @@ const LayoutContext: React.FC = () => {
                     <Breadcrumb routes={breadcrumbList} />
                     <Select
                       variant="borderless"
-                      style={{ minWidth: '180px', }}
+                      style={{ minWidth: '180px' }}
                       placeholder="切换项目"
                       value={projectShow}
                       onChange={(value) => {
@@ -226,9 +230,7 @@ const LayoutContext: React.FC = () => {
                 colorTextMenuItemHover: '#4b9cf6',
                 colorTextMenu: '#fff',
               },
-              header: {
-
-              }
+              header: {},
             },
           }}
         />

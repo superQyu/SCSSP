@@ -152,5 +152,18 @@ const attendance: ApiItem[] = [
     description: '获取安全员在场时长',
     params: [{ key: 'Authorization', location: 'header' }],
   },
+  {
+    key: 'getPersonnelStatusControlList',
+    url: `${ADMIN_API}/wisdom/personnel-info/getPersonnelStatusControlList`,
+    type: 'GET',
+    description: '获取人员状态管控列表',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'name', cn: '姓名' },
+      { key: 'status', cn: '考勤状态' },
+      { key: 'pageNo', cn: '页码' },
+      { key: 'pageSize', cn: '每页条数' },
+    ],
+  },
 ];
 export default attendance;

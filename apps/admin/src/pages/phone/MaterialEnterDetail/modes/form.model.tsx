@@ -1,11 +1,18 @@
-import { useState, useEffect } from 'react';
-
-import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-
+import React, { useState, useEffect } from 'react';
+import {
+  Tag,
+  Space,
+  Image,
+  Input,
+  ImageUploader,
+} from 'antd-mobile';
+import { getToken } from 'utils';
+import UploadImage from '../../components/UploadImage';
 export interface FormColumnVO {
   label: string;
   key: string;
   disabled?: boolean;
+  formProp?: React.FC;
 }
 
 export default () => {
@@ -71,6 +78,9 @@ export default () => {
       label: '是否特种作业',
       key: 'isSpecialWork',
       disabled: true,
+      formProp: () => {
+        return <div className="adm-input-disabled">否</div>;
+      },
     },
     {
       label: '计划进场数量',
@@ -80,8 +90,63 @@ export default () => {
     {
       label: '实际验收数量',
       key: 'acceptNumber',
+      formProp: () => {
+        return getToken('PHONETITLE') == '详情' ? (
+          <Input disabled={true} />
+        ) : (
+          <Input placeholder="请输入实际验收数量" />
+        );
+      },
+    },
+    {
+      label: '合格证书',
+      key: 'attachment',
+      formProp: (item: any) => {
+        return getToken('PHONETITLE') == '详情' ? (
+          <>
+            {item.attachment ? (
+              <Space wrap>
+                <Image
+                  src={item.attachment}
+                  width={100}
+                  height={100}
+                  fit="fill"
+                />
+              </Space>
+            ) : (
+              <div className="adm-input-disabled">暂无图片</div>
+            )}
+          </>
+        ) : (
+          <UploadImage />
+        );
+      },
+    },
+    {
+      label: '验收单',
+      key: 'acceptAttachment',
       disabled: true,
+      formProp: (item: any) => {
+        return getToken('PHONETITLE') == '详情' ? (
+          <>
+            {item.acceptAttachment ? (
+              <Space wrap>
+                <Image
+                  src={item.acceptAttachment}
+                  width={100}
+                  height={100}
+                  fit="fill"
+                />
+              </Space>
+            ) : (
+              <div className="adm-input-disabled">暂无图片</div>
+            )}
+          </>
+        ) : (
+          <UploadImage />
+        );
+      },
     },
   ];
-  return { formColumns ,MaterialColumns};
+  return { formColumns, MaterialColumns };
 };

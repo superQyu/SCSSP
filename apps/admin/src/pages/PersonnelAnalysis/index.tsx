@@ -9,11 +9,13 @@ import CertificateWarn from './CertificateWarn';
 import SpecialWork from './SpecialWork';
 import SafetySupervisor from './SafetySupervisor';
 
-
 const CustomSDiv = styled.div`
   display: grid;
-  grid-template-columns:minmax(0, 1fr)  minmax(0, 1.5fr)  minmax(0, 1fr);
-  grid-template-rows:  minmax(0, 1fr) minmax(0, 2fr)  ;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(
+      0,
+      1fr
+    );
+  grid-template-rows: minmax(0, 1fr) minmax(0, 2fr);
   gap: 20px;
   padding: 20px 17px;
   height: 100%;
@@ -68,7 +70,7 @@ const CustomCard3 = styled(CustomCard)(() => ({
   },
   '>.ant-card-body::before': {
     display: 'none',
-  }
+  },
 }));
 
 const CustomTitle = styled.div`
@@ -95,10 +97,14 @@ export default () => {
           <SummaryData />
         </CustomCard>
         <CustomCard3>
-          <CustomCard2 title={<CustomTitle>现场考核分析</CustomTitle>}>
+          <CustomCard2
+            title={<CustomTitle>现场考核分析</CustomTitle>}
+          >
             <AttendanceAnalysis />
           </CustomCard2>
-          <CustomCard2 title={<CustomTitle>现场特殊工种统计</CustomTitle>}>
+          <CustomCard2
+            title={<CustomTitle>现场特殊工种统计</CustomTitle>}
+          >
             <SpecialWork />
           </CustomCard2>
         </CustomCard3>
@@ -116,7 +122,6 @@ export default () => {
         >
           <CertificateWarn />
         </CustomCard>
-
       </CustomSDiv>
     </>
   );

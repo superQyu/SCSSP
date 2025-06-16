@@ -5,9 +5,9 @@ import { useState } from 'react';
 
 interface Props {
   data?: any[];
-  unit: string
+  unit: string;
 }
-interface Config { }
+interface Config {}
 
 export default (props: Props) => {
   const {
@@ -19,12 +19,11 @@ export default (props: Props) => {
       { name: '混凝土工', value: 68 },
       { name: '除尘工', value: 68 },
     ],
-    unit
+    unit,
   } = props;
 
-  const { getEChartsInstance, getLinearGradient } = useECharts();
+  const { getEChartsInstance } = useECharts();
 
-  const config: Config = {};
   const chartRef = useRef(null);
 
   const [spinning, setSpinning] = useState(true);
@@ -52,9 +51,9 @@ export default (props: Props) => {
     setConfig();
     setOptions();
     chartInstance.resize();
-  }, [chartData ,unit]);
+  }, [chartData, unit]);
 
-  const setConfig = () => { };
+  const setConfig = () => {};
 
   const setOptions = () => {
     setSpinning(true);
@@ -72,10 +71,10 @@ export default (props: Props) => {
         },
       },
       grid: {
-        left: '8%',
+        containLabel: true,
         right: '8%',
         top: '13%',
-        bottom: '15%',
+        bottom: '8%',
       },
       xAxis: [
         {
@@ -118,26 +117,16 @@ export default (props: Props) => {
         {
           name: '班组人数',
           type: 'bar',
+          showBackground: true,
           backgroundStyle: {
-            color: 'rgba(216, 229, 247, 0.55)',
-            borderRadius: [8, 8, 0, 0],
+            color: '#dee4f0',
+            borderRadius: 7,
           },
           itemStyle: {
-            normal: {
-              borderRadius: [12, 12, 0, 0],
-              color: getLinearGradient(0, 0, 0, 1, [
-                {
-                  offset: 1,
-                  color: 'rgba(125, 188, 255, 0)',
-                },
-                {
-                  offset: 0,
-                  color: 'rgba(73, 161, 255, 1)',
-                },
-              ]),
-            },
+            color: '#6c7af9',
+            borderRadius: 7,
           },
-          barWidth: '25',
+          barWidth: 14,
           label: {
             show: true,
             color: '#454545',
@@ -162,8 +151,9 @@ export default (props: Props) => {
           <div className="color-#409eff">暂无数据</div>
         )}
         <div
-          className={`w-full h-full ${!chartData.length && 'hidden'
-            }`}
+          className={`w-full h-full ${
+            !chartData.length && 'hidden'
+          }`}
           ref={chartRef}
         ></div>
       </div>

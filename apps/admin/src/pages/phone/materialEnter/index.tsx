@@ -14,10 +14,9 @@ import {
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 
-
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import DictSelect from '@/components/DictSelect';
-import {   setToken } from 'utils';
+import { setToken } from 'utils';
 import InfiniteScrollContent from '../components/InfiniteScrollContent';
 const MaterialEnterBox = styled.div`
   height: calc(100vh - 100px);
@@ -80,10 +79,26 @@ function MaterialEnter() {
 
   const handleClick = () => {};
 
+  // 点击详情
   const handleDetail = (detail: any) => {
-    navigate(`/phone/material-enter-detail?ditail=${detail.id}`);
+    console.log(1, JSON.stringify(detail));
+    navigate(
+      `/phone/material-enter-detail?detail=${JSON.stringify(
+        detail
+      )}`
+    );
     setToken('PHONETITLE', '详情');
   };
+
+  // 点击验收
+  const handleCheck =(detail: any)=>{
+    navigate(
+      `/phone/material-enter-detail?type=check&detail=${JSON.stringify(
+        detail
+      )}`
+    );
+    setToken('PHONETITLE', '验收');
+  }
 
   //   useEffect(() => {
   //     // loadMore();
@@ -134,6 +149,14 @@ function MaterialEnter() {
                   }}
                 >
                   详情
+                </Button>
+                <Button
+                  size="mini"
+                  onClick={() => {
+                    handleCheck(item);
+                  }}
+                >
+                  验收
                 </Button>
               </Space>
             </div>
