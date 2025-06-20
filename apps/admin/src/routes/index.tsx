@@ -16,6 +16,15 @@ import FlowFormDesign from '@/pages/workflow/bpm/formDesign';
 
 import UpdateLog from '@/pages/SynchronizeData';
 
+/*======================手机端路由========================*/
+import Phone from '@/pages/phone';
+import PhoneHome from '@/pages/phone/home';
+import MaterialEnter from '@/pages/phone/materialEnter/index';
+import MaterialEnterDetail from '@/pages/phone/materialEnter/detail/index';
+import CreateMaterial from '@/pages/phone/materialEnter/create/index';
+
+import MaterialExit from '@/pages/phone/materialExit/index';
+import Center from '@/pages/phone/center/index';
 
 // 防止路由丢失
 const PreventRouteLoss = () => (
@@ -83,6 +92,36 @@ const defaultRoutes: any = [
   {
     path: '/update-log',
     element: <UpdateLog />,
+  },
+
+  {
+    path: '/phone',
+    element: (
+      <div style={{ height: '100vh' }}>
+        <Phone />
+      </div>
+    ),
+    errorElement: <ErrorPage />,
+    children: [
+      { path: '/phone/home', element: <PhoneHome /> },
+      {
+        path: '/phone/material-enter',
+        element: <MaterialEnter />,
+      },
+      {
+        path: '/phone/material-enter-detail',
+        element: <MaterialEnterDetail />,
+      },
+      {
+        path: '/phone/material-exit',
+        element: <MaterialExit />,
+      },
+      {
+        path: '/phone/material-create',
+        element: <CreateMaterial />,
+      },
+      { path: '/phone/center', element: <Center /> },
+    ],
   },
 ];
 

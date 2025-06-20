@@ -57,7 +57,7 @@ export default () => {
     return res;
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   return (
     <>
@@ -118,7 +118,7 @@ export default () => {
                       try {
                         Modal.confirm({
                           title: `删除操作`,
-                          
+
                           icon: <ExclamationCircleFilled />,
                           content: `确定删除菜单 [${record.name}]?`,
                           okText: '删除',
@@ -129,12 +129,12 @@ export default () => {
                             message.success('操作成功!');
                             action?.reload();
                           },
-                          onCancel() {},
+                          onCancel() { },
                         });
                       } catch (errorInfo) {
                         message.error('操作失败!');
                       }
-                    } catch (errorInfo) {}
+                    } catch (errorInfo) { }
                   } else if (key === 'detail') {
                     setSubForm({
                       ...record,
@@ -156,7 +156,7 @@ export default () => {
             ],
           },
         ]}
-        onSubmit={async (params: {}) => {}}
+        onSubmit={async (params: {}) => { }}
         actionRef={actionRef}
         pagination={false}
         form={{
@@ -167,7 +167,7 @@ export default () => {
         columnsState={{
           persistenceKey: 'pro-table-singe-menu',
           persistenceType: 'localStorage',
-          onChange(_: any) {},
+          onChange(_: any) { },
         }}
         toolBarRender={() => [
           <Button
@@ -190,7 +190,7 @@ export default () => {
               <Button
                 type="primary"
                 key="sub"
-                
+
                 icon={<SearchOutlined />}
                 onClick={() => form?.submit()}
               >

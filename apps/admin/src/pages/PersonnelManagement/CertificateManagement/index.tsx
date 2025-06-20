@@ -11,7 +11,7 @@ import EditDialog from './components/editdialog';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import siteModel from './models/table.model';
-
+import SingleTitle from '@/components/SingleTitle';
 export default () => {
   // api 相关
   const { server } = useBasicConfiguration();
@@ -63,10 +63,10 @@ export default () => {
   };
 
   return (
-    <>
+    <div className='h-full m-18px'>
       <ProTable
         actionRef={actionRef}
-        headerTitle="证件列表"
+        headerTitle={<SingleTitle label="证件列表" />}
         columns={[
           ...initColumns[type],
           {
@@ -152,6 +152,6 @@ export default () => {
         openModal={dialogVisible}
         onStateChange={handleModalStateChange}
       />
-    </>
+    </div>
   );
 };

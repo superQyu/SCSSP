@@ -3,6 +3,8 @@ import { Select } from 'antd';
 import { type ProColumns } from '@ant-design/pro-components';
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
+import DictSelect from '@/components/DictSelect';
+
 // 路由跳转
 import { useRoute } from 'hooks';
 
@@ -25,7 +27,7 @@ export default ({ server }: MenusPropsType) => {
     });
     setSubcontractorList(list1);
 
-    const { list } = await P.workType();
+    const { list } = await P.workType({ pageSize: -1 });
     const options = list.map((item: any) => {
       return {
         label: item.name,
@@ -56,6 +58,9 @@ export default ({ server }: MenusPropsType) => {
       title: '序号',
       dataIndex: 'index',
       valueType: 'indexBorder',
+      render: (text: any, record: any, index: number) => {
+        return index + 1;
+      },
     },
     {
       title: '单位',
@@ -129,15 +134,13 @@ export default ({ server }: MenusPropsType) => {
                 workTypeName,
                 workTypeId,
               } = row;
-              let routePath = `/attendance/AttendanceDetail/${workTypeId}?yearAndMonth=${
-                row.time
-              }&${
-                workerType == '1'
+              let routePath = `/attendance/AttendanceDetail/${workTypeId}?yearAndMonth=${row.time
+                }&${workerType == '1'
                   ? 'workTypeId'
                   : workerType == '2'
-                  ? 'jobCategoryId'
-                  : 'otherId'
-              }=${row.workTypeId}`;
+                    ? 'jobCategoryId'
+                    : 'otherId'
+                }=${row.workTypeId}`;
 
               tabNavigate({
                 tabName: `${workTypeName}考勤明细`,
@@ -159,6 +162,19 @@ export default ({ server }: MenusPropsType) => {
             placeholder="请选择劳务工种"
             options={laborList}
             allowClear
+          />
+        );
+      },
+    },
+    {
+      hideInTable: true,
+      title: '管理工种',
+      dataIndex: 'jobCategoryId',
+      renderFormItem: () => {
+        return (
+          <DictSelect
+            dictKey={'pm_job_category'}
+
           />
         );
       },
@@ -210,26 +226,30 @@ export default ({ server }: MenusPropsType) => {
         );
       },
     },
+    // {
+    //   hideInTable: true,
+    //   title: '时间范围',
+    //   valueType: 'dateTimeRange',
+    //   search: {
+    //     transform: (value) => {
+    //       return {
+    //         beginTime: value[0],
+    //         endTime: value[1],
+    //       };
+    //     },
+    //   },
+    // },
     {
       hideInTable: true,
-      title: '时间范围',
-      valueType: 'dateTimeRange',
-      search: {
-        transform: (value) => {
-          return {
-            beginTime: value[0],
-            endTime: value[1],
-          };
-        },
-      },
+      title: '年月',
+      valueType: 'dateMonth',
+      dataIndex: 'yearAndMonth',
     },
     {
       hideInSearch: true,
       title: '年月',
+      valueType: 'dateMonth',
       dataIndex: 'time',
-      render: (_, record) => (
-        <>{dayjs(record.time).format('YYYY-MM')}</>
-      ),
     },
     {
       hideInSearch: true,

@@ -7,7 +7,7 @@ import { PlusOutlined, UploadOutlined, SearchOutlined } from '@ant-design/icons'
 
 import EditDialog from './components/editdialog';
 import Styled from '@/components/Styled';
-
+import SingleTitle from '@/components/SingleTitle';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
@@ -50,10 +50,10 @@ export default () => {
   };
 
   return (
-    <>
+  <div className='h-full m-18px'>
       <ProTable
         actionRef={actionRef}
-        headerTitle="工种列表"
+        headerTitle={<SingleTitle label="工种列表" />}
         columns={[
           ...initColumns,
           {
@@ -132,6 +132,6 @@ export default () => {
         openModal={dialogVisible}
         onStateChange={handleModalStateChange}
       />
-    </>
+    </div>
   );
 };

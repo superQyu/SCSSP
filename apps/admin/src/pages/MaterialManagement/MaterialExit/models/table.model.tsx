@@ -27,7 +27,9 @@ export default ({ server }: MenusPropsType) => {
       valueType: 'indexBorder',
       dataIndex: 'index',
       ellipsis: true,
-      // width: 50
+      render: (text: any, record: any, index: number) => {
+        return index + 1;
+      },
     },
     {
       title: '退场时间',

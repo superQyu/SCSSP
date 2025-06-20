@@ -9,7 +9,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 import InforModel from './modes/structural';
 import Styled from '@/components/Styled';
-
+import SingleTitle from '@/components/SingleTitle';
 // 项目管理表格模型
 import type { ModesApi } from './modes/model';
 import PMmodel, { type ColumnsParamsProps } from './modes/PM.model';
@@ -52,8 +52,8 @@ export default () => {
     return res;
   };
 
-  return (
-    <>
+  return (  
+  <div className='h-full m-18px'>
       <ProTable
         request={async (params = {}) => {
           const res = await P.projectUnityList({ ...params });
@@ -70,7 +70,7 @@ export default () => {
           pageSize: 30,
         }}
         rowKey="id"
-        headerTitle="项目管理"
+        headerTitle={<SingleTitle label="项目管理" />}
         columnsState={{
           persistenceKey: 'pro-table-pm-pm',
           persistenceType: 'localStorage',
@@ -164,6 +164,6 @@ export default () => {
       />
 
       <InforModel subForm={subForm} openModal={formModal} onStateChange={handleModalStateChange} />
-    </>
+    </div>
   );
 };

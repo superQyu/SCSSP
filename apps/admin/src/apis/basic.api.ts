@@ -121,7 +121,7 @@ const user: ApiItem[] = [
   },
   {
     key: 'exportPersonnelInfo',
-    url: `${ADMIN_API}/wisdom/personnel-info/export-excel`,
+    url: `${ADMIN_API}/wisdom/personnel-info/export-excel-with-model`,
     type: 'GET',
     name: '人员信息模板导出',
     description: '人员信息模板导出',

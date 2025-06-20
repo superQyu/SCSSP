@@ -43,20 +43,19 @@ export default () => {
   };
 
   return (
-    <Row gutter={30} className="h-full  pb-10 pt-4">
-      <Col span={12} className="h-full">
+    <div className='h-full'>
+      <div className='h-50%'>
         <LabelLinePieChart
           title="在场人数"
           data={presentChartData}
-        />
-      </Col>
-
-      <Col span={12} className="h-full">
+        /></div>
+      <div className='h-50%'>
         <LabelLinePieChart
           title="出勤人数"
           data={attendanceChartData}
         />
-      </Col>
-    </Row>
+      </div>
+    </div>
+
   );
 };

@@ -1,82 +1,137 @@
-import { PageContainer } from '@ant-design/pro-layout';
-import { Avatar, Col, Row, Statistic } from 'antd';
-import type { FC } from 'react';
+import { useState } from 'react';
+import { Card, Radio } from 'antd';
+import styled from 'styled-components';
+import SingleTitle from '@/components/SingleTitle';
+import Overview from './components/Overview';
+import Monitor from './camera/index';
+import RealAttendance from './components/RealAttendance';
+import ManagementAttendance from './components/ManagementAttendance';
+import SpecialWork from './components/SpecialWork';
+import RealData from '@/pages/PersonnelAnalysis/RealData';
+import MaterialSummary from './components/MaterialSummary';
+import CertificateWarn from '@/pages/PersonnelAnalysis/CertificateWarn';
 
-import { currentTimeRange } from 'utils';
-import { Text } from 'components';
+const CustomSDiv = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.5fr) minmax(
+      0,
+      1.5fr
+    );
+  grid-template-rows: minmax(0, 1.3fr) repeat(6, minmax(0, 1fr));
+  gap: 20px;
+  padding: 20px 17px;
+  height: 100%;
+  background: #eaf0f6;
+`;
+const CustomCard = styled(Card)(() => ({
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  background: '#FFFFFF',
+  boxShadow: '0px 4px 13px 0px rgba(0,0,0,0.07)',
+  borderRadius: '10px',
+  border: '1px solid #EEEEEE',
+  '.ant-card-head': {
+    borderBottom: 'none',
+  },
+  '.ant-card-body': {
+    flex: 1,
+    height: 0,
+    padding: '10px 20px',
+    overflowY: 'hidden',
+  },
+}));
 
-import styles from './style.module.scss';
+const CustomCard2 = styled(Card)(() => ({
+  height: '100%',
+  display: 'flex',
+  borderRadius: '20px',
+  flexDirection: 'column',
+  border: 'none',
+  '.ant-card-head': {
+    borderBottom: 'none',
+  },
+  '.ant-card-body': {
+    flex: 1,
+    height: 0,
+    padding: '10px 20px',
+    overflowY: 'hidden',
+  },
+}));
 
-const PageHeaderContent: FC<{ currentUser: any }> = ({
-  currentUser,
-}) => {
+const CustomCard3 = styled(CustomCard)(() => ({
+  gridRow: '4 / 8',
+  gridColumn: '2 / 3',
+  '>.ant-card-body': {
+    flex: 1,
+    height: 0,
+    padding: '0',
+    overflowY: 'hidden',
+    display: 'grid',
+    gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)',
+    gridTemplateRows: 'minmax(0, 1fr) minmax(0, 1fr)',
+  },
+  '>.ant-card-body::before': {
+    display: 'none',
+  },
+}));
+
+export default () => {
+  const [curSelect, setCurSelect] = useState('1');
   return (
-    <div className={styles.pageHeaderContent}>
-      <div className={styles.avatar}>
-        <Avatar size="large" src={currentUser.avatar} />
-      </div>
-      <div className={styles.content}>
-        <div className={styles.contentTitle}>
-          {currentTimeRange()}，{currentUser.name}
-          ，祝你开心每一天！
-        </div>
-        <div>
-          {currentUser.title} |{currentUser.group}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const ExtraContent: FC<Record<string, any>> = () => (
-  <div className={styles.extraContent}>
-    <div className={styles.statItem}>
-      <Statistic title="项目数" value={56} />
-    </div>
-    <div className={styles.statItem}>
-      <Statistic title="团队内排名" value={8} suffix="/ 24" />
-    </div>
-    <div className={styles.statItem}>
-      <Statistic title="项目访问" value={2223} />
-    </div>
-  </div>
-);
-
-const Workplace: FC = () => {
-  return (
-    // <div>55555555</div>
-    <PageContainer
-      // waterMarkProps={{ content: username }}
-      // style={{ background: "#fff" }}
-      content={
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-          }}
+    <>
+      <CustomSDiv>
+        <CustomCard
+          title={<SingleTitle label="项目概况" />}
+          style={{ gridRow: '1 / 8', gridColumn: '1 / 2' }}
         >
-          <PageHeaderContent
-            currentUser={{
-              avatar:
-                'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
-              name: '吴彦祖',
-              userid: '00000001',
-              email: 'antdesign@alipay.com',
-              signature: '海纳百川，有容乃大',
-              title: '交互专家',
-              group: '某某某事业群－某某平台部－某某技术部－UED',
-            }}
-          />
-          <ExtraContent />
-        </div>
-      }
-    >
-      <Row gutter={24}>
-        <Col xl={8} lg={24} md={24} sm={24} xs={24}>
-          <Text>Hello word</Text>
-        </Col>
-      </Row>
-    </PageContainer>
+          <Overview />
+        </CustomCard>
+
+        <CustomCard
+          title={<SingleTitle label="实时监控" />}
+          style={{ gridRow: '1 / 4', gridColumn: '2 / 3' }}
+        >
+          <Monitor />
+        </CustomCard>
+        <CustomCard3>
+          <CustomCard2 title={<SingleTitle label="实时考勤" />}>
+            <RealAttendance />
+          </CustomCard2>
+          <CustomCard2
+            title={<SingleTitle label="管理人员考勤" />}
+          >
+            <ManagementAttendance />
+          </CustomCard2>
+          <CustomCard2
+            style={{ gridRow: '1 / 3', gridColumn: '2 / 3' }}
+            title={<SingleTitle label="实时动态" />}
+          >
+            <RealData />
+          </CustomCard2>
+        </CustomCard3>
+
+        <CustomCard
+          title={<SingleTitle label="物料汇总" />}
+          style={{ gridRow: '1 / 2', gridColumn: '3 / 4' }}
+        >
+          <MaterialSummary />
+        </CustomCard>
+
+        <CustomCard
+          title={<SingleTitle label="现场特殊工种统计" />}
+          style={{ gridRow: '2 / 5', gridColumn: '3 / 4' }}
+        >
+          <SpecialWork />
+        </CustomCard>
+
+        <CustomCard
+          title={<SingleTitle label="证书到期预警" />}
+          style={{ gridRow: '5 / 8', gridColumn: '3 / 4' }}
+        >
+          <CertificateWarn />
+        </CustomCard>
+      </CustomSDiv>
+    </>
   );
 };
-export default Workplace;

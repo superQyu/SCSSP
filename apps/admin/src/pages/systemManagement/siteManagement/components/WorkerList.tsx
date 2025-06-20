@@ -71,6 +71,7 @@ const FunctionCom: React.FC<Props> = forwardRef(
         const { list } = await B.getDictType({
           dictType: 'pm_job_category',
         });
+        console.log('list',list)
         options = list.map((item: workTypeItem) => {
           return {
             label: item.label,

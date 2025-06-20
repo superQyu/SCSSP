@@ -3,17 +3,35 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Image, Upload, Button, message } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
 import './index.scss';
-
+import styled from 'styled-components';
 type FileType = Parameters<
   GetProp<UploadProps, 'beforeUpload'>
 >[0];
 
+const CustomUpload = styled(Upload)(() => ({
+  '.ant-upload-list-item': {
+    position: 'relative'
+  },
+  'button[title="删除文件"]': {
+    position: 'absolute',
+    top: 0,
+    right: '0',
+    width: '10px',
+    height: '10px',
+    background: 'pink'
+  },
+  '.anticon-delete': {
+    display: 'none',
+
+  }
+}));
+
 export type RequestData<T> =
   | ({
-      data: T[] | undefined;
-      success?: boolean;
-      total?: number;
-    } & Record<string, any>)
+    data: T[] | undefined;
+    success?: boolean;
+    total?: number;
+  } & Record<string, any>)
   | string;
 
 interface Props {
@@ -208,16 +226,17 @@ const ProUpload: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <Upload
+      <CustomUpload
         {...uploadProps}
+
         className={`${!showUploadButton && 'noDelete'}`}
       >
         {!maxCount && showUploadButton
           ? uploadButton
           : fileList?.length >= maxCount || !showUploadButton
-          ? null
-          : uploadButton}
-      </Upload>
+            ? null
+            : uploadButton}
+      </CustomUpload>
       {previewImage && (
         <Image
           wrapperStyle={{ display: 'none' }}

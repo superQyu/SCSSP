@@ -34,7 +34,7 @@ import {
   DownloadOutlined,
   InboxOutlined,
 } from '@ant-design/icons';
-
+import SingleTitle from '@/components/SingleTitle';
 import { useAppSelector } from 'hooks';
 // 文件下载工具
 import { downFiles } from 'utils';
@@ -291,7 +291,7 @@ export default () => {
   ];
 
   return (
-    <>
+    <div className="h-full m-18px">
       {/* <Alert message="表格字典为同步" type="warning" showIcon /> */}
       {contextHolder}
       <ProTable
@@ -337,7 +337,7 @@ export default () => {
           ...initColumns,
           {
             title: '操作',
-            width: 280,
+            width: 160,
             valueType: 'option',
             key: 'option',
             fixed: 'right',
@@ -347,60 +347,82 @@ export default () => {
               _: any,
               action: any
             ) => {
-              return [
-                ...(user.userInfor.roles.find(
-                  (item: string) =>
-                    item == 'project-manager' ||
-                    item == 'super_admin'
-                ) &&
+              const btns = [
+                <a
+                  key="editable"
+                  onClick={() => {
+                    tabNavigate({
+                      namePath: `项目人员管理/审核人员信息`,
+                      routePath: `/PersonDetail/?id=${
+                        record.id
+                      }&ifEdit=${true}`,
+                      activeMenu: '/PM/IM',
+                    });
+                  }}
+                >
+                  审核
+                </a>,
+                <a
+                  key="editable"
+                  onClick={() => {
+                    // action?.startEditable?.(record.id);
+                    tabNavigate({
+                      namePath: `项目人员管理/人员详情${record.id}`,
+                      routePath: `/PersonDetail/?id=${record.id}&status=${record.status}`,
+                      activeMenu: '/PM/IM',
+                    });
+                  }}
+                >
+                  编辑
+                </a>,
+                <Popconfirm
+                  key="delete"
+                  title="删除此项"
+                  onConfirm={() => onDelete(record.id)}
+                  okText="确认"
+                  cancelText="取消"
+                >
+                  <a>删除</a>
+                </Popconfirm>,
+                <a
+                  key="editable"
+                  onClick={() => {
+                    tabNavigate({
+                      namePath: `项目人员管理/审核人员信息`,
+                      routePath: `/PersonDetail/?id=${
+                        record.id
+                      }&ifEdit=${true}&view=${true}`,
+                      activeMenu: '/PM/IM',
+                    });
+                  }}
+                >
+                  查看
+                </a>,
+                <Popconfirm
+                  key="delete"
+                  title={<div className='color-#ff0000'>确认是否将该人员进行退场</div>}
+                  onConfirm={() => {
+                    message.success('操作成功');
+                  }}
+                  okText="确认"
+                  cancelText="取消"
+                >
+                  <a className='color-#ff0000'>退场</a>
+                </Popconfirm>,
+              ];
+
+              return user.userInfor.roles.find(
+                (item: string) =>
+                  item == 'project-manager' ||
+                  item == 'super_admin'
+              ) &&
                 (record.status == '0' ||
                   !record.status ||
                   record.status == '11')
-                  ? btns
-                  : record.status == '2'
-                  ? btns.slice(2)
-                  : btns.slice(1)),
-                record.status == '444' ? (
-                  <>
-                    {' '}
-                    <a
-                      key="editable"
-                      onClick={() => {
-                        // action?.startEditable?.(record.id);
-                        tabNavigate({
-                          namePath: `考勤明细`,
-                          routePath: `/PM/AttendanceManagement/AttendanceDetail/?username=${record.name}`,
-                          activeMenu:
-                            '/PM/AttendanceManagement/AttendanceDetail',
-                        });
-                      }}
-                    >
-                      考勤记录
-                    </a>
-                    <Popconfirm
-                      placement="left"
-                      title="解除限制"
-                      description="是否解除考勤限制？"
-                      okText="解除"
-                      cancelText="取消"
-                      onConfirm={() => onResetStatus(record.id)}
-                    >
-                      <Button
-                        style={{
-                          height: '24px',
-                          padding: '0 15px',
-                        }}
-                        type="primary"
-                        danger
-                      >
-                        解除限制!
-                      </Button>
-                    </Popconfirm>
-                  </>
-                ) : (
-                  ''
-                ),
-              ];
+                ? btns
+                : record.status == '2'
+                ? btns.slice(2)
+                : btns.slice(1);
             },
           },
         ]}
@@ -411,13 +433,17 @@ export default () => {
         }}
         rowKey="id"
         headerTitle={
-          <>
-            <div>人员管理</div>
-            <Styled.Tooltip>
-              黄色表示超龄, 橙色表示证书缺失,
-              红色表示既超龄也缺失证书
-            </Styled.Tooltip>
-          </>
+          <SingleTitle
+            label={
+              <>
+                <div>人员管理</div>
+                <Styled.Tooltip>
+                  黄色表示超龄, 橙色表示证书缺失,
+                  红色表示既超龄也缺失证书
+                </Styled.Tooltip>
+              </>
+            }
+          ></SingleTitle>
         }
         columnsState={{
           persistenceKey: 'pro-table-pm-im',
@@ -568,6 +594,6 @@ export default () => {
           </div>
         </div>
       </Modal>
-    </>
+    </div>
   );
 };
