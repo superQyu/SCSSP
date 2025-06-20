@@ -10,17 +10,7 @@ interface Props {
 interface Config {}
 
 export default (props: Props) => {
-  const {
-    data: chartData = [
-      { name: '木工', value: 72 },
-      { name: '建筑电工', value: 71 },
-      { name: '起重信号工', value: 47 },
-      { name: '钢筋工', value: 34 },
-      { name: '混凝土工', value: 68 },
-      { name: '除尘工', value: 68 },
-    ],
-    unit,
-  } = props;
+  const { data: chartData, unit } = props;
 
   const { getEChartsInstance, getLinearGradient } = useECharts();
 
@@ -58,8 +48,21 @@ export default (props: Props) => {
 
   const setOptions = () => {
     setSpinning(true);
-    const xAxis = chartData.map((item: any) => item.name);
-    const data = chartData.map((item: any) => item.value);
+    console.log('chartData', chartData);
+    const xAxis = chartData.map(
+      (item) => `${item.materialName} ${item.specification}`
+    );
+
+    // 提取三个系列的数据
+    const plannedData = chartData.map(
+      (item) => item.planNumber || 0
+    );
+    const acceptedData = chartData.map(
+      (item) => item.acceptNumber || 0
+    );
+    const actualData = chartData.map(
+      (item) => item.enterNumber || 0
+    );
     const option = {
       // 控制图表网格间距，避免内容贴边
       grid: {
@@ -83,7 +86,7 @@ export default (props: Props) => {
       // 图例配置，区分不同数据系列
       legend: {
         icon: 'circle',
-        data: ['计划总数', '已验收', '实到数'],
+        data: ['计划总数', '实到数', '已验收'],
         itemWidth: 6,
         itemHeight: 6,
         top: 0, // 图例位置，可按需调整
@@ -92,15 +95,7 @@ export default (props: Props) => {
       // 直角坐标系配置
       xAxis: {
         type: 'category',
-        data: [
-          '物料1',
-          '物料2',
-          '物料3',
-          '物料4',
-          '物料5',
-          '物料6',
-          '物料7',
-        ],
+        data: xAxis,
         axisTick: {
           show: false,
         },
@@ -120,7 +115,7 @@ export default (props: Props) => {
       },
       yAxis: {
         type: 'value',
-        name: '数量',
+        name: unit,
         nameGap: 20,
         nameTextStyle: {
           color: '#999',
@@ -146,27 +141,26 @@ export default (props: Props) => {
         {
           name: '计划总数',
           type: 'bar',
-          barWidth: 15,
-          stack: '总量', // 关键：相同 stack 值实现堆叠
-          color: 'rgba(181, 216, 255, 0.8)', // 浅蓝色，模拟示例图的计划总数颜色
-          data: [2.5, 2.5, 2.5, 2.5, 2.5, 2.5, 2.5], // 模拟计划总数数据，按需替换
+          barWidth: 30,
+          barGap: '-100%',
+          color: '#D0DEFF', // 浅蓝色，模拟示例图的计划总数颜色
+          data: plannedData, // 模拟计划总数数据，按需替换
         },
         {
           name: '已验收',
           type: 'bar',
-          stack: '总量',
-          color: 'rgb(144, 238, 144)', // 浅绿色，模拟已验收颜色
-          data: [0.8, 1.2, 0.9, 0.2, 0.8, 1.4, 0.5], // 模拟已验收数据，按需替换
+          barWidth: 30,
+          color: '#86DF6C', // 浅绿色，模拟已验收颜色
+          data: acceptedData, // 模拟已验收数据，按需替换
         },
         {
           name: '实到数',
           type: 'bar',
-          stack: '总量',
-          color: 'rgb(100, 149, 237)', // 深蓝色，模拟实到数颜色
-          data: [0.5, 0.5, 1.0, 1.1, 0.5, 0.2, 0.3], // 模拟实到数数据，按需替换
+          barWidth: 30,
+          color: '#6392FF', // 深蓝色，模拟实到数颜色
+          data: actualData, // 模拟实到数数据，按需替换
         },
       ],
-
     };
     chartInstance.setOption(option);
     setSpinning(false);
@@ -179,12 +173,12 @@ export default (props: Props) => {
       spinning={spinning}
     >
       <div className="flex justify-center items-center h-full">
-        {!chartData.length && (
+        {!chartData?.length && (
           <div className="color-#409eff">暂无数据</div>
         )}
         <div
           className={`w-full h-full ${
-            !chartData.length && 'hidden'
+            !chartData?.length && 'hidden'
           }`}
           ref={chartRef}
         ></div>

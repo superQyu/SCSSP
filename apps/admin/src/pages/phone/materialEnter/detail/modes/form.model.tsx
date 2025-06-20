@@ -7,7 +7,7 @@ import {
   ImageUploader,
 } from 'antd-mobile';
 import { getToken } from 'utils';
-import UploadImage from '../../components/UploadImage';
+import UploadImage from '@/pages/phone/components/UploadImage';
 export interface FormColumnVO {
   label: string;
   key: string;
@@ -91,7 +91,8 @@ export default () => {
       label: '实际验收数量',
       key: 'acceptNumber',
       formProp: () => {
-        return getToken('PHONETITLE') == '详情' ? (
+        return getToken('PHONETITLE') == '详情' ||
+          getToken('PHONETITLE') == '审核' ? (
           <Input disabled={true} />
         ) : (
           <Input placeholder="请输入实际验收数量" />
@@ -102,7 +103,9 @@ export default () => {
       label: '合格证书',
       key: 'attachment',
       formProp: (item: any) => {
-        return getToken('PHONETITLE') == '详情' ? (
+        console.log(item);
+        return getToken('PHONETITLE') == '详情' ||
+          getToken('PHONETITLE') == '审核' ? (
           <>
             {item.attachment ? (
               <Space wrap>
@@ -127,7 +130,8 @@ export default () => {
       key: 'acceptAttachment',
       disabled: true,
       formProp: (item: any) => {
-        return getToken('PHONETITLE') == '详情' ? (
+        return getToken('PHONETITLE') == '详情' ||
+          getToken('PHONETITLE') == '审核' ? (
           <>
             {item.acceptAttachment ? (
               <Space wrap>

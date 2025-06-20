@@ -45,13 +45,11 @@ const M3U8Player = ({ src }) => {
   }, [src]);
 
   return (
-    <div>
-      <video
-        ref={videoRef}
-        controls
-        style={{ width: '100%', height: 'auto' }}
-      />
-    </div>
+    <video
+      ref={videoRef}
+      controls
+      style={{ width: '100%', height: '100%' }}
+    />
   );
 };
 

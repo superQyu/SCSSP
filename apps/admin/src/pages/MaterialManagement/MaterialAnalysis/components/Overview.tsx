@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Statistic, Row, Col, Flex, Progress } from 'antd';
 import styled from 'styled-components';
 import bg1 from '@/assets/images/materialAnalysis/bg_1.png';
@@ -6,6 +6,9 @@ import bg2 from '@/assets/images/materialAnalysis/bg_2.png';
 import bg3 from '@/assets/images/materialAnalysis/bg_3.png';
 import up from '@/assets/images/materialAnalysis/up.png';
 import down from '@/assets/images/materialAnalysis/down.png';
+
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+
 const CustomSDiv = styled.div`
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -60,57 +63,153 @@ const CustomSDiv = styled.div`
 `;
 
 const App: React.FC = () => {
-  const value = 20;
+  const { server } = useBasicConfiguration();
+  const { materialEnter: M } = server;
+  const [statistic, setStatistic] = useState({
+    thisMonthPlan: 0,
+    todayhReceive: 0,
+    todayhAccept: 0,
+    todayhReject: 0,
+    monthPlan: 0,
+    monthReceive: 0,
+    monthAccept: 0,
+    monthReject: 0,
+    thisMonthReject: 0,
+  });
+
+  const queryData = async () => {
+    const res = await M.summery();
+    res.monthPlan = res.yesterdayPlan
+      ? (
+          ((res.todayPlan - res.yesterdayPlan) /
+            res.yesterdayPlan) *
+          100
+        ).toFixed(2)
+      : 0;
+    res.monthReceive = res.yesterdayReceive
+      ? (
+          ((res.todayReceive - res.yesterdayReceive) /
+            res.yesterdayReceive) *
+          100
+        ).toFixed(2)
+      : 0;
+    res.monthAccept = res.yesterdayAccept
+      ? (
+          ((res.todayAccept - res.yesterdayAccept) /
+            res.yesterdayAccept) *
+          100
+        ).toFixed(2)
+      : 0;
+    res.monthReject = res.yesterdayReject
+      ? (
+          ((res.todayReject - res.yesterdayReject) /
+            res.yesterdayReject) *
+          100
+        ).toFixed(2)
+      : 0;
+    setStatistic(res);
+  };
+  useEffect(() => {
+    queryData();
+  }, []);
   return (
     <CustomSDiv>
       <div className="block-box">
-        <Statistic title="总计划数" value={112893} />
+        <Statistic
+          title="本月总计划数"
+          value={statistic.thisMonthPlan}
+        />
         <Flex align="center">
           <div>较上月</div>
-          <div className={value > 0 ? 'up' : 'down'}>
-            {value}
+          <div
+            className={
+              statistic.monthPlan > 0
+                ? 'up'
+                : statistic.monthPlan < 0
+                ? 'down'
+                : 'px-14px'
+            }
+          >
+            {statistic.monthPlan}
           </div>
         </Flex>
       </div>
       <div className="block-box">
-        <Statistic title="实到数" value={112893} />
+        <Statistic
+          title="今日实到数"
+          value={statistic.todayReceive}
+        />
         <Flex align="center">
           <div>较昨天</div>
-          <div className={value > 0 ? 'up' : 'down'}>
-            {value}
+          <div
+            className={
+              statistic.monthReceive > 0
+                ? 'up'
+                : statistic.monthReceive < 0
+                ? 'down'
+                : 'px-14px'
+            }
+          >
+            {statistic.monthReceive}%
           </div>
         </Flex>
       </div>
       <div className="block-box">
-        <Statistic title="已验收" value={112893} />
+        <Statistic
+          title="今日已验收"
+          value={statistic.todayAccept}
+        />
         <Flex align="center">
           <div>较昨天</div>
-          <div className={value > 0 ? 'up' : 'down'}>
-            {value}
+          <div
+            className={
+              statistic.monthAccept > 0
+                ? 'up'
+                : statistic.monthAccept < 0
+                ? 'down'
+                : 'px-14px'
+            }
+          >
+            {statistic.monthAccept}%
           </div>
         </Flex>
       </div>
       <Row className="block-box">
         <Col span={12}>
-          <Statistic title="未验收" value={112893} />
+          <Statistic
+            title="今日未验收"
+            value={statistic.todayReject}
+          />
           <Flex align="center">
             <div>较昨天</div>
-            <div className={value > 0 ? 'up' : 'down'}>
-              {value}
+            <div
+              className={
+                statistic.monthReject > 0
+                  ? 'up'
+                  : statistic.monthReject < 0
+                  ? 'down'
+                  : 'px-14px'
+              }
+            >
+              {statistic.monthReject}%
             </div>
           </Flex>
         </Col>
         <Col span={12}>
-         <Flex className='h-full' justify='center' align='center'>
-         <Progress
-            type="circle"
-            size={90}
-            percent={75}
-            strokeWidth={12}
-            strokeColor="rgba(141, 78, 218, 1)"
-            trailColor="rgba(231, 222, 255, 0.5)"
-          />
-         </Flex>
+          <Flex
+            className="h-full"
+            justify="center"
+            align="center"
+          >
+            <Progress
+              type="circle"
+              size={90}
+              percent={statistic.monthReject.toFixed()}
+              strokeWidth={12}
+              strokeColor="rgba(141, 78, 218, 1)"
+              trailColor="rgba(231, 222, 255, 0.5)"
+            />
+          </Flex>
         </Col>
       </Row>
     </CustomSDiv>

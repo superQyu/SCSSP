@@ -6,7 +6,7 @@ import {
   SetOutline,
 } from 'antd-mobile-icons';
 import { useAppSelector } from 'hooks';
-
+import { getToken, setToken } from 'utils';
 export default () => {
   //   const { user } = useAppSelector((state) => state);
   //   useEffect(() => {
@@ -27,6 +27,10 @@ export default () => {
     name: 'admin',
     description: '管理员',
   };
+
+  useEffect(() => {
+    setToken('PHONETITLE', '我的');
+  });
   return (
     <>
       <List>

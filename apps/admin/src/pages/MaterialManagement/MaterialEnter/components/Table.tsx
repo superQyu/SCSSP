@@ -87,6 +87,21 @@ export default (props: Props) => {
     }
   };
 
+  const expandTitle3 = (record: any) => {
+    if (
+      showUploadButton &&
+      tableRef.current.getCurrentRow() == record.id
+    ) {
+      return <div>地磅实拍图</div>;
+    } else {
+      if (!record.acceptAttachment?.length) {
+        return <div className="color-red">暂无地磅实拍图</div>;
+      } else {
+        return <div>地磅实拍图</div>;
+      }
+    }
+  };
+
   return (
     <EditTable
       // key={`${detail.materialsEnterDetailsSaveReqVOS}`}
@@ -229,6 +244,7 @@ export default (props: Props) => {
       }}
       expandable={{
         expandedRowRender: (record: any) => {
+          console.log('record',record);
           return (
             <div className="flex">
               <div>
@@ -280,6 +296,53 @@ export default (props: Props) => {
               </div>
               <div className="ml-4">
                 {expandTitle2(record)}
+                <ProUpload
+                  key={`${refresh}`}
+                  showUploadButton={
+                    showUploadButton &&
+                    tableRef.current.getCurrentRow() == record.id
+                  }
+                  onRequest={async (params: any) =>
+                    await file.fileUpload(params)
+                  }
+                  onListChange={async (res: any) => {
+                    if (showUploadButton) {
+                      // console.log('文件列表改变', res);
+                      const list = res.map(
+                        (item: any) => item.url
+                      );
+                      // 获取当前行 id
+                      const id =
+                        tableRef.current.getCurrentRow();
+                      console.log('id', id, list);
+                      id &&
+                        (await editableFormRef.current?.setRowData(
+                          id,
+                          {
+                            acceptAttachment: list.length
+                              ? list
+                              : null,
+                          }
+                        ));
+                    }
+                  }}
+                  defaultFileList={() => {
+                    // 用来初始化图片列表的初始值
+                    const list = record.acceptAttachment?.map(
+                      (item: string, index: number) => {
+                        return {
+                          uid: `${index}`,
+                          name: item?.split('/')?.slice(-1)[0],
+                          url: item,
+                        };
+                      }
+                    );
+                    return list || [];
+                  }}
+                />
+              </div>
+              <div className="ml-4">
+                {expandTitle3(record)}
                 <ProUpload
                   key={`${refresh}`}
                   showUploadButton={

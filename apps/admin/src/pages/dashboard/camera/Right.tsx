@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import M3U8Player from './M3U8Player';
+import M3U8Player from './components/M3U8Player';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
@@ -29,7 +29,7 @@ const App = (props: { code?: number }) => {
 
   return (
     <div className='h-full'>
-      <M3U8Player src={videoSrc}  />
+      <M3U8Player src={videoSrc} />
     </div>
   );
 };

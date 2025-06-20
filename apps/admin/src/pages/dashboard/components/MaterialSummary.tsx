@@ -1,8 +1,8 @@
-import React from 'react';
-import { Avatar, Card } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Flex } from 'antd';
 import styled from 'styled-components';
 
-const { Meta } = Card;
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 const CustomSDiv = styled.div`
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -29,42 +29,68 @@ const CustomSDiv = styled.div`
     font-weight: bold;
     font-size: 18px;
     color: #333333;
-        text-align: center;
+    text-align: center;
   }
 `;
-
+const columns = [
+  {
+    label: '总计划数',
+    color: '#FC8220',
+    key: 'thisMonthPlan',
+  },
+  {
+    label: '实到数',
+    color: '#6C7AF9',
+    key: 'thisMonthReceive',
+  },
+  {
+    label: '已验收',
+    color: '#15D087',
+    key: 'thisMonthAccept',
+  },
+  {
+    label: '未验收',
+    color: '#EE5B85',
+    key: 'thisMonthReject',
+  },
+];
 const App: React.FC = () => {
-  const columns = [
-    {
-      label: '总计划数',
-      color: '#FC8220',
-    },
-    {
-      label: '实到数',
-      color: '#6C7AF9',
-    },
-    {
-      label: '已验收',
-      color: '#15D087',
-    },
-    {
-      label: '未验收',
-      color: '#EE5B85',
-    },
-  ];
+  const { server } = useBasicConfiguration();
+  const { materialEnter: M } = server;
+  const [statistic, setStatistic] = useState({
+    thisMonthPlan: 0,
+    thisMonthReceive: 0,
+    thisMonthAccept: 0,
+    thisMonthReject: 0,
+  });
+
+  const queryData = async () => {
+    const res = await M.summery();
+    setStatistic(res);
+  };
+  useEffect(() => {
+    queryData();
+  }, []);
   return (
     <CustomSDiv>
       {columns.map((item) => {
         return (
-          <Meta
-            title={<div className="value">2222</div>}
-            description={
-              <div className="label">
-                <div className="icon" style={{background: item.color}}></div>
-                {item.label}
-              </div>
-            }
-          />
+          <Flex
+            align="center"
+            vertical={true}
+            justify="space-evenly"
+            key={item.key}
+          >
+            <div className="value">{statistic?.[item.key]}</div>
+
+            <div className="label">
+              <div
+                className="icon"
+                style={{ background: item.color }}
+              ></div>
+              {item.label}
+            </div>
+          </Flex>
         );
       })}
     </CustomSDiv>

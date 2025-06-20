@@ -3,7 +3,7 @@ import { Card, Radio } from 'antd';
 import styled from 'styled-components';
 import SingleTitle from '@/components/SingleTitle';
 import Overview from './components/Overview';
-import Monitor from './components/Monitor';
+import Monitor from './camera/index';
 import RealAttendance from './components/RealAttendance';
 import ManagementAttendance from './components/ManagementAttendance';
 import SpecialWork from './components/SpecialWork';

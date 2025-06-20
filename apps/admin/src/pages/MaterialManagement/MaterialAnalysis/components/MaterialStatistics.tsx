@@ -1,18 +1,13 @@
-import { Row, Col, Flex, Space } from 'antd';
-import BarChart from './BarChart';
-
-import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import { useEffect, useState } from 'react';
 
-export default () => {
-  // api 相关
-  const { server } = useBasicConfiguration();
-  const { attendance } = server;
+import BarChart from './BarChart';
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-  const [presentChartData, setPresentChartData] = useState<any>(
-    []
-  );
-  const [attendanceChartData, setAttendanceChartData] =
+export default () => {
+  const { server } = useBasicConfiguration();
+  const { materialEnter } = server;
+  const [weightData, setWeightData] = useState<any>([]);
+  const [pieceData, setPieceData] =
     useState<any>([]);
 
   useEffect(() => {
@@ -20,35 +15,24 @@ export default () => {
   }, []);
 
   const loadData = async () => {
-    const res =
-      await attendance.attendanceCountWithSpecialWorkType();
-    const list1 = res.map((item: any) => ({
-      name: item.workTypeName,
-      value: item.thisWorkTypePresentWorkerCount,
-    }));
-    setPresentChartData(list1);
-    const list2 = res.map((item: any) => ({
-      name: item.workTypeName,
-      value: item.thisWorkTypeAttendanceWorkerCount,
-    }));
-    setAttendanceChartData(list2);
-    // setChartData([
-    //   { name: '木工', value: 72 },
-    //   { name: '建筑电工', value: 71 },
-    //   { name: '起重信号工', value: 47 },
-    //   { name: '钢筋工', value: 34 },
-    //   { name: '混凝土工', value: 68 },
-    //   { name: '除尘工', value: 68 },
-    // ]);
+    const res = await materialEnter.AnalyseByUnit({
+      unit: 't',
+    });
+    setWeightData(res.plan);
+    const res2 = await materialEnter.AnalyseByUnit({
+      unit: 'm3',
+    });
+    setPieceData(res2.plan);
+ 
   };
 
   return (
     <div className="flex h-full">
       <div className="w-50%">
-        <BarChart data={presentChartData} />
+        <BarChart data={weightData} unit='计重' />
       </div>
       <div className="w-50%">
-        <BarChart data={attendanceChartData} />
+        <BarChart data={pieceData} unit='加件' />
       </div>
     </div>
   );

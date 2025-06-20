@@ -99,5 +99,32 @@ const materialEnter: ApiItem[] = [
       },
     ],
   },
+  {
+    key: 'summery',
+    url: `${ADMIN_API}/wisdom/materials-enter/summery`,
+    type: 'GET',
+    name: '获得物料汇总',
+    description: '获得物料汇总',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'AnalyseByTime',
+    url: `${ADMIN_API}/wisdom/materials-enter/AnalyseByTime`,
+    type: 'GET',
+    name: '根据时段统计进场物料',
+    description: '根据时段统计进场物料',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'AnalyseByUnit',
+    url: `${ADMIN_API}/wisdom/materials-enter/AnalyseByUnit`,
+    type: 'GET',
+    name: '根据数量单位统计进场物料',
+    description: '根据数量单位统计进场物料',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'unit', cn: '计量单位' },
+    ],
+  },
 ];
 export default materialEnter;

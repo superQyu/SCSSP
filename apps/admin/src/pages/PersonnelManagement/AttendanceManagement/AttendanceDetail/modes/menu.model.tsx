@@ -79,29 +79,21 @@ export default ({
           day == 1 ? '日期/01' : day.toString().padStart(2, '0'),
         dataIndex: date,
         align: 'center',
-        // render: (dom) =>
-        //   dom == 1 ? (
-        //     <span>{dom}</span>
-        //   ) : (
-        //     <span className="inline-block color-#FF0000 w-30px h-30px line-height-30px bg-#ffcccc rd-50%">
-        //       0
-        //     </span>
-        //   ),
         render: (dom: any, row) => {
           let color;
           switch (dom) {
             // 考勤正常(进出场均有)
             case 1:
-              color = '#BAFD8D';
+              color = '#0fc184';
               break;
             // 考勤异常(进出场只有一端)
             case 2:
-              color = '#F6C94D';
+              color = '#fa8d23';
               break;
             // 没有考勤数据(没有进出场)
             default:
               // color = '#FF0000';
-              color = '#ffcccc';
+              color = '#d6dae1';
               break;
           }
           return (
@@ -117,7 +109,7 @@ export default ({
               }}
             >
               <span
-                className="inline-block w-30px h-30px line-height-30px rd-50%"
+                className="inline-block w-20px h-20px line-height-20px rd-50%"
                 style={{ background: color }}
               />
             </a>

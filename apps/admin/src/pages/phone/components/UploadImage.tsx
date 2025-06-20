@@ -1,39 +1,59 @@
-import React, { useState } from 'react';
-import type { FC } from 'react';
-import {
-  ImageUploader,
-  Space,
-  Toast,
-  Dialog,
-} from 'antd-mobile';
-import { DemoBlock, DemoDescription } from 'demos';
+import React, { useEffect, useState } from 'react';
+import { ImageUploader } from 'antd-mobile';
+
 import { ImageUploadItem } from 'antd-mobile/es/components/image-uploader';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-const demoSrc =
-  'https://images.unsplash.com/photo-1567945716310-4745a6b7844b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=60';
-
-async function mockUpload(file: File) {}
 
 // 基础用法
-export default () => {
+export default ({ onChange, initialValue = '' }: any) => {
   const { server } = useBasicConfiguration();
   const { file } = server;
   const [fileList, setFileList] = useState<ImageUploadItem[]>(
     []
   );
 
-  const handleUpload = async (params) => {
-    console.log(params);
-    const res = await file.fileUpload({
-      file:params
-    });
-    console.log(res);
+  const handleUpload = async (params: any) => {
+    const formData = new FormData();
+    formData.append('file', params);
+    const res = await file.fileUpload(formData);
+
+    setFileList([
+      ...fileList,
+      {
+        url: res,
+      },
+    ]);
+
+    return {
+      url: res,
+    };
   };
+
+  const onDelete = ({ url }: any) => {
+    const newList = fileList.filter((item) => item.url != url);
+    setFileList(newList);
+  };
+
+  useEffect(() => {
+    if (initialValue) {
+      setFileList(
+        initialValue.split(',').map((item) => {
+          return {
+            url: item,
+          };
+        })
+      );
+    }
+  }, [initialValue]);
+
+  useEffect(() => {
+    onChange(fileList.map((item) => item.url).join(','));
+  }, [fileList]);
 
   return (
     <ImageUploader
       value={fileList}
-      onChange={setFileList}
+      onDelete={onDelete}
       upload={handleUpload as any}
     />
   );

@@ -1,7 +1,10 @@
 import { NavBar, Toast, TabBar } from 'antd-mobile';
-import { AppOutline, UserOutline } from 'antd-mobile-icons';
+import {
+  AppOutline,
+  UserOutline,
+  AddOutline,
+} from 'antd-mobile-icons';
 import { Outlet, useNavigate } from 'react-router-dom';
-
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
@@ -29,6 +32,23 @@ const PhoneBox = styled.div`
     right: 0;
     background: #fff;
     z-index: 999;
+
+    .create {
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      width: 50px;
+      height: 50px;
+      color: #fff;
+      transform: translateX(-50%);
+      background-color: #409eff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(64, 158, 255, 0.5);
+      z-index: 99;
+    }
   }
 `;
 
@@ -58,22 +78,18 @@ export default () => {
   const handleTabChange = (key: string) => {
     const { router } = tabs.find((item) => item.key == key);
     navigate(router);
-    setToken('PHONETITLE', key);
     setTitle(key);
   };
 
   useEffect(() => {
-    if (!getToken('PHONETITLE')) return;
     setTitle(getToken('PHONETITLE'));
-  }, [getToken('PHONETITLE')]);
+  });
 
   return (
     <PhoneBox>
       <div className="navbar-box">
         {title != '首页' && title != '我的' ? (
-          <NavBar  onBack={back}>
-            {title}
-          </NavBar>
+          <NavBar onBack={back}>{title}</NavBar>
         ) : (
           <NavBar back={null}>{title}</NavBar>
         )}
@@ -85,6 +101,14 @@ export default () => {
       </div>
 
       <div className="tabbar-box">
+        <div
+          className="create"
+          onClick={() => {
+            navigate('/phone/material-create');
+          }}
+        >
+          <AddOutline fontSize={26} />
+        </div>
         <TabBar
           safeArea
           activeKey={title}

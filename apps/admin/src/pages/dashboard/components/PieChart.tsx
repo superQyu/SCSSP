@@ -85,7 +85,7 @@ export default (props: Props) => {
         top: '45%', // 描述怎么根据父元素进行定位。top 和 bottom 只有一个可以生效。如果指定 top 或 bottom，则 shape 里的 y、cy 等定位属性不再生效。『父元素』是指：如果是顶层元素，父元素是 echarts 图表容器。如果是 group 的子元素，父元素就是 group 元素。
         left: `${config.leftDistance - 2}%`,
         textStyle: {
-          color: '#00e9ea',
+          color: '#000',
           fontSize: 16,
           // fontWeight: 'bold',
         },

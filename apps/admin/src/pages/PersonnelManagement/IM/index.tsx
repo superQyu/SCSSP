@@ -87,7 +87,7 @@ for (let i = 0; i < 50; i += 1) {
       creators[Math.floor(Math.random() * creators.length)],
     status:
       valueEnum[
-      ((Math.floor(Math.random() * 10) % 4) + '') as '0'
+        ((Math.floor(Math.random() * 10) % 4) + '') as '0'
       ],
     createdAt: Date.now() - Math.floor(Math.random() * 100000),
     memo:
@@ -243,8 +243,9 @@ export default () => {
       onClick={() => {
         tabNavigate({
           namePath: `项目人员管理/审核人员信息`,
-          routePath: `/PersonDetail/?id=${record.id
-            }&ifEdit=${true}`,
+          routePath: `/PersonDetail/?id=${
+            record.id
+          }&ifEdit=${true}`,
           activeMenu: '/PM/IM',
         });
       }}
@@ -278,8 +279,9 @@ export default () => {
       onClick={() => {
         tabNavigate({
           namePath: `项目人员管理/审核人员信息`,
-          routePath: `/PersonDetail/?id=${record.id
-            }&ifEdit=${true}&view=${true}`,
+          routePath: `/PersonDetail/?id=${
+            record.id
+          }&ifEdit=${true}&view=${true}`,
           activeMenu: '/PM/IM',
         });
       }}
@@ -289,7 +291,7 @@ export default () => {
   ];
 
   return (
-    <div className='h-full m-18px'>
+    <div className="h-full m-18px">
       {/* <Alert message="表格字典为同步" type="warning" showIcon /> */}
       {contextHolder}
       <ProTable
@@ -351,9 +353,10 @@ export default () => {
                   onClick={() => {
                     tabNavigate({
                       namePath: `项目人员管理/审核人员信息`,
-                      routePath: `/PersonDetail/?id=${record.id}&ifEdit=${true}`,
+                      routePath: `/PersonDetail/?id=${
+                        record.id
+                      }&ifEdit=${true}`,
                       activeMenu: '/PM/IM',
-
                     });
                   }}
                 >
@@ -386,47 +389,66 @@ export default () => {
                   onClick={() => {
                     tabNavigate({
                       namePath: `项目人员管理/审核人员信息`,
-                      routePath: `/PersonDetail/?id=${record.id}&ifEdit=${true}&view=${true}`,
+                      routePath: `/PersonDetail/?id=${
+                        record.id
+                      }&ifEdit=${true}&view=${true}`,
                       activeMenu: '/PM/IM',
-
                     });
                   }}
                 >
                   查看
                 </a>,
-              ]
+                <Popconfirm
+                  key="delete"
+                  title={<div className='color-#ff0000'>确认是否将该人员进行退场</div>}
+                  onConfirm={() => {
+                    message.success('操作成功');
+                  }}
+                  okText="确认"
+                  cancelText="取消"
+                >
+                  <a className='color-#ff0000'>退场</a>
+                </Popconfirm>,
+              ];
 
               return user.userInfor.roles.find(
-                (item: string) => item == 'project-manager' || item == 'super_admin'
-              ) && (record.status == '0' || !record.status || record.status == '11') ? btns :
-                record.status == '2' ? btns.slice(2) :
-                  btns.slice(1)
-            }
+                (item: string) =>
+                  item == 'project-manager' ||
+                  item == 'super_admin'
+              ) &&
+                (record.status == '0' ||
+                  !record.status ||
+                  record.status == '11')
+                ? btns
+                : record.status == '2'
+                ? btns.slice(2)
+                : btns.slice(1);
+            },
           },
         ]}
         scroll={{ x: 1900, y: 'auto' }}
-        onSubmit={async (params: {}) => { }}
+        onSubmit={async (params: {}) => {}}
         pagination={{
           pageSize: 30,
         }}
         rowKey="id"
         headerTitle={
-          <SingleTitle label={
-            <>
-              <div>人员管理</div>
-              <Styled.Tooltip>
-                黄色表示超龄, 橙色表示证书缺失,
-                红色表示既超龄也缺失证书
-              </Styled.Tooltip></>
-
-          }>
-
-          </SingleTitle>
+          <SingleTitle
+            label={
+              <>
+                <div>人员管理</div>
+                <Styled.Tooltip>
+                  黄色表示超龄, 橙色表示证书缺失,
+                  红色表示既超龄也缺失证书
+                </Styled.Tooltip>
+              </>
+            }
+          ></SingleTitle>
         }
         columnsState={{
           persistenceKey: 'pro-table-pm-im',
           persistenceType: 'localStorage',
-          onChange(_: any) { },
+          onChange(_: any) {},
         }}
         form={{
           syncToUrl: (values: any, _: string) => ({ ...values }),

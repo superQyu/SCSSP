@@ -11,6 +11,8 @@ import {
   Col,
   Image,
   Empty,
+  Switch,
+  message,
 } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { Avatar, Tag } from 'antd';
@@ -19,6 +21,7 @@ import styled from 'styled-components';
 import DictSelect from '@/components/DictSelect';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import dayjs from 'dayjs';
+import { number } from 'echarts';
 const CustomContent = styled.div`
   position: relative;
   padding: 10px 20px;
@@ -68,6 +71,7 @@ interface ItemVO {
   thisMonthAttendanceCount: string;
   unfreezeCount: string;
   historyAttendanceCount: string;
+  isForbidden: number;
 }
 
 const App: React.FC = () => {
@@ -93,6 +97,20 @@ const App: React.FC = () => {
 
   const onReset = () => {
     form.resetFields();
+  };
+
+  const handleSwitch = async (val, item: any) => {
+    if (val) {
+      await A.cancelBlack({
+        userId: item.personnelInfoId,
+      });
+    } else {
+      await A.setBlack({
+        userId: item.personnelInfoId,
+      });
+    }
+    message.success('操作成功');
+    queryData();
   };
 
   const handlePageChange = (
@@ -145,7 +163,7 @@ const App: React.FC = () => {
         <>
           <div className="content p-20px bg-#fff">
             <Row className="" gutter={[20, 20]}>
-              {list.map((item) => {
+              {list.map((item, i) => {
                 return (
                   <Col
                     xs={{ flex: '100%' }}
@@ -154,6 +172,7 @@ const App: React.FC = () => {
                     lg={{ flex: '50%' }}
                     xl={{ flex: '33%' }}
                     xxl={{ flex: '25%' }}
+                    key={i}
                   >
                     <Card
                       style={{
@@ -163,14 +182,26 @@ const App: React.FC = () => {
                             : item.status == '222'
                             ? 'rgba(212, 136, 6, 0.03)'
                             : '',
-                            border:
-                            item.status == '444'
-                              ? '1px solid #D42A2A'
-                              : item.status == '222'
-                              ? '1px solid #D48806'
-                              : '', 
+                        border:
+                          item.status == '444'
+                            ? '1px solid #D42A2A'
+                            : item.status == '222'
+                            ? '1px solid #D48806'
+                            : '',
                       }}
                     >
+                      {`${item.isForbidden}` && (
+                        <Switch
+                          key={i}
+                          className="pos-absolute right-10px"
+                          checkedChildren="启用"
+                          unCheckedChildren="禁用"
+                          value={item.isForbidden == 0}
+                          onChange={(val) =>
+                            handleSwitch(val, item)
+                          }
+                        />
+                      )}
                       <Space wrap size={16} className="top">
                         <Avatar
                           size={56}

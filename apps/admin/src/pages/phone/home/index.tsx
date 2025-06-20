@@ -1,7 +1,11 @@
+import { useEffect } from 'react';
 import { Image, Space } from 'antd-mobile';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
+import banner from '@/assets/images/phone/banner.png';
+import enterUrl from '@/assets/images/phone/enter.png';
+import exitUrl from '@/assets/images/phone/exit.png';
 import { setToken } from 'utils';
 
 const HomeBox = styled.div`
@@ -10,10 +14,18 @@ const HomeBox = styled.div`
     flex-direction: column;
     justify-content: center;
     height: 200px;
-    padding-left: 40px;
-    margin: 20px;
+    // padding-left: 40px;
+    // margin: 20px;
     border-radius: 15px;
     border: 1px solid #eee;
+    backgound: no-repeat center;
+    backgound-size: 100% 100%;
+    &.enter {
+      background-image: url(${enterUrl});
+    }
+          &.exit {
+      background-image: url(${exitUrl});
+    }
   }
 `;
 
@@ -33,22 +45,30 @@ function Home() {
       setToken('PHONETITLE', '物料/机械出场');
     }
   };
+
+  useEffect(() => {
+    setToken('PHONETITLE', '首页');
+  });
   return (
     <HomeBox>
-      <Image src={demoSrc} />
-      <div
-        className="block"
-        onClick={() => {
+      <Image src={banner} />
+      <Image src={enterUrl} onClick={() => {
           handleClick('enter');
-        }}
+        }} />
+
+      <Image src={exitUrl} />
+
+      {/* <div
+        className="block enter"
+        
       >
         <div className="block-title">物料/机械进场</div>
         <div className="block-label">管理入库物料</div>
       </div>
-      <div className="block">
+      <div className="block exit">
         <div className="block-title">物料/机械出场</div>
         <div className="block-label">管理出库物料</div>
-      </div>
+      </div> */}
     </HomeBox>
   );
 }

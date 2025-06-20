@@ -165,5 +165,25 @@ const attendance: ApiItem[] = [
       { key: 'pageSize', cn: '每页条数' },
     ],
   },
+  {
+    key: 'setBlack',
+    url: `${ADMIN_API}/wisdom/dahua/setBlack`,
+    type: 'GET',
+    description: '将人员设为黑名单',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'userId', cn: '人员id' },
+    ],
+  },
+  {
+    key: 'cancelBlack',
+    url: `${ADMIN_API}/wisdom/dahua/cancelBlack`,
+    type: 'GET',
+    description: '将人员移出黑名单',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'userId', cn: '人员id' },
+    ],
+  },
 ];
 export default attendance;

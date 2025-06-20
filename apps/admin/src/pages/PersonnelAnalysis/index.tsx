@@ -98,7 +98,7 @@ export default () => {
         </CustomCard>
         <CustomCard3>
           <CustomCard2
-            title={<CustomTitle>现场考核分析</CustomTitle>}
+            title={<CustomTitle>现场考勤分析</CustomTitle>}
           >
             <AttendanceAnalysis />
           </CustomCard2>

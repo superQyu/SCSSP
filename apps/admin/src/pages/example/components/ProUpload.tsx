@@ -28,7 +28,10 @@ const AddMenus: React.FC<Props> = () => {
             </Descriptions.Item>
           </Descriptions>
           <ProUpload
-            onRequest={async (params: any) => await F.fileUpload(params)}
+            onRequest={async (params: any) => {
+              console.log('000',params)
+              await F.fileUpload(params)
+            }}
             onUploadSuccess={(res: any) => {
               console.log('上传成功:', res);
             }}

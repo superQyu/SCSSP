@@ -28,7 +28,7 @@ const App = (props: { code?: number }) => {
   };
 
   return (
-    <div>
+    <div className='h-full'>
       <M3U8Player src={videoSrc} />
     </div>
   );

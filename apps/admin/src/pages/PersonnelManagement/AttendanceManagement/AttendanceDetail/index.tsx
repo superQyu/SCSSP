@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Button } from 'antd';
+import { Button, Flex } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { type ActionType } from '@ant-design/pro-components';
 import { ProTable } from 'components';
@@ -47,13 +47,12 @@ export default () => {
 
   const initColumns = siteModel({ server, month });
 
-  useEffect(() => { }, []);
+  useEffect(() => {}, []);
 
   return (
-    <div className='h-full m-18px'>
+    <div className="h-full m-18px">
       <ProTable
-        headerTitle={<SingleTitle label="考勤明细" />
-        }
+        headerTitle={<SingleTitle label="考勤明细" />}
         params={{
           groupId: groupId,
           yearAndMonth: month,
@@ -79,7 +78,7 @@ export default () => {
         columnsState={{
           persistenceKey: 'pro-table-singe-role',
           persistenceType: 'localStorage',
-          onChange(_: any) { },
+          onChange(_: any) {},
         }}
         pagination={{
           pageSize: 30,
@@ -145,6 +144,33 @@ export default () => {
           setjobCategoryId('');
           setMonth(undefined);
           setGroupId(undefined);
+        }}
+        toolBarRender={() => {
+          const list = [
+            {
+              label: '表示没有考勤记录',
+              color: '#D6DAE1',
+            },
+            {
+              label: '表示考勤正常',
+              color: '#0FC184',
+            },
+            {
+              label: '表示考勤异常',
+              color: '#FA8D23',
+            },
+          ];
+          return list.map((item) => {
+            return (
+              <Flex align="center" className="ml-10px">
+                <span
+                  className="inline-block w-10px h-10px line-height-10px rd-50% mr-5px"
+                  style={{ background: item.color }}
+                />
+                {item.label}
+              </Flex>
+            );
+          });
         }}
       ></ProTable>
     </div>

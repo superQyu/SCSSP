@@ -20,9 +20,10 @@ import UpdateLog from '@/pages/SynchronizeData';
 import Phone from '@/pages/phone';
 import PhoneHome from '@/pages/phone/home';
 import MaterialEnter from '@/pages/phone/materialEnter/index';
-import MaterialEnterDetail from '@/pages/phone/MaterialEnterDetail/index';
+import MaterialEnterDetail from '@/pages/phone/materialEnter/detail/index';
+import CreateMaterial from '@/pages/phone/materialEnter/create/index';
+
 import MaterialExit from '@/pages/phone/materialExit/index';
-import CreateMaterial from '@/pages/phone/createMaterial/index';
 import Center from '@/pages/phone/center/index';
 
 // 防止路由丢失

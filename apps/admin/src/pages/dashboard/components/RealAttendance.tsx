@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Avatar, Card } from 'antd';
 import styled from 'styled-components';
 import icon1 from '@/assets/images/dashboard/icon_1.png';
 import icon2 from '@/assets/images/dashboard/icon_2.png';
 import icon3 from '@/assets/images/dashboard/icon_3.png';
 import icon4 from '@/assets/images/dashboard/icon_4.png';
+
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+
 const { Meta } = Card;
 const CustomSDiv = styled.div`
   display: grid;
@@ -49,35 +52,73 @@ const CustomCard = styled(Card)(() => ({
   },
 }));
 
-const App: React.FC = () => {
-  const columns = [
+interface ColumnVO {
+  label: string;
+  icon: string;
+  color: string;
+  key: string;
+  unit?: string;
+}
+
+export default () => {
+  const { server } = useBasicConfiguration();
+  const { attendance, personAnalysis } = server;
+
+  const [statistic, setStatistic] = useState({
+    attendanceNum: 0,
+    presentWorkerNum: 0,
+    total: 0,
+    percent: 0,
+  });
+  const columns: ColumnVO[] = [
     {
       label: '总人数',
       icon: icon1,
       color: '#3294E6',
+      key: 'total',
     },
     {
       label: '当前在场人数',
       icon: icon2,
       color: '#31B182',
+      key: 'presentWorkerNum',
     },
     {
       label: '今日出勤人数',
       icon: icon3,
       color: '#6C7AF9',
+      key: 'attendanceNum',
     },
     {
       label: '占总人数比例',
       icon: icon4,
       color: '#FF4676',
-      unit:'%'
+      unit: '%',
+      key: 'percent',
     },
   ];
+
+  const queryData = async () => {
+    const res = await attendance.attendanceCount();
+    const res1 = await personAnalysis.getAttendanceMonitor();
+    setStatistic({
+      ...res,
+      total: res1.total,
+      percent: ((res.attendanceNum / res1.total) * 100).toFixed(
+        2
+      ),
+    });
+  };
+
+  useEffect(() => {
+    queryData();
+  }, []);
+
   return (
     <CustomSDiv>
       {columns.map((item) => {
         return (
-          <CustomCard>
+          <CustomCard key={item.key}>
             <Meta
               avatar={<Avatar src={item.icon} size={40} />}
               title={<div className="label">{item.label}</div>}
@@ -86,7 +127,8 @@ const App: React.FC = () => {
                   className="value"
                   style={{ color: item.color }}
                 >
-                  2222{item?.unit}
+                  {statistic?.[item.key]}
+                  {item?.unit}
                 </div>
               }
             />
@@ -96,4 +138,3 @@ const App: React.FC = () => {
     </CustomSDiv>
   );
 };
-export default App;

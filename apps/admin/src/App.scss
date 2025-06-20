@@ -93,6 +93,11 @@
   // border: 1px solid rgba(180, 180, 180, 0.7);
 }
 
+.adm-toast-mask .adm-toast-main-icon .adm-toast-icon {
+  display: flex;
+  justify-content: center;
+}
+
 @media screen and (max-width: 1200px) {
   #login-container {
     .title-posit {
