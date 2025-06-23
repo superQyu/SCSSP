@@ -192,7 +192,6 @@ const layout: React.FC<CommonObject> = (props: any) => {
   }, [user, site]);
   
   useEffect(() => {
-    console.log('==========',props)
     const newSettings = filteredObject(
       settings as CommonObject,
       props

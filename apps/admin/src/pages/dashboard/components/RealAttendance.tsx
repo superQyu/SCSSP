@@ -90,7 +90,7 @@ export default () => {
       key: 'attendanceNum',
     },
     {
-      label: '占总人数比例',
+      label: '出勤占总数比',
       icon: icon4,
       color: '#FF4676',
       unit: '%',
@@ -124,7 +124,7 @@ export default () => {
               title={<div className="label">{item.label}</div>}
               description={
                 <div
-                  className="value"
+                  className="value "
                   style={{ color: item.color }}
                 >
                   {statistic?.[item.key]}

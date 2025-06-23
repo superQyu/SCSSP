@@ -34,7 +34,7 @@ export default (props: Props) => {
 
   const [spinning, setSpinning] = useState(true);
   const [config, setConfig] = useState<Config>({
-    leftDistance: 40,
+    leftDistance: 50,
     color: [
       '#fb497b',
       '#fec760',
@@ -79,53 +79,42 @@ export default (props: Props) => {
   const setOptions = () => {
     setSpinning(true);
     const option = {
-      title: [
-        {
-          text: `${20}%`,
-          left: `${config.leftDistance}%`,
-          top: '45%',
-          textAlign: 'center',
-          textVerticalAlign: 'middle',
-          textStyle: {
-            fontSize: 30,
-            fontWeight: 'bold',
-            color: '#000',
-            fontFamily: 'DINAlternate',
-          },
-        },
-        {
-          text: '持证率',
-          left: `${config.leftDistance}%`,
-          top: '55%',
-          textAlign: 'center',
-          textVerticalAlign: 'middle',
-          textStyle: {
-            fontSize: 14,
-            color: '#666',
-          },
-        },
-      ],
+      // title: [
+      //   {
+      //     text: `${20}%`,
+      //     left: `${config.leftDistance}%`,
+      //     top: '45%',
+      //     textAlign: 'center',
+      //     textVerticalAlign: 'middle',
+      //     textStyle: {
+      //       fontSize: 30,
+      //       fontWeight: 'bold',
+      //       color: '#000',
+      //       fontFamily: 'DINAlternate',
+      //     },
+      //   },
+      //   {
+      //     text: '持证率',
+      //     left: `${config.leftDistance}%`,
+      //     top: '55%',
+      //     textAlign: 'center',
+      //     textVerticalAlign: 'middle',
+      //     textStyle: {
+      //       fontSize: 14,
+      //       color: '#666',
+      //     },
+      //   },
+      // ],
       grid: {
         left: '1%',
         right: '1%',
         top: '20%',
         bottom: '20%', // 底部留 20% 空间
       },
-      legend: {
-        type: 'scroll',
-        top: '5%',
-        bottom: '15%',
-        right: 0,
-        with: 60,
-        orient: 'vertical',
-        backgroundColor: 'rgba(89, 141, 210, 0.13)',
-        borderRadius: 10,
-        padding: 10,
-        itemGap: 5,
-        itemWidth: 8,
-        itemHeight: 8,
+
+      tooltip: {
+        confine:true,
       },
-      tooltip: {},
       series: [
         {
           name: '人数',
@@ -151,19 +140,19 @@ export default (props: Props) => {
           },
           data: addPieColor(),
         },
-        {
-          type: 'pie',
-          center: [`${config.leftDistance}%`, '50%'],
-          radius: ['0', '40%'],
-          itemStyle: {
-            color: 'rgba(102, 102, 102, 0.08)',
-          },
-          labelLine: {
-            show: false,
-          },
-          hoverAnimation: false,
-          data: [1],
-        },
+        // {
+        //   type: 'pie',
+        //   center: [`${config.leftDistance}%`, '50%'],
+        //   radius: ['0', '40%'],
+        //   itemStyle: {
+        //     color: 'rgba(102, 102, 102, 0.08)',
+        //   },
+        //   labelLine: {
+        //     show: false,
+        //   },
+        //   hoverAnimation: false,
+        //   data: [1],
+        // },
       ],
     };
     chartInstance.setOption(option);

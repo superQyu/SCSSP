@@ -32,66 +32,12 @@ export default () => {
     },
   ];
 
-  // const list = [
-  //   {
-  //     name: '蒋利春',
-  //     alertTypeName: '建造师安全B证',
-  //     time: '2018-12-13 13:25:34',
-
-  //     id: 'JZ00222333',
-  //   },
-  //   {
-  //     id: 'JZ00222333',
-  //     name: '董泳君',
-  //     alertTypeName: '安全C证',
-  //     time: '2020-07-02 22:01:48',
-  //   },
-  //   {
-  //     id: 'JZ00222333',
-  //     name: '蒋利春',
-  //     alertTypeName: '建造师安全B证',
-  //     time: '2018-12-13 13:25:34',
-  //   },
-  //   {
-  //     id: 'JZ00222333',
-  //     name: '董泳君',
-  //     alertTypeName: '安全C证',
-  //     time: '2020-07-02 22:01:48',
-  //   },
-  //   {
-  //     name: '蒋利春',
-  //     alertTypeName: '建造师安全B证',
-  //     time: '2018-12-13 13:25:34',
-
-  //     id: 'JZ00222333',
-  //   },
-  //   {
-  //     id: 'JZ00222333',
-  //     name: '董泳君',
-  //     alertTypeName: '安全C证',
-  //     time: '2020-07-02 22:01:48',
-  //   },
-  //   {
-  //     id: 'JZ00222333',
-  //     name: '蒋利春',
-  //     alertTypeName: '建造师安全B证',
-  //     time: '2018-12-13 13:25:34',
-  //   },
-  //   {
-  //     id: 'JZ00222333',
-  //     name: '董泳君',
-  //     alertTypeName: '安全C证',
-  //     time: '2020-07-02 22:01:48',
-  //   },
-  // ];
-
   useEffect(() => {
     loadData();
   }, []);
 
   const loadData = async () => {
     const res = await personAnalysis.getCertificateWarningList();
-    // console.log('res', res);
     setList(res);
   };
 
@@ -130,8 +76,11 @@ export default () => {
                 </div>
               );
             })
-          : '暂无数据'}
+          : ''}
       </div>
+      <Flex vertical={true}  justify='center' align='center'  className="h-full color-#409eff ">
+        <div className='h-20px'>暂无数据</div>
+      </Flex>
     </div>
   );
 };

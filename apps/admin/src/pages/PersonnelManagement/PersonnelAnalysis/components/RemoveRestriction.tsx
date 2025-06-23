@@ -6,7 +6,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 const SomeChartComponent = () => {
   const { server } = useBasicConfiguration();
-  const { attendance } = server;
+  const { personAnalysis: P } = server;
   const { getEChartsInstance } = useECharts();
 
   const chartRef = useRef(null);
@@ -16,48 +16,20 @@ const SomeChartComponent = () => {
   let chartInstance: any = null;
 
   const queryData = async () => {
-    const res =
-      await attendance.getSafetyManagerAttendanceCount();
-    setChartData([
-      {
-        name: '40岁以下',
-        value: 10,
-      },
-      {
-        name: '40~50岁',
-        value: 20,
-      },
-      {
-        name: '50~60岁',
-        value: 5,
-      },
-      {
-        name: '60岁以上',
-        value: 30,
-      },
-    ]);
-    setOptions([
-      {
-        name: '40岁以下',
-        value: 10,
-      },
-      {
-        name: '40~50岁',
-        value: 20,
-      },
-      {
-        name: '50~60岁',
-        value: 15,
-      },
-      {
-        name: '60岁以上',
-        value: 30,
-      },
-    ]);
+    const res = await P.getCompanyUnFreezeNumList();
+    const list = res.map((item: any) => {
+      return {
+        name: item.companyName,
+        value: item.unFreezeNum,
+      };
+    });
+    setChartData(list);
+    setOptions();
   };
 
-  const setOptions = (data: any) => {
-    const xAxis = data.map((item) => item.name);
+  const setOptions = () => {
+    const xAxis = chartData.map((item) => item.name);
+    const data = chartData.map((item) => item.value);
     const option = {
       color: ['#99d3ff', '#66bcff', '#f7ac63', '#ea6a8b'],
       grid: {
@@ -160,7 +132,7 @@ const SomeChartComponent = () => {
       tip="加载中"
       spinning={spinning}
     >
-      <div className="flex justify-center items-center h-full">
+      <div className="flex justify-center items-center h-full ">
         {!chartData.length && (
           <div className="color-#409eff">暂无数据</div>
         )}

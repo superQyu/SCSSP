@@ -69,7 +69,6 @@ export default () => {
 
             }
           })
-          console.log(result)
           return {
             ...params,
             data:

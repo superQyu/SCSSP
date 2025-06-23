@@ -5,7 +5,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 export default () => {
   const { server } = useBasicConfiguration();
-  const { attendance } = server;
+  const { personAnalysis: P } = server;
 
   const [presentChartData, setPresentChartData] = useState<any>(
     []
@@ -16,11 +16,10 @@ export default () => {
   }, []);
 
   const loadData = async () => {
-    const res =
-      await attendance.attendanceCountWithSpecialWorkType();
+    const res = await P.getPersonnelSpecialWorkList();
     const list = res.map((item: any) => ({
-      name: item.workTypeName,
-      value: item.thisWorkTypePresentWorkerCount,
+      name: item.companyName,
+      value: item.specialWorkNum,
     }));
     setPresentChartData(list);
   };

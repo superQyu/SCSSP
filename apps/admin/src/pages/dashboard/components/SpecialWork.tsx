@@ -21,7 +21,7 @@ export default () => {
     const list = res.map((item: any) => ({
       name: item.workTypeName,
       value: item.thisWorkTypePresentWorkerCount,
-    }));
+    })).filter((item:any)=> item.thisWorkTypePresentWorkerCount)
     setPresentChartData(list);
   };
 

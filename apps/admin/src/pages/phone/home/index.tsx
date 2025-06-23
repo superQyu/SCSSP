@@ -14,8 +14,6 @@ const HomeBox = styled.div`
     flex-direction: column;
     justify-content: center;
     height: 200px;
-    // padding-left: 40px;
-    // margin: 20px;
     border-radius: 15px;
     border: 1px solid #eee;
     backgound: no-repeat center;
@@ -23,19 +21,14 @@ const HomeBox = styled.div`
     &.enter {
       background-image: url(${enterUrl});
     }
-          &.exit {
+    &.exit {
       background-image: url(${exitUrl});
     }
   }
 `;
 
-function Home() {
+const Home = () => {
   const navigate = useNavigate();
-  const demoSrc =
-    'https://images.unsplash.com/photo-1567945716310-4745a6b7844b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=60';
-  const demoSrc2 =
-    'https://images.unsplash.com/photo-1620476214170-1d8080f65cdb?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=3150&q=80';
-
   const handleClick = (type: 'enter' | 'exit') => {
     if (type == 'enter') {
       navigate('/phone/material-enter');
@@ -52,25 +45,21 @@ function Home() {
   return (
     <HomeBox>
       <Image src={banner} />
-      <Image src={enterUrl} onClick={() => {
+      <Image
+        src={enterUrl}
+        onClick={() => {
           handleClick('enter');
-        }} />
+        }}
+      />
 
-      <Image src={exitUrl} />
-
-      {/* <div
-        className="block enter"
-        
-      >
-        <div className="block-title">物料/机械进场</div>
-        <div className="block-label">管理入库物料</div>
-      </div>
-      <div className="block exit">
-        <div className="block-title">物料/机械出场</div>
-        <div className="block-label">管理出库物料</div>
-      </div> */}
+      <Image
+        src={exitUrl}
+        onClick={() => {
+          handleClick('exit');
+        }}
+      />
     </HomeBox>
   );
-}
+};
 
 export default Home;

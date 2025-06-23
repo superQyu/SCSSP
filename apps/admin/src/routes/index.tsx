@@ -24,6 +24,13 @@ import MaterialEnterDetail from '@/pages/phone/materialEnter/detail/index';
 import CreateMaterial from '@/pages/phone/materialEnter/create/index';
 
 import MaterialExit from '@/pages/phone/materialExit/index';
+import MaterialExitDetail from '@/pages/phone/materialExit/detail/index';
+import MaterialExitCreate from '@/pages/phone/materialExit/create/index';
+
+import CarNo from '@/pages/phone/carNo/index';
+import CarNoCreate from '@/pages/phone/carNo/create/index';
+import CarNoDetail from '@/pages/phone/carNo/detail/index';
+
 import Center from '@/pages/phone/center/index';
 
 // 防止路由丢失
@@ -112,13 +119,31 @@ const defaultRoutes: any = [
         path: '/phone/material-enter-detail',
         element: <MaterialEnterDetail />,
       },
+
+      {
+        path: '/phone/material-create',
+        element: <CreateMaterial />,
+      },
       {
         path: '/phone/material-exit',
         element: <MaterialExit />,
       },
       {
-        path: '/phone/material-create',
-        element: <CreateMaterial />,
+        path: '/phone/material-exit-create',
+        element: <MaterialExitCreate />,
+      },
+      {
+        path: '/phone/material-exit-detail',
+        element: <MaterialExitDetail />,
+      },
+      { path: '/phone/carNo', element: <CarNo /> },
+      {
+        path: '/phone/carNo-create',
+        element: <CarNoCreate />,
+      },
+      {
+        path: '/phone/carNo-detail',
+        element: <CarNoDetail />,
       },
       { path: '/phone/center', element: <Center /> },
     ],
