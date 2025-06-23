@@ -17,7 +17,7 @@ const CustomSDiv = styled.div`
       0,
       1.5fr
     );
-  grid-template-rows: minmax(0, 1.3fr) repeat(6, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 2fr) repeat(6, minmax(0, 1fr));
   gap: 20px;
   padding: 20px 17px;
   height: 100%;

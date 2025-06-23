@@ -6,7 +6,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 const CustomSDiv = styled.div`
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-template-rows: repeat(1, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: 10px;
   height: 100%;
   .label {
@@ -52,6 +52,26 @@ const columns = [
     label: '未验收',
     color: '#EE5B85',
     key: 'thisMonthReject',
+  },
+  {
+    label: '当日总计划数',
+    color: '#FC8220',
+    key: 'todayPlan',
+  },
+  {
+    label: '当日实到数',
+    color: '#6C7AF9',
+    key: 'todayReceive',
+  },
+  {
+    label: '当日已验收',
+    color: '#15D087',
+    key: 'todayAccept',
+  },
+  {
+    label: '当日未验收',
+    color: '#EE5B85',
+    key: 'todayReject',
   },
 ];
 const App: React.FC = () => {

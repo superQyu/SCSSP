@@ -53,12 +53,23 @@ const SomeChartComponent = () => {
         top: '23%',
         bottom: '2%',
       },
-      legend: { right: 0 },
+
       tooltip: {
         trigger: 'item',
-        formatter: (params: any) =>
-          `${params.name}<br/>${params.seriesName}人数：${params.value}人`,
       },
+      legend: {
+        right: 0,
+
+        itemGap: 15,
+        itemWidth: 14,
+        itemHeight: 8,
+        textStyle: {
+          fontSize: 14,
+          fontFamily: '微软雅黑',
+          color: 'inherit',
+        },
+      },
+
       xAxis: {
         type: 'category',
         data: Array.from({ length: 10 }, (_, i) => `公司${i}`),
@@ -76,46 +87,25 @@ const SomeChartComponent = () => {
       yAxis: { type: 'value', name: '（单位：人数）' },
       series: [
         {
-          name: '无进场',
-          type: 'scatter',
-          data: Array.from({ length: 10 }, () =>
-            Math.floor(Math.random() * 100)
-          ),
-          symbolSize: (val: any) =>
-            calculateBubbleSize(val, minValue, maxValue),
-          itemStyle: {
-            color: 'rgba(233,38,240,0.3)',
-            borderColor: '#E926F0',
-            borderWidth: 1,
-          },
+          name: '今日无进场',
+          type: 'bar',
+          color: 'red', //可单独设置某个颜色，也可不设置
+          data: [111, 222, 333, 82], //分别对应'3-1', '3-2', '3-3', '3-4'的值
         },
-        // {
-        //   name: '三天未打卡',
-        //   type: 'scatter',
-        //   data: Array.from({ length: 10 }, () =>
-        //     Math.floor(Math.random() * 100)
-        //   ),
-        //   symbolSize: (val: any) =>
-        //     calculateBubbleSize(val, minValue, maxValue),
-        //   itemStyle: {
-        //     color: 'rgba(245,151,60,0.3)',
-        //     borderColor: '#F5973C',
-        //     borderWidth: 1,
-        //   },
-        // },
         {
-          name: '无退场',
-          type: 'scatter',
-          data: Array.from({ length: 10 }, () =>
-            Math.floor(Math.random() * 100)
-          ),
-          symbolSize: (val: any) =>
-            calculateBubbleSize(val, minValue, maxValue),
-          itemStyle: {
-            color: 'rgba(243,15,53,0.3)',
-            borderColor: '#F30F35',
-            borderWidth: 1,
-          },
+          name: '昨日无进场',
+          type: 'bar',
+          data: [21, 32, 43, 52],
+        },
+        {
+          name: '今日无退场',
+          type: 'bar',
+          data: [11, 262, 303, 22],
+        },
+        {
+          name: '昨日无退场',
+          type: 'bar',
+          data: [61, 292, 313, 222],
         },
       ],
     };
@@ -130,7 +120,6 @@ const SomeChartComponent = () => {
   }, []);
 
   useEffect(() => {
-
     setChartData([
       {
         name: '无进场',
@@ -144,8 +133,8 @@ const SomeChartComponent = () => {
         name: '无退场',
         data: chartData.map((item) => item.value),
       },
-    ])
-    if (chartRef.current ) {
+    ]);
+    if (chartRef.current) {
       chartInstance = getEChartsInstance(chartRef);
       setOptions([
         {
@@ -164,7 +153,7 @@ const SomeChartComponent = () => {
       resizeChart();
       setSpinning(false);
     }
-  }, [ chartRef.current]);
+  }, [chartRef.current]);
 
   useEffect(() => {
     window.addEventListener('resize', resizeChart);

@@ -2,7 +2,7 @@ import { NavBar, Toast, TabBar } from 'antd-mobile';
 import {
   AppOutline,
   UserOutline,
-  AddOutline,
+  CollectMoneyOutline,
 } from 'antd-mobile-icons';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -58,7 +58,12 @@ const tabs = [
     title: '首页',
     icon: <AppOutline />,
     router: '/phone/home',
-    //   badge: Badge.dot,
+  },
+  {
+    key: '车牌',
+    title: '车牌',
+    icon:<CollectMoneyOutline /> ,
+    router: '/phone/carNo',
   },
   {
     key: '我的',
@@ -78,7 +83,7 @@ export default () => {
   const handleTabChange = (key: string) => {
     const { router } = tabs.find((item) => item.key == key);
     navigate(router);
-    setTitle(key);
+    // setTitle(key);
   };
 
   useEffect(() => {
@@ -101,14 +106,14 @@ export default () => {
       </div>
 
       <div className="tabbar-box">
-        <div
+        {/* <div
           className="create"
           onClick={() => {
             navigate('/phone/material-create');
           }}
         >
           <AddOutline fontSize={26} />
-        </div>
+        </div> */}
         <TabBar
           safeArea
           activeKey={title}

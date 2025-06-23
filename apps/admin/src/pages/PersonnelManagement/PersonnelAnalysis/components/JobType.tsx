@@ -6,7 +6,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 const SomeChartComponent = () => {
   const { server } = useBasicConfiguration();
-  const { attendance } = server;
+  const { personAnalysis:P } = server;
   const { getEChartsInstance } = useECharts();
 
   const chartRef = useRef(null);
@@ -16,13 +16,7 @@ const SomeChartComponent = () => {
   let chartInstance: any = null;
 
   const queryData = async () => {
-    const res = Array.from({ length: 20 }, () => ({
-      source: `工种${Math.floor(Math.random() * 6) + 1}`,
-      target: `劳务公司${Math.floor(Math.random() * 5) + 1}`,
-      value: Math.floor(Math.random() * 20) + 1,
-    }));
-
-    await attendance.getSafetyManagerAttendanceCount();
+    const res = await P.getCurrentAttendanceStatistic();
     const sankeyData = processDataForSankey(res);
 
     setChartData(sankeyData.nodes);
@@ -32,6 +26,7 @@ const SomeChartComponent = () => {
   function processDataForSankey(sourceData) {
     const nodes = new Set();
     let sankeyNodes = [];
+    
     sourceData.forEach((item) => {
       if (!nodes.has(item.source)) {
         nodes.add(item.source);
@@ -74,7 +69,7 @@ const SomeChartComponent = () => {
         },
       ];
     });
-    console.log('sankeyNodes', sankeyNodes);
+
     return {
       nodes: sankeyNodes,
       links: sankeyLinks,
@@ -130,14 +125,14 @@ const SomeChartComponent = () => {
     queryData();
   }, []);
 
-  useEffect(() => {
-    if (chartRef.current) {
-      chartInstance = getEChartsInstance(chartRef);
-      // setOptions();
-      resizeChart();
-      setSpinning(false);
-    }
-  }, [chartData, chartRef.current]);
+  // useEffect(() => {
+  //   if (chartRef.current) {
+  //     chartInstance = getEChartsInstance(chartRef);
+  //     // setOptions();
+  //     resizeChart();
+  //     setSpinning(false);
+  //   }
+  // }, [chartData, chartRef.current]);
 
   useEffect(() => {
     window.addEventListener('resize', resizeChart);

@@ -34,5 +34,29 @@ const personAnalysis: ApiItem[] = [
     description: '证书预警',
     params: [{ key: 'Authorization', location: 'header' }],
   },
+  {
+    key: 'getPersonnelSpecialWorkList',
+    url: `${ADMIN_API}/wisdom/personnel-info/getPersonnelSpecialWorkList`,
+    type: 'GET',
+    name: '获取公司特殊工种人员',
+    description: '获取公司特殊工种人员',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'getCurrentAttendanceStatistic',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/getCurrentAttendanceStatistic`,
+    type: 'GET',
+    name: '获取公司注册人数和履約人数',
+    description: '获取公司注册人数和履約人数',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'getCompanyUnFreezeNumList',
+    url: `${ADMIN_API}/wisdom/personnel-info/getCompanyUnFreezeNumList`,
+    type: 'GET',
+    name: '获取公司解除限制人数 ',
+    description: '获取公司解除限制人数 ',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
 ];
 export default personAnalysis;

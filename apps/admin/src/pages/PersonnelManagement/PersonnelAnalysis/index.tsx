@@ -5,7 +5,7 @@ import Overview from './components/Overview';
 import AgeDistribution from './components/AgeDistribution';
 import JobType from './components/JobType';
 import SpecialCertification from './components/SpecialCertification';
-import RealTime from './components/RealTime';
+import RealTmeJob from './components/RealTmeJob';
 
 const CustomSDiv = styled.div`
   display: grid;
@@ -52,22 +52,20 @@ export default () => {
           <Overview />
         </div>
 
+        <CustomCard title={<SingleTitle label="特殊工种人数" />}>
+          <SpecialCertification />
+        </CustomCard>
+
+        <CustomCard title={<SingleTitle label="工种实时动态" />}>
+          <RealTmeJob />
+        </CustomCard>
+
         <CustomCard title={<SingleTitle label="年龄分布" />}>
           <AgeDistribution />
         </CustomCard>
 
         <CustomCard title={<SingleTitle label="工种配比" />}>
-          <JobType />
-        </CustomCard>
-
-        <CustomCard
-          title={<SingleTitle label="特殊工种持证率" />}
-        >
-          <SpecialCertification />
-        </CustomCard>
-
-        <CustomCard title={<SingleTitle label="工种实时动态" />}>
-          <RealTime />
+          {/* <JobType /> */}
         </CustomCard>
       </CustomSDiv>
     </>

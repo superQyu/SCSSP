@@ -10,13 +10,13 @@ import {
   Toast,
   Dialog,
 } from 'antd-mobile';
-import { SearchOutline } from 'antd-mobile-icons';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 
 import { useAppSelector } from 'hooks';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import DictSelect from '@/components/DictSelect';
+import DictText from '@/components/DictSelect/DictText';
 import { setToken } from 'utils';
 import InfiniteScrollContent from '../components/InfiniteScrollContent';
 
@@ -71,7 +71,7 @@ function MaterialEnter() {
   const navigate = useNavigate();
 
   const { server } = useBasicConfiguration();
-  const { materialEnter } = server;
+  const { vehicle: V } = server;
   const [deliveryMan, setDeliveryMan] = useState('');
   const [list, setList] = useState([]);
   const [hasMore, setHasMore] = useState(true);
@@ -80,11 +80,9 @@ function MaterialEnter() {
     (state) => state
   );
 
-  console.log('22', user);
-
   const loadMore = async () => {
     if (!hasMore) return;
-    const res = await materialEnter.getEnterList({
+    const res = await V.vehicleApproveList({
       deliveryMan: deliveryMan,
       pageSize: 10,
       current: pageNo + 1,
@@ -105,7 +103,7 @@ function MaterialEnter() {
 
   // 点击新增
   const handleAdd = () => {
-    navigate('/phone/material-create');
+    navigate('/phone/carNo-create');
   };
 
   // 点击详情
@@ -212,7 +210,7 @@ function MaterialEnter() {
   };
 
   useEffect(() => {
-    setToken('PHONETITLE', '物料/机械进场');
+    setToken('PHONETITLE', '车牌');
   });
 
   return (
@@ -222,7 +220,7 @@ function MaterialEnter() {
       </div>
       <Input
         className="input-box"
-        placeholder="请输入送货人"
+        placeholder="请输入车牌号"
         value={deliveryMan}
         onChange={(val) => {
           setDeliveryMan(val);
@@ -258,21 +256,31 @@ function MaterialEnter() {
               )}
             </div>
             <div className="adm-list-item-content-main">
-              进场时间：
+              是否安装GPS
               <span className="adm-list-item-description">
-                {item.enterDate}
+                <DictText
+                  dictKey={'system_true_false'}
+                  value={item.isGps}
+                />
               </span>
             </div>
             <div className="adm-list-item-main">
-              送货人:
+              车辆类型:
               <span className="adm-list-item-description mx-10px">
-                {item.deliveryMan}
-              </span>
-              <span className="adm-list-item-description">
-                {item.deliveryContact}
+                <DictText
+                  dictKey={'cm_car_type'}
+                  value={item.carType}
+                />
               </span>
             </div>
             <div className="adm-list-item-content-main">
+              车载容量:
+              <span className="adm-list-item-description mx-10px">
+                {item.carStorage}
+              </span>
+            </div>
+            
+            <div className="adm-list-item-main">
               下一节点：
               <span className="adm-list-item-description mx-10px">
                 {state?.[item.status] || '--'}
