@@ -6,10 +6,13 @@ import AgeDistribution from './components/AgeDistribution';
 import JobType from './components/JobType';
 import SpecialCertification from './components/SpecialCertification';
 import RealTmeJob from './components/RealTmeJob';
-
+import RemoveRestriction from './components/RemoveRestriction';
 const CustomSDiv = styled.div`
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.5fr) minmax(
+      0,
+      1fr
+    );
   grid-template-rows: minmax(0, 1fr) minmax(0, 2fr) minmax(
       0,
       2fr
@@ -48,7 +51,7 @@ export default () => {
   return (
     <>
       <CustomSDiv>
-        <div style={{ gridRow: '1 / 2', gridColumn: '1 / 3' }}>
+        <div style={{ gridRow: '1 / 2', gridColumn: '1 / 4' }}>
           <Overview />
         </div>
 
@@ -56,7 +59,10 @@ export default () => {
           <SpecialCertification />
         </CustomCard>
 
-        <CustomCard title={<SingleTitle label="工种实时动态" />}>
+        <CustomCard
+          title={<SingleTitle label="工种实时动态" />}
+          style={{ gridRow: '2 / 3', gridColumn: '2 / 4' }}
+        >
           <RealTmeJob />
         </CustomCard>
 
@@ -65,7 +71,11 @@ export default () => {
         </CustomCard>
 
         <CustomCard title={<SingleTitle label="工种配比" />}>
-          {/* <JobType /> */}
+          <JobType />
+        </CustomCard>
+
+        <CustomCard title={<SingleTitle label="解除限制人数" />}>
+          <RemoveRestriction />
         </CustomCard>
       </CustomSDiv>
     </>

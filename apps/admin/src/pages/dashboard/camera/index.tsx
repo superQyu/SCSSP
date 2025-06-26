@@ -1,48 +1,66 @@
-import { useState } from 'react';
-import { Card, Flex, Drawer } from 'antd';
+import { useState, useRef, useEffect } from 'react';
+import { Card, Drawer, Flex } from 'antd';
+import styled from 'styled-components';
 
 import Left from './Left';
 import Right from './Right';
 
+const CustomDrawer = styled(Drawer)(() => ({
+  '.ant-drawer-header': {
+    display: 'none',
+  },
+  '.ant-drawer-body': {
+    paddingBlock: '0px',
+  },
+}));
 export default () => {
-  const [code, setCode] = useState<number>();
   const [visible, setVisible] = useState(false);
+  const [code, setCode] = useState('');
+  const rightRef = useRef(null); // 引用Right组件的容器
 
-  // 打开抽屉
-  const showDrawer = () => {
+  const handleMouseEnter = () => {
     setVisible(true);
+  };
+
+  const handleMouseLeave = (e) => {
+    if (!rightRef.current?.contains(e.relatedTarget)) {
+      setVisible(false);
+    }
   };
 
   // 关闭抽屉
   const onClose = () => {
     setVisible(false);
   };
-  return (
-    <div className="custom-drawer-container">
-      <Right code={code} />
 
-      <Drawer
-        title="自定义容器的抽屉"
-        placement="right" // 抽屉方向（right/left/top/bottom）
-        closable={true} // 是否显示关闭按钮
-        onClose={onClose} // 关闭回调
-        visible={visible} // 控制抽屉显隐
-        // 关键配置：指定抽屉渲染到哪个容器
-        getContainer={() =>
-          document.querySelector('.custom-drawer-container')
-        }
-        // 或直接传 DOM 元素：getContainer={document.querySelector('.custom-drawer-container')}
+  return (
+    <div className="custom-drawer-container relative h-full">
+      <div
+        ref={rightRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className="right-container relative w-full h-full overflow-hidden"
       >
-        <p>抽屉内容...</p>
-      </Drawer>
-      {/* <Flex className="h-full" gap={10}>
-        <div className="flex-1 w-0 h-full">
-          <Right code={code} />
-        </div>
-        <div className="w-170px bg-#F1F7FF h-full p-10px overflow-y-auto">
-          <Left onSelect={(id: number) => setCode(id)} />
-        </div>
-      </Flex> */}
+        <Right code={code} />
+
+        <CustomDrawer
+          placement="right"
+          visible={visible}
+          onClose={onClose}
+          width={280}
+          getContainer={false}
+          style={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            height: '100%',
+            zIndex: 10,
+            overflow: 'auto',
+          }}
+        >
+          <Left onSelect={(id) => setCode(id)} />
+        </CustomDrawer>
+      </div>
     </div>
   );
 };

@@ -59,39 +59,77 @@ const MaterialEnterBox = styled.div`
   }
 `;
 
-const state = {
-  '1': '验收员', //待验收
-  '10': '验收员', //驳回
-  '444': '验收员', //验收超时
-  '2': '', //已验收
-  '11': '项目经理', //待确认
+const booleanObj = {
+  '1': '是',
+  '2': '否',
 };
+const typeArr = [
+  {
+    label: '土方车',
+    value: '1',
+  },
+  {
+    label: '其他',
+    value: '2',
+  },
+  {
+    label: '罐车',
+    value: '3',
+  },
+];
 
 function MaterialEnter() {
   const navigate = useNavigate();
 
   const { server } = useBasicConfiguration();
-  const { vehicle: V } = server;
+  const { vehicle: V, materialEnter } = server;
   const [deliveryMan, setDeliveryMan] = useState('');
   const [list, setList] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNo, setPageNo] = useState(0);
-  const { user }: { user: any } = useAppSelector(
-    (state) => state
-  );
+  const [materials, setMaterials] = useState([]);
+  const { user } = useAppSelector((state) => state) as {
+    user: { menu: any; userInfor: object };
+  };
+  const { userInfor } = user;
+
+  const queryMaterials = async () => {
+    const res = await materialEnter.getEnterList({});
+    const options = res.list.map((item: any) => {
+      const materials = item.materialsDetailsWithInventoryRespVOS
+        .map((el, i) => {
+          return `${el.materialName}`;
+        })
+        .join('和');
+      return {
+        label: `${dayjs(item.enterDate).format(
+          'YYYY-MM-DD HH:mm:ss'
+        )} ${materials}`,
+        value: item.id,
+      };
+    });
+    setMaterials(options);
+  };
 
   const loadMore = async () => {
+    if (!materials.length) {
+      await queryMaterials();
+    }
     if (!hasMore) return;
     const res = await V.vehicleApproveList({
-      deliveryMan: deliveryMan,
+      carNo: deliveryMan,
       pageSize: 10,
       current: pageNo + 1,
     });
+
     const newList = res.list.map((item: any) => {
-      item.enterDate = dayjs(item.enterDate).format(
-        'YYYY-MM-DD HH:mm:ss'
-      );
-      return item;
+      return {
+        ...item,
+
+        carType:
+          typeArr.find((el: any) => el.value == item.carType)
+            ?.label || '',
+      };
     });
     setList([...list, ...newList]);
     setHasMore(newList.length > 0);
@@ -108,49 +146,31 @@ function MaterialEnter() {
 
   // 点击详情
   const handleDetail = (detail: any) => {
+    detail = {
+      ...detail,
+      isGps: booleanObj[detail.isGps],
+      materialEnterName:
+        materials.find(
+          (el: any) => el.value == detail.materialEnterId
+        )?.label || '',
+    };
     navigate(
-      `/phone/material-enter-detail?detail=${JSON.stringify(
-        detail
-      )}`
+      `/phone/carNo-detail?detail=${JSON.stringify(detail)}`
     );
     setToken('PHONETITLE', '详情');
-  };
-  // 点击发起申请
-  const handleWorkflow = (detail: any) => {
-    Dialog.show({
-      content: '发起申请后将无法编辑',
-      closeOnAction: true,
-      actions: [
-        [
-          {
-            key: 'cancel',
-            text: '取消',
-          },
-          {
-            key: 'delete',
-            text: '确定',
-            onClick: async () => {
-              await materialEnter.startBpm({
-                materialsEnterId: detail.id,
-              });
-              Toast.show({
-                icon: 'success',
-                content: '操作成功',
-              });
-              reset();
-              loadMore();
-            },
-          },
-        ],
-      ],
-    });
   };
 
   // 点击编辑
   const handleEditDetail = (detail: any) => {
-    console.log('详情', detail);
+    detail = {
+      ...detail,
+      materialEnterName:
+        materials.find(
+          (el: any) => el.value == detail.materialEnterId
+        )?.label || '',
+    };
     navigate(
-      `/phone/material-create?detail=${JSON.stringify(detail)}`
+      `/phone/carNo-create?detail=${JSON.stringify(detail)}`
     );
   };
 
@@ -169,7 +189,7 @@ function MaterialEnter() {
             key: 'delete',
             text: '确定',
             onClick: async () => {
-              await materialEnter.deleteEnter({ id: detail.id });
+              await V.vehicleApproveDel({ id: detail.id });
               Toast.show({
                 icon: 'success',
                 content: '操作成功',
@@ -183,20 +203,18 @@ function MaterialEnter() {
     });
   };
 
-  // 点击验收
-  const handleCheck = (detail: any) => {
-    navigate(
-      `/phone/material-enter-detail?type=check&detail=${JSON.stringify(
-        detail
-      )}`
-    );
-    setToken('PHONETITLE', '验收');
-  };
-
   // 点击确认
   const handleConfirm = (detail: any) => {
+    detail = {
+      ...detail,
+      isGps: booleanObj[detail.isGps],
+      materialEnterName:
+        materials.find(
+          (el: any) => el.value == detail.materialEnterId
+        )?.label || '',
+    };
     navigate(
-      `/phone/material-enter-detail?type=confirm&detail=${JSON.stringify(
+      `/phone/carNo-detail?type=confirm&detail=${JSON.stringify(
         detail
       )}`
     );
@@ -210,14 +228,20 @@ function MaterialEnter() {
   };
 
   useEffect(() => {
+    queryMaterials();
+  }, []);
+
+  useEffect(() => {
     setToken('PHONETITLE', '车牌');
   });
 
   return (
     <MaterialEnterBox>
-      <div className="add" onClick={handleAdd}>
-        新增
-      </div>
+      {userInfor.roles.includes('plan') && (
+        <div className="add" onClick={handleAdd}>
+          新增
+        </div>
+      )}
       <Input
         className="input-box"
         placeholder="请输入车牌号"
@@ -230,47 +254,31 @@ function MaterialEnter() {
       />
       {list.map((item: any, i: number) => {
         return (
-          <Card
-            className="mt-10px"
-            key={i}
-            onClick={() => handleClick(item)}
-          >
-            <div className="title">
-              {item.carNo || '--'}
-              {item.status == '11' ? (
-                <Tag round color="#349af1">
-                  待确认
-                </Tag>
-              ) : item.status == '2' ? (
-                <Tag round color="#4ab205">
-                  已验收
-                </Tag>
-              ) : item.status == '0' ? (
-                <Tag round color="#ff4d4f">
-                  未申请
-                </Tag>
-              ) : (
-                <Tag round color="#ffa000">
-                  待验收
-                </Tag>
-              )}
-            </div>
+          <Card className="mt-10px" key={i}>
+            <div className="title">{item.carNo || '--'}</div>
             <div className="adm-list-item-content-main">
               是否安装GPS
-              <span className="adm-list-item-description">
-                <DictText
+              <span className="adm-list-item-description  mx-10px">
+                {item.isGps}
+                {/* {booleanObj[item.isGps]} */}
+                {/* <DictText
                   dictKey={'system_true_false'}
                   value={item.isGps}
-                />
+                /> */}
               </span>
             </div>
             <div className="adm-list-item-main">
               车辆类型:
               <span className="adm-list-item-description mx-10px">
-                <DictText
+                {item.carType}
+                {/* {
+                  typeArr.find((el) => el.value == item.carType)
+                    ?.label
+                } */}
+                {/* <DictText
                   dictKey={'cm_car_type'}
                   value={item.carType}
-                />
+                /> */}
               </span>
             </div>
             <div className="adm-list-item-content-main">
@@ -279,29 +287,12 @@ function MaterialEnter() {
                 {item.carStorage}
               </span>
             </div>
-            
-            <div className="adm-list-item-main">
-              下一节点：
-              <span className="adm-list-item-description mx-10px">
-                {state?.[item.status] || '--'}
-              </span>
-            </div>
 
             <Space
               className="btn"
               onClick={(e) => e.stopPropagation()}
             >
-              {item.status == '0' && (
-                <Button
-                  size="mini"
-                  onClick={() => {
-                    handleWorkflow(item);
-                  }}
-                >
-                  发起申请
-                </Button>
-              )}
-              {item.status == '0' && (
+              {userInfor.roles.includes('plan') && (
                 <Button
                   size="mini"
                   onClick={() => {
@@ -311,7 +302,7 @@ function MaterialEnter() {
                   编辑
                 </Button>
               )}
-              {item.status == '0' && (
+              {userInfor.roles.includes('plan') && (
                 <Button
                   size="mini"
                   onClick={() => {
@@ -321,42 +312,26 @@ function MaterialEnter() {
                   删除
                 </Button>
               )}
-
-              {item.status != '0' && (
-                <Button
-                  size="mini"
-                  onClick={() => {
-                    handleDetail(item);
-                  }}
-                >
-                  详情
-                </Button>
-              )}
-              {item.status == '11' ? (
-                <Button
-                  size="mini"
-                  onClick={() => {
-                    handleConfirm(item);
-                  }}
-                >
-                  审核
-                </Button>
-              ) : item.status == '1' ||
-                item.status == '10' ||
-                item.status == '444' ? (
-                <Button
-                  size="mini"
-                  onClick={() => {
-                    handleCheck(item);
-                  }}
-                >
-                  验收
-                </Button>
-              ) : (
-                ''
-              )}
+              <Button
+                size="mini"
+                onClick={() => {
+                  handleDetail(item);
+                }}
+              >
+                详情
+              </Button>
+              {!item.result &&
+                userInfor.roles.includes('project-manager') && (
+                  <Button
+                    size="mini"
+                    onClick={() => {
+                      handleConfirm(item);
+                    }}
+                  >
+                    审核
+                  </Button>
+                )}
             </Space>
-            {/* </div> */}
           </Card>
         );
       })}

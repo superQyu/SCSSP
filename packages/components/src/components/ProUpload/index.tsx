@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Image, Upload, Button, message } from 'antd';
 import type { GetProp, UploadFile, UploadProps } from 'antd';
+
+import searchIcon from './search.png';
+import deleteIcon from './delete.png';
 import './index.scss';
 import styled from 'styled-components';
 type FileType = Parameters<
@@ -9,29 +12,40 @@ type FileType = Parameters<
 >[0];
 
 const CustomUpload = styled(Upload)(() => ({
+  '.ant-upload-list-item-actions': {
+    background: `url(${searchIcon}) no-repeat center`,
+    backgroundSize: '20px 20px',
+  },
+  'svg[data-icon="eye"]': {
+    opacity: 0,
+  },
   '.ant-upload-list-item': {
-    position: 'relative'
+    position: 'relative',
   },
   'button[title="删除文件"]': {
     position: 'absolute',
-    top: 0,
-    right: '0',
-    width: '10px',
-    height: '10px',
-    background: 'pink'
+    top: '-50px',
+    right: '-5px',
+    width: '20px',
+    height: '20px',
+    background: `url(${deleteIcon}) no-repeat center`,
+    backgroundSize: '20px 20px',
+    '&:hover': {
+      background: `url(${deleteIcon}) no-repeat center!important`,
+      backgroundSize: '20px 20px!important',
+    },
   },
   '.anticon-delete': {
     display: 'none',
-
-  }
+  },
 }));
 
 export type RequestData<T> =
   | ({
-    data: T[] | undefined;
-    success?: boolean;
-    total?: number;
-  } & Record<string, any>)
+      data: T[] | undefined;
+      success?: boolean;
+      total?: number;
+    } & Record<string, any>)
   | string;
 
 interface Props {
@@ -228,14 +242,13 @@ const ProUpload: React.FC<Props> = (props: Props) => {
     <>
       <CustomUpload
         {...uploadProps}
-
         className={`${!showUploadButton && 'noDelete'}`}
       >
         {!maxCount && showUploadButton
           ? uploadButton
           : fileList?.length >= maxCount || !showUploadButton
-            ? null
-            : uploadButton}
+          ? null
+          : uploadButton}
       </CustomUpload>
       {previewImage && (
         <Image

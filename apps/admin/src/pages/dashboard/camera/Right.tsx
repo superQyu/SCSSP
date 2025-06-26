@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import M3U8Player from './components/M3U8Player';
-// api 相关
+import { Spin } from 'antd';
+
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 const App = (props: { code?: number }) => {
@@ -28,9 +29,9 @@ const App = (props: { code?: number }) => {
   };
 
   return (
-    <div className='h-full'>
+    <Spin  className='h-full' spinning={Boolean(!videoSrc)}>
       <M3U8Player src={videoSrc} />
-    </div>
+    </Spin >
   );
 };
 

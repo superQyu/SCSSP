@@ -11,7 +11,11 @@ import { Select, DatePicker, Input } from 'antd';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
-export default (tableRef: any, editableFormRef: any) => {
+export default (
+  tableRef: any,
+  editableFormRef: any,
+  status: string
+) => {
   // api 相关
   const { server } = useBasicConfiguration();
   const { materialList, subContractor, vehicle } = server;
@@ -37,15 +41,21 @@ export default (tableRef: any, editableFormRef: any) => {
     {
       label: '退场时间',
       dataIndex: 'exitDate',
+
       colNum: 12,
       formItemProps: {
         rules: [{ required: true, message: '请选择进场时间' }],
       },
       formItem: (
-        <DatePicker showTime placeholder="请选择进场时间" />
+        <DatePicker
+          showTime
+          placeholder="请选择进场时间"
+          disabled={status == '0' ? false : true}
+        />
       ),
     },
     {
+      disabled: status == '0' ? false : true,
       label: '退料人员',
       dataIndex: 'exitPersonnel',
       colNum: 12,
@@ -54,6 +64,7 @@ export default (tableRef: any, editableFormRef: any) => {
       },
     },
     {
+      disabled: status == '0' ? false : true,
       label: '见证人员',
       dataIndex: 'witnessPersonnel',
       colNum: 12,
@@ -62,6 +73,7 @@ export default (tableRef: any, editableFormRef: any) => {
       },
     },
     {
+      disabled: status == '0' ? false : true,
       label: '供应单位',
       dataIndex: 'supplierDepartment',
       colNum: 12,
@@ -70,6 +82,7 @@ export default (tableRef: any, editableFormRef: any) => {
       },
     },
     {
+      disabled: status == '0' ? false : true,
       label: '生产厂家',
       dataIndex: 'manufacturer',
       colNum: 12,
@@ -89,10 +102,12 @@ export default (tableRef: any, editableFormRef: any) => {
           allowClear
           placeholder="请选择单位"
           options={subcontractorList}
+          disabled={status == '0' ? false : true}
         />
       ),
     },
     {
+      disabled: status == '0' ? false : true,
       label: '退场原因',
       dataIndex: 'exitReason',
       colNum: 12,
@@ -110,6 +125,7 @@ export default (tableRef: any, editableFormRef: any) => {
       renderFormItem: () => {
         return (
           <SearchSelect
+            disabled={status == '0' || !status ? false : true}
             // popupMatchSelectWidth={200}
             placeholder="请选择车牌号"
             request={async (input: any) => {
@@ -132,21 +148,23 @@ export default (tableRef: any, editableFormRef: any) => {
     {
       title: '物料清单id',
       dataIndex: 'materialsInventoryId',
-      ellipsis: true,
       hideInSearch: true,
       hideInTable: true,
     },
     {
       title: '物料名称',
       dataIndex: 'materialName',
-      ellipsis: true,
+      // ellipsis: true,
       hideInSearch: true,
+      width: 220,
       renderFormItem: () => {
         return (
           <SearchSelect
-            popupMatchSelectWidth={200}
+            disabled={status == '0' ? false : true}
+            popupMatchSelectWidth={300}
             placeholder="请选择物料名称"
-            request={async (input: any) => {
+            request={async (input: string) => {
+              console.log('input', input);
               const res = await materialList.getAllMaterialList({
                 materialName: input,
               });
@@ -155,12 +173,23 @@ export default (tableRef: any, editableFormRef: any) => {
                 return {
                   label: item.materialName,
                   value: item.id,
+                  specification: item.specification,
                 };
               });
               return options;
             }}
+            optionRender={(option: any) => {
+              return (
+                <div>
+                  <span className="mr-4">
+                    {option.data.label}
+                  </span>
+                  <span>{option.data.specification}</span>
+                </div>
+              );
+            }}
             onChange={async (select: any) => {
-              // console.log('物料名称发生改变', select);
+              console.log('物料名称发生改变', select);
               const res = await materialList.getMaterialDetail({
                 id: select,
               });
@@ -180,6 +209,7 @@ export default (tableRef: any, editableFormRef: any) => {
       },
     },
     {
+      readonly: status == '0' ? false : true,
       title: '型号',
       dataIndex: 'materialType',
       ellipsis: true,
@@ -211,8 +241,10 @@ export default (tableRef: any, editableFormRef: any) => {
       renderFormItem: () => {
         return (
           <SearchSelect
+            disabled={status == '0' ? false : true}
+            popupMatchSelectWidth={100}
             placeholder="请选择物料编号"
-            request={async (input: any) => {
+            request={async (input: string) => {
               const res = await materialList.getAllMaterialList({
                 materialCode: input,
               });
@@ -246,8 +278,15 @@ export default (tableRef: any, editableFormRef: any) => {
       },
     },
     {
+      readonly: status == '0' ? false : true,
       title: '退场数量',
       dataIndex: 'exitNumber',
+      ellipsis: true,
+      hideInSearch: true,
+    },
+    {
+      title: '清点数量',
+      dataIndex: 'trueExitNumber',
       ellipsis: true,
       hideInSearch: true,
     },

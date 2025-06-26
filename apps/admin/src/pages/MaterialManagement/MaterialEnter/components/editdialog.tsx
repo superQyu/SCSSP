@@ -166,7 +166,6 @@ export default (props: Props) => {
       materialsEnterSaveReqVO,
       materialsEnterDetailsSaveReqVOS,
     };
-    // console.log('表单提交时的数据', values);
     setLoading(true);
     if (props.status == '11') {
       materialEnter

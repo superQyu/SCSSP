@@ -22,7 +22,7 @@ interface MaterialBlockProps {
 const MaterialBlock: React.FC<MaterialBlockProps> = forwardRef(
   ({ index, initialValue, onDelete }, ref) => {
     const { server } = useBasicConfiguration();
-    const { materialList: M ,    vehicle, } = server;
+    const { materialList: M, vehicle } = server;
     const childRef = useRef(null);
     const [form] = Form.useForm();
     const [key, setKey] = useState('');
@@ -105,9 +105,9 @@ const MaterialBlock: React.FC<MaterialBlockProps> = forwardRef(
         form.setFieldsValue({
           materialCode: value || ' ',
         });
-      } else if (key == 'isSpecialWork') {
+      } else {
         form.setFieldsValue({
-          isSpecialWork: value || ' ',
+          [key]: value || ' ',
         });
       }
     };
@@ -192,22 +192,6 @@ const MaterialBlock: React.FC<MaterialBlockProps> = forwardRef(
           >
             <Input placeholder="请选择编号" />
           </Form.Item>
-
-          {/* <Form.Item label="是否特种作业" name="isSpecialWork">
-            <Selector
-              columns={2}
-              options={[
-                {
-                  label: '否',
-                  value: 0,
-                },
-                {
-                  label: '是',
-                  value: 1,
-                },
-              ]}
-            />
-          </Form.Item> */}
 
           <Form.Item label="退场数量" name="exitNumber">
             <Input placeholder="请输入退场数量" />

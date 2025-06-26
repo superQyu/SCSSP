@@ -3,6 +3,8 @@ import { Flex } from 'antd';
 import styled from 'styled-components';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import { useAppSelector } from 'hooks';
+
 const CustomSDiv = styled.div`
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -75,6 +77,8 @@ const columns = [
   },
 ];
 const App: React.FC = () => {
+  const { site } = useAppSelector((state) => state);
+  const { websocket } = site;
   const { server } = useBasicConfiguration();
   const { materialEnter: M } = server;
   const [statistic, setStatistic] = useState({
@@ -91,6 +95,11 @@ const App: React.FC = () => {
   useEffect(() => {
     queryData();
   }, []);
+
+  useEffect(() => {
+    queryData();
+  }, [websocket.material]);
+
   return (
     <CustomSDiv>
       {columns.map((item) => {

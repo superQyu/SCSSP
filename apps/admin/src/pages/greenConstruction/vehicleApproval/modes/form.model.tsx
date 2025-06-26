@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Select, Space } from 'antd';
 
 import {
   FormColumnsTypes,
@@ -10,11 +11,17 @@ import DictSelect from '@/components/DictSelect';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import dayjs from 'dayjs';
 
 export default (formRef: any, picture: any[] = []) => {
   // api 相关
   const { server } = useBasicConfiguration();
-  const { materialList, file, vehicle } = server;
+  const {
+    materialList,
+    file,
+    vehicle,
+    materialEnter: M,
+  } = server;
 
   const [carTypeDisabled, setCarTypeDisabled] =
     useState<boolean>(false);
@@ -231,6 +238,38 @@ export default (formRef: any, picture: any[] = []) => {
           },
         ],
       },
+    },
+    {
+      hiddenInTable: true,
+      hiddenInSearch: true,
+      label: '物料进场记录',
+      dataIndex: 'materialEnterName',
+      formItem: (
+        <SearchSelect
+          placeholder="请选择物料进场记录"
+          request={async (input) => {
+            const res = await M.getEnterList({});
+            const options = res.list.map((item: any) => {
+              const materials =
+                item.materialsDetailsWithInventoryRespVOS
+                  .map((el, i) => {
+                    return `${el.materialName}`;
+                  })
+                  .join('和');
+              return {
+                label: `${dayjs(item.enterDate).format(
+                  'YYYY-MM-DD HH:mm:ss'
+                )} ${materials}`,
+                value:  `${dayjs(item.enterDate).format(
+                  'YYYY-MM-DD HH:mm:ss'
+                )} ${materials}`,
+              };
+            });
+            return options;
+          }}
+        />
+      ),
+      colNum: 12,
     },
   ];
   return { formColumns };

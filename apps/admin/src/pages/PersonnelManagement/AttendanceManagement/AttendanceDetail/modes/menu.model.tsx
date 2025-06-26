@@ -144,6 +144,9 @@ export default ({
       title: '年月',
       valueType: 'dateMonth',
       dataIndex: 'yearAndMonth',
+      formItemProps: {
+        initialValue: dayjs().format('YYYY-MM'),
+      },
     },
 
     {

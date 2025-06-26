@@ -18,61 +18,70 @@ export default () => {
   // 初始化 表格列表项
   const initColumns = siteModel({ server });
 
-  useEffect(() => { }, []);
+  // 定义行类名函数
+  const getRowClassName = (record) => {
+    return record?.children?.length && 'bg-#f6faff';
+  };
+  useEffect(() => {}, []);
 
   return (
-    <div className='h-full m-18px'>
+    <div className="h-full p-18px">
       <ProTable
         headerTitle={<SingleTitle label="考勤汇总" />}
         request={async (params: ModesApi.ParamsType) => {
-          const { list, totlal } = await A.attendanceList(params);
+          const { list, totlal } = await A.attendanceList(
+            params
+          );
           const result: any = [];
-          const obj: any = {}
+          const obj: any = {};
           list.forEach((item: any) => {
             if (obj.hasOwnProperty(item.subcontractorName)) {
-              const index = obj[item.subcontractorName]
+              const index = obj[item.subcontractorName];
               result[index].children.push({
                 ...item,
                 subcontractorId: '',
-                id: `${item.subcontractorId}_${result[index].children.length}`
-              })
-              let workerMembers = 0
-              let attendanceNumbers = 0
-              let attendanceHours = 0
-              result[index].children.forEach(item => {
-                workerMembers += item.workerMembers
-                attendanceNumbers += item.attendanceNumbers
-                attendanceHours += item.attendanceHours
-              })
-              result[index].workerMembers = workerMembers
-              result[index].attendanceNumbers = attendanceNumbers
-              result[index].attendanceHours = attendanceHours
+                id: `${item.subcontractorId}_${result[index].children.length}`,
+              });
+              let workerMembers = 0;
+              let attendanceNumbers = 0;
+              let attendanceHours = 0;
+              result[index].children.forEach((item) => {
+                workerMembers += item.workerMembers;
+                attendanceNumbers += item.attendanceNumbers;
+                attendanceHours += item.attendanceHours;
+              });
+              result[index].workerMembers = workerMembers;
+              result[index].attendanceNumbers =
+                attendanceNumbers;
+              result[index].attendanceHours = attendanceHours;
             } else {
-              const index = result.length
-              const { subcontractorId,
+              const index = result.length;
+              const {
+                subcontractorId,
                 workerMembers,
                 attendanceNumbers,
-                attendanceHours } = item
-              obj[item.subcontractorName] = index
+                attendanceHours,
+              } = item;
+              obj[item.subcontractorName] = index;
               result[index] = {
                 id: index,
                 subcontractorId,
                 workerMembers,
                 attendanceNumbers,
                 attendanceHours,
-                children: [{
-                  ...item,
-                  subcontractorId: '',
-                  id: `${subcontractorId}_0`
-                }]
-              }
-
+                children: [
+                  {
+                    ...item,
+                    subcontractorId: '',
+                    id: `${subcontractorId}_0`,
+                  },
+                ],
+              };
             }
-          })
+          });
           return {
             ...params,
-            data:
-              result,
+            data: result,
             total: totlal || 0,
           };
         }}
@@ -80,14 +89,18 @@ export default () => {
         columnsState={{
           persistenceKey: 'pro-table-singe-role',
           persistenceType: 'localStorage',
-          onChange(_: any) { },
+          onChange(_: any) {},
         }}
         pagination={{
           pageSize: 30,
         }}
         search={{
           labelWidth: 'auto',
-          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+          optionRender: (
+            { searchText }: any,
+            { form }: any,
+            dom: any
+          ) => {
             return [
               dom[0],
               <Button
@@ -103,6 +116,7 @@ export default () => {
         }}
         scroll={{ x: '1500', y: 'auto' }}
         columns={[...initColumns]}
+        rowClassName={getRowClassName} // 设置行类名
       ></ProTable>
     </div>
   );

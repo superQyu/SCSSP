@@ -4,9 +4,21 @@ import {
   UserOutline,
   CollectMoneyOutline,
 } from 'antd-mobile-icons';
-import { Outlet, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { Outlet, useNavigate, Navigate } from 'react-router-dom';
+
 import styled from 'styled-components';
+import { useEffect, useState } from 'react';
+import { HomeOutlined } from '@ant-design/icons';
+import { type RouterTypes } from './_suppllyTypes';
+import { type MenuDataItem } from '@ant-design/pro-layout';
+import { TOKEN, filterRoutes } from 'utils';
+
+import { Select, Spin } from 'antd';
+import { Layout } from 'components';
+import InitSettings from '@/utils/InitSettings';
+import LayoutConfig from '@/config/LayoutConfig';
+import { useAppDispatch, useAppSelector } from 'hooks';
+import { setMenuTab } from 'store';
 
 import { getToken, setToken } from 'utils';
 
@@ -62,7 +74,7 @@ const tabs = [
   {
     key: '车牌',
     title: '车牌',
-    icon:<CollectMoneyOutline /> ,
+    icon: <CollectMoneyOutline />,
     router: '/phone/carNo',
   },
   {
@@ -72,6 +84,16 @@ const tabs = [
     router: '/phone/center',
   },
 ];
+
+// 验证权限
+const Permissions = ({ children }: any) => {
+  return getToken(TOKEN) ? (
+    <InitSettings>{children}</InitSettings>
+  ) : (
+    <Navigate to="/login" />
+  );
+};
+
 export default () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState('首页');
@@ -83,7 +105,6 @@ export default () => {
   const handleTabChange = (key: string) => {
     const { router } = tabs.find((item) => item.key == key);
     navigate(router);
-    // setTitle(key);
   };
 
   useEffect(() => {
@@ -91,43 +112,37 @@ export default () => {
   });
 
   return (
-    <PhoneBox>
-      <div className="navbar-box">
-        {title != '首页' && title != '我的' ? (
-          <NavBar onBack={back}>{title}</NavBar>
-        ) : (
-          <NavBar back={null}>{title}</NavBar>
-        )}
-      </div>
+    <Permissions>
+      <PhoneBox>
+        <div className="navbar-box">
+          {title != '首页' && title != '我的' ? (
+            <NavBar onBack={back}>{title}</NavBar>
+          ) : (
+            <NavBar back={null}>{title}</NavBar>
+          )}
+        </div>
 
-      {/* 内容 */}
-      <div className="content">
-        <Outlet />
-      </div>
+        {/* 内容 */}
+        <div className="content">
+          <Outlet />
+        </div>
 
-      <div className="tabbar-box">
-        {/* <div
-          className="create"
-          onClick={() => {
-            navigate('/phone/material-create');
-          }}
-        >
-          <AddOutline fontSize={26} />
-        </div> */}
-        <TabBar
-          safeArea
-          activeKey={title}
-          onChange={handleTabChange}
-        >
-          {tabs.map((item) => (
-            <TabBar.Item
-              key={item.key}
-              icon={item.icon}
-              title={item.title}
-            />
-          ))}
-        </TabBar>
-      </div>
-    </PhoneBox>
+        <div className="tabbar-box">
+          <TabBar
+            safeArea
+            activeKey={title}
+            onChange={handleTabChange}
+          >
+            {tabs.map((item) => (
+              <TabBar.Item
+                key={item.key}
+                icon={item.icon}
+                title={item.title}
+              />
+            ))}
+          </TabBar>
+        </div>
+      </PhoneBox>
+    </Permissions>
   );
 };

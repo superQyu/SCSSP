@@ -113,6 +113,9 @@ export default (_: MenusPropsType) => {
           />
         );
       },
+      renderFormItem: () => {
+        return <DictSelect dictKey={'system_true_false'} />;
+      },
     },
     {
       title: '车辆类型',
@@ -127,6 +130,9 @@ export default (_: MenusPropsType) => {
           />
         );
       },
+      renderFormItem: () => {
+        return <DictSelect dictKey={'cm_car_type'} />;
+      },
     },
     {
       hideInSearch: true,
@@ -140,9 +146,7 @@ export default (_: MenusPropsType) => {
       ellipsis: true,
       hideInSearch: true,
       render: (text, record) => {
-        // console.log('行数据', record)
         const list = record?.attachment?.split('@');
-        // console.log('图片列表', list);
         if (list && list[0].length) {
           return (
             <div>

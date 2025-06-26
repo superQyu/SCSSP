@@ -81,11 +81,12 @@ export default ({ onChange }: any) => {
     materialEnter.startBpm({ materialsEnterId: id }).then(() => {
       setSpinning(false);
       firstTableRef.current?.reload();
+      message.success('发起流程成功！');
     });
   };
 
   return (
-    <div className='h-full m-18px'>
+    <div className='h-full p-18px'>
       <Spin spinning={spinning}>
         <ProTable
           // rowKey="key"

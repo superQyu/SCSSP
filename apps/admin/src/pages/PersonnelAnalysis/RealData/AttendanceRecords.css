@@ -1,0 +1,126 @@
+/* AttendanceRecords.css */
+
+.attendance-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: clamp(0.5rem, 2vw, 1.5rem); /* 响应式内边距 */
+  }
+  
+  /* 流体网格布局 - 自动适应容器宽度 */
+  .attendance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 350px), 1fr));
+    gap: clamp(0.75rem, 1.5vw, 1.5rem); /* 响应式间距 */
+  }
+  
+  /* 最新记录占据整行并放大 */
+  .attendance-item-latest {
+    grid-column: 1 / -1;
+  }
+  
+  .attendance-item-latest .attendance-card {
+    transform: scale(1); /* 重置缩放，使用自然大小 */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-color: #ff9c00;
+    z-index: 10;
+  }
+  
+  /* 卡片样式 */
+  .attendance-card {
+    background: white;
+    border: 1px solid #ecf0f6;
+    border-radius: clamp(0.5rem, 1vw, 0.75rem); /* 响应式圆角 */
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+  }
+  
+  .attendance-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* 内容布局 */
+  .attendance-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+  
+  /* 头像区域 - 使用比例布局 */
+  .attendance-avatar-container {
+    flex: 1;
+    min-width: clamp(80px, 25%, 180px); /* 响应式最小宽度 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(0.75rem, 1.5vw, 1.25rem); /* 响应式内边距 */
+  }
+  
+  .attendance-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: clamp(0.25rem, 0.5vw, 0.5rem); /* 响应式圆角 */
+  }
+  
+  /* 信息区域 */
+  .attendance-info {
+    flex: 2;
+    padding: clamp(0.75rem, 1.5vw, 1.25rem); /* 响应式内边距 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .attendance-company {
+    font-weight: 600;
+    color: #333;
+    font-size: clamp(1rem, 2vw, 1.25rem); /* 响应式字体大小 */
+  }
+  
+  .attendance-team {
+    color: #666;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem); /* 响应式字体大小 */
+  }
+  
+  .attendance-name {
+    color: #333;
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem); /* 响应式字体大小 */
+  }
+  
+  .attendance-time {
+    color: #ff9c00;
+    font-family: 'ds-digit', monospace;
+    font-size: clamp(1rem, 2vw, 1.2rem); /* 响应式字体大小 */
+  }
+  
+  .attendance-status {
+    margin-top: clamp(0.25rem, 0.5vw, 0.5rem); /* 响应式间距 */
+  }
+  
+  /* 最新记录的特殊样式 */
+  .attendance-item-latest .attendance-avatar-container {
+    min-width: clamp(120px, 30%, 240px); /* 响应式最小宽度 */
+  }
+  
+  .attendance-item-latest .attendance-info {
+    padding: clamp(1rem, 2vw, 1.5rem); /* 响应式内边距 */
+  }
+  
+  /* 响应式调整 - 移动设备布局 */
+  @media (max-width: 600px) {
+    .attendance-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .attendance-content {
+      flex-direction: column;
+    }
+    
+    .attendance-avatar-container {
+      min-width: auto;
+      width: 100%;
+      height: clamp(120px, 40vw, 180px); /* 响应式高度 */
+    }
+  }

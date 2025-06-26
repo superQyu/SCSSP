@@ -103,7 +103,6 @@ export default () => {
       label: '合格证书',
       key: 'attachment',
       formProp: (item: any) => {
-        console.log(item);
         return getToken('PHONETITLE') == '详情' ||
           getToken('PHONETITLE') == '审核' ? (
           <>

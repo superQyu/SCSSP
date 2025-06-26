@@ -56,7 +56,7 @@ export default ({ server }: MenusPropsType) => {
   ];
   const option: ProColumns = {
     title: '操作',
-    width: 70,
+    width: 120,
     fixed: 'right',
     valueType: 'option',
     dataIndex: 'option',

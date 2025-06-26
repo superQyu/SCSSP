@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { Spin } from 'antd';
+
 import { useECharts } from '@/context/EChartContext';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import { useAppSelector } from 'hooks';
 const SomeChartComponent = () => {
+  const { site } = useAppSelector((state) => state);
+  const { websocket } = site;
   const { server } = useBasicConfiguration();
   const { attendance } = server;
   const { getEChartsInstance } = useECharts();
@@ -24,10 +28,10 @@ const SomeChartComponent = () => {
         obj[item.name] = item.todayAttendanceCount;
       }
     });
-    setChartData(
-      Object.values(obj).map((item: any) => item.toFixed(2))
-    );
-    setXAxis(Object.keys(obj));
+
+    const list = Object.entries(obj).sort((a, b) => b[1] - a[1]);
+    setChartData(list.map((item: any) => item[1].toFixed(2)));
+    setXAxis(list.map((item: any) => item[0]));
   };
 
   const setOptions = () => {
@@ -147,6 +151,9 @@ const SomeChartComponent = () => {
   useEffect(() => {
     queryData();
   }, []);
+  useEffect(() => {
+    queryData();
+  }, [websocket.person]);
 
   useEffect(() => {
     chartInstance = getEChartsInstance(chartRef);

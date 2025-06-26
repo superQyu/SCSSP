@@ -18,6 +18,7 @@ import UpdateLog from '@/pages/SynchronizeData';
 
 /*======================手机端路由========================*/
 import Phone from '@/pages/phone';
+import PhoneError from '@/pages/phone/error';
 import PhoneHome from '@/pages/phone/home';
 import MaterialEnter from '@/pages/phone/materialEnter/index';
 import MaterialEnterDetail from '@/pages/phone/materialEnter/detail/index';
@@ -110,6 +111,7 @@ const defaultRoutes: any = [
     ),
     errorElement: <ErrorPage />,
     children: [
+      { path: '/phone/error', element: <PhoneError /> },
       { path: '/phone/home', element: <PhoneHome /> },
       {
         path: '/phone/material-enter',

@@ -28,9 +28,6 @@ export default ({ children }: any) => {
   const getRoutes = async () => {
     await U.adminGetRoute()
       .then(({ menus: M, user, roles }: any) => {
-        // console.log(
-        //   '开始保存用户权限信息（user、roles、permissions、menus）'
-        // );
         saveUserInfor(dispatch, {
           ...user,
           nickName: user.nickname,

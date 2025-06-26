@@ -4,8 +4,10 @@ import dayjs from 'dayjs';
 
 import { useECharts } from '@/context/EChartContext';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-
+import { useAppSelector } from 'hooks';
 const SomeChartComponent = () => {
+  const { site } = useAppSelector((state) => state);
+  const { websocket } = site;
   const { server } = useBasicConfiguration();
   const { materialEnter } = server;
   const { getEChartsInstance, getLinearGradient } = useECharts();
@@ -173,6 +175,10 @@ const SomeChartComponent = () => {
   useEffect(() => {
     queryData();
   }, []);
+
+  useEffect(() => {
+    queryData();
+  }, [websocket.material]);
 
   useEffect(() => {
     chartInstance = getEChartsInstance(chartRef);

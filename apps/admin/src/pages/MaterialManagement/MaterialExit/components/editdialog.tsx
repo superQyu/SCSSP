@@ -21,13 +21,15 @@ interface Props {
   onStateChange: (state: boolean) => void;
   // 当为详情表单时, 有该属性
   detail?: MenusType;
+  /**
+   * 当前点击的哪个按钮
+   * 0: 点击编辑按钮, 此时仅有验收数量不可编辑
+   * 1: 点击验收按钮, 此时仅有验收数量和两个图片可编辑
+   */
+  status: string;
 }
-
-export default ({
-  openModal,
-  onStateChange,
-  detail = {},
-}: Props) => {
+export default (props: Props) => {
+  const { openModal, onStateChange, detail = {} } = props;
   // api 相关
   const { server } = useBasicConfiguration();
   const { materialExit } = server;
@@ -43,11 +45,10 @@ export default ({
   // 可编辑表格的 Form 的 DOM
   const editableFormRef = useRef<any>();
 
-  // 表单项配置
-  // 只能放在外面, 因为调用该方法中使用 hook, 只能放在函数式组件的外部
   const { formColumns, tableColumns } = initColumns(
     tableRef,
-    editableFormRef
+    editableFormRef,
+    props.status
   );
 
   // 单位信息表单的默认值
@@ -58,7 +59,7 @@ export default ({
     supplierDepartment: detail.supplierDepartment,
     manufacturer: detail.manufacturer,
     purchaserDepartment: detail.purchaserDepartment,
-    exitReason: detail.exitReason
+    exitReason: detail.exitReason,
   });
 
   useEffect(() => {
@@ -90,50 +91,88 @@ export default ({
   // 点击保存
   const handleOk = async () => {
     const editRow = tableRef.current.getCurrentRow();
-    // console.log('当前尚在编辑的行', editRow);
     if (editRow) {
       message.error('有未保存行, 请先保存');
       return;
     }
     const materialsExitSaveReqVO: MenusType =
       await formRef.current?.validateFields();
-    materialsExitSaveReqVO.exitDate =
-      materialsExitSaveReqVO.exitDate.valueOf();
     materialsExitSaveReqVO.id = detail.id;
+
     const table = tableRef.current?.getTableData();
-    // console.log('所有表格数据', table);
+    if (!table.length) {
+      message.error(
+        '当前未填写物料信息, 请至少添加一条物料信息'
+      );
+      return;
+    }
     const materialsExitDetailsSaveReqVOS = table.map(
       (item: any) => {
         return {
-          // 如果 id 为number, 则是编辑
-          id: typeof item.id == 'number' ? item.id : undefined,
+          ...item,
           materialExitId: detail.id,
-          carNo: item.carNo,
-          materialsInventoryId: item.materialsInventoryId,
-          materialType: item.materialType,
-          exitNumber: item.exitNumber,
           attachment: item.attachment?.join('@'),
         };
       }
     );
+
+    // 清点时需要进行的校验
+    if (props.status == '1') {
+      try {
+        materialsExitDetailsSaveReqVOS.map((item: any) => {
+          if (!item.trueExitNumber) {
+            throw new Error(
+              '有物料的清点数量未填写, 请完善数据'
+            );
+          }
+        });
+      } catch (error: any) {
+        message.error(error.message);
+        return;
+      }
+    }
+
     const values = {
       materialsExitSaveReqVO,
       materialsExitDetailsSaveReqVOS,
     };
-    // console.log('表单提交时的数据', values);
     setLoading(true);
-    materialExit[detail.id ? 'updateExit' : 'createExit'](values)
-      .then(() => {
-        message.success('操作成功！');
-        setLoading(false);
-        onStateChange(false);
-        onReset();
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  };
 
+    if (props.status == '11') {
+      materialExit
+        .materialExamine({
+          materialsEnterId: detail.id,
+          isConfirm: '通过',
+        })
+        .then(() => {
+          message.success('操作成功！');
+          setLoading(false);
+          onStateChange(false);
+          onReset();
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    } else {
+      let api;
+      if (props.status == '0') {
+        api = detail.id ? 'updateExit' : 'createExit';
+      } else {
+        api = 'materialAccept';
+      }
+      console.log('values', values);
+      materialExit[api](values)
+        .then(() => {
+          message.success('操作成功！');
+          setLoading(false);
+          onStateChange(false);
+          onReset();
+        })
+        .catch(() => {
+          setLoading(false);
+        });
+    }
+  };
   // 点击取消
   const handleCancel = () => {
     if (loading) {
@@ -201,6 +240,7 @@ export default ({
             editableFormRef={editableFormRef}
             columns={tableColumns}
             tableData={tableData}
+            status={props.status}
           />
         </div>
       </Modal>

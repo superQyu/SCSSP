@@ -5,7 +5,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 const SomeChartComponent = () => {
   const { server } = useBasicConfiguration();
-  const { attendance } = server;
+  const { personAnalysis: P } = server;
   const { getEChartsInstance } = useECharts();
 
   const chartRef = useRef(null);
@@ -13,13 +13,20 @@ const SomeChartComponent = () => {
   const [chartData, setChartData] = useState<any[]>([]);
   let chartInstance: any = null;
 
-  // 调整最大、最小气泡尺寸
-  const MAX_BUBBLE_SIZE = 12; // 原 30，改小
-  const MIN_BUBBLE_SIZE = 4; // 原 8，同步缩小
+  const MAX_BUBBLE_SIZE = 12;
+  const MIN_BUBBLE_SIZE = 4;
 
-  const queryData = async () => {};
+  const queryData = async () => {
+    const res = await P.selectAttendanceDailtStatistics();
+    const list = res.map((item: any) => {
+      return {
+        name: item.companyName,
+        value: item.todayCount,
+      }
+    }).sort((a,b)=>b.name.length -  a.name.length)
+    setChartData(list);
+  };
 
-  // 带极值限制的映射函数
   const calculateBubbleSize = (
     value: number,
     minValue: number,
@@ -40,11 +47,11 @@ const SomeChartComponent = () => {
     return baseSize;
   };
 
-  const setOptions = (data: any) => {
-    const allValues = data.flatMap((series) => series.data);
+  const setOptions = () => {
+    const allValues = chartData.flatMap((item) => item.value);
     const minValue = Math.min(...allValues);
     const maxValue = Math.max(...allValues);
-
+    const xAxis = chartData.map((item) => item.name);
     const option = {
       grid: {
         containLabel: true,
@@ -55,15 +62,26 @@ const SomeChartComponent = () => {
       },
       legend: { right: 0 },
       tooltip: {
+        confine: true,
         trigger: 'item',
         formatter: (params: any) =>
           `${params.name}<br/>${params.seriesName}人数：${params.value}人`,
       },
       xAxis: {
         type: 'category',
-        data: Array.from({ length: 10 }, (_, i) => `公司${i}`),
+        data: xAxis,
         axisTick: { show: false },
-        axisLabel: { color: '#999', interval: 0, margin: 10 },
+        axisLabel: {
+          color: '#999',
+          interval: 0,
+          margin: 10,
+          formatter: (str) => {
+            if (str.length > 5) {
+              return str.substring(0, 5) + '...';
+            }
+            return str;
+          },
+        },
         splitLine: {
           show: true,
           lineStyle: { type: 'line', color: '#D9D9D9' },
@@ -76,11 +94,9 @@ const SomeChartComponent = () => {
       yAxis: { type: 'value', name: '（单位：人数）' },
       series: [
         {
-          name: '无进场',
+          name: '进场',
           type: 'scatter',
-          data: Array.from({ length: 10 }, () =>
-            Math.floor(Math.random() * 100)
-          ),
+          data: allValues,
           symbolSize: (val: any) =>
             calculateBubbleSize(val, minValue, maxValue),
           itemStyle: {
@@ -89,8 +105,9 @@ const SomeChartComponent = () => {
             borderWidth: 1,
           },
         },
+
         // {
-        //   name: '三天未打卡',
+        //   name: '无退场',
         //   type: 'scatter',
         //   data: Array.from({ length: 10 }, () =>
         //     Math.floor(Math.random() * 100)
@@ -98,25 +115,11 @@ const SomeChartComponent = () => {
         //   symbolSize: (val: any) =>
         //     calculateBubbleSize(val, minValue, maxValue),
         //   itemStyle: {
-        //     color: 'rgba(245,151,60,0.3)',
-        //     borderColor: '#F5973C',
+        //     color: 'rgba(243,15,53,0.3)',
+        //     borderColor: '#F30F35',
         //     borderWidth: 1,
         //   },
         // },
-        {
-          name: '无退场',
-          type: 'scatter',
-          data: Array.from({ length: 10 }, () =>
-            Math.floor(Math.random() * 100)
-          ),
-          symbolSize: (val: any) =>
-            calculateBubbleSize(val, minValue, maxValue),
-          itemStyle: {
-            color: 'rgba(243,15,53,0.3)',
-            borderColor: '#F30F35',
-            borderWidth: 1,
-          },
-        },
       ],
     };
     chartInstance.setOption(option);
@@ -130,41 +133,13 @@ const SomeChartComponent = () => {
   }, []);
 
   useEffect(() => {
-
-    setChartData([
-      {
-        name: '无进场',
-        data: chartData.map((item) => item.value),
-      },
-      // {
-      //   name: '三天未打卡',
-      //   data: chartData.map((item) => item.value),
-      // },
-      {
-        name: '无退场',
-        data: chartData.map((item) => item.value),
-      },
-    ])
-    if (chartRef.current ) {
+    if (chartRef.current) {
       chartInstance = getEChartsInstance(chartRef);
-      setOptions([
-        {
-          name: '无进场',
-          data: chartData.map((item) => item.value),
-        },
-        // {
-        //   name: '三天未打卡',
-        //   data: chartData.map((item) => item.value),
-        // },
-        {
-          name: '无退场',
-          data: chartData.map((item) => item.value),
-        },
-      ]);
+      setOptions();
       resizeChart();
       setSpinning(false);
     }
-  }, [ chartRef.current]);
+  }, [chartRef.current, chartData]);
 
   useEffect(() => {
     window.addEventListener('resize', resizeChart);

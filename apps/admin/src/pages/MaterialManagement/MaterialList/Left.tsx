@@ -10,6 +10,21 @@ import EditDialog from './components/editdialog';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
 import siteModel from './models/table.model';
+import styled from 'styled-components';
+
+
+const CustomDiv = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(
+      0,
+      1fr
+    );
+  grid-template-rows: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 20px;
+  padding: 20px 17px;
+  height: 100%;
+  background: #eaf0f6;
+`;
 
 const ThirdTable = (props: any, firstTableRef: any) => {
   // console.log('当前行数据', record);
@@ -26,10 +41,12 @@ const ThirdTable = (props: any, firstTableRef: any) => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    const res = await materialList.updateThird(params).then(async () => {
-      message.success('信息更新成功！');
-      await firstTableRef.current?.reload();
-    });
+    const res = await materialList
+      .updateThird(params)
+      .then(async () => {
+        message.success('信息更新成功！');
+        await firstTableRef.current?.reload();
+      });
     return res;
   };
 
@@ -89,11 +106,13 @@ const SecondTable = (props: any, firstTableRef: any) => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    const res = await materialList.updateSecond(params).then(async () => {
-      message.success('信息更新成功！');
-      await firstTableRef.current?.reload();
-      console.log('firstTableRef', firstTableRef);
-    });
+    const res = await materialList
+      .updateSecond(params)
+      .then(async () => {
+        message.success('信息更新成功！');
+        await firstTableRef.current?.reload();
+        console.log('firstTableRef', firstTableRef);
+      });
     return res;
   };
 
@@ -124,7 +143,11 @@ const SecondTable = (props: any, firstTableRef: any) => {
       options={false}
       editable={{ onSave }}
       expandable={{
-        expandedRowRender: (record: any) => ThirdTable({ record, server, onChange }, firstTableRef),
+        expandedRowRender: (record: any) =>
+          ThirdTable(
+            { record, server, onChange },
+            firstTableRef
+          ),
       }}
       pagination={{
         pageSize: 5,
@@ -146,7 +169,8 @@ export default ({ onChange }: any) => {
   const firstTableRef = useRef<ActionType>();
 
   // 控制弹窗的打开与关闭
-  const [dialogVisible, setDialogVisible] = useState<boolean>(false);
+  const [dialogVisible, setDialogVisible] =
+    useState<boolean>(false);
 
   // 修改表单打开关闭状态
   const handleModalStateChange = async (state: boolean) => {
@@ -156,15 +180,17 @@ export default ({ onChange }: any) => {
 
   // 点击保存
   const onSave = async (params: any) => {
-    const res = await materialList.updateFirst(params).then(async () => {
-      message.success('信息更新成功！');
-      await firstTableRef.current?.reload();
-    });
+    const res = await materialList
+      .updateFirst(params)
+      .then(async () => {
+        message.success('信息更新成功！');
+        await firstTableRef.current?.reload();
+      });
     return res;
   };
 
   return (
-    <>
+    <div className="h-full">
       <ProTable
         // rowKey="key"
         actionRef={firstTableRef}
@@ -191,14 +217,21 @@ export default ({ onChange }: any) => {
         scroll={{ y: 'auto' }}
         search={false}
         toolBarRender={() => [
-          <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
+          <Button
+            icon={<PlusOutlined />}
+            onClick={() => setDialogVisible(true)}
+            type="primary"
+          >
             新建
           </Button>,
         ]}
         editable={{ onSave }}
         expandable={{
           expandedRowRender: (record: any) =>
-            SecondTable({ record, server, onChange }, firstTableRef),
+            SecondTable(
+              { record, server, onChange },
+              firstTableRef
+            ),
         }}
         pagination={{
           pageSize: 10,
@@ -209,6 +242,6 @@ export default ({ onChange }: any) => {
         openModal={dialogVisible}
         onStateChange={handleModalStateChange}
       />
-    </>
+    </div>
   );
 };

@@ -6,142 +6,118 @@ import {
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 
-// api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import { useAppSelector } from 'hooks';
+import styled from 'styled-components';
 
+const CustomImage = styled(Image)(() => ({
+  //  background: 'pink',
+  //  width: '100%',
+}));
 export default () => {
-  // api 相关
+  const { site } = useAppSelector((state) => state);
+  const { websocket } = site;
   const { server } = useBasicConfiguration();
   const { personAnalysis } = server;
 
-  let timer: any;
-
   const [list, setList] = useState<any>([]);
 
-  // const list = [
-  //   {
-  //     personName: '蒋利春',
-  //     receiveTime: '05-09 07:02',
-  //     certNo: '32102319880301581X',
-  //     jobCategory: '安装工',
-  //     inAndOutType: '0',
-  //     picUri: '',
-  //     doorName: '',
-  //     companyName: '卢晶建筑\r\n',
-  //     orgPicUri: '',
-  //   },
-  //   {
-  //     personName: '董泳君',
-  //     receiveTime: '05-09 06:59',
-  //     certNo: '510723199911194664',
-  //     jobCategory: '木工',
-  //     inAndOutType: '1',
-  //     picUri: '',
-  //     doorName: '',
-  //     companyName: '卢晶建筑\r\n',
-  //     orgPicUri: '',
-  //   },
-  //   {
-  //     personName: '李新',
-  //     receiveTime: '05-09 06:36',
-  //     certNo: '320624197009192716',
-  //     jobCategory: '其他',
-  //     inAndOutType: '1',
-  //     picUri: '',
-  //     doorName: '',
-  //     companyName: '卢晶建筑\r\n',
-  //     orgPicUri: '',
-  //   },
-  //   {
-  //     personName: '范炳飞',
-  //     receiveTime: '05-09 06:17',
-  //     certNo: '320623198511111676',
-  //     jobCategory: '其他',
-  //     inAndOutType: '0',
-  //     picUri: '',
-  //     doorName: '',
-  //     companyName: '卢晶建筑\r\n',
-  //     orgPicUri: '',
-  //   },
-  // ];
+  const queryData = async () => {
+    const res =
+      await personAnalysis.getLatestFourAttendanceRecord();
+    setList(res);
+  };
 
   useEffect(() => {
-    personAnalysis
-      .getLatestFourAttendanceRecord()
-      .then((res: any[]) => {
-        setList(res);
-      });
+    queryData();
   }, []);
+
+  useEffect(() => {
+    queryData();
+  }, [websocket.person]);
 
   return (
     <div className="position-relative h-full overflow-y-auto overflow-x-hidden">
-      <Row gutter={10} className="position-absolute ">
+      <Row gutter={10} className="position-absolute pr-10px">
         {list.map((item: any, index: number) => {
           return (
-            <Col key={index} span={24} xxl={12} className="mb-2">
+            <Col
+              key={index}
+              span={24}
+              xxl={!index ? 24 : 8}
+              className="mb-2"
+            >
               <div
                 style={{
                   border: '1px solid #ecf0f6',
-                  borderRadius: '5px',
                 }}
+                className="w-full"
               >
                 <Row
                   gutter={10}
-                  className="p-2 h-150px  border-rd-2"
+                  className={`ml-0 p-2px w-full border-rd-2 h-${
+                    index ? '170px' : '140px'
+                  }`}
                 >
-                  <Col span={12} className="h-full">
-                    <Flex
-                      justify="center"
-                      align="center"
-                      className="w-full h-full"
-                    >
-                      <Image
-                        className="w-full h-full"
-                        src={`/src/assets/avatar/${item.jobNo}_1.jpg`}
-                        fallback={
-                          new URL(
-                            '@/assets/avatar/default.png',
-                            import.meta.url
-                          ).href
-                        }
-                      />
-                    </Flex>
-                  </Col>
-                  <Col span={12} className="h-full">
-                    <Flex
-                      vertical
-                      justify="space-between"
-                      className="h-full"
-                    >
+                  <CustomImage
+                    style={{
+                      // maxWidth: '120px',
+                      width: !index ? '100px' : '50px',
+                      height: index ? '65px' : 'auto',
+                    
+                    }}
+                    src={`/src/assets/avatar/${item.jobNo}_1.jpg`}
+                    fallback={
+                      new URL(
+                        '@/assets/avatar/default.png',
+                        import.meta.url
+                      ).href
+                    }
+                  />
+
+                  <Flex
+                    vertical
+                    justify="space-between"
+                    className="py-5px pl-10px"
+                    style={{
+                      height: index ? '100px' : '140px',
+                    }}
+                  >
+                    <div>
                       <div>{item.companyName}</div>
-                      {/* <div> {item.jobCategory}</div> */}
-                      <div> {item.teamName}</div>
-                      {/* <div> {item.personName}</div> */}
+
+                      <div className="font-700">
+                        {item.teamName}
+                      </div>
                       <div> {item.userName}</div>
+                    </div>
+
+                    <div>
                       <div className="color-#ff9c00 font-family-ds-digit font-size-16px">
-                        {/* {item.receiveTime} */}
                         {dayjs(item.clockTime).format(
                           'MM-DD HH:mm'
                         )}
+                        <div>
+                          {item.clockDirection == 0 ? (
+                            <Tag
+                              icon={<LoginOutlined />}
+                              color="#ff9c00"
+                            >
+                              进场
+                            </Tag>
+                          ) : (
+                            <Tag
+                              icon={<LogoutOutlined />}
+                              color="#55acee"
+                            >
+                              出场
+                            </Tag>
+                          )}
+                        </div>
                       </div>
-                      {/* {item.inAndOutType == '0' ? ( */}
-                      {item.clockDirection == 0 ? (
-                        <Tag
-                          icon={<LoginOutlined />}
-                          color="#ff9c00"
-                        >
-                          进场
-                        </Tag>
-                      ) : (
-                        <Tag
-                          icon={<LogoutOutlined />}
-                          color="#55acee"
-                        >
-                          出场
-                        </Tag>
-                      )}
-                    </Flex>
-                  </Col>
+                    </div>
+                  </Flex>
+                  {/* </Col> */}
                 </Row>
               </div>
             </Col>

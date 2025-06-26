@@ -78,6 +78,9 @@ const App: React.FC = () => {
       label: '建筑面积',
       children: '',
       key: 'projectArea',
+      formatter: (val: number) => {
+        return `${val}m²`;
+      },
     },
     {
       label: '项目描述',

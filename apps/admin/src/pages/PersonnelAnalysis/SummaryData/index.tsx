@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import styled from 'styled-components';
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import { useAppSelector } from 'hooks';
 const CustomBlock = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -49,6 +50,8 @@ const CustomBlock = styled.div`
 `;
 
 export default () => {
+  const { site } = useAppSelector((state) => state);
+  const { websocket } = site;
   const { server } = useBasicConfiguration();
   const { personAnalysis } = server;
 
@@ -124,7 +127,9 @@ export default () => {
   useEffect(() => {
     loadData();
   }, []);
-
+  useEffect(() => {
+    loadData();
+  }, [websocket.person]);
   return (
     <>
       <Flex gap="middle" vertical justify="space-between">

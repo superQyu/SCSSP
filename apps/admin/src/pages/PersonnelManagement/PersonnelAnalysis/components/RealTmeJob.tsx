@@ -9,7 +9,7 @@ const App: React.FC = () => (
       <Col span={12} className="h-full">
         <RealTime />
       </Col>
-      <Col span={12}>
+      <Col span={12} className="h-full">
         <YoYMoM />
       </Col>
     </Row>

@@ -1,54 +1,81 @@
-import { useEffect } from 'react';
-import { List, Switch, Image } from 'antd-mobile';
-import {
-  UnorderedListOutline,
-  PayCircleOutline,
-  SetOutline,
-} from 'antd-mobile-icons';
+import { useEffect, useState, useContext } from 'react';
+import { List, Image, Space, Button } from 'antd-mobile';
+import { useNavigate } from 'react-router-dom';
+
 import { useAppSelector } from 'hooks';
-import { getToken, setToken } from 'utils';
+import { setToken, removeToken } from 'utils';
+import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import { AuthContext, useAppDispatch } from 'hooks';
+
 export default () => {
-  //   const { user } = useAppSelector((state) => state);
-  //   useEffect(() => {
-  //     console.log('user', user.nickName);
-  //     // setBaseInfor({
-  //     //   avatar: userInfor.avatar,
-  //     //   userName: userInfor.nickName,
-  //     //   logo: siteInfor.ico,
-  //     //   siteName: siteInfor.name,
-  //     // });
-  //     // if (siteInfor.ico && siteInfor.ico != '')
-  //     //   setShouldRender(true);
-  //     // setLoading(false);
-  //   }, [user]);
-  const item = {
-    avatar:
-      'https://images.unsplash.com/photo-1548532928-b34e3be62fc6?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ',
-    name: 'admin',
-    description: '管理员',
-  };
+  const { server } = useBasicConfiguration();
+  // const { systemRole: SR } = server;
+  const { user, tokenKeys } = useAppSelector((state) => state);
+  const { userInfor } = user;
+  const [roleObj, setRoleObj] = useState({});
+  const { signOut } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+//   const queryRoles = async () => {
+//     const { list } = await SR.roleList();
+//     const obj = Object.fromEntries(
+//       list.map((item: any) => [item.code, item.name])
+//     );
+//     obj['super_admin'] = '管理员';
+//     setRoleObj(obj);
+//   };
+// console.log('userInfor',userInfor);
+//   useEffect(() => {
+//     queryRoles();
+//   }, []);
 
   useEffect(() => {
     setToken('PHONETITLE', '我的');
   });
   return (
-    <>
+    <div className="pos-relative h-full">
       <List>
         <List.Item
           prefix={
             <Image
-              src={item.avatar}
+              src={
+                new URL(
+                  '@/assets/avatar/profile.jpg',
+                  import.meta.url
+                ).href
+              }
               style={{ borderRadius: 20 }}
               fit="cover"
               width={40}
               height={40}
             />
           }
-          description={item.description}
+          // description={
+          //   <Space>
+          //     {userInfor?.roles?.map((item: string) => {
+          //       return <div key={item}>{roleObj?.[item]}</div>;
+          //     })}
+          //   </Space>
+          // }
         >
-          {item.name}
+          {userInfor?.nickName}
         </List.Item>
       </List>
-    </>
+      <List className="mt-10px">
+        <List.Item
+          onClick={async () => {
+            await signOut(dispatch);
+            navigate('/');
+
+            tokenKeys.map((keyName) => removeToken(keyName));
+          }}
+        >
+          <div className="" style={{ textAlign: 'center' }}>
+            退出登录
+          </div>
+        </List.Item>
+      </List>
+    </div>
   );
 };

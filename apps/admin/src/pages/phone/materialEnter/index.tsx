@@ -79,8 +79,7 @@ function MaterialEnter() {
   const { user }: { user: any } = useAppSelector(
     (state) => state
   );
-
-  console.log('22', user);
+  const { userInfor } = user;
 
   const loadMore = async () => {
     if (!hasMore) return;
@@ -117,6 +116,7 @@ function MaterialEnter() {
     );
     setToken('PHONETITLE', '详情');
   };
+
   // 点击发起申请
   const handleWorkflow = (detail: any) => {
     Dialog.show({
@@ -150,7 +150,6 @@ function MaterialEnter() {
 
   // 点击编辑
   const handleEditDetail = (detail: any) => {
-    console.log('详情', detail);
     navigate(
       `/phone/material-create?detail=${JSON.stringify(detail)}`
     );
@@ -217,9 +216,11 @@ function MaterialEnter() {
 
   return (
     <MaterialEnterBox>
-      <div className="add" onClick={handleAdd}>
-        新增
-      </div>
+      {userInfor.roles.includes('plan') && (
+        <div className="add" onClick={handleAdd}>
+          新增
+        </div>
+      )}
       <Input
         className="input-box"
         placeholder="请输入送货人"
@@ -232,11 +233,7 @@ function MaterialEnter() {
       />
       {list.map((item: any, i: number) => {
         return (
-          <Card
-            className="mt-10px"
-            key={i}
-            onClick={() => handleClick(item)}
-          >
+          <Card className="mt-10px" key={i}>
             <div className="title">
               {item.carNo || '--'}
               {item.status == '11' ? (
@@ -283,38 +280,41 @@ function MaterialEnter() {
               className="btn"
               onClick={(e) => e.stopPropagation()}
             >
-              {item.status == '0' && (
-                <Button
-                  size="mini"
-                  onClick={() => {
-                    handleWorkflow(item);
-                  }}
-                >
-                  发起申请
-                </Button>
-              )}
-              {item.status == '0' && (
-                <Button
-                  size="mini"
-                  onClick={() => {
-                    handleEditDetail(item);
-                  }}
-                >
-                  编辑
-                </Button>
-              )}
-              {item.status == '0' && (
-                <Button
-                  size="mini"
-                  onClick={() => {
-                    handleDelete(item);
-                  }}
-                >
-                  删除
-                </Button>
-              )}
+              {item.status == '0' &&
+                userInfor.roles.includes('plan') && (
+                  <Button
+                    size="mini"
+                    onClick={() => {
+                      handleWorkflow(item);
+                    }}
+                  >
+                    发起申请
+                  </Button>
+                )}
+              {item.status == '0' &&
+                userInfor.roles.includes('plan') && (
+                  <Button
+                    size="mini"
+                    onClick={() => {
+                      handleEditDetail(item);
+                    }}
+                  >
+                    编辑
+                  </Button>
+                )}
+              {item.status == '0' &&
+                userInfor.roles.includes('plan') && (
+                  <Button
+                    size="mini"
+                    onClick={() => {
+                      handleDelete(item);
+                    }}
+                  >
+                    删除
+                  </Button>
+                )}
 
-              {item.status != '0' && (
+              {item.status && (
                 <Button
                   size="mini"
                   onClick={() => {
@@ -324,18 +324,21 @@ function MaterialEnter() {
                   详情
                 </Button>
               )}
-              {item.status == '11' ? (
-                <Button
-                  size="mini"
-                  onClick={() => {
-                    handleConfirm(item);
-                  }}
-                >
-                  审核
-                </Button>
-              ) : item.status == '1' ||
+              {item.status == '11' &&
+                userInfor.roles.includes('project-manager') && (
+                  <Button
+                    size="mini"
+                    onClick={() => {
+                      handleConfirm(item);
+                    }}
+                  >
+                    审核
+                  </Button>
+                )}
+              {(item.status == '1' ||
                 item.status == '10' ||
-                item.status == '444' ? (
+                item.status == '444') &&
+              userInfor.roles.includes('wlys') ? (
                 <Button
                   size="mini"
                   onClick={() => {

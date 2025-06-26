@@ -24,19 +24,19 @@ const SomeChartComponent = () => {
       };
     });
     setChartData(list);
-    setOptions();
+
   };
 
   const setOptions = () => {
     const xAxis = chartData.map((item) => item.name);
     const data = chartData.map((item) => item.value);
     const option = {
-      color: ['#99d3ff', '#66bcff', '#f7ac63', '#ea6a8b'],
+      color: ['#838ffa'],
       grid: {
         // left: '1%',
         // right: '1%',
         top: '14%',
-        bottom: '20%',
+        bottom: '12%',
       },
       xAxis: {
         type: 'category',
@@ -50,6 +50,12 @@ const SomeChartComponent = () => {
         axisLabel: {
           color: '#aaa',
           width: 100,
+          formatter: (str:string) => {
+            if (str.length > 5) {
+              return str.substring(0, 5) + '...';
+            }
+            return str;
+          },
         },
         splitLine: {
           show: false,
@@ -92,6 +98,9 @@ const SomeChartComponent = () => {
           type: 'line',
           data: data,
           smooth: true,
+          itemStyle: {
+            color: '#ffd159'
+          }
         },
         {
           type: 'bar',
@@ -112,7 +121,7 @@ const SomeChartComponent = () => {
   useEffect(() => {
     if (chartRef.current) {
       chartInstance = getEChartsInstance(chartRef);
-      // setOptions();
+      setOptions();
       resizeChart();
       setSpinning(false);
     }

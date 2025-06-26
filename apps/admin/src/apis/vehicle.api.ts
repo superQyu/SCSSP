@@ -65,6 +65,7 @@ const vehicle: ApiItem[] = [
       { key: 'carNo', cn: '车牌号' },
       { key: 'carBrand', cn: '车辆品牌' },
       { key: 'carType', cn: '车辆类型' },
+      { key: 'isGps', cn: '是否安装GPS' },
       { key: 'current', targetKey: 'pageNo', cn: '页码' },
       { key: 'pageSize', cn: '每页条数' },
     ],
@@ -92,6 +93,7 @@ const vehicle: ApiItem[] = [
       { key: 'insuranceDate', cn: '保险时间' },
       { key: 'attachment', cn: '保险保单照片' },
       { key: 'carStorage', cn: '车载容量' },
+      { key: 'materialEnterId', cn: '进场记录' },
     ],
   },
   {
@@ -129,6 +131,7 @@ const vehicle: ApiItem[] = [
       { key: 'insuranceDate', cn: '保险时间' },
       { key: 'attachment', cn: '保险保单照片' },
       { key: 'carStorage', cn: '车载容量' },
+      { key: 'materialEnterId', cn: '进场记录' },
     ],
   },
   {

@@ -22,6 +22,7 @@ import { AuthContext, useAppDispatch } from 'hooks';
 import { logo, title, describe } from '@/config';
 
 import Styled from './Styled';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
@@ -103,27 +104,24 @@ const Login: React.FC = () => {
 
   return (
     <Styled.LoginContainer id="login-container">
-      <img
-        className="title-posit"
-        width={'500'}
-        src={
-          new URL('@/assets/login/title.svg', import.meta.url)
-            .href
-        }
-      />
-      <img
-        className="img-posit"
-        width={'50%'}
-        src={
-          new URL('@/assets/login/img.svg', import.meta.url).href
-        }
-      />
+      <div className='login-container-area'>
+        {/* <img
+          className="title-posit"
+          src={
+            new URL('@/assets/login/title.png', import.meta.url)
+              .href
+          }
+        /> */}
+        <img
+          className="img-posit"
+          src={
+            new URL('@/assets/login/img.png', import.meta.url).href
+          }
+        />
+      </div>
       <LoginFormPage
         form={form}
         onFinish={onFinish}
-        // logo={<Avatar src={logo} />}
-        title="您好，欢迎登录！"
-        // subTitle={describe}
         loading={loading ? true : undefined}
         actions={
           <>
@@ -146,61 +144,70 @@ const Login: React.FC = () => {
           </>
         }
       >
-        <Tabs
-          className="display-none"
-          centered
-          activeKey={loginType}
-          onChange={(activeKey: any) =>
-            handlerTabsChange(activeKey as LoginType)
-          }
-          items={items}
-        ></Tabs>
-        {loginType === 'account' && (
-          <>
-            <ProFormText
-              name="username"
-              fieldProps={{
-                size: 'large',
-                prefix: (
-                  <img
-                    color="black"
-                    src={
-                      new URL(
-                        '@/assets/login/user.svg',
-                        import.meta.url
-                      ).href
-                    }
-                  />
-                ),
-              }}
-              placeholder={'用户名'}
-              rules={[
-                { required: true, message: '请输入用户名!' },
-              ]}
-              disabled={loading}
-            />
-            <ProFormText.Password
-              name="password"
-              fieldProps={{
-                size: 'large',
-                prefix: (
-                  <img
-                    src={
-                      new URL(
-                        '@/assets/login/password.svg',
-                        import.meta.url
-                      ).href
-                    }
-                  />
-                ),
-              }}
-              placeholder={'密码'}
-              rules={[
-                { required: true, message: '请输入密码！' },
-              ]}
-              disabled={loading}
-            />
-            {/* <Row>
+        <div className='login-center-form'>
+          <img
+            className='title'
+            src={
+              new URL('@/assets/login/t-0.png', import.meta.url).href
+            }
+          />
+          <Tabs
+            className="display-none"
+            centered
+            activeKey={loginType}
+            onChange={(activeKey: any) =>
+              handlerTabsChange(activeKey as LoginType)
+            }
+            items={items}
+          ></Tabs>
+          {loginType === 'account' && (
+            <>
+              <ProFormText
+                name="username"
+                fieldProps={{
+                  size: 'large',
+                  prefix: (
+                    <UserOutlined />
+                    // <img
+                    //   color="black"
+                    //   src={
+                    //     new URL(
+                    //       '@/assets/login/user.svg',
+                    //       import.meta.url
+                    //     ).href
+                    //   }
+                    // />
+                  ),
+                }}
+                placeholder={'用户名'}
+                rules={[
+                  { required: true, message: '请输入用户名!' },
+                ]}
+                disabled={loading}
+              />
+              <ProFormText.Password
+                name="password"
+                fieldProps={{
+                  size: 'large',
+                  prefix: (
+                    <LockOutlined />
+                    // <img
+                    //   src={
+                    //     new URL(
+                    //       '@/assets/login/password.svg',
+                    //       import.meta.url
+                    //     ).href
+                    //   }
+                    // />
+                  ),
+                }}
+                placeholder={'密码'}
+                rules={[
+                  { required: true, message: '请输入密码！' },
+                ]}
+                disabled={loading}
+              />
+              {/* <Row>
               <Col span={12}>
                 <ProFormText
                   name="captcha"
@@ -224,59 +231,60 @@ const Login: React.FC = () => {
                 )}
               </Col>
             </Row> */}
-          </>
-        )}
-        {loginType === 'phone' && (
-          <>
-            <ProFormText
-              fieldProps={{ size: 'large' }}
-              name="mobile"
-              placeholder={'手机号'}
-              rules={[
-                { required: true, message: '请输入手机号！' },
-                {
-                  pattern: /^1\d{10}$/,
-                  message: '手机号格式错误！',
-                },
-              ]}
-            />
-            <ProFormCaptcha
-              fieldProps={{ size: 'large' }}
-              captchaProps={{
-                size: 'large',
-              }}
-              placeholder={'请输入验证码'}
-              captchaTextRender={(timing, count) => {
-                if (timing) {
-                  return `${count} ${'获取验证码'}`;
-                }
-                return '获取验证码';
-              }}
-              name="phoneCaptcha"
-              rules={[
-                { required: true, message: '请输入验证码！' },
-              ]}
-              onGetCaptcha={async () => {
-                message.success(
-                  '获取验证码成功！验证码为：1234'
-                );
-              }}
-            />
-          </>
-        )}
-        <div className="bottom" style={{ marginBlockEnd: 60 }}>
-          <ProFormCheckbox
-            noStyle
-            name="autoLogin"
-            disabled={loading}
-            valuePropName="checked"
-          >
-            记住密码
-          </ProFormCheckbox>
-          <a style={{ float: 'right', color: 'white' }}>
-            {' '}
-            忘记密码
-          </a>
+            </>
+          )}
+          {loginType === 'phone' && (
+            <>
+              <ProFormText
+                fieldProps={{ size: 'large' }}
+                name="mobile"
+                placeholder={'手机号'}
+                rules={[
+                  { required: true, message: '请输入手机号！' },
+                  {
+                    pattern: /^1\d{10}$/,
+                    message: '手机号格式错误！',
+                  },
+                ]}
+              />
+              <ProFormCaptcha
+                fieldProps={{ size: 'large' }}
+                captchaProps={{
+                  size: 'large',
+                }}
+                placeholder={'请输入验证码'}
+                captchaTextRender={(timing, count) => {
+                  if (timing) {
+                    return `${count} ${'获取验证码'}`;
+                  }
+                  return '获取验证码';
+                }}
+                name="phoneCaptcha"
+                rules={[
+                  { required: true, message: '请输入验证码！' },
+                ]}
+                onGetCaptcha={async () => {
+                  message.success(
+                    '获取验证码成功！验证码为：1234'
+                  );
+                }}
+              />
+            </>
+          )}
+          <div className="bottom" style={{ marginBlockEnd: 30 }}>
+            <ProFormCheckbox
+              noStyle
+              name="autoLogin"
+              disabled={loading}
+              valuePropName="checked"
+            >
+              记住密码
+            </ProFormCheckbox>
+            <a style={{ float: 'right' }}>
+              忘记密码
+            </a>
+          </div>
+
         </div>
       </LoginFormPage>
     </Styled.LoginContainer>

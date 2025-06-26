@@ -7,7 +7,7 @@ import icon3 from '@/assets/images/dashboard/icon_3.png';
 import icon4 from '@/assets/images/dashboard/icon_4.png';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
-
+import { useAppSelector } from 'hooks';
 const { Meta } = Card;
 const CustomSDiv = styled.div`
   display: grid;
@@ -61,6 +61,8 @@ interface ColumnVO {
 }
 
 export default () => {
+  const { site } = useAppSelector((state) => state);
+  const { websocket } = site;
   const { server } = useBasicConfiguration();
   const { attendance, personAnalysis } = server;
 
@@ -113,6 +115,10 @@ export default () => {
   useEffect(() => {
     queryData();
   }, []);
+
+  useEffect(() => {
+    queryData();
+  }, [websocket.person]);
 
   return (
     <CustomSDiv>
