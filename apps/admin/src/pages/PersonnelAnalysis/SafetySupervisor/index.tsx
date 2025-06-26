@@ -2,30 +2,36 @@ import { useEffect, useRef, useState } from 'react';
 import { Spin } from 'antd';
 import { useECharts } from '@/context/EChartContext';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import { useAppSelector } from 'hooks';
 const SomeChartComponent = () => {
+  const { site } = useAppSelector((state) => state);
+  const { websocket } = site;
   const { server } = useBasicConfiguration();
   const { attendance } = server;
-  const { getEChartsInstance, } = useECharts();
+  const { getEChartsInstance } = useECharts();
   const chartRef = useRef(null);
   const [spinning, setSpinning] = useState(true);
-  const [chartData, setChartData] = useState<number[]>([])
+  const [chartData, setChartData] = useState<number[]>([]);
   const [xAxis, setXAxis] = useState<string[]>([]);
 
   let chartInstance: any = null;
 
   const queryData = async () => {
-    const res = await attendance.getSafetyManagerAttendanceCount();
-    const obj: any = {}
+    const res =
+      await attendance.getSafetyManagerAttendanceCount();
+    const obj: any = {};
     res.forEach((item: any) => {
       if (obj.hasOwnProperty(item.name)) {
-        obj[item.name] += item.todayAttendanceCount
+        obj[item.name] += item.todayAttendanceCount;
       } else {
-        obj[item.name] = item.todayAttendanceCount
+        obj[item.name] = item.todayAttendanceCount;
       }
     });
-    setChartData(Object.values(obj).map((item: any) => item.toFixed(2)))
-    setXAxis(Object.keys(obj))
-  }
+    setChartData(
+      Object.values(obj).map((item: any) => item.toFixed(2))
+    );
+    setXAxis(Object.keys(obj));
+  };
 
   const setOptions = () => {
     const option = {
@@ -72,7 +78,7 @@ const SomeChartComponent = () => {
         nameGap: 5,
         nameTextStyle: {
           color: '#666',
-          fontSize: 12
+          fontSize: 12,
         },
         axisLine: {
           show: false,
@@ -101,11 +107,12 @@ const SomeChartComponent = () => {
           backgroundColor: 'rgba(247, 247, 249, 1)', // 滚动条背景色
           fillerColor: 'rgba(69, 199, 173, 0.8)', // 滚动条填充色，与柱体颜色匹配
           borderColor: 'transparent',
-          handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+          handleIcon:
+            'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
           handleSize: '100%',
           textStyle: {
-            color: '#666'
-          }
+            color: '#666',
+          },
         },
         {
           type: 'inside',
@@ -114,8 +121,8 @@ const SomeChartComponent = () => {
           end: 30, // 与上面的slider保持一致
           zoomOnMouseWheel: false, // 关闭鼠标滚轮缩放
           moveOnMouseMove: true, // 鼠标移动时触发滚动
-          moveOnMouseWheel: true // 鼠标滚轮触发滚动
-        }
+          moveOnMouseWheel: true, // 鼠标滚轮触发滚动
+        },
       ],
       series: [
         {
@@ -126,7 +133,7 @@ const SomeChartComponent = () => {
             color: 'rgba(247, 247, 249, 1)',
           },
           itemStyle: {
-            color: '#45C7AD'
+            color: '#45C7AD',
           },
           barWidth: 15,
           label: {
@@ -144,15 +151,18 @@ const SomeChartComponent = () => {
   const resizeChart = () => chartInstance.resize();
 
   useEffect(() => {
-    queryData()
+    queryData();
   }, []);
+  useEffect(() => {
+    queryData();
+  }, [websocket.person]);
 
   useEffect(() => {
     chartInstance = getEChartsInstance(chartRef);
     setOptions();
-    resizeChart()
-    setSpinning(false)
-  }, [chartData])
+    resizeChart();
+    setSpinning(false);
+  }, [chartData]);
 
   useEffect(() => {
     window.addEventListener('resize', resizeChart);
@@ -162,22 +172,25 @@ const SomeChartComponent = () => {
     };
   }, []);
 
-  return (<Spin
-    wrapperClassName="cus-spin"
-    tip="加载中"
-    spinning={spinning}
-  >
-    <div className="flex justify-center items-center h-full">
-      {!chartData.length && (
-        <div className="color-#409eff">暂无数据</div>
-      )}
-      <div
-        className={`w-full h-full ${!chartData.length && 'hidden'
+  return (
+    <Spin
+      wrapperClassName="cus-spin"
+      tip="加载中"
+      spinning={spinning}
+    >
+      <div className="flex justify-center items-center h-full">
+        {!chartData.length && (
+          <div className="color-#409eff">暂无数据</div>
+        )}
+        <div
+          className={`w-full h-full ${
+            !chartData.length && 'hidden'
           }`}
-        ref={chartRef}
-      ></div>
-    </div>
-  </Spin>)
+          ref={chartRef}
+        ></div>
+      </div>
+    </Spin>
+  );
 };
 
 export default SomeChartComponent;

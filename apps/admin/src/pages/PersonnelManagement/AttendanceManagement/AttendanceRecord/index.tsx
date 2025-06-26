@@ -38,7 +38,7 @@ export default () => {
   useEffect(() => {}, []);
 
   return (
-    <div className='h-full m-18px'>
+    <div className='h-full p-18px'>
       <ProTable
            headerTitle={<SingleTitle label="考勤记录" />}
    

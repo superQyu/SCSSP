@@ -87,6 +87,7 @@ export default ({ server }: MenusPropsType) => {
                   return true;
                 }}
               />
+         
             )
           }
         />
@@ -270,9 +271,9 @@ export default ({ server }: MenusPropsType) => {
           return (
             <Tag color="error">考勤异常(连续三天未考勤)</Tag>
           );
-        }  else if (record.status == '222') {
+        } else if (record.status == '222') {
           return <Tag color="gold">已解除限制</Tag>;
-        }else {
+        } else {
           // 管理人员
           return <Tag color="warning">驳回</Tag>;
         }

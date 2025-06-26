@@ -49,9 +49,7 @@ export default (props: Props) => {
   const setOptions = () => {
     setSpinning(true);
     console.log('chartData', chartData);
-    const xAxis = chartData.map(
-      (item) => `${item.materialName} ${item.specification}`
-    );
+    const xAxis = chartData.map((item) => `${item.label}`);
 
     // 提取三个系列的数据
     const plannedData = chartData.map(
@@ -68,21 +66,53 @@ export default (props: Props) => {
       grid: {
         left: '3%',
         right: '4%',
-        bottom: '3%',
+        bottom: '10%',
+        top: '10%',
         containLabel: true,
       },
       tooltip: {
         trigger: 'axis',
         axisPointer: { type: 'shadow' },
         formatter: function (params) {
-          // 自定义tooltip内容，显示类目和各系列数据
           let res = `${params[0].name}<br/>`;
           params.forEach((item) => {
-            res += `${item.seriesName}: ${item.value}<br/>`;
+            res += `${item.seriesName}: ${item.value}  ${
+              chartData?.[item.dataIndex].measuringUnit
+            }<br/>`;
           });
           return res;
         },
       },
+      dataZoom: [
+        {
+          type: 'slider',
+          xAxisIndex: 0,
+          show: xAxis.length > 10,
+          start: 0,
+          end: 100 * (8 / Math.max(8, xAxis.length)), // 默认显示8个标签
+          height: 8,
+          bottom: 5,
+          borderColor: 'transparent',
+          backgroundColor: '#f5f7fa',
+          fillerColor: 'rgba(99, 146, 255, 0.2)',
+          handleStyle: {
+            color: '#6392FF',
+            borderColor: '#6392FF',
+            width: 10,
+            height: 8,
+          },
+          textStyle: {
+            color: '#999',
+          },
+        },
+        {
+          type: 'inside',
+          xAxisIndex: 0,
+          zoomOnMouseWheel: false, // 禁用鼠标滚轮缩放
+          moveOnMouseMove: true, // 启用鼠标拖动
+          moveOnMouseWheel: true, // 启用鼠标滚轮平移
+        },
+      ],
       // 图例配置，区分不同数据系列
       legend: {
         icon: 'circle',
@@ -103,7 +133,14 @@ export default (props: Props) => {
           color: '#999',
           interval: 0,
           margin: 10,
-          // rotate: -25,
+          formatter: function (value) {
+            if (!value) return '';
+            const parts = value.split('|');
+            if (parts.length === 1) {
+              return value;
+            }
+            return [`${parts[0]}`, `${parts[1]}`].join('\n');
+          },
         },
         axisLine: {
           show: true,
@@ -141,7 +178,7 @@ export default (props: Props) => {
         {
           name: '计划总数',
           type: 'bar',
-          barWidth: 30,
+          barWidth: 20,
           barGap: '-100%',
           color: '#D0DEFF', // 浅蓝色，模拟示例图的计划总数颜色
           data: plannedData, // 模拟计划总数数据，按需替换
@@ -149,14 +186,14 @@ export default (props: Props) => {
         {
           name: '已验收',
           type: 'bar',
-          barWidth: 30,
+          barWidth: 20,
           color: '#86DF6C', // 浅绿色，模拟已验收颜色
           data: acceptedData, // 模拟已验收数据，按需替换
         },
         {
           name: '实到数',
           type: 'bar',
-          barWidth: 30,
+          barWidth: 20,
           color: '#6392FF', // 深蓝色，模拟实到数颜色
           data: actualData, // 模拟实到数数据，按需替换
         },

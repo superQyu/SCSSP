@@ -79,7 +79,6 @@ const CustomTitle = styled.div`
 `;
 
 export default () => {
-  const [curSelect, setCurSelect] = useState('1');
   return (
     <CustomSDiv>
       <CustomCard3>

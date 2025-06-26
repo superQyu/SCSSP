@@ -47,7 +47,11 @@ export default ({ onSelect }: any) => {
     const login = await monitor.login();
     setToken('monitor_token', login.token);
     await askCameraList((res: any) => {
-      list = getPersonelList(res);
+      list = getPersonelList(res.filter((item:any)=> item.equipStatus == '1'));
+      if (list.length) {
+        setActiveIdx(0);
+        onSelect(list?.[0].code);
+      }
       setTreeData(list);
       setLoading(false);
     });
@@ -151,10 +155,12 @@ export default ({ onSelect }: any) => {
           dataSource={treeData}
           split={false}
           renderItem={(item, index) => (
-            <List.Item onClick={() => {
-              setActiveIdx(index)
-              onSelect(item.code)
-            }}>
+            <List.Item
+              onClick={() => {
+                setActiveIdx(index);
+                onSelect(item.code);
+              }}
+            >
               <CustomSDiv>
                 <div
                   className={

@@ -20,7 +20,7 @@ export default () => {
   const detailModal = useRef();
 
   return (
-    <div className='h-full m-18px'>
+    <div className='h-full p-18px'>
       <ProTable
            headerTitle={<SingleTitle label="车辆智能分析" />}
         request={async (params: ModesApi.ParamsType) => {

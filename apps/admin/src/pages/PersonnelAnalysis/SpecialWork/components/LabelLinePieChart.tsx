@@ -34,7 +34,7 @@ export default (props: Props) => {
 
   const [spinning, setSpinning] = useState(true);
   const [config, setConfig] = useState<Config>({
-    leftDistance: 35,
+    leftDistance: 50,
     color: [
       '#fb497b',
       '#fec760',
@@ -97,19 +97,19 @@ export default (props: Props) => {
         bottom: '3%',
         containLabel: true,
       },
-      legend: {
-        type: 'scroll',
-        top: 20,
-        bottom: 20,
-        right: 20,
-        orient: 'vertical',
-        backgroundColor: 'rgba(89, 141, 210, 0.13)',
-        borderRadius: 10,
-        padding: 10,
-        itemGap: 5,
-        itemWidth: 8,
-        itemHeight: 8,
-      },
+      // legend: {
+      //   type: 'scroll',
+      //   top: 20,
+      //   bottom: 20,
+      //   right: 20,
+      //   orient: 'vertical',
+      //   backgroundColor: 'rgba(89, 141, 210, 0.13)',
+      //   borderRadius: 10,
+      //   padding: 10,
+      //   itemGap: 5,
+      //   itemWidth: 8,
+      //   itemHeight: 8,
+      // },
       tooltip: {},
       series: [
         {

@@ -206,6 +206,7 @@ class AutoInterface {
           } else {
             verifyed.params = { ...verifyed.params, ...aParams };
           }
+
           return service[xhrType](
             url,
             verifyed.params,

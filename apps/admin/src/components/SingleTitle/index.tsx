@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 interface Props {
   styles?: any;
-  label: string;
+  label: string|React.ReactNode;
   subLabel?: string | React.ReactNode;
 }
 

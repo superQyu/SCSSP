@@ -79,7 +79,7 @@ function MaterialExit() {
   const { user }: { user: any } = useAppSelector(
     (state) => state
   );
-
+  const { userInfor } = user;
   const loadMore = async () => {
     if (!hasMore) return;
     const res = await materialExit.getExitList({
@@ -88,7 +88,7 @@ function MaterialExit() {
       current: pageNo + 1,
     });
     const newList = res.list.map((item: any) => {
-      item.enterDate = dayjs(item.enterDate).format(
+      item.exitDate = dayjs(item.exitDate).format(
         'YYYY-MM-DD HH:mm:ss'
       );
       return item;
@@ -115,6 +115,7 @@ function MaterialExit() {
     );
     setToken('PHONETITLE', '详情');
   };
+
   // 点击发起申请
   const handleWorkflow = (detail: any) => {
     Dialog.show({
@@ -131,7 +132,7 @@ function MaterialExit() {
             text: '确定',
             onClick: async () => {
               await materialExit.startBpm({
-                materialsEnterId: detail.id,
+                materialsExitId: detail.id,
               });
               Toast.show({
                 icon: 'success',
@@ -148,9 +149,10 @@ function MaterialExit() {
 
   // 点击编辑
   const handleEditDetail = (detail: any) => {
-    console.log('详情', detail);
     navigate(
-      `/phone/material-create?detail=${JSON.stringify(detail)}`
+      `/phone/material-exit-create?detail=${JSON.stringify(
+        detail
+      )}`
     );
   };
 
@@ -183,20 +185,20 @@ function MaterialExit() {
     });
   };
 
-  // 点击验收
+  // 点击清点
   const handleCheck = (detail: any) => {
     navigate(
-      `/phone/material-enter-detail?type=check&detail=${JSON.stringify(
+      `/phone/material-exit-detail?type=check&detail=${JSON.stringify(
         detail
       )}`
     );
-    setToken('PHONETITLE', '验收');
+    setToken('PHONETITLE', '清点');
   };
 
   // 点击确认
   const handleConfirm = (detail: any) => {
     navigate(
-      `/phone/material-enter-detail?type=confirm&detail=${JSON.stringify(
+      `/phone/material-exit-detail?type=confirm&detail=${JSON.stringify(
         detail
       )}`
     );
@@ -215,7 +217,11 @@ function MaterialExit() {
 
   return (
     <MaterialEnterBox>
-      <div className="add" onClick={handleAdd}>新增</div>
+      {userInfor.roles.includes('plan') && (
+        <div className="add" onClick={handleAdd}>
+          新增
+        </div>
+      )}
       <Input
         className="input-box"
         placeholder="请输入退料人员"
@@ -228,11 +234,7 @@ function MaterialExit() {
       />
       {list.map((item: any, i: number) => {
         return (
-          <Card
-            className="mt-10px"
-            key={i}
-          
-          >
+          <Card className="mt-10px" key={i}>
             <div className="title">
               {item.exitDate}
               {item.status == '11' ? (
@@ -241,9 +243,9 @@ function MaterialExit() {
                 </Tag>
               ) : item.status == '2' ? (
                 <Tag round color="#4ab205">
-                  已验收
+                  已出场
                 </Tag>
-              ) : item.status == '0' ? (
+              ) : !item.status ? (
                 <Tag round color="#ff4d4f">
                   未申请
                 </Tag>
@@ -279,38 +281,41 @@ function MaterialExit() {
               className="btn"
               onClick={(e) => e.stopPropagation()}
             >
-              {item.status == '0' && (
-                <Button
-                  size="mini"
-                  onClick={() => {
-                    handleWorkflow(item);
-                  }}
-                >
-                  发起申请
-                </Button>
-              )}
-              {item.status == '0' && (
-                <Button
-                  size="mini"
-                  onClick={() => {
-                    handleEditDetail(item);
-                  }}
-                >
-                  编辑
-                </Button>
-              )}
-              {item.status == '0' && (
-                <Button
-                  size="mini"
-                  onClick={() => {
-                    handleDelete(item);
-                  }}
-                >
-                  删除
-                </Button>
-              )}
+              {!item.status &&
+                userInfor.roles.includes('plan') && (
+                  <Button
+                    size="mini"
+                    onClick={() => {
+                      handleWorkflow(item);
+                    }}
+                  >
+                    发起申请
+                  </Button>
+                )}
+              {!item.status &&
+                userInfor.roles.includes('plan') && (
+                  <Button
+                    size="mini"
+                    onClick={() => {
+                      handleEditDetail(item);
+                    }}
+                  >
+                    编辑
+                  </Button>
+                )}
+              {!item.status &&
+                userInfor.roles.includes('plan') && (
+                  <Button
+                    size="mini"
+                    onClick={() => {
+                      handleDelete(item);
+                    }}
+                  >
+                    删除
+                  </Button>
+                )}
 
-              {item.status != '0' && (
+              {
                 <Button
                   size="mini"
                   onClick={() => {
@@ -319,32 +324,30 @@ function MaterialExit() {
                 >
                   详情
                 </Button>
-              )}
-              {item.status == '11' ? (
-                <Button
-                  size="mini"
-                  onClick={() => {
-                    handleConfirm(item);
-                  }}
-                >
-                  审核
-                </Button>
-              ) : item.status == '1' ||
-                item.status == '10' ||
-                item.status == '444' ? (
-                <Button
-                  size="mini"
-                  onClick={() => {
-                    handleCheck(item);
-                  }}
-                >
-                  清点
-                </Button>
-              ) : (
-                ''
-              )}
+              }
+              {item.status == '11' &&
+                userInfor.roles.includes('project-manager') && (
+                  <Button
+                    size="mini"
+                    onClick={() => {
+                      handleConfirm(item);
+                    }}
+                  >
+                    审核
+                  </Button>
+                )}
+              {item.status == '1' &&
+                userInfor.roles.includes('wlys') && (
+                  <Button
+                    size="mini"
+                    onClick={() => {
+                      handleCheck(item);
+                    }}
+                  >
+                    清点
+                  </Button>
+                )}
             </Space>
-            {/* </div> */}
           </Card>
         );
       })}

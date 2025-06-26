@@ -9,10 +9,18 @@ export default () => {
 
   return (
     <ProCard split="vertical" className="h-full">
-      <ProCard colSpan="400px" ghost className="h-full">
-        <Left onChange={(thirdLevelCode: any) => setCode(thirdLevelCode)} />
+      <ProCard colSpan="450px" ghost className="h-full">
+        <Left
+          onChange={(thirdLevelCode: any) =>
+            setCode(thirdLevelCode)
+          }
+        />
       </ProCard>
-      <ProCard className="h-full" colSpan="calc(100% - 400px)" bordered>
+      <ProCard
+        className="h-full"
+        colSpan="calc(100% - 400px)"
+        bordered
+      >
         <Right code={code} />
       </ProCard>
     </ProCard>

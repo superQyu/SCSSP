@@ -16,9 +16,6 @@ import {
   Button,
   message,
   DatePicker,
-  Space,
-  Table,
-  Alert,
   Modal,
   Popconfirm,
   Upload,
@@ -30,7 +27,6 @@ import Styled from '@/components/Styled';
 import {
   PlusOutlined,
   SearchOutlined,
-  UploadOutlined,
   DownloadOutlined,
   InboxOutlined,
 } from '@ant-design/icons';
@@ -38,7 +34,7 @@ import SingleTitle from '@/components/SingleTitle';
 import { useAppSelector } from 'hooks';
 // 文件下载工具
 import { downFiles } from 'utils';
-const { RangePicker } = DatePicker;
+
 const { Dragger } = Upload;
 
 const valueEnum = {
@@ -104,33 +100,6 @@ import type { ModesApi } from './modes/model';
 import PMmodel, {
   type ColumnsParamsProps,
 } from './modes/PM.model';
-import { divide } from 'lodash';
-
-// const uploadProps: UploadProps = {
-//   name: 'file',
-//   maxCount: 1,
-//   customRequest: (options) => {
-// console.log('options',options)
-//   },
-
-//   onChange(info) {
-//     console.log(2222, info.file)
-//     // const { status } = info.file;
-//     // if (status !== 'uploading') {
-//     //   console.log(info.file, info.fileList);
-//     // }
-//     // if (status === 'done') {
-//     //   message.success(
-//     //     `${info.file.name} file uploaded successfully.`
-//     //   );
-//     // } else if (status === 'error') {
-//     //   message.error(`${info.file.name} file upload failed.`);
-//     // }
-//   },
-//   onDrop(e) {
-//     console.log('err', e.dataTransfer.files);
-//   },
-// };
 
 export default () => {
   const {
@@ -153,7 +122,7 @@ export default () => {
   const actionRef = useRef<ActionType>();
   const { server } = useBasicConfiguration();
   //  api server
-  const { PMIM, menus: M } = server;
+  const { PMIM, menus: M, person: P } = server;
 
   // 初始化 表格列表项
   const initColumns = PMmodel({ server });
@@ -291,7 +260,7 @@ export default () => {
   ];
 
   return (
-    <div className="h-full m-18px">
+    <div className="h-full p-18px">
       {/* <Alert message="表格字典为同步" type="warning" showIcon /> */}
       {contextHolder}
       <ProTable
@@ -337,7 +306,7 @@ export default () => {
           ...initColumns,
           {
             title: '操作',
-            width: 160,
+            width: 200,
             valueType: 'option',
             key: 'option',
             fixed: 'right',
@@ -349,7 +318,7 @@ export default () => {
             ) => {
               const btns = [
                 <a
-                  key="editable"
+                  key="approval"
                   onClick={() => {
                     tabNavigate({
                       namePath: `项目人员管理/审核人员信息`,
@@ -385,7 +354,7 @@ export default () => {
                   <a>删除</a>
                 </Popconfirm>,
                 <a
-                  key="editable"
+                  key="view"
                   onClick={() => {
                     tabNavigate({
                       namePath: `项目人员管理/审核人员信息`,
@@ -399,15 +368,24 @@ export default () => {
                   查看
                 </a>,
                 <Popconfirm
-                  key="delete"
-                  title={<div className='color-#ff0000'>确认是否将该人员进行退场</div>}
-                  onConfirm={() => {
+                  key="exit"
+                  title={
+                    <div className="color-#ff0000">
+                      确认是否将该人员进行退场
+                    </div>
+                  }
+                  onConfirm={async () => {
+                    await P.setPersonInactive({
+                      personnelInfoId: record.id,
+                    });
+
                     message.success('操作成功');
+                    await actionRef.current?.reload();
                   }}
                   okText="确认"
                   cancelText="取消"
                 >
-                  <a className='color-#ff0000'>退场</a>
+                  <a className="color-#ff0000">退场</a>
                 </Popconfirm>,
               ];
 
@@ -422,6 +400,8 @@ export default () => {
                 ? btns
                 : record.status == '2'
                 ? btns.slice(2)
+                : record.isActive
+                ? btns.slice(0, -1)
                 : btns.slice(1);
             },
           },

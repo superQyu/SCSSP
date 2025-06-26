@@ -16,12 +16,11 @@ const FooterDiv = styled.div`
 export default function () {
   const navigate = useNavigate();
   const { server } = useBasicConfiguration();
-  const { materialEnter } = server;
+  const { materialExit } = server;
   const { formColumns, MaterialColumns } = siteModel();
   const [searchParams] = useSearchParams();
   const detail = JSON.parse(searchParams.get('detail'));
   const type = searchParams.get('type');
-
   const materialForms =
     detail.materialsExitDetailsWithInventoryRespVOS.map(() => {
       const [form] = Form.useForm();
@@ -33,9 +32,9 @@ export default function () {
     const materialValuesList = await Promise.all(
       materialForms.map((form) => form.validateFields())
     );
-    await materialEnter.materialAccept({
-      materialsEnterDetailsSaveReqVOS: materialValuesList,
-      materialsEnterSaveReqVO: detail,
+    await materialExit.materialAccept({
+      materialsExitDetailsSaveReqVOS: materialValuesList,
+      materialsExitSaveReqVO: detail,
     });
     Toast.show({
       icon: 'success',
@@ -46,7 +45,7 @@ export default function () {
 
   // 点击审核
   const handleComfirm = async () => {
-    await materialEnter.materialExamine({
+    await materialExit.materialExamine({
       materialsEnterId: detail?.id,
       isConfirm: '通过',
     });
@@ -85,9 +84,10 @@ export default function () {
               mode="card"
               form={materialForms[i]}
               initialValues={el}
+              key={i}
             >
               <Form.Header>物料{i + 1}</Form.Header>
-              {MaterialColumns.map((item: FormColumnVO, i) => {
+              {MaterialColumns.map((item: FormColumnVO, j) => {
                 return (
                   <Form.Item
                     label={item.label}
@@ -95,7 +95,7 @@ export default function () {
                     key={item.key}
                   >
                     {item.formProp ? (
-                      item.formProp(item)
+                      item.formProp(el)
                     ) : (
                       <Input disabled={item.disabled} />
                     )}

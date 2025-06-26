@@ -1,7 +1,7 @@
 import './App.scss';
 
 import { cloneDeep } from 'lodash';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Navigate,
   RouterProvider,
@@ -25,26 +25,40 @@ function App() {
   };
   // console.log('app中获取保存在store中的user', user);
   const { menu } = user;
-  console.log('app中获取保存在store中的菜单', menu);
+  const [isMobile, setIsMobile] = useState(false);
 
   const cloneDefaultRoutes = cloneDeep(defaultRoutes);
   const { path } =
     JSON.parse(getToken('BREADCRUMBS') || '{}') || {};
 
-
   const ROUTETREE = filepathToElement(menu);
-  // console.log('处理后的动态路由', ROUTETREE);
-  const firstTo = path || GetFirstPath(ROUTETREE);
-  /** 预处理 / 默认跳转路由  默认为用户路由 列表的第一项 */
+
+  const firstTo = isMobile ? '/phone/home': (path || GetFirstPath(ROUTETREE));
+
   cloneDefaultRoutes[0].children = [
     ...ROUTETREE,
     { path: '/', element: <Navigate to={firstTo} /> },
-    // { index: true, element: <Navigate to={firstTo} /> },
     ...cloneDefaultRoutes[0].children,
   ];
 
   const router = createBrowserRouter([...cloneDefaultRoutes]);
-  useEffect(() => { }, [menu]);
+  useEffect(() => {}, [menu]);
+
+  useEffect(() => {
+    const checkIsMobile = () => {
+      const isMobileDevice =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        );
+      setIsMobile(isMobileDevice);
+    };
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+    };
+  }, []);
+
   return <RouterProvider router={router}></RouterProvider>;
 }
 

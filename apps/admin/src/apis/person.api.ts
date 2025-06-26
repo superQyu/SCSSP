@@ -10,13 +10,19 @@ const person: ApiItem[] = [
     description: '录入人员信息',
     params: [
       {
-        key: 'tenant-id', location: 'header', value: "1", valueAttrs: {
-          value: "1"
-        }
+        key: 'tenant-id',
+        location: 'header',
+        value: '1',
+        valueAttrs: {
+          value: '1',
+        },
       },
       { key: 'Authorization', location: 'header' },
       { key: 'personnelInfoSaveReqVO', cn: '用户基础信息' },
-      { key: 'personnelCertificateSaveReqVOS', cn: '人员证书信息' },
+      {
+        key: 'personnelCertificateSaveReqVOS',
+        cn: '人员证书信息',
+      },
       { key: 'entryInfoSaveReqVO', cn: '人员进场信息' },
     ],
   },
@@ -28,13 +34,19 @@ const person: ApiItem[] = [
     description: '录入人员信息',
     params: [
       {
-        key: 'tenant-id', location: 'header', value: "1", valueAttrs: {
-          value: "1"
-        }
+        key: 'tenant-id',
+        location: 'header',
+        value: '1',
+        valueAttrs: {
+          value: '1',
+        },
       },
       { key: 'Authorization', location: 'header' },
       { key: 'personnelInfoSaveReqVO', cn: '用户基础信息' },
-      { key: 'personnelCertificateSaveReqVOS', cn: '人员证书信息' },
+      {
+        key: 'personnelCertificateSaveReqVOS',
+        cn: '人员证书信息',
+      },
       { key: 'entryInfoSaveReqVO', cn: '人员进场信息' },
     ],
   },
@@ -46,14 +58,16 @@ const person: ApiItem[] = [
     description: '项目经理审核人员信息',
     params: [
       {
-        key: 'tenant-id', location: 'header', value: "1", valueAttrs: {
-          value: "1"
-        }
+        key: 'tenant-id',
+        location: 'header',
+        value: '1',
+        valueAttrs: {
+          value: '1',
+        },
       },
       { key: 'Authorization', location: 'header' },
       { key: 'personnelInfoId', cn: '用户基础信息' },
       { key: 'isConfirm', cn: '通过或者驳回' },
-
     ],
   },
   {
@@ -64,9 +78,12 @@ const person: ApiItem[] = [
     description: '驳回后再次提交人员信息',
     params: [
       {
-        key: 'tenant-id', location: 'header', value: "1", valueAttrs: {
-          value: "1"
-        }
+        key: 'tenant-id',
+        location: 'header',
+        value: '1',
+        valueAttrs: {
+          value: '1',
+        },
       },
       { key: 'Authorization', location: 'header' },
       { key: 'personnelInfoId', cn: '用户基础信息' },
@@ -90,9 +107,7 @@ const person: ApiItem[] = [
     type: 'GET',
     name: '信息管理',
     description: '人员信息列表',
-    params: [
-      { key: 'Authorization', location: 'header' },
-    ],
+    params: [{ key: 'Authorization', location: 'header' }],
   },
   {
     key: 'uploadFile',
@@ -103,7 +118,17 @@ const person: ApiItem[] = [
     params: [
       { key: 'Authorization', location: 'header' },
       { key: 'path', cn: '文件附件' },
-
+    ],
+  },
+  {
+    key: 'setPersonInactive',
+    url: `${ADMIN_API}/wisdom/personnel-info/setPersonInactive`,
+    type: 'GET',
+    name: '人员退场',
+    description: '人员退场',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'personnelInfoId', cn: '人员id' },
     ],
   },
 ];

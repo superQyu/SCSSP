@@ -20,6 +20,7 @@ import { RebuildTree, flattenArray, sortMenu } from 'utils';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import setModel from '../modes/form.model';
 import { ToString } from '@/utils/transform';
+import dayjs from 'dayjs';
 
 interface Props {
   /** 控制 Modal 是否显示 */
@@ -40,13 +41,14 @@ const AddMenus: React.FC<Props> = ({
   onStateChange,
 }: Props) => {
   const { server } = useBasicConfiguration();
-  const { vehicle: V } = server;
+  const { vehicle: V, materialEnter: M } = server;
   const formRef = useRef<FormInstance>(null);
   const [title] = useState<string>('新增车辆进出场备案');
   const [loading, setLoading] = useState<boolean>(false);
   // 对传入的图片进行控制
   const [picture, setPicture] = useState<string[]>([]);
   const [open, setOpen] = useState<boolean>(openModal);
+  const [materials, setMaterials] = useState([]);
 
   // 单位信息表单的默认值
   const [formData, setFormData] = useState<MenusType>({
@@ -56,9 +58,32 @@ const AddMenus: React.FC<Props> = ({
 
   const { formColumns } = setModel(formRef, picture);
 
+  const queryMaterial = async () => {
+    const res = await M.getEnterList({});
+    const options = res.list.map((item: any) => {
+      const materials = item.materialsDetailsWithInventoryRespVOS
+        .map((el, i) => {
+          return `${el.materialName}`;
+        })
+        .join('和');
+      return {
+        label: `${dayjs(item.enterDate).format(
+          'YYYY-MM-DD HH:mm:ss'
+        )} ${materials}`,
+        value: item.id,
+      };
+    });
+    setMaterials(options);
+  };
+
+  useEffect(() => {
+    queryMaterial();
+  }, []);
+
   useEffect(() => {
     setOpen(openModal);
   }, [openModal]);
+
   useEffect(() => {
     setPicture(subForm.attachment?.split('@'));
   }, [subForm]);
@@ -75,7 +100,6 @@ const AddMenus: React.FC<Props> = ({
     try {
       const values: MenusType =
         await formRef.current?.validateFields();
-      console.log('表单校验后的值', values);
       setLoading(true);
       V[
         subForm.id ? 'vehicleApproveUpdate' : 'vehicleApproveAdd'
@@ -84,6 +108,10 @@ const AddMenus: React.FC<Props> = ({
         id: subForm.id,
         attachment:
           values.attachment && values.attachment?.join('@'),
+        materialEnterId:
+          materials.find(
+            (item: any) => item.label == values.materialEnterName
+          )?.value || '',
       })
         .then(() => {
           message.success('操作成功！');

@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 import { ProTable } from 'components';
 import { type ActionType } from '@ant-design/pro-components';
-import { Button, message, Popconfirm } from 'antd';
+import { Button, message, Popconfirm, Spin } from 'antd';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import EditDialog from './components/editdialog';
 import ExpandTable from './ExpandTable';
@@ -10,15 +10,23 @@ import Styled from '@/components/Styled';
 import SingleTitle from '@/components/SingleTitle';
 import dayjs from 'dayjs';
 
+import './index.scss';
+
+// redux 相关
+import { useAppSelector } from 'hooks';
+
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 // 表格相关
 import siteModel from './models/table.model';
 
 export default ({ onChange }: any) => {
-  // api 相关
   const { server } = useBasicConfiguration();
   const { materialExit } = server;
+
+  const { user }: { user: any } = useAppSelector(
+    (state) => state
+  );
 
   // 初始化表格列
   const { fColumns, cColumns } = siteModel({ server });
@@ -31,6 +39,10 @@ export default ({ onChange }: any) => {
     useState<boolean>(false);
   // 控制详情表单
   const [detail, setDetail] = useState({});
+  // 流程状态
+  const [status, setStatus] = useState('0');
+  // 数据加载中，主要用于发起流程
+  const [spinning, setSpinning] = useState(false);
 
   // 修改表单打开关闭状态
   const handleModalStateChange = async (state: boolean) => {
@@ -61,115 +73,201 @@ export default ({ onChange }: any) => {
     return res;
   };
 
+  // 发起流程
+  const onBpm = async (id: number) => {
+    setSpinning(true);
+    materialExit.startBpm({ materialsExitId: id }).then(() => {
+      firstTableRef.current?.reload();
+      message.success('发起流程成功！');
+      setSpinning(false);
+    });
+  };
+
   return (
-    <div className='h-full m-18px'>
-      <ProTable
-        // rowKey="key"
-        actionRef={firstTableRef}
-        headerTitle={<SingleTitle label="物料/机械出场" />}
-        columns={[
-          ...fColumns,
-          {
-            title: '操作',
-            width: 100,
-            valueType: 'option',
-            dataIndex: 'option',
-            render: (
-              _text: any,
-              record: any,
-              _: any,
-              action: any
-            ) => [
-              <a
-                key="editable"
-                onClick={() => {
-                  // console.log('点击了编辑')
-                  handleModalStateChange(true);
-                  setDetail(record);
-                }}
-              >
-                编辑
-              </a>,
-              <Popconfirm
-                key="delete"
-                title="删除此项"
-                onConfirm={() => onDelete(record.id)}
-                okText="确认"
-                cancelText="取消"
-              >
-                <a>删除</a>
-              </Popconfirm>,
-            ],
-          },
-        ]}
-        request={async (params = {}) => {
-          // console.log('Table 查询参数', params)
-          const res = await materialExit.getExitList(params);
-          res.list = res.list.map((item: any) => {
-            item.exitDate = dayjs(item.exitDate).format(
-              'YYYY-MM-DD HH:mm:ss'
-            );
-            return item;
-          });
-          // console.log('物料进场列表', res);
-          return {
-            // ...params,
-            // success: true,
-            data: res.list,
-            total: res.total,
-          };
-        }}
-        form={{
-          ignoreRules: false,
-        }}
-        scroll={{ y: 'auto' }}
-        search={{
-          labelWidth: 'auto',
-          optionRender: (
-            { searchText }: any,
-            { form }: any,
-            dom: any
-          ) => {
-            return [
-              dom[0],
-              <Button
-                type="primary"
-                key="sub"
-                icon={<SearchOutlined />}
-                onClick={() => form?.submit()}
-              >
-                {searchText}
-              </Button>,
-            ];
-          },
-        }}
-        toolBarRender={() => [
-          <Styled.ExportButton
-            api="exportMaterialsExit"
-            fileName="物料退场导出"
-          />,
-          <Button
-            icon={<PlusOutlined />}
-            onClick={() => setDialogVisible(true)}
-            type="primary"
-          >
-            新建
-          </Button>,
-        ]}
-        editable={{}}
-        expandable={{
-          expandedRowRender: (record: any) =>
-            ExpandTable(
-              { record, server, cColumns, onChange },
-              firstTableRef
-            ),
-        }}
-        pagination={{
-          pageSize: 10,
-        }}
-      ></ProTable>
+    <div className="h-full p-18px">
+      <Spin spinning={spinning}>
+        <ProTable
+          actionRef={firstTableRef}
+          headerTitle={<SingleTitle label="物料/机械出场" />}
+          columns={[
+            ...fColumns,
+            {
+              title: '操作',
+              width: 160,
+              valueType: 'option',
+              dataIndex: 'option',
+              render: (
+                _text: any,
+                record: any,
+                _: any,
+                action: any
+              ) => {
+                if (
+                  // 计划员,进行新增/编辑/删除/发起申请
+                  !record.status &&
+                  user.userInfor.roles.find(
+                    (item: string) => item == 'plan'
+                  )
+                ) {
+                  return [
+                    <div key="1">
+                      <Popconfirm
+                        title="发起申请后将无法编辑"
+                        onConfirm={() => onBpm(record.id)}
+                        okText="确认"
+                        cancelText="取消"
+                      >
+                        <a>发起申请</a>
+                      </Popconfirm>
+                    </div>,
+                    <div key="2">
+                      <a
+                        onClick={() => {
+                          setStatus('0');
+                          handleModalStateChange(true);
+                          setDetail(record);
+                        }}
+                      >
+                        编辑
+                      </a>
+                    </div>,
+                    <div key="3">
+                      <Popconfirm
+                        title="删除此项"
+                        onConfirm={() => onDelete(record.id)}
+                        okText="确认"
+                        cancelText="取消"
+                      >
+                        <a>删除</a>
+                      </Popconfirm>
+                    </div>,
+                  ];
+                } else if (
+                  // 项目经理,进行审核
+                  record.status == '11' &&
+                  user.userInfor.roles.find(
+                    (item: string) => item == 'project-manager'
+                  )
+                ) {
+                  return [
+                    <div key="4">
+                      <a
+                        onClick={() => {
+                          setStatus('11');
+                          handleModalStateChange(true);
+                          setDetail(record);
+                        }}
+                      >
+                        审核
+                      </a>
+                    </div>,
+                  ];
+                } else {
+                  // 验收员,进行清点,填写清点数量等内容
+                  return [
+                    <div key="5">
+                      {record.status == '1' &&
+                        user.userInfor.roles.find(
+                          (item: string) =>
+                            item == 'wlys' ||
+                            item == 'super_admin'
+                        ) && (
+                          <a
+                            onClick={() => {
+                              setStatus('1');
+                              handleModalStateChange(true);
+                              setDetail(record);
+                            }}
+                          >
+                            清点
+                          </a>
+                        )}
+                    </div>,
+                  ];
+                }
+              },
+            },
+          ]}
+          request={async (params = {}) => {
+            const res = await materialExit.getExitList(params);
+            res.list = res.list.map((item: any) => {
+              item.exitDate = dayjs(item.exitDate).format(
+                'YYYY-MM-DD HH:mm:ss'
+              );
+              return item;
+            });
+            return {
+              data: res.list,
+              total: res.total,
+            };
+          }}
+          form={{
+            ignoreRules: false,
+          }}
+          scroll={{ y: 'auto' }}
+          search={{
+            labelWidth: 'auto',
+            optionRender: (
+              { searchText }: any,
+              { form }: any,
+              dom: any
+            ) => {
+              return [
+                dom[0],
+                <Button
+                  type="primary"
+                  key="sub"
+                  icon={<SearchOutlined />}
+                  onClick={() => form?.submit()}
+                >
+                  {searchText}
+                </Button>,
+              ];
+            },
+          }}
+          toolBarRender={() => {
+            if (
+              user.userInfor.roles.find(
+                (item: string) => item == 'plan'
+              )
+            ) {
+              return [
+                <Styled.ExportButton
+                  api="exportMaterialsEnter"
+                  fileName="物料出场导出"
+                />,
+                <Button
+                  icon={<PlusOutlined />}
+                  onClick={() => {
+                    setStatus('0');
+                    handleModalStateChange(true);
+                    setDetail({});
+                  }}
+                  type="primary"
+                >
+                  新建
+                </Button>,
+              ];
+            } else {
+              return [];
+            }
+          }}
+          editable={{ onSave }}
+          expandable={{
+            expandedRowRender: (record: any) =>
+              ExpandTable(
+                { record, server, cColumns, onChange },
+                firstTableRef
+              ),
+          }}
+          pagination={{
+            pageSize: 10,
+          }}
+        ></ProTable>
+      </Spin>
       <EditDialog
         key={`${dialogVisible}`}
+        status={status}
         detail={detail}
         openModal={dialogVisible}
         onStateChange={handleModalStateChange}

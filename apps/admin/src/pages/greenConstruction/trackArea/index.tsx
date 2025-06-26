@@ -38,7 +38,7 @@ export default () => {
   
 
   return (
-    <div className='h-full m-18px'>
+    <div className='h-full p-18px'>
       <ProTable
         headerTitle={<SingleTitle label="轨迹区域管理" />}
         request={async (params: ModesApi.ParamsType) => {

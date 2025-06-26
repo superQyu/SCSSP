@@ -76,24 +76,16 @@ export default function DropdownExample() {
           return ref.getFormValues();
         }
       });
-    // console.log('create', {
-    //   materialsEnterSaveReqVO: mainFormValues,
-    //   materialsEnterDetailsSaveReqVOS: materialBlockValues,
-    // });
-    // return;
     if (detail) {
       await materialExit.updateExit({
-        materialsEnterSaveReqVO: {
+        materialsExitSaveReqVO: {
           ...mainFormValues,
-          enterDate: new Date(
-            mainFormValues.enterDate
-          ).getTime(),
           id: detail.id,
         },
-        materialsEnterDetailsSaveReqVOS: materialBlockValues.map(
+        materialsExitDetailsSaveReqVOS: materialBlockValues.map(
           (item, i) => ({
             ...item,
-            materialEnterId: detail.id,
+            materialExitId: detail.id,
           })
         ),
       });
@@ -150,7 +142,8 @@ export default function DropdownExample() {
   useEffect(() => {
     setToken('PHONETITLE', detail ? '编辑' : '新建');
     setMaterialBlockCount(
-      detail?.materialsDetailsWithInventoryRespVOS.length || 1
+      detail?.materialsExitDetailsWithInventoryRespVOS?.length ||
+        1
     );
 
     queryDepartment();
@@ -240,7 +233,7 @@ export default function DropdownExample() {
       {Array.from({ length: materialBlockCount }, (_, index) => (
         <MaterialBlock
           initialValue={
-            detail?.materialsDetailsWithInventoryRespVOS?.[
+            detail?.materialsExitDetailsWithInventoryRespVOS?.[
               index
             ] || {}
           }

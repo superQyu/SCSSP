@@ -55,9 +55,7 @@ export default (props: Props) => {
   // 控制是否刷新ProUpload
   const [refresh, setRefresh] = useState<boolean>(false);
 
-  // 可编辑表格扩展项中表头的显示逻辑
   const expandTitle1 = (record: any) => {
-    // 如果点击了编辑, 统一展示合格证件
     if (
       showUploadButton &&
       tableRef.current.getCurrentRow() == record.id

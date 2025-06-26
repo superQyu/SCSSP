@@ -33,8 +33,8 @@ const LoginContainer = styled.div(() => ({
 
     // 表单标题区域
     '.ant-pro-form-login-page-top': {
-      '.ant-pro-form-login-page-header':{
-        width:"87%",
+      '.ant-pro-form-login-page-header': {
+        width: "87%",
       },
       '.ant-pro-form-login-page-title': {
         color: 'white',
@@ -52,35 +52,25 @@ const LoginContainer = styled.div(() => ({
 
         // 各个输入框
         '.ant-input-affix-wrapper': {
-          background: 'transparent',
-          color: '#1ef8ff',
           'border-radius': '0px',
-          border: '0px',
-          'border-bottom': '1px solid white',
           '&-focused': {
-            'box-shadow': 'none',
+
           },
           // 输入框 input 相关
           '& input::placeholder': {
-            color: '#ccc',
           },
           // 解决浏览器自动填充样式问题
-          '& input:-webkit-autofill': {
-            '-webkit-transition-delay': '99999s',
-            '-webkit-transition': 'color 99999s ease-out, background-color 99999s ease-out',
-          },
+          '& input:-webkit-autofill': {},
           // 输入框最左侧的图标
           '.ant-input-prefix::after': {
             content: "''",
             width: '1px',
             height: '23px',
-            background: 'white',
             margin: '0 8px 0 10px',
           },
           // 输入框最右侧的图标
           '.ant-input-suffix': {
             '& svg': {
-              color: 'white',
             },
           },
         },
@@ -111,10 +101,10 @@ const LoginContainer = styled.div(() => ({
 }));
 
 const ToScreenButton = styled(Button)(() => ({
-  color: '#05D5FF !important',
+  color: '#0a5ad1 !important',
   background: 'transparent !important',
-  borderColor: '#05D5FF !important',
-  opacity: 0.65,
+  borderColor: '#0a5ad1 !important',
+  opacity: 0.85,
 
   '&:hover': {
     opacity: 1,

@@ -10,6 +10,7 @@ import SpecialWork from './components/SpecialWork';
 import RealData from '@/pages/PersonnelAnalysis/RealData';
 import MaterialSummary from './components/MaterialSummary';
 import CertificateWarn from '@/pages/PersonnelAnalysis/CertificateWarn';
+import { useNavigate } from 'react-router-dom';
 
 const CustomSDiv = styled.div`
   display: grid;
@@ -77,7 +78,7 @@ const CustomCard3 = styled(CustomCard)(() => ({
 }));
 
 export default () => {
-  const [curSelect, setCurSelect] = useState('1');
+  const navigator = useNavigate();
   return (
     <>
       <CustomSDiv>
@@ -89,7 +90,18 @@ export default () => {
         </CustomCard>
 
         <CustomCard
-          title={<SingleTitle label="实时监控" />}
+          title={
+            <SingleTitle
+              label={
+                <div
+                  className="cursor-pointer"
+                  onClick={() => navigator('/Camera')}
+                >
+                  实时监控
+                </div>
+              }
+            />
+          }
           style={{ gridRow: '1 / 4', gridColumn: '2 / 3' }}
         >
           <Monitor />
@@ -99,20 +111,50 @@ export default () => {
             <RealAttendance />
           </CustomCard2>
           <CustomCard2
-            title={<SingleTitle label="管理人员考勤" />}
+            title={<SingleTitle label="管理人员考勤(汇总)" />}
           >
             <ManagementAttendance />
           </CustomCard2>
           <CustomCard2
             style={{ gridRow: '1 / 3', gridColumn: '2 / 3' }}
-            title={<SingleTitle label="实时动态" />}
+            title={
+              <SingleTitle
+                label={
+                  <div
+                    className="cursor-pointer"
+                    onClick={() =>
+                      navigator(
+                        '/PM/AttendanceManagement/AttendanceRecord'
+                      )
+                    }
+                  >
+                    实时动态
+                  </div>
+                }
+              />
+            }
           >
             <RealData />
           </CustomCard2>
         </CustomCard3>
 
         <CustomCard
-          title={<SingleTitle label="物料汇总" />}
+          title={
+            <SingleTitle
+              label={
+                <div
+                  className="cursor-pointer"
+                  onClick={() =>
+                    navigator(
+                      '/MaterialManagement/materialAnalysis'
+                    )
+                  }
+                >
+                  物料汇总
+                </div>
+              }
+            />
+          }
           style={{ gridRow: '1 / 2', gridColumn: '3 / 4' }}
         >
           <MaterialSummary />

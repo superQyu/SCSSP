@@ -6,7 +6,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 const SomeChartComponent = () => {
   const { server } = useBasicConfiguration();
-  const { attendance } = server;
+  const { personAnalysis: P } = server;
   const { getEChartsInstance } = useECharts();
 
   const chartRef = useRef(null);
@@ -16,55 +16,25 @@ const SomeChartComponent = () => {
   let chartInstance: any = null;
 
   const queryData = async () => {
-    const res =
-      await attendance.getSafetyManagerAttendanceCount();
-    setChartData([
-      {
-        name: '40岁以下',
-        value: 10,
-      },
-      {
-        name: '40~50岁',
-        value: 20,
-      },
-      {
-        name: '50~60岁',
-        value: 5,
-      },
-      {
-        name: '60岁以上',
-        value: 30,
-      },
-    ]);
-    setOptions([
-      {
-        name: '40岁以下',
-        value: 10,
-      },
-      {
-        name: '40~50岁',
-        value: 20,
-      },
-      {
-        name: '50~60岁',
-        value: 15,
-      },
-      {
-        name: '60岁以上',
-        value: 30,
-      },
-    ]);
+    const res = await P.getPersonnelAge();
+    const list = res.map((item) => {
+      return {
+        name: item.ageGroup,
+        value: item.ageGroupCount,
+      };
+    });
+    setChartData(list);
   };
 
-  const setOptions = (data: any) => {
-    const xAxis = data.map((item) => item.name);
+  const setOptions = () => {
+    const xAxis = chartData.map((item) => item.name);
     const option = {
-      color: ['#99d3ff', '#66bcff', '#f7ac63', '#ea6a8b'],
+      color: ['#5b9ff3'],
       grid: {
         // left: '1%',
         // right: '1%',
         top: '14%',
-        bottom: '20%',
+        bottom: '12%',
       },
       xAxis: {
         type: 'category',
@@ -118,13 +88,19 @@ const SomeChartComponent = () => {
       series: [
         {
           type: 'line',
-          data: data,
+          data: chartData,
           smooth: true,
+          label: {
+            show: true,
+          },
+          itemStyle: {
+            color: '#ffd159'
+          }
         },
         {
           type: 'bar',
           barMaxWidth: 15,
-          data: data,
+          data: chartData,
         },
       ],
     };
@@ -140,7 +116,7 @@ const SomeChartComponent = () => {
   useEffect(() => {
     if (chartRef.current) {
       chartInstance = getEChartsInstance(chartRef);
-      // setOptions();
+      setOptions();
       resizeChart();
       setSpinning(false);
     }

@@ -58,5 +58,69 @@ const personAnalysis: ApiItem[] = [
     description: '获取公司解除限制人数 ',
     params: [{ key: 'Authorization', location: 'header' }],
   },
+  {
+    key: 'selectAttendanceDailtStatistics',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/selectAttendanceDailtStatistics`,
+    type: 'GET',
+    name: '获取公司今日打卡人数，昨日打卡人数，上月同日打卡人数 ',
+    description:
+      '获取公司今日打卡人数，昨日打卡人数，上月同日打卡人数 ',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'getPersonnelNum',
+    url: `${ADMIN_API}/wisdom/personnel-info/getPersonnelNum`,
+    type: 'GET',
+    name: '获取人员数量统计',
+    description: '获取人员数量统计',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'getPersonnelAge',
+    url: `${ADMIN_API}/wisdom/personnel-info/getPersonnelAge`,
+    type: 'GET',
+    name: '获取人员年龄统计',
+    description: '获取人员年龄统计',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'getAttendanceCountYearList',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/getAttendanceCountYearList`,
+    type: 'GET',
+    name: '统计用户当年工时，管理员，安全员，工人',
+    description: '统计用户当年工时，管理员，安全员，工人',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'getAttendanceCountMonthList',
+    url: `${ADMIN_API}/wisdom/personnel-attendance/getAttendanceCountMonthList`,
+    type: 'GET',
+    name: '统计用户当月工时，管理员，安全员，工人',
+    description: '统计用户当月工时，管理员，安全员，工人',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'getLoginCount',
+    url: `${ADMIN_API}/wisdom/login-log-count/count`,
+    type: 'GET',
+    name: '登录',
+    description: '登录',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'username', cn: '用户名称' },
+      { key: 'searchDate', cn: '查询日期' },
+    ],
+  },
+  {
+    key: 'getLoginCountByMonth',
+    url: `${ADMIN_API}/wisdom/login-log-count/countByMonth`,
+    type: 'GET',
+    name: '登录统计',
+    description: '登录统计',
+    params: [
+      { key: 'Authorization', location: 'header' },
+
+    ],
+  },
 ];
 export default personAnalysis;

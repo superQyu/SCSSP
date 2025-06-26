@@ -3,14 +3,11 @@ import {
   Form,
   Input,
   Button,
-  DatePicker,
   Tag,
   Toast,
   Selector,
 } from 'antd-mobile';
 import { Flex } from 'antd';
-import { AddOutline } from 'antd-mobile-icons';
-import dayjs from 'dayjs';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 
 import { setToken } from 'utils';
@@ -18,6 +15,21 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import PickerPopup from '@/pages/phone/components/PickerPopup';
 import UploadImage from '@/pages/phone/components/UploadImage';
 import styled from 'styled-components';
+import dayjs from 'dayjs';
+const typeArr = [
+  {
+    label: '土方车',
+    value: '1',
+  },
+  {
+    label: '其他',
+    value: '2',
+  },
+  {
+    label: '罐车',
+    value: '3',
+  },
+];
 
 const CustomForm = styled(Form)(() => ({
   '.adm-form-item-label': {
@@ -30,13 +42,7 @@ export default function DropdownExample() {
   const [searchParams] = useSearchParams();
   const { server } = useBasicConfiguration();
 
-  const {
-    materialList: M,
-    materialEnter,
-    vehicle,
-    subContractor,
-    certificate,
-  } = server;
+  const { materialEnter, vehicle: V } = server;
   const detail = searchParams.get('detail')
     ? JSON.parse(searchParams.get('detail'))
     : null;
@@ -44,104 +50,64 @@ export default function DropdownExample() {
   const [mainForm] = Form.useForm();
   const [key, setKey] = useState('');
   const [keyword, setKeyword] = useState('');
-  const [carNoOptions, setCarNoOptions] = useState([]);
-  const [materialManOptions, setMaterialManOptions] = useState(
-    []
-  );
-  const [departmentOptions, setDepartmentOptions] = useState([]);
+  const [materials, setMaterials] = useState([]);
+  // const [carTypeOptions, setCarTypeOptions] = useState(typeArr);
 
-  const [enterDateVisible, setEnterDateVisible] =
-    useState(false);
   const [columns, setColumns] = useState([]);
 
-  // 用于存储子组件的 ref
-  const materialBlockRefs = useRef<Array<any>>([]);
-  const [materialBlockCount, setMaterialBlockCount] =
-    useState(1);
-
-  // 请求验收人列表
-  const queryMaterialMan = async () => {
-    const res = await certificate.getPersonInfoList();
-    const list = res.map((item: any) => ({
-      label: item.name,
-      value: item.name,
-    }));
-    setMaterialManOptions([list]);
+  const queryMaterials = async () => {
+    const res = await materialEnter.getEnterList({});
+    const options = res.list.map((item: any) => {
+      const materials = item.materialsDetailsWithInventoryRespVOS
+        .map((el, i) => {
+          return `${el.materialName}`;
+        })
+        .join('和');
+      return {
+        label: `${dayjs(item.enterDate).format(
+          'YYYY-MM-DD HH:mm:ss'
+        )} ${materials}`,
+        value: item.id,
+      };
+    });
+    setMaterials(options);
   };
 
   const handleCreate = async () => {
     const mainFormValues = await mainForm.validateFields();
-    const materialBlockValues = materialBlockRefs.current
-      .filter((ref) => ref)
-      .map((ref, index) => {
-        if (ref.getFormValues) {
-          return ref.getFormValues();
-        }
-      });
-    // console.log('create', {
-    //   materialsEnterSaveReqVO: mainFormValues,
-    //   materialsEnterDetailsSaveReqVOS: materialBlockValues,
-    // });
-    // return;
+    const params = {
+      ...mainFormValues,
+      carType: typeArr.find(
+        (item) => item.label == mainFormValues.carType
+      )?.value,
+      isGps: mainFormValues.isGps[0],
+      materialEnterId: materials.find(
+        (item) => item.label == mainFormValues.materialEnterName
+      )?.value,
+    };
     if (detail) {
-      console.log('修改', {
-        materialsEnterSaveReqVO: {
-          ...mainFormValues,
-          enterDate: new Date(
-            mainFormValues.enterDate
-          ).getTime(),
-          id: detail.id,
-        },
-        materialsEnterDetailsSaveReqVOS: materialBlockValues.map(
-          (item, i) => ({
-            ...item,
-            materialEnterId: detail.id,
-          })
-        ),
-      });
-      await materialEnter.updateEnter({
-        materialsEnterSaveReqVO: {
-          ...mainFormValues,
-          enterDate: new Date(
-            mainFormValues.enterDate
-          ).getTime(),
-          id: detail.id,
-        },
-        materialsEnterDetailsSaveReqVOS: materialBlockValues.map(
-          (item, i) => ({
-            ...item,
-            materialEnterId: detail.id,
-          })
-        ),
+      await V.vehicleApproveUpdate({
+        ...params,
+        id: detail.id,
       });
     } else {
-      await materialEnter.createEnter({
-        materialsEnterSaveReqVO: {
-          ...mainFormValues,
-          enterDate: new Date(
-            mainFormValues.enterDate
-          ).getTime(),
-        },
-        materialsEnterDetailsSaveReqVOS: materialBlockValues,
-      });
+      await V.vehicleApproveAdd(params);
     }
     Toast.show({
       icon: 'success',
       content: '操作成功',
     });
     setTimeout(() => {
-      navigate('/phone/material-enter');
+      navigate('/phone/carNo');
     }, 500);
   };
 
   const handlePopup = (str: string, form = null) => {
     setKey(str);
-    if (str == 'carNo') {
-      setColumns(carNoOptions);
-    } else if (str == 'materialMan') {
-      setColumns(materialManOptions);
-    } else if (str == 'purchaserDepartment') {
-      setColumns(departmentOptions);
+    if (str == 'carType') {
+      setColumns([typeArr]);
+    } else if (str == 'materialEnterName') {
+      setColumns([materials]);
     }
     childRef.current.openModal(true);
   };
@@ -151,16 +117,26 @@ export default function DropdownExample() {
   };
 
   const handleValueSelect = ([value]) => {
-    mainForm.setFieldValue(key, value);
+    if (key == 'carType') {
+      mainForm.setFieldValue(
+        'carType',
+        typeArr.find((item) => item.value == value)?.label
+      );
+    } else if (key == 'materialEnterName') {
+      mainForm.setFieldValue(
+        'materialEnterName',
+        materials.find((item) => item.value == value)?.label
+      );
+    } else {
+      mainForm.setFieldValue(key, value);
+    }
   };
-
   useEffect(() => {
     setToken('PHONETITLE', detail ? '编辑' : '新建');
-    setMaterialBlockCount(
-      detail?.materialsDetailsWithInventoryRespVOS.length || 1
-    );
+  }, []);
 
-    queryMaterialMan();
+  useEffect(() => {
+    queryMaterials();
   }, []);
 
   return (
@@ -185,11 +161,11 @@ export default function DropdownExample() {
             options={[
               {
                 label: '否',
-                value: 0,
+                value: '2',
               },
               {
                 label: '是',
-                value: 1,
+                value: '1',
               },
             ]}
           />
@@ -201,6 +177,7 @@ export default function DropdownExample() {
           rules={[
             { required: true, message: '车辆类型不能为空' },
           ]}
+          onClick={() => handlePopup('carType')}
         >
           <Input placeholder="请输入车辆类型" />
         </Form.Item>
@@ -216,7 +193,15 @@ export default function DropdownExample() {
         </Form.Item>
 
         <Form.Item label="保险保单照片" name="attachment">
-          <UploadImage />
+          <UploadImage initialValue={detail?.attachment} />
+        </Form.Item>
+
+        <Form.Item
+          label="物料进场记录"
+          name="materialEnterName"
+          onClick={() => handlePopup('materialEnterName')}
+        >
+          <Input placeholder="请选择物料进场记录" />
         </Form.Item>
       </CustomForm>
 

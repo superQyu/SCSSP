@@ -7,6 +7,12 @@ export interface SiteInitialState {
 // 默认状态
 const initialState: SiteInitialState = {
   siteInfor: {},
+  websocket: {
+    person: 0,
+    car: 0,
+    material: 0,
+  },
+  noticeCount: 0
 };
 
 export const siteSlice: any = createSlice({
@@ -16,9 +22,15 @@ export const siteSlice: any = createSlice({
     setSiteInfor: (state, action) => {
       state.siteInfor = action.payload;
     },
+    setWebsocket: (state, action) => {
+      state.websocket = action.payload;
+    },
+    setNoticeCount: (state, action) => {
+      state.noticeCount = action.payload;
+    },
   },
 });
 
-export const { setSiteInfor } = siteSlice.actions;
+export const { setSiteInfor, setWebsocket,setNoticeCount } = siteSlice.actions;
 
 export default siteSlice.reducer;

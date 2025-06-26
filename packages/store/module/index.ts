@@ -1,10 +1,27 @@
-import { Provider, TypedUseSelectorHook, useSelector, useDispatch } from 'react-redux';
+import {
+  Provider,
+  TypedUseSelectorHook,
+  useSelector,
+  useDispatch,
+} from 'react-redux';
 
 import { configureStore } from '@reduxjs/toolkit';
 
-import common, { setData, setMenuTab, setDict } from './reducers/common';
-import user, { setMenu, setUserToken, setUserInfor } from './reducers/user';
-import site, { setSiteInfor } from './reducers/site';
+import common, {
+  setData,
+  setMenuTab,
+  setDict,
+} from './reducers/common';
+import user, {
+  setMenu,
+  setUserToken,
+  setUserInfor,
+} from './reducers/user';
+import site, {
+  setSiteInfor,
+  setWebsocket,
+  setNoticeCount
+} from './reducers/site';
 
 const store = configureStore({
   reducer: {
@@ -30,6 +47,17 @@ type AppDispatch = typeof store.dispatch;
 
 export { store, Provider, useSelector, useDispatch };
 
-export { setUserToken, setUserInfor, setMenu, setData, setSiteInfor, setMenuTab, setDict };
+export {
+  setUserToken,
+  setUserInfor,
+  setMenu,
+  setData,
+  setSiteInfor,
+  setWebsocket,
+  setNoticeCount,
+  setMenuTab,
+  setDict,
+
+};
 
 export type { RootState, AppDispatch, TypedUseSelectorHook };

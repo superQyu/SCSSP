@@ -5,7 +5,7 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
 const SomeChartComponent = () => {
   const { server } = useBasicConfiguration();
-  const { attendance } = server;
+  const { personAnalysis: P } = server;
   const { getEChartsInstance } = useECharts();
 
   const chartRef = useRef(null);
@@ -13,39 +13,25 @@ const SomeChartComponent = () => {
   const [chartData, setChartData] = useState<any[]>([]);
   let chartInstance: any = null;
 
-  // 调整最大、最小气泡尺寸
-  const MAX_BUBBLE_SIZE = 12; // 原 30，改小
-  const MIN_BUBBLE_SIZE = 4; // 原 8，同步缩小
+  const queryData = async () => {
+    const res = await P.selectAttendanceDailtStatistics();
 
-  const queryData = async () => {};
-
-  // 带极值限制的映射函数
-  const calculateBubbleSize = (
-    value: number,
-    minValue: number,
-    maxValue: number
-  ) => {
-    if (minValue === maxValue) {
-      return (MIN_BUBBLE_SIZE + MAX_BUBBLE_SIZE) / 2;
-    }
-    let baseSize =
-      MIN_BUBBLE_SIZE +
-      ((value - minValue) *
-        (MAX_BUBBLE_SIZE - MIN_BUBBLE_SIZE)) /
-        (maxValue - minValue);
-    // 额外限制：再大也不超过 15（可根据需求调整）
-    if (baseSize > 15) {
-      baseSize = 15;
-    }
-    return baseSize;
+    setChartData(res);
   };
 
-  const setOptions = (data: any) => {
-    const allValues = data.flatMap((series) => series.data);
-    const minValue = Math.min(...allValues);
-    const maxValue = Math.max(...allValues);
-
+  const setOptions = () => {
+    const todayValues = chartData.flatMap(
+      (item) => item.todayCount
+    );
+    const yesterdayValues = chartData.flatMap(
+      (item) => item.yesterdayCount
+    );
+    const lastMonthValues = chartData.flatMap(
+      (item) => item.lastMonthSameDayCount
+    );
+    const xAxis = chartData.map((item) => item.companyName);
     const option = {
+      color: ['#2b90ff', '#ffc601', '#2fc699'],
       grid: {
         containLabel: true,
         right: 20,
@@ -59,7 +45,6 @@ const SomeChartComponent = () => {
       },
       legend: {
         right: 0,
-
         itemGap: 15,
         itemWidth: 14,
         itemHeight: 8,
@@ -69,12 +54,21 @@ const SomeChartComponent = () => {
           color: 'inherit',
         },
       },
-
       xAxis: {
         type: 'category',
-        data: Array.from({ length: 10 }, (_, i) => `公司${i}`),
+        data: xAxis,
         axisTick: { show: false },
-        axisLabel: { color: '#999', interval: 0, margin: 10 },
+        axisLabel: {
+          color: '#999',
+          interval: 0,
+          margin: 10,
+          formatter: (str) => {
+            if (str.length > 5) {
+              return str.substring(0, 5) + '...';
+            }
+            return str;
+          },
+        },
         splitLine: {
           show: true,
           lineStyle: { type: 'line', color: '#D9D9D9' },
@@ -87,26 +81,28 @@ const SomeChartComponent = () => {
       yAxis: { type: 'value', name: '（单位：人数）' },
       series: [
         {
-          name: '今日无进场',
+          name: '今日进场',
           type: 'bar',
-          color: 'red', //可单独设置某个颜色，也可不设置
-          data: [111, 222, 333, 82], //分别对应'3-1', '3-2', '3-3', '3-4'的值
+          barWidth: 10,
+          data: todayValues,
         },
         {
-          name: '昨日无进场',
+          name: '昨日进场',
           type: 'bar',
-          data: [21, 32, 43, 52],
+          barWidth: 10,
+          data: yesterdayValues,
         },
         {
-          name: '今日无退场',
+          name: '上月今日进场',
           type: 'bar',
-          data: [11, 262, 303, 22],
+          barWidth: 10,
+          data: lastMonthValues,
         },
-        {
-          name: '昨日无退场',
-          type: 'bar',
-          data: [61, 292, 313, 222],
-        },
+        // {
+        //   name: '昨日无退场',
+        //   type: 'bar',
+        //   data: [61, 292, 313, 222],
+        // },
       ],
     };
     chartInstance.setOption(option);
@@ -120,40 +116,13 @@ const SomeChartComponent = () => {
   }, []);
 
   useEffect(() => {
-    setChartData([
-      {
-        name: '无进场',
-        data: chartData.map((item) => item.value),
-      },
-      // {
-      //   name: '三天未打卡',
-      //   data: chartData.map((item) => item.value),
-      // },
-      {
-        name: '无退场',
-        data: chartData.map((item) => item.value),
-      },
-    ]);
     if (chartRef.current) {
       chartInstance = getEChartsInstance(chartRef);
-      setOptions([
-        {
-          name: '无进场',
-          data: chartData.map((item) => item.value),
-        },
-        // {
-        //   name: '三天未打卡',
-        //   data: chartData.map((item) => item.value),
-        // },
-        {
-          name: '无退场',
-          data: chartData.map((item) => item.value),
-        },
-      ]);
+      setOptions();
       resizeChart();
       setSpinning(false);
     }
-  }, [chartRef.current]);
+  }, [chartRef.current, chartData]);
 
   useEffect(() => {
     window.addEventListener('resize', resizeChart);

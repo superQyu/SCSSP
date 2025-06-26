@@ -79,14 +79,6 @@ export default () => {
       key: 'materialCode',
       disabled: true,
     },
-    // {
-    //   label: '是否特种作业',
-    //   key: 'isSpecialWork',
-    //   disabled: true,
-    //   formProp: () => {
-    //     return <div className="adm-input-disabled">否</div>;
-    //   },
-    // },
     {
       label: '退场数量',
       key: 'exitNumber',
@@ -100,7 +92,7 @@ export default () => {
           getToken('PHONETITLE') == '审核' ? (
           <Input disabled={true} />
         ) : (
-          <Input placeholder="请输入实际验收数量" />
+          <Input placeholder="请输入清点数量" />
         );
       },
     },
@@ -126,33 +118,7 @@ export default () => {
             )}
           </>
         ) : (
-          <UploadImage />
-        );
-      },
-    },
-    {
-      label: '验收单',
-      key: 'acceptAttachment',
-      disabled: true,
-      formProp: (item: any) => {
-        return getToken('PHONETITLE') == '详情' ||
-          getToken('PHONETITLE') == '审核' ? (
-          <>
-            {item.acceptAttachment ? (
-              <Space wrap>
-                <Image
-                  src={item.acceptAttachment}
-                  width={100}
-                  height={100}
-                  fit="fill"
-                />
-              </Space>
-            ) : (
-              <div className="adm-input-disabled">暂无图片</div>
-            )}
-          </>
-        ) : (
-          <UploadImage />
+          <UploadImage initialValue={item.attachment} />
         );
       },
     },

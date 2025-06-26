@@ -11,7 +11,7 @@ const sites: ApiItem[] = [
     description: '菜单列表',
     params: [
       { key: 'Authorization', location: 'header' },
-      { key: 'name', }
+      { key: 'name' },
     ],
   },
   {
@@ -20,9 +20,7 @@ const sites: ApiItem[] = [
     type: 'GET',
     name: '展示菜单列表',
     description: '展示菜单列表',
-    params: [
-      { key: 'Authorization', location: 'header' },
-    ],
+    params: [{ key: 'Authorization', location: 'header' }],
   },
   {
     key: 'sitesList',
@@ -75,6 +73,36 @@ const sites: ApiItem[] = [
     params: [
       { key: 'Authorization', location: 'header' },
       { key: 'ids', cn: '数据ID集合' },
+    ],
+  },
+  {
+    key: 'getUnreadCount',
+    url: `${ADMIN_API}/system/notify-message/get-unread-count`,
+    type: 'GET',
+    name: '获得当前用户的未读站内信数量',
+    description: '获得当前用户的未读站内信数量',
+    params: [{ key: 'Authorization', location: 'header' }],
+  },
+  {
+    key: 'getUnreadList',
+    url: `${ADMIN_API}/system/notify-message/get-unread-list`,
+    type: 'GET',
+    name: '获得当前用户的未读站内信列表',
+    description: '获得当前用户的未读站内信列表',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'size', cn: '消息条数' },
+    ],
+  },
+  {
+    key: 'updateRead',
+    url: `${ADMIN_API}/system/notify-message/update-unread`,
+    type: 'GET',
+    name: '标记站内信为已读',
+    description: '标记站内信为已读',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'ids', cn: '消息id', location: 'query' },
     ],
   },
 ];

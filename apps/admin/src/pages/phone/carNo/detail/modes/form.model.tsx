@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Tag,
-  Space,
-  Image,
-  Input,
-  ImageUploader,
-} from 'antd-mobile';
-import { getToken } from 'utils';
-import UploadImage from '@/pages/phone/components/UploadImage';
+import { Space, Image } from 'antd-mobile';
+
 export interface FormColumnVO {
   label: string;
   key: string;
@@ -23,134 +16,54 @@ export default () => {
       disabled: true,
     },
     {
-      label: '进场时间',
-      key: 'enterDate',
+      label: '是否安装GPS',
+      key: 'isGps',
       disabled: true,
     },
     {
-      label: '送货人',
-      key: 'deliveryMan',
+      label: '车辆类型',
+      key: 'carType',
       disabled: true,
     },
     {
-      label: '送货人联系方式',
-      key: 'deliveryContact',
+      label: '车载容量',
+      key: 'carStorage',
       disabled: true,
     },
     {
-      label: '验收人',
-      key: 'materialMan',
-      disabled: true,
-    },
-    {
-      label: '验收单位',
-      key: 'purchaserDepartment',
-      disabled: true,
-    },
-  ];
-  const MaterialColumns: FormColumnVO[] = [
-    {
-      label: '物料名称',
-      key: 'materialName',
-      disabled: true,
-    },
-    {
-      label: '型号',
-      key: 'materialType',
-      disabled: true,
-    },
-    {
-      label: '计量单位',
-      key: 'measuringUnit',
-      disabled: true,
-    },
-    {
-      label: '规格',
-      key: 'specification',
-      disabled: true,
-    },
-    {
-      label: '物料编号',
-      key: 'materialCode',
-      disabled: true,
-    },
-    {
-      label: '是否特种作业',
-      key: 'isSpecialWork',
-      disabled: true,
-      formProp: () => {
-        return <div className="adm-input-disabled">否</div>;
-      },
-    },
-    {
-      label: '计划进场数量',
-      key: 'enterNumber',
-      disabled: true,
-    },
-    {
-      label: '实际验收数量',
-      key: 'acceptNumber',
-      formProp: () => {
-        return getToken('PHONETITLE') == '详情' ||
-          getToken('PHONETITLE') == '审核' ? (
-          <Input disabled={true} />
-        ) : (
-          <Input placeholder="请输入实际验收数量" />
-        );
-      },
-    },
-    {
-      label: '合格证书',
+      label: '保险保单照片',
       key: 'attachment',
+      disabled: true,
       formProp: (item: any) => {
-        console.log(item);
-        return getToken('PHONETITLE') == '详情' ||
-          getToken('PHONETITLE') == '审核' ? (
+        return (
           <>
             {item.attachment ? (
-              <Space wrap>
-                <Image
-                  src={item.attachment}
-                  width={100}
-                  height={100}
-                  fit="fill"
-                />
-              </Space>
+              item.attachment.split('@').map((el,i) => {
+                return (
+                  <Space wrap key={i}>
+                    <Image
+                      className="mr-5px"
+                      src={el}
+                      width={100}
+                      height={100}
+                      fit="fill"
+                    />
+                  </Space>
+                );
+              })
             ) : (
               <div className="adm-input-disabled">暂无图片</div>
             )}
           </>
-        ) : (
-          <UploadImage />
         );
       },
     },
     {
-      label: '验收单',
-      key: 'acceptAttachment',
+      label: '物料进场记录',
+      key: 'materialEnterName',
       disabled: true,
-      formProp: (item: any) => {
-        return getToken('PHONETITLE') == '详情' ||
-          getToken('PHONETITLE') == '审核' ? (
-          <>
-            {item.acceptAttachment ? (
-              <Space wrap>
-                <Image
-                  src={item.acceptAttachment}
-                  width={100}
-                  height={100}
-                  fit="fill"
-                />
-              </Space>
-            ) : (
-              <div className="adm-input-disabled">暂无图片</div>
-            )}
-          </>
-        ) : (
-          <UploadImage />
-        );
-      },
     },
   ];
-  return { formColumns, MaterialColumns };
+
+  return { formColumns };
 };

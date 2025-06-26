@@ -1,11 +1,11 @@
-import React from 'react';
-import { Form, Input, Button, Space, Toast } from 'antd-mobile';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, Toast } from 'antd-mobile';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import siteModel, { FormColumnVO } from './modes/form.model';
-import DictSelect from '@/components/DictSelect';
+
 const FooterDiv = styled.div`
   display: flex;
   flex-direction: row;
@@ -16,18 +16,12 @@ const FooterDiv = styled.div`
 export default function () {
   const navigate = useNavigate();
   const { server } = useBasicConfiguration();
-  const { materialEnter } = server;
-  const { formColumns, MaterialColumns } = siteModel();
+  const { vehicle: V } = server;
+  const { formColumns } = siteModel();
   const [searchParams] = useSearchParams();
+
   const detail = JSON.parse(searchParams.get('detail'));
   const type = searchParams.get('type');
-
-  const [mainForm] = Form.useForm();
-  const materialForms =
-    detail.materialsDetailsWithInventoryRespVOS.map(() => {
-      const [form] = Form.useForm();
-      return form;
-    });
 
   // 点击提交验收
   const onSubmit = async () => {
@@ -43,14 +37,12 @@ export default function () {
       content: '操作成功',
     });
     navigate(-1);
-   
   };
 
   // 点击审核
   const handleComfirm = async () => {
-    await materialEnter.materialExamine({
-      materialsEnterId: detail?.id,
-      isConfirm: '通过',
+    await V.check({
+      id: detail?.id,
     });
     Toast.show({
       icon: 'success',
@@ -73,41 +65,15 @@ export default function () {
               name={item.key}
               key={item.key}
             >
-              <Input disabled={item.disabled} />
+              {item.formProp ? (
+                item.formProp(detail)
+              ) : (
+                <Input disabled={item.disabled} />
+              )}
             </Form.Item>
           );
         })}
       </Form>
-
-      {detail.materialsDetailsWithInventoryRespVOS.map(
-        (el: any, i: number) => {
-          return (
-            <Form
-              layout="horizontal"
-              mode="card"
-              form={materialForms[i]}
-              initialValues={el}
-            >
-              <Form.Header>物料{i + 1}</Form.Header>
-              {MaterialColumns.map((item: FormColumnVO, i) => {
-                return (
-                  <Form.Item
-                    label={item.label}
-                    name={item.key}
-                    key={item.key}
-                  >
-                    {item.formProp ? (
-                      item.formProp(item)
-                    ) : (
-                      <Input disabled={item.disabled} />
-                    )}
-                  </Form.Item>
-                );
-              })}
-            </Form>
-          );
-        }
-      )}
 
       {type && (
         <FooterDiv>
