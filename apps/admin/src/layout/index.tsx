@@ -209,25 +209,34 @@ const LayoutContext: React.FC = () => {
                     style={{ padding: '7px 15px' }}
                   >
                     <Breadcrumb routes={breadcrumbList} />
-                    <div style={{ maxWidth: '50%' }}>
-                      <Alert
-                        banner
-                        message={
-                          <Marquee pauseOnHover gradient={false}>
-                            {list.map((item, i) => {
-                              return (
-                                <div
-                                  className="mr-100px"
-                                  key={i}
-                                >
-                                  {item.templateContent.split('@')[0]}
-                                </div>
-                              );
-                            })}
-                          </Marquee>
-                        }
-                      />
-                    </div>
+                    {list.length && (
+                      <div style={{ maxWidth: '50%' }}>
+                        <Alert
+                          banner
+                          message={
+                            <Marquee
+                              pauseOnHover
+                              gradient={false}
+                            >
+                              {list.map((item, i) => {
+                                return (
+                                  <div
+                                    className="mr-100px"
+                                    key={i}
+                                  >
+                                    {
+                                      item.templateContent.split(
+                                        '@'
+                                      )[0]
+                                    }
+                                  </div>
+                                );
+                              })}
+                            </Marquee>
+                          }
+                        />
+                      </div>
+                    )}
                     <Space>
                       <MessageBell />
 

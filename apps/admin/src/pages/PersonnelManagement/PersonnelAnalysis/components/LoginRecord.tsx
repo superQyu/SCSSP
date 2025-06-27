@@ -64,7 +64,7 @@ const SomeChartComponent = () => {
       },
 
       yAxis: {
-        name: '人数',
+        name: '次数',
         type: 'value',
         splitLine: {
           show: true,
@@ -91,7 +91,7 @@ const SomeChartComponent = () => {
 
       tooltip: {
         trigger: 'item',
-        formatter: '{b}: {c}人',
+        formatter: '{b}: {c}次',
       },
       series: [
         {
