@@ -44,9 +44,10 @@ export default ({ onSelect }: any) => {
   const loadData = async () => {
     setLoading(true);
     let list;
-    const login = await monitor.login();
-    setToken('monitor_token', login.token);
+    // const login = await monitor.login();
+    // setToken('monitor_token', login.token);
     await askCameraList((res: any) => {
+      console.log('res', res);
       list = getPersonelList(res);
       setTreeData(list);
       setLoading(false);
@@ -88,7 +89,24 @@ export default ({ onSelect }: any) => {
     //     // 摄像头点位
     // res.records = [ ];
     let aArr = [];
-    [...res1.records, ...res2.records].forEach((oItem, i) => {
+    // 方法二：使用Map（更高效，尤其是大数据量时）
+    function deduplicateByMap(arr) {
+      const idMap = new Map();
+      return arr.filter((item) => {
+        if (idMap.has(item.id)) {
+          return false;
+        }
+        idMap.set(item.id, true);
+        return true;
+      });
+    }
+    const arr = deduplicateByMap(
+      [
+        ...JSON.parse(res1)?.data?.records,
+        ...JSON.parse(res2)?.data?.records,
+      ].filter((item) => item.equipStatus != '0')
+    );
+    arr.forEach((oItem, i) => {
       // temp 添加一个坐标为了点击可以跳出地图弹框
       if (oItem.isRemoved == 1 || !oItem.lat) {
         oItem.lat = -73.963138;
@@ -151,10 +169,12 @@ export default ({ onSelect }: any) => {
           dataSource={treeData}
           split={false}
           renderItem={(item, index) => (
-            <List.Item onClick={() => {
-              setActiveIdx(index)
-              onSelect(item.code)
-            }}>
+            <List.Item
+              onClick={() => {
+                setActiveIdx(index);
+                onSelect(item.code);
+              }}
+            >
               <CustomSDiv>
                 <div
                   className={

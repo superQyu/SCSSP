@@ -14,7 +14,7 @@ const CustomDrawer = styled(Drawer)(() => ({
   },
 }));
 export default () => {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
   const [code, setCode] = useState('');
   const rightRef = useRef(null); // 引用Right组件的容器
 
@@ -58,7 +58,12 @@ export default () => {
             overflow: 'auto',
           }}
         >
-          <Left onSelect={(id) => setCode(id)} />
+          <Left
+            onSelect={(id) => {
+              setCode(id);
+              setVisible(false);
+            }}
+          />
         </CustomDrawer>
       </div>
     </div>
