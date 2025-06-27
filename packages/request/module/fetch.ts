@@ -51,12 +51,10 @@ const request = (url: string, setting: any) => {
         // if (interceptor.response) interceptor.response(resObject);
 
         netStatus(requested || {}, resObject);
-
         !res.ok
           ? reject(resObject)
           : resolve(
-              resObject[requested.dataKeyName || 'data'] ||
-                resObject
+            resObject[requested.dataKeyName || 'data'] ?? resObject
             );
       })
       .catch((e) => {
