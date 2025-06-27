@@ -26,6 +26,7 @@ const MessageBell: React.FC = () => {
   const queryCount = async () => {
     const res = await sites.getUnreadCount();
     setCount(res);
+
     if (res) {
       const data = await sites.getUnreadList({
         size: res,

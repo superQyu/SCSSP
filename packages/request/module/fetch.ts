@@ -52,10 +52,11 @@ const request = (url: string, setting: any) => {
 
         netStatus(requested || {}, resObject);
 
+
         !res.ok
           ? reject(resObject)
-          : resolve(
-              resObject[requested.dataKeyName || 'data'] ||
+          :  resolve(
+              resObject[requested.dataKeyName || 'data'] ??
                 resObject
             );
       })
