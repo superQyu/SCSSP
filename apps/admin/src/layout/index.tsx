@@ -209,7 +209,7 @@ const LayoutContext: React.FC = () => {
                     style={{ padding: '7px 15px' }}
                   >
                     <Breadcrumb routes={breadcrumbList} />
-                    {list.length && (
+                    {list.length ? (
                       <div style={{ maxWidth: '50%' }}>
                         <Alert
                           banner
@@ -236,6 +236,8 @@ const LayoutContext: React.FC = () => {
                           }
                         />
                       </div>
+                    ) : (
+                      ''
                     )}
                     <Space>
                       <MessageBell />
