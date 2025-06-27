@@ -5,11 +5,12 @@ const ADMIN_API = import.meta.env.VITE_APP_ADMIN_API;
 const monitor: ApiItem[] = [
   {
     key: 'login',
-    url: `/monitor/user/newLogin`,
-    type: 'POST',
+    url: `${ADMIN_API}/wisdom/monitor/token`,
+    type: 'GET',
     name: '监控平台鉴权登录',
     description: '监控平台鉴权登录',
     params: [
+      { key: 'Authorization', location: 'header' },
       {
         key: 'username',
         cn: '菜单类型',
@@ -28,11 +29,13 @@ const monitor: ApiItem[] = [
   },
   {
     key: 'cameraList',
-    url: `/monitor/camera/getCameraByCode`,
+    url: `${ADMIN_API}/wisdom/monitor/camera-list`,
+    // url: `/monitor/camera/getCameraByCode`,
     type: 'GET',
     name: '根据项目编号获取监控列表',
     description: '根据项目编号获取监控列表',
     params: [
+      { key: 'Authorization', location: 'header' },
       {
         key: 'token',
         location: 'header',
