@@ -114,10 +114,6 @@ export default () => {
 
   useEffect(() => {
     queryData();
-  }, []);
-
-  useEffect(() => {
-    queryData();
   }, [websocket.person]);
 
   return (

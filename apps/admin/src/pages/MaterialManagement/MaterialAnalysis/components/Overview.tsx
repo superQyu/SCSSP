@@ -114,10 +114,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     queryData();
-  }, []);
-
-  useEffect(() => {
-    queryData();
   }, [websocket.material]);
 
   return (
