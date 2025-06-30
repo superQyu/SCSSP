@@ -6,9 +6,17 @@ import { FullscreenOutlined } from '@ant-design/icons';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import styled from 'styled-components';
 
-const CustomSpin = styled(Spin)(() => ({
-  //
-}));
+const Box = styled.div`
+  .fullscreen {
+    opacity: 0;
+  }
+  &:hover {
+    .fullscreen {
+      opacity: 1;
+    }
+  }
+`;
+const CustomSpin = styled(Spin)(() => ({}));
 
 const App = (props: { code?: number }) => {
   // api 相关
@@ -16,7 +24,7 @@ const App = (props: { code?: number }) => {
   const { monitor } = server;
   const playerRef = useRef(null);
   const [videoSrc, setVideoSrc] = useState<string>();
-  const [visible, setVisible] = useState(true);
+
   useEffect(() => {
     loadData();
   }, [props.code]);
@@ -46,21 +54,17 @@ const App = (props: { code?: number }) => {
       wrapperClassName="w-full h-full"
       spinning={Boolean(!videoSrc)}
     >
-      <M3U8Player
-        ref={playerRef}
-        src={videoSrc}
-      
-      />
-      {visible ? (
+      <Box className="w-full h-full">
+        <M3U8Player ref={playerRef} src={videoSrc} />
+
         <div
-          className="pos-absolute left-130px bottom-15px width-50px h-50px color-#fff font-size-20px  cursor-pointer  z-999"
+          className="pos-absolute left-130px bottom-15px width-50px h-50px color-#fff font-size-20px  cursor-pointer  z-999 fullscreen"
+          style={{}}
           onClick={handleFullscreen}
         >
           <FullscreenOutlined />
         </div>
-      ) : (
-        ''
-      )}
+      </Box>
     </CustomSpin>
   );
 };
