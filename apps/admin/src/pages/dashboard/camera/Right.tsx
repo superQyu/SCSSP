@@ -1,16 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import M3U8Player from './components/M3U8Player';
 import { Spin } from 'antd';
+import { FullscreenOutlined } from '@ant-design/icons';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
+import styled from 'styled-components';
+
+const CustomSpin = styled(Spin)(() => ({
+  //
+}));
 
 const App = (props: { code?: number }) => {
   // api 相关
   const { server, config } = useBasicConfiguration();
   const { monitor } = server;
-
+  const playerRef = useRef(null);
   const [videoSrc, setVideoSrc] = useState<string>();
-
+  const [visible, setVisible] = useState(true);
   useEffect(() => {
     loadData();
   }, [props.code]);
@@ -28,10 +34,34 @@ const App = (props: { code?: number }) => {
     }
   };
 
+  const handleFullscreen = async () => {
+    if (playerRef.current) {
+      await playerRef.current.playFullscreen();
+    }
+  };
+
   return (
-    <Spin  className='h-full' spinning={Boolean(!videoSrc)}>
-      <M3U8Player src={videoSrc} />
-    </Spin >
+    <CustomSpin
+      className="w-full h-full pos-relative"
+      wrapperClassName="w-full h-full"
+      spinning={Boolean(!videoSrc)}
+    >
+      <M3U8Player
+        ref={playerRef}
+        src={videoSrc}
+      
+      />
+      {visible ? (
+        <div
+          className="pos-absolute left-130px bottom-15px width-50px h-50px color-#fff font-size-20px  cursor-pointer  z-999"
+          onClick={handleFullscreen}
+        >
+          <FullscreenOutlined />
+        </div>
+      ) : (
+        ''
+      )}
+    </CustomSpin>
   );
 };
 
