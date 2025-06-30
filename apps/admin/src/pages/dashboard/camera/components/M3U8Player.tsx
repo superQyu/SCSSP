@@ -1,9 +1,45 @@
-import React, { useEffect, useRef } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
 import Hls from 'hls.js';
 
-const M3U8Player = ({ src }) => {
+const M3U8Player = forwardRef(({ src }, ref) => {
   const videoRef = useRef(null);
   const hlsRef = useRef(null);
+
+  // 暴露方法给父组件
+  useImperativeHandle(ref, () => ({
+    playFullscreen: async () => {
+      const video = videoRef.current;
+
+      // 检查是否已在全屏状态
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      }
+
+      // 尝试进入全屏
+      if (video.requestFullscreen) {
+        await video.requestFullscreen();
+      } else if (video.webkitRequestFullscreen) {
+        /* Safari */
+        await video.webkitRequestFullscreen();
+      } else if (video.msRequestFullscreen) {
+        /* IE11 */
+        await video.msRequestFullscreen();
+      }
+    },
+
+    play: () => {
+      videoRef.current.play();
+    },
+
+    pause: () => {
+      videoRef.current.pause();
+    },
+  }));
 
   useEffect(() => {
     if (src) {
@@ -51,6 +87,6 @@ const M3U8Player = ({ src }) => {
       style={{ width: '100%', height: '100%' }}
     />
   );
-};
+});
 
 export default M3U8Player;

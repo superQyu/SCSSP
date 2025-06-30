@@ -48,6 +48,7 @@ export default () => {
           visible={visible}
           onClose={onClose}
           width={280}
+          mask={false}
           getContainer={false}
           style={{
             position: 'absolute',
