@@ -30,10 +30,12 @@ const CustomHeader = styled.div`
     align-items: center;
 
     .text {
+      white-space: nowrap;
       margin-left: 2px;
       font-weight: bold;
       font-size: 16px;
       color: #ffffff;
+      
     }
   }
 `;
@@ -172,7 +174,7 @@ const LayoutContext: React.FC = () => {
               <CustomHeader>
                 <div className="title">
                   {logo}
-                  <div className="text">
+                  <div className="text" >
                     {LayoutConfig().title}
                   </div>
                 </div>

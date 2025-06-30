@@ -174,10 +174,6 @@ const SomeChartComponent = () => {
 
   useEffect(() => {
     queryData();
-  }, []);
-
-  useEffect(() => {
-    queryData();
   }, [websocket.material]);
 
   useEffect(() => {

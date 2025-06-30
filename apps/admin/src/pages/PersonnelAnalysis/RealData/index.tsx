@@ -30,10 +30,6 @@ export default () => {
 
   useEffect(() => {
     queryData();
-  }, []);
-
-  useEffect(() => {
-    queryData();
   }, [websocket.person]);
 
   return (
@@ -42,7 +38,7 @@ export default () => {
         {list.map((item: any, index: number) => {
           return (
             <Col
-              key={index}
+              key={index + '_' + item?.clockTime}
               span={24}
               xxl={!index ? 24 : 8}
               className="mb-2"
@@ -64,7 +60,6 @@ export default () => {
                       // maxWidth: '120px',
                       width: !index ? '100px' : '50px',
                       height: index ? '65px' : 'auto',
-                    
                     }}
                     src={`/src/assets/avatar/${item.jobNo}_1.jpg`}
                     fallback={

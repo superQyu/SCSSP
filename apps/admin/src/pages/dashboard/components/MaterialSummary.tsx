@@ -92,9 +92,6 @@ const App: React.FC = () => {
     const res = await M.summery();
     setStatistic(res);
   };
-  useEffect(() => {
-    queryData();
-  }, []);
 
   useEffect(() => {
     queryData();
