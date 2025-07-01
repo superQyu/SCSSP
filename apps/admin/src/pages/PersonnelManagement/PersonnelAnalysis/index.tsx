@@ -60,18 +60,18 @@ export default () => {
         </CustomCard>
 
         <CustomCard
-          title={<SingleTitle label="工种实时动态" />}
+          title={<SingleTitle label="工种配比" />}
           style={{ gridRow: '2 / 3', gridColumn: '2 / 4' }}
         >
-          <RealTmeJob />
+          <JobType />
         </CustomCard>
 
         <CustomCard title={<SingleTitle label="年龄分布" />}>
           <AgeDistribution />
         </CustomCard>
 
-        <CustomCard title={<SingleTitle label="工种配比" />}>
-          <JobType />
+        <CustomCard title={<SingleTitle label="工种实时动态" />}>
+          <RealTmeJob />
         </CustomCard>
 
         <CustomCard title={<SingleTitle label="解除限制人数" />}>

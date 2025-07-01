@@ -1,84 +1,74 @@
-import React, {
-  useEffect,
-  useRef,
-  useImperativeHandle,
-  forwardRef,
-} from 'react';
+// M3U8Player.jsx - 修复 ref 和方法实现
+import React, { forwardRef, useEffect, useRef, useImperativeHandle } from 'react';
 import Hls from 'hls.js';
 
-const M3U8Player = forwardRef(({ src }, ref) => {
+export default forwardRef((props, ref) => {
   const videoRef = useRef(null);
   const hlsRef = useRef(null);
 
-  // 暴露方法给父组件
   useImperativeHandle(ref, () => ({
+    // 修正：使用 videoRef 而不是传入的 ref
     playFullscreen: async () => {
-      const video = videoRef.current;
-
-      // 检查是否已在全屏状态
-      if (document.fullscreenElement) {
-        await document.exitFullscreen();
-      }
-
-      // 尝试进入全屏
-      if (video.requestFullscreen) {
-        await video.requestFullscreen();
-      } else if (video.webkitRequestFullscreen) {
-        /* Safari */
-        await video.webkitRequestFullscreen();
-      } else if (video.msRequestFullscreen) {
-        /* IE11 */
-        await video.msRequestFullscreen();
+      if (videoRef.current) {
+        try {
+          await videoRef.current.requestFullscreen();
+          await videoRef.current.play();
+        } catch (error) {
+          console.error('Failed to enter fullscreen:', error);
+        }
       }
     },
-
+    // 添加一个公开的 play 方法
     play: () => {
-      videoRef.current.play();
-    },
-
-    pause: () => {
-      videoRef.current.pause();
-    },
+      videoRef.current?.play();
+    }
   }));
 
   useEffect(() => {
-    if (src) {
-      const video = videoRef.current;
+    const video = videoRef.current;
+    
+    // 清理之前的 HLS 实例
+    if (hlsRef.current) {
+      hlsRef.current.destroy();
+      hlsRef.current = null;
+    }
 
+    if (props.src) {
       if (Hls.isSupported()) {
-        // 如果浏览器支持 HLS
         hlsRef.current = new Hls();
-        hlsRef.current.loadSource(src);
+        hlsRef.current.loadSource(props.src);
         hlsRef.current.attachMedia(video);
 
         hlsRef.current.on(Hls.Events.MANIFEST_PARSED, () => {
           console.log('Manifest loaded, ready to play');
-          video.play();
+          // 尝试播放视频
+          video.play().catch(error => {
+            console.error('Auto-play prevented:', error);
+            // 可以在这里提示用户点击播放
+          });
         });
 
         hlsRef.current.on(Hls.Events.ERROR, (event, data) => {
           console.error('HLS error:', event, data);
         });
-      } else if (
-        video.canPlayType('application/vnd.apple.mpegurl')
-      ) {
-        // 对于 Safari 浏览器，原生支持 .m3u8
-        video.src = src;
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.src = props.src;
         video.addEventListener('loadedmetadata', () => {
-          video.play();
+          video.play().catch(error => {
+            console.error('Auto-play prevented:', error);
+          });
         });
       } else {
         console.error('HLS is not supported in this browser!');
       }
     }
 
-    // 清理 HLS 实例
     return () => {
       if (hlsRef.current) {
         hlsRef.current.destroy();
       }
     };
-  }, [src]);
+  }, [props.src]);
 
   return (
     <video
@@ -88,5 +78,3 @@ const M3U8Player = forwardRef(({ src }, ref) => {
     />
   );
 });
-
-export default M3U8Player;

@@ -69,46 +69,48 @@ const App: React.FC = () => {
   const { materialEnter: M } = server;
   const [statistic, setStatistic] = useState({
     thisMonthPlan: 0,
+    todayPlan: 0,
     todayhReceive: 0,
     todayhAccept: 0,
-    todayhReject: 0,
-    monthPlan: 0,
-    monthReceive: 0,
-    monthAccept: 0,
-    monthReject: 0,
-    thisMonthReject: 0,
+    MonthPlanPer: 0,
+    todayPlanPer: 0,
+    todayhReceivePer: 0,
+    todayhAcceptPer: 0,
   });
 
   const queryData = async () => {
     const res = await M.summery();
-    res.monthPlan = res.yesterdayPlan
+    res.MonthPlanPer = res.lastMonthPlan
+      ? Number(
+          (
+            ((res.thisMonthPlan - res.lastMonthPlan) /
+              res.lastMonthPlan) *
+            100
+          ).toFixed(2)
+        )
+      : 0;
+    res.todayPlanPer = res.yesterdayPlan
       ? (
           ((res.todayPlan - res.yesterdayPlan) /
             res.yesterdayPlan) *
           100
         ).toFixed(2)
       : 0;
-    res.monthReceive = res.yesterdayReceive
+    res.todayhReceivePer = res.yesterdayReceive
       ? (
           ((res.todayReceive - res.yesterdayReceive) /
             res.yesterdayReceive) *
           100
         ).toFixed(2)
       : 0;
-    res.monthAccept = res.yesterdayAccept
+    res.todayhAcceptPer = res.yesterdayAccept
       ? (
           ((res.todayAccept - res.yesterdayAccept) /
             res.yesterdayAccept) *
           100
         ).toFixed(2)
       : 0;
-    res.monthReject = res.yesterdayReject
-      ? (
-          ((res.todayReject - res.yesterdayReject) /
-            res.yesterdayReject) *
-          100
-        ).toFixed(2)
-      : 0;
+
     setStatistic(res);
   };
 
@@ -127,14 +129,34 @@ const App: React.FC = () => {
           <div>较上月</div>
           <div
             className={
-              statistic.monthPlan > 0
+              statistic.MonthPlanPer > 0
                 ? 'up'
-                : statistic.monthPlan < 0
+                : statistic.MonthPlanPer < 0
                 ? 'down'
                 : 'px-14px'
             }
           >
-            {statistic.monthPlan}
+            {statistic.MonthPlanPer} %
+          </div>
+        </Flex>
+      </div>
+      <div className="block-box">
+        <Statistic
+          title="今日计划数"
+          value={statistic.todayPlan}
+        />
+        <Flex align="center">
+          <div>较昨天</div>
+          <div
+            className={
+              statistic.todayPlanPer > 0
+                ? 'up'
+                : statistic.todayPlanPer < 0
+                ? 'down'
+                : 'px-14px'
+            }
+          >
+            {statistic.todayPlanPer}%
           </div>
         </Flex>
       </div>
@@ -147,14 +169,14 @@ const App: React.FC = () => {
           <div>较昨天</div>
           <div
             className={
-              statistic.monthReceive > 0
+              statistic.todayhReceivePer > 0
                 ? 'up'
-                : statistic.monthReceive < 0
+                : statistic.todayhReceivePer < 0
                 ? 'down'
                 : 'px-14px'
             }
           >
-            {statistic.monthReceive}%
+            {statistic.todayhReceivePer}%
           </div>
         </Flex>
       </div>
@@ -167,18 +189,18 @@ const App: React.FC = () => {
           <div>较昨天</div>
           <div
             className={
-              statistic.monthAccept > 0
+              statistic.todayhAcceptPer > 0
                 ? 'up'
-                : statistic.monthAccept < 0
+                : statistic.todayhAcceptPer < 0
                 ? 'down'
                 : 'px-14px'
             }
           >
-            {statistic.monthAccept}%
+            {statistic.todayhAcceptPer}%
           </div>
         </Flex>
       </div>
-      <Row className="block-box">
+      {/* <Row className="block-box">
         <Col span={12}>
           <Statistic
             title="今日未验收"
@@ -215,7 +237,7 @@ const App: React.FC = () => {
             />
           </Flex>
         </Col>
-      </Row>
+      </Row> */}
     </CustomSDiv>
   );
 };

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Card, Drawer, Flex } from 'antd';
 import styled from 'styled-components';
+import { FullscreenOutlined } from '@ant-design/icons';
 
 import Left from './Left';
 import Right from './Right';
@@ -13,11 +14,23 @@ const CustomDrawer = styled(Drawer)(() => ({
     paddingBlock: '0px',
   },
 }));
+
+const Box = styled.div`
+  .fullscreen {
+    opacity: 0;
+  }
+  &:hover {
+    .fullscreen {
+      opacity: 1;
+    }
+  }
+`;
+
 export default () => {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [code, setCode] = useState('');
   const rightRef = useRef(null); // 引用Right组件的容器
-
+  const playerRef = useRef(null);
   const handleMouseEnter = () => {
     setVisible(true);
   };
@@ -28,20 +41,32 @@ export default () => {
     }
   };
 
+  const handleFullscreen = async () => {
+    if (playerRef.current) {
+      playerRef.current.playFullscreen();
+    }
+  };
+
   // 关闭抽屉
   const onClose = () => {
     setVisible(false);
   };
 
   return (
-    <div className="custom-drawer-container relative h-full">
+    <Box className="custom-drawer-container relative h-full ">
+      <div
+        className="pos-absolute left-20px bottom-10px width-50px h-30px color-#fff font-size-20px  cursor-pointer  z-9999 fullscreen"
+        onClick={handleFullscreen}
+      >
+        <FullscreenOutlined />
+      </div>
       <div
         ref={rightRef}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        className="right-container relative w-full h-full overflow-hidden"
+        className="right-container relative  overflow-hidden"
       >
-        <Right code={code} />
+        <Right code={code} playerRef={playerRef} />
 
         <CustomDrawer
           placement="right"
@@ -59,14 +84,9 @@ export default () => {
             overflow: 'auto',
           }}
         >
-          <Left
-            onSelect={(id) => {
-              setCode(id);
-              setVisible(false);
-            }}
-          />
+          <Left onSelect={(id) => setCode(id)} />
         </CustomDrawer>
       </div>
-    </div>
+    </Box>
   );
 };
