@@ -6,10 +6,10 @@ import YoYMoM from './YoYMoM';
 const App: React.FC = () => (
   <>
     <Row className="h-full">
-      <Col span={12} className="h-full">
+      {/* <Col span={12} className="h-full">
         <RealTime />
-      </Col>
-      <Col span={12} className="h-full">
+      </Col> */}
+      <Col span={24} className="h-full">
         <YoYMoM />
       </Col>
     </Row>

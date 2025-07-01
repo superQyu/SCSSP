@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Flex, Row, Col, Tag } from 'antd';
-import {
-  LoginOutlined,
-  LogoutOutlined,
-} from '@ant-design/icons';
+import { Flex } from 'antd';
+
 import dayjs from 'dayjs';
 
 import style from './index.module.scss';
@@ -78,9 +75,18 @@ export default () => {
             })
           : ''}
       </div>
-      <Flex vertical={true}  justify='center' align='center'  className="h-full color-#409eff ">
-        <div className='h-20px'>暂无数据</div>
-      </Flex>
+      {!list.length ? (
+        <Flex
+          vertical={true}
+          justify="center"
+          align="center"
+          className="h-full color-#409eff "
+        >
+          <div className="h-20px">暂无数据</div>
+        </Flex>
+      ) : (
+        ''
+      )}
     </div>
   );
 };

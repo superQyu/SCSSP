@@ -104,7 +104,7 @@ export default () => {
   return (
     <>
       <Row className="h-full" gutter={20}>
-        <Col span={5} className="h-full">
+        <Col span={6} className="h-full">
           <CustomCard className="h-full pos-relative">
             <Tag
               color="#4C9EF9"
@@ -167,7 +167,7 @@ export default () => {
         </Col>
         {columns.map((el, i) => {
           return (
-            <Col span={7} key={`col${i}`} className="h-full">
+            <Col span={9} key={`col${i}`} className="h-full">
               <CustomCard className="h-full">
                 <Tag
                   color="#4C9EF9"
@@ -201,7 +201,7 @@ export default () => {
             </Col>
           );
         })}
-        <Col span={5} className="h-full">
+        {/* <Col span={5} className="h-full">
           <CustomCard className="h-full">
             <Tag
               color="#4C9EF9"
@@ -212,7 +212,7 @@ export default () => {
             </Tag>
             <LoginRecord />
           </CustomCard>
-        </Col>
+        </Col> */}
       </Row>
     </>
   );
