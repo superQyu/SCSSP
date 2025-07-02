@@ -18,10 +18,12 @@ export default () => {
   const loadData = async () => {
     const res =
       await attendance.attendanceCountWithSpecialWorkType();
-    const list = res.map((item: any) => ({
-      name: item.workTypeName,
-      value: item.thisWorkTypePresentWorkerCount,
-    })).filter((item:any)=> item.thisWorkTypePresentWorkerCount)
+    const list = res
+      .map((item: any) => ({
+        name: item.workTypeName,
+        value: item.thisWorkTypePresentWorkerCount,
+      }))
+      .filter((item: any) => item.value);
     setPresentChartData(list);
   };
 
