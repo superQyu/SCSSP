@@ -13,6 +13,7 @@ import {
   Flex,
   Select,
   Popconfirm,
+  Spin,
 } from 'antd';
 import type { CollapseProps } from 'antd';
 import {
@@ -43,7 +44,7 @@ interface Props {
   /** 编辑时的证书详情 */
   detail?: Record<string, any>;
   // 是否可修改
-  ifEdit: Boolean
+  ifEdit: Boolean;
 }
 
 interface FileItem {
@@ -95,6 +96,8 @@ const FunctionCom: React.FC<Props> = forwardRef(
     // 控制所属工种表单的默认值
     const [initialValues, setInitialValues] = useState<any>({});
 
+    const [spinning, setSpinning] = useState<Boolean>(false);
+    const [ocrDetail, setOcrDetail] = useState<any>({});
     const { file: F, basic: B, person: P, certificate } = server;
 
     const { certificateColumns } = siteModel({ server });
@@ -170,9 +173,30 @@ const FunctionCom: React.FC<Props> = forwardRef(
       // const collapseItemIdx = fileList.length - 1;
       // console.log('新增的证件', newFile, collapseItemIdx);
       setCollapseItem((collapseItem = []) => {
-        const subForm =
-          detail?.personnelCertificateRespVOS?.[collapseItemIdx];
-        // console.log('subForm', subForm);
+        let subForm = {
+          credentialName: ocrDetail['证书名称'],
+          credentialNumber:
+            ocrDetail['证书编号'] || ocrDetail['编号'],
+          validityStartDate: ocrDetail['有效期始']
+            ? new Date(
+                ocrDetail['有效期始']
+                  .replace(/年/g, '-')
+                  .replace(/月/g, '-')
+                  .replace(/日/g, '')
+              ).getTime()
+            : '',
+          validityEndDate: ocrDetail['有效期止']
+            ? new Date(
+                ocrDetail['有效期止']
+                  .replace(/年/g, '-')
+                  .replace(/月/g, '-')
+                  .replace(/日/g, '')
+              ).getTime()
+            : '',
+          ...detail?.personnelCertificateRespVOS?.[
+            collapseItemIdx
+          ],
+        };
         return [
           ...collapseItem,
           {
@@ -190,38 +214,43 @@ const FunctionCom: React.FC<Props> = forwardRef(
                   initialValues={subForm}
                   layout="horizontal"
                   formRef={(el: any) =>
-                  (certificateRef.current[collapseItemIdx] =
-                    el)
+                    (certificateRef.current[collapseItemIdx] =
+                      el)
                   }
                   columns={certificateColumns}
                   disabled={ifEdit}
                 />
-                {!ifEdit ? <Flex justify="flex-end">
-                  <Popconfirm
-                    key="delete"
-                    title="删除此项"
-                    description="一旦删除, 将不可回退!"
-                    onConfirm={() =>
-                      delIconClick(collapseItemIdx)
-                    }
-                    okText="确认"
-                    cancelText="取消"
-                  >
-                    <Button
-                      type="primary"
-                      icon={<DeleteOutlined />}
-                      danger
+                {!ifEdit ? (
+                  <Flex justify="flex-end">
+                    <Popconfirm
+                      key="delete"
+                      title="删除此项"
+                      description="一旦删除, 将不可回退!"
+                      onConfirm={() =>
+                        delIconClick(collapseItemIdx)
+                      }
+                      okText="确认"
+                      cancelText="取消"
                     >
-                      删除
-                    </Button>
-                  </Popconfirm>
-                </Flex> : ""}
+                      <Button
+                        type="primary"
+                        icon={<DeleteOutlined />}
+                        danger
+                      >
+                        删除
+                      </Button>
+                    </Popconfirm>
+                  </Flex>
+                ) : (
+                  ''
+                )}
               </>
             ),
           },
         ];
       });
       setActiveKey(newFile.uid);
+      setSpinning(false);
     };
 
     const handleDelItem = async () => {
@@ -322,7 +351,6 @@ const FunctionCom: React.FC<Props> = forwardRef(
           } else {
             collapseItemIdx = fileList.length - 1;
           }
-          // console.log('collapseItemIdx', collapseItemIdx);
           handleAddItem(item, collapseItemIdx);
         });
       } else {
@@ -516,67 +544,83 @@ const FunctionCom: React.FC<Props> = forwardRef(
       // </div>
       // </Modal>
       <>
-        <SingleTitle
-          label="证书信息"
-          subLabel={
-            <div className="ml-3">
-              {!ifEdit ? <ProUpload
-                buttonRender={
-                  <Button
-                    icon={<AuditOutlined />}
-                    className="bg-#67c23a color-#fff"
-                    size="large"
-                  >
-                    上传证书
-                  </Button>
-                }
-                onRequest={async (params: any) =>
-                  await F.fileUpload(params)
-                }
-                onUploadSuccess={async (res) => {
-                  const uid = Object.keys(res)[0];
-                  const { name, url } = Object.values(
-                    res
-                  )[0] as {
-                    name: string;
-                    url: string;
-                  };
-                  setFileList([
-                    ...fileList,
-                    {
-                      uid,
-                      name,
-                      url,
-                    },
-                  ]);
-                }}
-                maxCount={false}
-                showUploadList={false}
-              /> : ''}
-            </div>
-          }
-        />
-        <Styled.Collapse
-          activeKey={activeKey}
-          accordion
-          items={collapseItem}
-          bordered={false}
-          style={{ background: '#fff' }}
-          expandIconPosition="end"
-          // expandIcon={({ isActive, panelKey }) => (
-          //   <LeftOutlined
-          //     rotate={isActive ? 90 : 0}
-          //     onClick={() => {
-          //       const index = !isActive ? panelKey : -1;
-          //       setActiveKey(index);
-          //     }}
-          //   />
-          // )}
-          onChange={(props) => {
-            // console.log('当前展开项', props);
-            setActiveKey(props[0]);
-          }}
-        />
+        <Spin
+          className="h-full"
+          spinning={spinning}
+          tip="正在上传解析证书..."
+        >
+          <SingleTitle
+            label="证书信息"
+            subLabel={
+              <div className="ml-3">
+                {!ifEdit ? (
+                  <ProUpload
+                    buttonRender={
+                      <Button
+                        icon={<AuditOutlined />}
+                        className="bg-#67c23a color-#fff"
+                        size="large"
+                      >
+                        上传证书
+                      </Button>
+                    }
+                    onRequest={async (params: any) =>
+                      await F.fileUpload(params)
+                    }
+                    onUploadSuccess={async (res) => {
+                      setSpinning(true);
+                      const uid = Object.keys(res)[0];
+                      const { name, url } = Object.values(
+                        res
+                      )[0] as {
+                        name: string;
+                        url: string;
+                      };
+                      // return
+                      const data = await certificate.ocrScan({
+                        picUrl: url,
+                      });
+                      setOcrDetail(JSON.parse(data));
+                      setFileList([
+                        ...fileList,
+                        {
+                          uid,
+                          name,
+                          url,
+                        },
+                      ]);
+                    }}
+                    maxCount={false}
+                    showUploadList={false}
+                  />
+                ) : (
+                  ''
+                )}
+              </div>
+            }
+          />
+          <Styled.Collapse
+            activeKey={activeKey}
+            accordion
+            items={collapseItem}
+            bordered={false}
+            style={{ background: '#fff' }}
+            expandIconPosition="end"
+            // expandIcon={({ isActive, panelKey }) => (
+            //   <LeftOutlined
+            //     rotate={isActive ? 90 : 0}
+            //     onClick={() => {
+            //       const index = !isActive ? panelKey : -1;
+            //       setActiveKey(index);
+            //     }}
+            //   />
+            // )}
+            onChange={(props) => {
+              // console.log('当前展开项', props);
+              setActiveKey(props[0]);
+            }}
+          />
+        </Spin>{' '}
       </>
     );
   }

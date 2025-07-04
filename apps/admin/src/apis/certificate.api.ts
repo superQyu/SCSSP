@@ -61,7 +61,10 @@ const certificate: ApiItem[] = [
       { key: 'validityEndDate', cn: '有效期止' },
       { key: 'issuingAuthority', cn: '发证机关' },
       { key: 'reviewDate', cn: '复核日期' },
-      { key: 'certificateDateSpecialWork', cn: '特工证网络核验日期' },
+      {
+        key: 'certificateDateSpecialWork',
+        cn: '特工证网络核验日期',
+      },
       { key: 'remark', cn: '备注' },
       { key: 'picture', cn: '图片上传' },
     ],
@@ -87,7 +90,10 @@ const certificate: ApiItem[] = [
       { key: 'validityEndDate', cn: '有效期止' },
       { key: 'issuingAuthority', cn: '发证机关' },
       { key: 'reviewDate', cn: '复核日期' },
-      { key: 'certificateDateSpecialWork', cn: '特工证网络核验日期' },
+      {
+        key: 'certificateDateSpecialWork',
+        cn: '特工证网络核验日期',
+      },
       { key: 'remark', cn: '备注' },
       { key: 'picture', cn: '图片上传' },
     ],
@@ -112,6 +118,17 @@ const certificate: ApiItem[] = [
     params: [
       { key: 'Authorization', location: 'header' },
       { key: 'id', cn: '数据库主键' },
+    ],
+  },
+  {
+    key: 'ocrScan',
+    url: `${ADMIN_API}/wisdom/personnel-certificate/ocrScan`,
+    type: 'GET',
+    name: 'Ocr识别',
+    description: 'Ocr识别',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'picUrl', cn: '图片url' },
     ],
   },
 ];

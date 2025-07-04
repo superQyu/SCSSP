@@ -545,11 +545,16 @@ export default (props) => {
       label: '第一次发证日期',
       dataIndex: 'firstIssuedDate',
       formItem: (
-        <DatePicker className="w-full" format="YYYY-MM-DD" />
+        <DatePicker
+          className="w-full"
+          format="YYYY-MM-DD"
+          value-format
+        />
       ),
 
       formItemProps: {
-        getValueFromEvent: (...[, dateString]) => dateString,
+        getValueFromEvent: (...[, dateString]) =>
+          new Date(dateString).getTime(),
         getValueProps: (value) => ({
           value: value ? dayjs(value) : undefined,
         }),
@@ -564,7 +569,8 @@ export default (props) => {
       ),
       formItemProps: {
         rules: [{ required: true, message: '请选择有效期起' }],
-        getValueFromEvent: (...[, dateString]) => dateString,
+        getValueFromEvent: (...[, dateString]) =>
+          new Date(dateString).getTime(),
         getValueProps: (value) => ({
           value: value ? dayjs(value) : undefined,
         }),
@@ -575,12 +581,12 @@ export default (props) => {
       label: '有效期止',
       dataIndex: 'validityEndDate',
       formItem: (
-
         <DatePicker className="w-full" format="YYYY-MM-DD" />
       ),
       formItemProps: {
         rules: [{ required: true, message: '请选择有效期止' }],
-        getValueFromEvent: (...[, dateString]) => dateString,
+        getValueFromEvent: (...[, dateString]) =>
+          new Date(dateString).getTime(),
         getValueProps: (value) => ({
           value: value ? dayjs(value) : undefined,
         }),
