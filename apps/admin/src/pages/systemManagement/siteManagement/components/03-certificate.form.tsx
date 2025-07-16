@@ -169,9 +169,6 @@ const FunctionCom: React.FC<Props> = forwardRef(
       newFile: FileItem,
       collapseItemIdx: number
     ) => {
-      // const newFile = fileList.at(-1) as FileItem;
-      // const collapseItemIdx = fileList.length - 1;
-      // console.log('新增的证件', newFile, collapseItemIdx);
       setCollapseItem((collapseItem = []) => {
         let subForm = {
           credentialName: ocrDetail['证书名称'],

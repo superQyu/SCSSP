@@ -4,6 +4,7 @@ import { type ProColumns } from '@ant-design/pro-components';
 import { Select } from 'antd';
 
 import DictText from '@/components/DictSelect/DictText';
+import dayjs from 'dayjs';
 
 type objJson = Record<string, any>;
 
@@ -149,6 +150,11 @@ export default ({ server }: MenusPropsType) => {
         ellipsis: true,
         width: columnWidth0,
         hideInSearch: true,
+        render: (text, record) => {
+          return record.validityEndDate
+            ? dayjs(record.validityEndDate).format('YYYY-MM-DD')
+            : '';
+        },
       },
       {
         title: '备注',

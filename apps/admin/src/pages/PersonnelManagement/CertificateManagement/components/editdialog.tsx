@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Modal, Button, message } from 'antd';
+import { Modal, Button, message, Spin } from 'antd';
 import type { FormInstance } from 'antd/es/form';
 import { AdForm } from 'components';
 import dayjs from 'dayjs';
@@ -24,11 +24,16 @@ interface Props {
   type: string;
 }
 
-export default ({ openModal, onStateChange, detail, type }: Props) => {
+export default ({
+  openModal,
+  onStateChange,
+  detail,
+  type,
+}: Props) => {
   // api 相关
   const { server } = useBasicConfiguration();
   const { certificate } = server;
-
+  const [spinning, setSpinning] = useState(false);
   const [open, setOpen] = useState<boolean>(openModal);
   const [loading, setLoading] = useState<boolean>(false);
   // 对传入的图片进行控制
@@ -36,6 +41,47 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
 
   const basicFormRef = useRef<FormInstance>(null);
   const certificateFormRef = useRef<FormInstance>(null);
+
+  const onUploadSuccess = async (value) => {
+    setSpinning(true);
+    const data = await certificate.ocrScan({
+      picUrl: value,
+    });
+
+    const ocrDetail = JSON.parse(data);
+    certificateFormRef.current?.setFieldValue(
+      'credentialName',
+      ocrDetail['证书名称']
+    );
+    certificateFormRef.current?.setFieldValue(
+      'credentialNumber',
+      ocrDetail['证书编号'] || ocrDetail['编号']
+    );
+
+    certificateFormRef.current?.setFieldValue(
+      'validityStartDate',
+      ocrDetail['有效期始']
+        ? new Date(
+            ocrDetail['有效期始']
+              .replace(/年/g, '-')
+              .replace(/月/g, '-')
+              .replace(/日/g, '')
+          ).getTime()
+        : ''
+    );
+    certificateFormRef.current?.setFieldValue(
+      'validityEndDate',
+      ocrDetail['有效期止']
+        ? new Date(
+            ocrDetail['有效期止']
+              .replace(/年/g, '-')
+              .replace(/月/g, '-')
+              .replace(/日/g, '')
+          ).getTime()
+        : ''
+    );
+    setSpinning(false);
+  };
 
   // 表单项配置
   // 只能放在外面, 因为调用该方法中使用 hook, 只能放在函数式组件的外部
@@ -45,7 +91,8 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
     certificateFormRef,
     picture,
     type,
-    detail
+    detail,
+    onUploadSuccess
   );
 
   // 基础信息表单的默认值
@@ -59,27 +106,41 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
     // workYears: detail.workYears,
   });
   // 证件信息表单的默认值
-  const [certificateFormData, setCertificateFormData] = useState<MenusType>({});
+  const [certificateFormData, setCertificateFormData] =
+    useState<MenusType>({});
 
   // 根据 id 获取证件管理的详情
   const getDetail = async () => {
-    const res = await certificate.getCertificateDetail({ id: detail.id });
+    const res = await certificate.getCertificateDetail({
+      id: detail.id,
+    });
     const { personnelCertificateRespVO: certificateData } = res;
     setCertificateFormData({
       ...certificateData,
-      certificateType: certificateData.certificateType && `${certificateData.certificateType}`,
+      certificateType:
+        certificateData.certificateType &&
+        `${certificateData.certificateType}`,
       certificateCategory:
-        certificateData.certificateCategory && `${certificateData.certificateCategory}`,
-      firstIssuedDate: certificateData.firstIssuedDate && dayjs(certificateData.firstIssuedDate),
+        certificateData.certificateCategory &&
+        `${certificateData.certificateCategory}`,
+      firstIssuedDate:
+        certificateData.firstIssuedDate &&
+        dayjs(certificateData.firstIssuedDate),
       validityStartDate:
-        certificateData.validityStartDate && dayjs(certificateData.validityStartDate),
-      validityEndDate: certificateData.validityEndDate && dayjs(certificateData.validityEndDate),
-      reviewDate: certificateData.reviewDate && dayjs(certificateData.reviewDate),
+        certificateData.validityStartDate &&
+        dayjs(certificateData.validityStartDate),
+      validityEndDate:
+        certificateData.validityEndDate &&
+        dayjs(certificateData.validityEndDate),
+      reviewDate:
+        certificateData.reviewDate &&
+        dayjs(certificateData.reviewDate),
       certificateDateSpecialWork:
         certificateData.certificateDateSpecialWork &&
         dayjs(certificateData.certificateDateSpecialWork),
     });
-    certificateData.picture && setPicture(certificateData.picture?.split('@'));
+    certificateData.picture &&
+      setPicture(certificateData.picture?.split('@'));
   };
 
   useEffect(() => {
@@ -101,13 +162,23 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
 
   // 点击保存
   const handleOk = async () => {
-    const basicValues: MenusType = await basicFormRef.current?.validateFields();
-    const certificateValues: MenusType = await certificateFormRef.current?.validateFields();
-    certificateValues.picture = certificateValues.picture && certificateValues.picture?.join('@');
-    const values = { id: detail.id, ...basicValues, ...certificateValues };
+    const basicValues: MenusType =
+      await basicFormRef.current?.validateFields();
+    const certificateValues: MenusType =
+      await certificateFormRef.current?.validateFields();
+    certificateValues.picture =
+      certificateValues.picture &&
+      certificateValues.picture?.join('@');
+    const values = {
+      id: detail.id,
+      ...basicValues,
+      ...certificateValues,
+    };
     // console.log('表单提交时的数据', values);
     setLoading(true);
-    certificate[detail.id ? 'updateCertificate' : 'createCertificate'](values)
+    certificate[
+      detail.id ? 'updateCertificate' : 'createCertificate'
+    ](values)
       .then(() => {
         message.success('操作成功！');
         setLoading(false);
@@ -141,37 +212,56 @@ export default ({ openModal, onStateChange, detail, type }: Props) => {
         onCancel={handleCancel}
         maskClosable={false}
         footer={[
-          <Button key="back" onClick={handleCancel} disabled={loading}>
+          <Button
+            key="back"
+            onClick={handleCancel}
+            disabled={loading}
+          >
             取消
           </Button>,
-          <Button key="reset" htmlType="reset" onClick={onReset} disabled={loading}>
+          <Button
+            key="reset"
+            htmlType="reset"
+            onClick={onReset}
+            disabled={loading}
+          >
             重置
           </Button>,
-          <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
+          <Button
+            key="submit"
+            type="primary"
+            loading={loading}
+            onClick={handleOk}
+          >
             {detail.id ? '更新' : '提交'}
           </Button>,
         ]}
       >
-        <div className="h-70vh p-inline-4" style={{ overflow: 'hidden auto' }}>
-          <SingleTitle label="基本信息" />
-          <AdForm
-            loadingTitle="提交中..."
-            formRef={basicFormRef}
-            initialValues={basicFormData}
-            loading={loading}
-            labelAlign="left"
-            columns={basicColumns}
-          />
-          <SingleTitle label="证件信息" />
-          <AdForm
-            loadingTitle="提交中..."
-            formRef={certificateFormRef}
-            initialValues={certificateFormData}
-            loading={loading}
-            labelAlign="left"
-            columns={certificateColumns}
-          />
-        </div>
+        <Spin tip="正在解析证书..." spinning={spinning}>
+          <div
+            className="h-70vh p-inline-4"
+            style={{ overflow: 'hidden auto' }}
+          >
+            <SingleTitle label="基本信息" />
+            <AdForm
+              loadingTitle="提交中..."
+              formRef={basicFormRef}
+              initialValues={basicFormData}
+              loading={loading}
+              labelAlign="left"
+              columns={basicColumns}
+            />
+            <SingleTitle label="证件信息" />
+            <AdForm
+              loadingTitle="提交中..."
+              formRef={certificateFormRef}
+              initialValues={certificateFormData}
+              loading={loading}
+              labelAlign="left"
+              columns={certificateColumns}
+            />
+          </div>
+        </Spin>
       </Modal>
     </>
   );

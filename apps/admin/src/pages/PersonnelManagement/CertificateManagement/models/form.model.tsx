@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { FormColumnsTypes, ProUpload } from 'components';
 import { Select, DatePicker, Input } from 'antd';
 import type { UploadFile } from 'antd';
-
+import dayjs from 'dayjs';
 import DictSelect from '@/components/DictSelect';
 
 // api 相关
@@ -15,7 +15,8 @@ export default (
   certificateFormRef: any,
   picture: string[],
   type: string,
-  detail: any
+  detail: any,
+  onUploadSuccess: any
 ) => {
   // api 相关
   const { server } = useBasicConfiguration();
@@ -213,13 +214,33 @@ export default (
       label: '第一次发证日期',
       dataIndex: 'firstIssuedDate',
       colNum: 12,
-      formItem: <DatePicker />,
+      // formItem: <DatePicker />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
+      formItemProps: {
+        rules: [{ required: true, message: '请选择有效期起' }],
+        getValueFromEvent: (...[, dateString]) =>
+          new Date(dateString).getTime(),
+        getValueProps: (value) => ({
+          value: value ? dayjs(value) : undefined,
+        }),
+      },
     },
     {
       label: '有效期起',
       dataIndex: 'validityStartDate',
       colNum: 12,
-      formItem: <DatePicker />,
+      // formItem: <DatePicker />,
+      formItem: (
+        <DatePicker className="w-full" format="YYYY-MM-DD" />
+      ),
+      formItemProps: {
+        getValueFromEvent: (...[, dateString]) => dateString,
+        getValueProps: (value) => ({
+          value: value ? dayjs(value) : undefined,
+        }),
+      },
     },
     {
       label: '有效期止',
@@ -268,6 +289,61 @@ export default (
               // 证件图片
               picture: list,
             });
+          }}
+          onUploadSuccess={(_, value) => {
+            onUploadSuccess(value);
+            return;
+            const data = certificate.ocrScan({
+              picUrl: value,
+            });
+
+            const ocrDetail = JSON.parse(data);
+            certificateFormRef.current?.setFieldValue(
+              'credentialName',
+              ocrDetail['证书名称']
+            );
+            certificateFormRef.current?.setFieldValue(
+              'credentialNumber',
+              ocrDetail['证书编号'] || ocrDetail['编号']
+            );
+            console.log(
+              'data',
+              ocrDetail['有效期始']
+                .replace(/年/g, '-')
+                .replace(/月/g, '-')
+                .replace(/日/g, '')
+            );
+            console.log(
+              '---',
+              new Date(
+                ocrDetail['有效期始']
+                  .replace(/年/g, '-')
+                  .replace(/月/g, '-')
+                  .replace(/日/g, '')
+              ).getTime()
+            );
+            // certificateFormRef.current?.setFieldValue(
+            //   'validityStartDate',
+            //   ocrDetail['有效期始']
+            //     ? new Date(
+            //         ocrDetail['有效期始']
+            //           .replace(/年/g, '-')
+            //           .replace(/月/g, '-')
+            //           .replace(/日/g, '')
+            //       ).getTime()
+            //     : ''
+            // );
+            // certificateFormRef.current?.setFieldValue(
+            //   'validityEndDate',
+            //   ocrDetail['有效期止']
+            //     ? new Date(
+            //         ocrDetail['有效期止']
+            //           .replace(/年/g, '-')
+            //           .replace(/月/g, '-')
+            //           .replace(/日/g, '')
+            //       ).getTime()
+            //     : ''
+            // );
           }}
           defaultFileList={() => fileList}
         />
