@@ -104,8 +104,12 @@ export default ({ onSelect }: any) => {
       [
         ...JSON.parse(res1)?.data?.records,
         ...JSON.parse(res2)?.data?.records,
-      ].filter((item) => item.equipStatus != '0')
+      ].filter((item) => {
+        console.log('item.equipStatus',item.equipStatus);
+        return item.equipStatus != '0'
+      })
     );
+
     arr.forEach((oItem, i) => {
       // temp 添加一个坐标为了点击可以跳出地图弹框
       if (oItem.isRemoved == 1 || !oItem.lat) {
