@@ -17,6 +17,7 @@ interface Props {
   onStateChange: (state: boolean) => void;
   /** 编辑表单携带的数据 */
   detail: any;
+  type: string;
 }
 
 type MenusType = {
@@ -97,7 +98,7 @@ export default (props: Props) => {
       const subFormValues: MenusType =
         await subFormRef.current?.validateFields();
       subFormValues.url =
-        subFormValues.url && subFormValues.url?.join('@');
+        subFormValues.url && subFormValues.url?.join('@') || ' ';
       const addressFormValues: MenusType =
         await addressFormRef.current?.validateFields();
       const params = {
@@ -105,7 +106,9 @@ export default (props: Props) => {
         ...subFormValues,
         ...addressFormValues,
       };
-      // console.log('创建单位的请求参数', params)
+
+      console.log('params', params);
+
       setLoading(true);
       subContractor[
         detail.id ? 'updateSubContractor' : 'createSubContractor'
@@ -180,6 +183,7 @@ export default (props: Props) => {
             loading={loading}
             labelAlign="left"
             columns={subColumns}
+            disabled={props.type == 'view'}
           />
           {/* <SingleTitle label="注册地" /> */}
           {/* <AdForm

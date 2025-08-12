@@ -20,7 +20,7 @@ interface Props {
   /** 表单初始化 */
   detail: Record<string, any>;
   // 是否可修改
-  ifEdit: Boolean
+  ifEdit: Boolean;
 }
 
 const calculateAgeFromID = (idCard) => {
@@ -75,6 +75,8 @@ const InfoCom: React.FC<Props> = forwardRef(
     const [defaultUrl, setDefaultUrl] = useState<
       (UploadFile & { url?: string })[]
     >([]);
+    // 用来体检证明的初始值
+    const [picture, setPicture] = useState<UploadFile[]>([]);
     const [subForm, setSubForm] = useState<any>({});
 
     const getAge = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,23 +103,48 @@ const InfoCom: React.FC<Props> = forwardRef(
         subForm.passportPhoto =
           subForm.passportPhoto &&
           subForm.passportPhoto?.split('@');
-        // console.log('subForm.passportPhoto', subForm.passportPhoto)
-        const list = subForm.passportPhoto?.map(
-          (item: string, index: number) => {
-            return {
-              uid: `${index}`,
-              name: item?.split('/')?.slice(-1)[0],
-              url: item,
-            };
-          }
-        );
-        setDefaultUrl(list);
-        setSubForm(subForm);
 
+        const list = subForm.passportPhoto
+          ? subForm.passportPhoto?.map(
+              (item: string, index: number) => {
+                return {
+                  uid: `${index}`,
+                  name: item?.split('/')?.slice(-1)[0],
+                  url: item,
+                };
+              }
+            )
+          : [];
+        setPicture(list);
+        setSubForm(subForm);
       }
     }, [detail]);
 
     const columns: FormColumnsTypes[] = [
+      {
+        label: '头像',
+        dataIndex: 'passportPhoto',
+        formItem: (
+          <ProUpload
+            onRequest={async (params: any) => {
+              const res = await F.fileUpload(params);
+              formRef.current?.setFieldsValue({
+                passportPhoto: res,
+              });
+              return res;
+            }}
+            onListChange={(res: any) => {
+              formRef.current?.setFieldsValue({
+                // 证件图片
+                passportPhoto: res.map((item: any) => item.url),
+              });
+            }}
+            defaultFileList={() => picture}
+            maxCount={1}
+          />
+        ),
+        colNum: 8,
+      },
       {
         label: '姓名',
         dataIndex: 'name',

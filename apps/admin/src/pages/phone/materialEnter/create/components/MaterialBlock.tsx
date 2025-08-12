@@ -13,7 +13,6 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import PickerPopup from '@/pages/phone/components/PickerPopup';
 import { Flex } from 'antd';
 
-
 interface MaterialBlockProps {
   initialValue: any;
   index: number;
@@ -99,7 +98,6 @@ const MaterialBlock: React.FC<MaterialBlockProps> = forwardRef(
     };
 
     const getFormValues = () => {
-
       return {
         materialsInventoryId:
           materialsInventoryId ||
@@ -107,7 +105,7 @@ const MaterialBlock: React.FC<MaterialBlockProps> = forwardRef(
         ...form.getFieldsValue(),
         isSpecialWork:
           form.getFieldsValue()?.isSpecialWork?.[0] || 0,
-          id: initialValue?.id
+        id: initialValue?.id,
       };
     };
 
@@ -192,7 +190,9 @@ const MaterialBlock: React.FC<MaterialBlockProps> = forwardRef(
           </Form.Item>
 
           <Form.Item label="合格证书" name="attachment">
-            <UploadImage initialValue={initialValue.attachment} />
+            <UploadImage
+              initialValue={initialValue.attachment}
+            />
           </Form.Item>
         </Form>
 

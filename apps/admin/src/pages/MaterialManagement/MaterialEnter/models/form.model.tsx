@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { FormColumnsTypes, SearchSelect } from 'components';
 import { type ProColumns } from '@ant-design/pro-components';
-import { Select, DatePicker, Input, } from 'antd';
+import { Select, DatePicker, Input } from 'antd';
 
 // api 相关
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
@@ -107,6 +107,11 @@ export default (
       formItemProps: {
         rules: [
           { required: true, message: '请输入送货人联系方式' },
+          {
+            pattern: /^(1[3-9]\d{9}|0\d{2,3}-?\d{5,8})$/,
+            message: '请输入正确的手机号或固定电话',
+            trigger: 'blur',
+          },
         ],
       },
     },
@@ -334,7 +339,6 @@ export default (
       hideInSearch: true,
       valueType: 'select',
       valueEnum: {
-
         '1': {
           text: '是',
           status: 'warning',
@@ -363,6 +367,16 @@ export default (
       ellipsis: true,
       readonly: status == '0' ? false : true,
       hideInSearch: true,
+      formItemProps: {
+        rules: [
+       
+          {
+            pattern: /^[1-9]\d*(\.\d+)?$|^0\.\d*[1-9]\d*$/,
+            message: '计划进场数量为正数',
+            trigger: 'blur',
+          },
+        ],
+      },
     },
     {
       title: '实际验收数量',

@@ -1,13 +1,16 @@
-import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
-
+import {
+  TableDropdown,
+  type ProColumns,
+} from '@ant-design/pro-components';
+import { Popconfirm, message } from 'antd';
 type objJson = Record<string, any>;
 
 type MenusPropsType = {
   server?: objJson;
 };
 
-export default ({ server }: MenusPropsType) => {
-  const { menus: M } = server as objJson;
+export default ({ server }: MenusPropsType, callback: any) => {
+  const { materialList: M } = server as objJson;
 
   const first: ProColumns[] = [
     {
@@ -64,12 +67,31 @@ export default ({ server }: MenusPropsType) => {
       <a
         key="editable"
         onClick={() => {
-          // console.log('点击了编辑')
           action?.startEditable?.(record.id);
         }}
       >
         编辑
       </a>,
+      <Popconfirm
+        title="删除此项"
+        onConfirm={async () => {
+          // await M[
+          //   record.thirdLevelCode
+          //     ? 'deleteThird'
+          //     : record.secondLevelCode
+          //     ? 'deleteSecond'
+          //     : 'deleteFirst'
+          // ]({
+          //   id: record.id,
+          // });
+          callback();
+          message.success('操作成功!');
+        }}
+        okText="确认"
+        cancelText="取消"
+      >
+        <a>删除</a>
+      </Popconfirm>,
     ],
   };
 

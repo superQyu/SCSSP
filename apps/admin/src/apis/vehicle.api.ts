@@ -28,6 +28,8 @@ const vehicle: ApiItem[] = [
       { key: 'carNo', cn: '车牌号' },
       { key: 'current', targetKey: 'pageNo', cn: '页码' },
       { key: 'pageSize', cn: '每页条数' },
+      { key: 'queryTime', cn: '时间范围' },
+      
     ],
   },
   {

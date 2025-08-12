@@ -50,14 +50,14 @@ const SomeChartComponent = () => {
         },
       },
       // 图例配置，区分不同数据系列
-      legend: {
-        icon: 'circle',
-        data: ['计划总数', '实到数', '已验收'],
-        itemWidth: 6,
-        itemHeight: 6,
-        top: 0, // 图例位置，可按需调整
-        right: '10px',
-      },
+      // legend: {
+      //   icon: 'circle',
+      //   data: ['计划总数', '实到数', '已验收'],
+      //   itemWidth: 6,
+      //   itemHeight: 6,
+      //   top: 0, // 图例位置，可按需调整
+      //   right: '10px',
+      // },
       // 直角坐标系配置
       xAxis: {
         type: 'category',
@@ -115,7 +115,7 @@ const SomeChartComponent = () => {
           type: 'bar',
           barWidth: 30,
           barGap: '-76%',
-          color: '#f2f2f2',
+          color: '#5b9ff3',
           data: data1,
           label: {
             show: true,
@@ -127,7 +127,7 @@ const SomeChartComponent = () => {
           name: '履约人数',
           type: 'bar',
           barWidth: 16,
-          color: '#76cb60',
+          color: '#2fc699',
           data: data2,
           label: {
             show: true,

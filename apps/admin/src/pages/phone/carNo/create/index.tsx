@@ -183,7 +183,7 @@ export default function DropdownExample() {
         </Form.Item>
 
         <Form.Item
-          label="车载容量"
+          label="车载容量(升)"
           name="carStorage"
           rules={[
             { required: true, message: '车载容量不能为空' },

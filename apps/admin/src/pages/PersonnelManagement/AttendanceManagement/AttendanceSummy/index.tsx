@@ -91,9 +91,9 @@ export default () => {
           persistenceType: 'localStorage',
           onChange(_: any) {},
         }}
-        pagination={{
-          pageSize: 30,
-        }}
+        // pagination={{
+        //   pageSize: 30,
+        // }}
         search={{
           labelWidth: 'auto',
           optionRender: (

@@ -35,13 +35,17 @@ export default (_: MenusPropsType) => {
     {
       hideInTable: true,
       title: '时间范围',
-      valueType: 'dateRange',
-      search: {
-        transform: (value: any) => ({
-          startTime: value[0],
-          endTime: value[1],
-        }),
-      },
+      valueType: 'dateTimeRange',
+      dataIndex: 'queryTime',
+      // search: {
+      //   transform: (value: any) => {
+      //     console.log('value',value);
+      //     // ({
+      //     //   queryTime: value[0],
+      //     //   endTime: value[1],
+      //     // })
+      //   },
+      // },
     },
     {
       hideInSearch: true,
@@ -52,6 +56,15 @@ export default (_: MenusPropsType) => {
       hideInSearch: true,
       title: '车型',
       dataIndex: 'carType',
+      render: (_, record) => {
+        return (
+          <DictSelect
+            dictKey="cm_car_type"
+            type="text"
+            value={record.carType}
+          />
+        );
+      },
     },
     {
       hideInSearch: true,
@@ -69,12 +82,25 @@ export default (_: MenusPropsType) => {
     },
     {
       hideInSearch: true,
-      title: '进出时间',
+      title: '进场时间',
       render: (_, record) => (
         <>
-          {dayjs(record.enterTime || record.outTime).format(
-            'YYYY-MM-DD HH:mm:ss'
-          )}
+          {record.enterTime
+            ? dayjs(record.enterTime).format(
+                'YYYY-MM-DD HH:mm:ss'
+              )
+            : '--'}
+        </>
+      ),
+    },
+    {
+      hideInSearch: true,
+      title: '出场时间',
+      render: (_, record) => (
+        <>
+          {record.outTime
+            ? dayjs(record.outTime).format('YYYY-MM-DD HH:mm:ss')
+            : '--'}
         </>
       ),
     },

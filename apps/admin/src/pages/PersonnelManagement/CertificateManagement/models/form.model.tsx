@@ -93,7 +93,7 @@ export default (
     });
     setSubcontractorList(list1);
     const res2 = await certificate.getPersonInfoList();
-    // console.log('人员列表', res2);
+    console.log('人员列表', res2);
     const list2 = res2.map((item: any) => {
       return { label: item.name, value: item.id };
     });
@@ -219,7 +219,7 @@ export default (
         <DatePicker className="w-full" format="YYYY-MM-DD" />
       ),
       formItemProps: {
-        rules: [{ required: true, message: '请选择有效期起' }],
+        rules: [{ required: true, message: '请选择第一次发证日期' }],
         getValueFromEvent: (...[, dateString]) =>
           new Date(dateString).getTime(),
         getValueProps: (value) => ({

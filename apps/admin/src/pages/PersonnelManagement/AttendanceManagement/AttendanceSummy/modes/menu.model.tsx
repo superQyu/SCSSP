@@ -320,14 +320,14 @@ export default ({ server }: MenusPropsType) => {
       title: '年月',
       dataIndex: 'yAndMs',
       formItemProps: {
-        initialValue:[ dayjs().format('YYYY-MM')],
+        initialValue: [dayjs().format('YYYY-MM')],
       },
       renderFormItem: (_, { fieldProps }) => {
         return <MultiYearMonthSelect {...fieldProps} />;
       },
       search: {
         transform: (value) => {
-          return { yAndMs: value.join(',') };
+          return { yAndMs: value ? value.join(',') : '' };
         },
       },
     },

@@ -553,6 +553,7 @@ export default (props) => {
       ),
 
       formItemProps: {
+        rules: [{ required: true, message: '请选择第一次发证日期' }],
         getValueFromEvent: (...[, dateString]) =>
           new Date(dateString).getTime(),
         getValueProps: (value) => ({

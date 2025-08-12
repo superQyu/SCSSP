@@ -36,6 +36,7 @@ const SomeChartComponent = () => {
     const acceptData = list.map((el) => acceptObj[el]);
     const enterData = list.map((el) => enterObj[el]);
     list = list.map((el) => dayjs(el).format('MM.DD'));
+
     setXAxis(list);
     setChartData([acceptData, enterData]);
   };
@@ -198,12 +199,12 @@ const SomeChartComponent = () => {
       spinning={spinning}
     >
       <div className="flex justify-center items-center h-full">
-        {!chartData.length && (
+        {!xAxis.length && (
           <div className="color-#409eff">暂无数据</div>
         )}
         <div
           className={`w-full h-full ${
-            !chartData.length && 'hidden'
+            !xAxis.length && 'hidden'
           }`}
           ref={chartRef}
         ></div>

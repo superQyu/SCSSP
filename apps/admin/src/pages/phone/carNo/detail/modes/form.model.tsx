@@ -26,7 +26,7 @@ export default () => {
       disabled: true,
     },
     {
-      label: '车载容量',
+      label: '车载容量(升)',
       key: 'carStorage',
       disabled: true,
     },

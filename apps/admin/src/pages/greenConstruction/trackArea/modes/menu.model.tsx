@@ -65,7 +65,7 @@ export default (_: MenusPropsType) => {
     {
       hideInSearch: true,
       title: '创建人',
-      dataIndex: 'workerType',
+      dataIndex: 'creator',
     },
   ];
 

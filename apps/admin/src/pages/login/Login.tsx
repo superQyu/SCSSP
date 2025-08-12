@@ -74,12 +74,19 @@ const Login: React.FC = () => {
       login
         .adminLogin({ ...values })
         .then(async (res: any) => {
+          console.log('true', res);
+
           console.info(
             '%c✔  登陆成功！！！ ==============',
             'color: green; font-size: 14px;'
           );
           // console.log('返回的用户信息', res);
-          const { accessToken } = res;
+          const { accessToken = '' } = res;
+          if (!accessToken) {
+            message.warning(res.msg);
+            return;
+          }
+
           navigator('/');
           // 储存令牌
           await signIn(dispatch, accessToken);
@@ -104,7 +111,7 @@ const Login: React.FC = () => {
 
   return (
     <Styled.LoginContainer id="login-container">
-      <div className='login-container-area'>
+      <div className="login-container-area">
         {/* <img
           className="title-posit"
           src={
@@ -115,7 +122,8 @@ const Login: React.FC = () => {
         <img
           className="img-posit"
           src={
-            new URL('@/assets/login/img.png', import.meta.url).href
+            new URL('@/assets/login/img.png', import.meta.url)
+              .href
           }
         />
       </div>
@@ -125,12 +133,12 @@ const Login: React.FC = () => {
         loading={loading ? true : undefined}
         actions={
           <>
-            <Styled.ToScreenButton
+            {/* <Styled.ToScreenButton
               className="mt-4 w-full h-40px"
               ghost
             >
               数据大屏
-            </Styled.ToScreenButton>
+            </Styled.ToScreenButton> */}
             {/* <FormOther>
               <Divider plain>
                 <FormOtherTips>其他登录方式</FormOtherTips>
@@ -144,11 +152,12 @@ const Login: React.FC = () => {
           </>
         }
       >
-        <div className='login-center-form'>
+        <div className="login-center-form">
           <img
-            className='title'
+            className="title"
             src={
-              new URL('@/assets/login/t-0.png', import.meta.url).href
+              new URL('@/assets/login/t-0.png', import.meta.url)
+                .href
             }
           />
           <Tabs
@@ -280,11 +289,8 @@ const Login: React.FC = () => {
             >
               记住密码
             </ProFormCheckbox>
-            <a style={{ float: 'right' }}>
-              忘记密码
-            </a>
+            <a style={{ float: 'right' }}>忘记密码</a>
           </div>
-
         </div>
       </LoginFormPage>
     </Styled.LoginContainer>

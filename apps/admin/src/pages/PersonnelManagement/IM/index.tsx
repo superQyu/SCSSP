@@ -151,6 +151,7 @@ export default () => {
   useEffect(() => {
     notification.destroy();
     PMIM.getOverAgeAndNotCertificatedCount().then((res) => {
+      if (!res.overAgeCount && !res.notCertificatedCount) return;
       notification.warning({
         message: '请注意!',
         description: (
@@ -168,6 +169,9 @@ export default () => {
         duration: 0,
       });
     });
+    return () => {
+      notification.destroy();
+    };
   }, []);
 
   // 删除行
@@ -224,7 +228,6 @@ export default () => {
     <a
       key="editable"
       onClick={() => {
-        // action?.startEditable?.(record.id);
         tabNavigate({
           namePath: `项目人员管理/人员详情${record.id}`,
           routePath: `/PersonDetail/?id=${record.id}&status=${record.status}`,
@@ -290,6 +293,10 @@ export default () => {
           const res = await PMIM.personnelInfoList({
             ...params,
           });
+          console.log(
+            'res',
+            res.list.filter((item) => item.isCertificated != 0)
+          );
           setSearchParams({
             ...searchParams,
             isOverAge: isOverAge,
@@ -392,7 +399,8 @@ export default () => {
               return user.userInfor.roles.find(
                 (item: string) =>
                   item == 'project-manager' ||
-                  item == 'super_admin'
+                  item == 'super_admin' ||
+                  item == 'hg-manager'
               ) &&
                 (record.status == '0' ||
                   !record.status ||
@@ -401,16 +409,16 @@ export default () => {
                 : record.status == '2'
                 ? btns.slice(2)
                 : record.isActive
-                ? btns.slice(0, -1)
+                ? btns.slice(1, -1)
                 : btns.slice(1);
             },
           },
         ]}
         scroll={{ x: 1900, y: 'auto' }}
         onSubmit={async (params: {}) => {}}
-        pagination={{
-          pageSize: 30,
-        }}
+        // pagination={{
+        //   pageSize: 30,
+        // }}
         rowKey="id"
         headerTitle={
           <SingleTitle
@@ -455,49 +463,60 @@ export default () => {
             ];
           },
         }}
-        toolBarRender={() => [
-          <Styled.ImportButton
-            key="button"
-            onClick={() => {
-              setOpenModal(true);
-            }}
-            type="primary"
-          />,
-          <Styled.ExportButton
-            api="exportPersonnelInfo"
-            fileName="人员信息导出"
-            params={searchParams}
-          />,
-          <Button
-            key="button"
-            icon={<PlusOutlined />}
-            onClick={() => {
-              tabNavigate({
-                namePath: `项目人员管理/信息采集`,
-                routePath: `/PersonDetail`,
-                activeMenu: '/PM/IM',
-              });
-            }}
-            type="primary"
-          >
-            新建
-          </Button>,
-          <Button
-            key="button"
-            danger
-            icon={<SearchOutlined />}
-            onClick={() => {
-              tabNavigate({
-                namePath: `项目人员管理/信息缺失人员`,
-                routePath: `/PM/MIPersonInfo`,
-                activeMenu: '/PM/IM',
-              });
-            }}
-            type="primary"
-          >
-            信息缺失人员
-          </Button>,
-        ]}
+        toolBarRender={() => {
+          const btns = [
+            <Styled.ImportButton
+              key="button"
+              onClick={() => {
+                setOpenModal(true);
+              }}
+              type="primary"
+            />,
+            <Styled.ExportButton
+              api="exportPersonnelInfo"
+              fileName="人员信息导出"
+              params={searchParams}
+            />,
+            <Button
+              key="button"
+              icon={<PlusOutlined />}
+              onClick={() => {
+                tabNavigate({
+                  namePath: `项目人员管理/信息采集`,
+                  routePath: `/PersonDetail`,
+                  activeMenu: '/PM/IM',
+                });
+              }}
+              type="primary"
+            >
+              新建
+            </Button>,
+            <Button
+              key="button"
+              danger
+              icon={<SearchOutlined />}
+              onClick={() => {
+                tabNavigate({
+                  namePath: `项目人员管理/信息缺失人员`,
+                  routePath: `/PM/MIPersonInfo`,
+                  activeMenu: '/PM/IM',
+                });
+              }}
+              type="primary"
+            >
+              信息缺失人员
+            </Button>,
+          ];
+
+          return user.userInfor.roles.find(
+            (item: string) =>
+              item == 'project-manager' ||
+              item == 'super_admin' ||
+              item == 'hg-manager'
+          )
+            ? btns
+            : btns.slice(1);
+        }}
       />
       <Modal
         open={openModal}
@@ -564,7 +583,7 @@ export default () => {
                   await actionRef.current?.reload();
                   setOpenModal(false);
                 } catch {
-                  message.warning('导入失败！');
+                  // message.warning('导入失败！');
                 }
               }}
               type="primary"

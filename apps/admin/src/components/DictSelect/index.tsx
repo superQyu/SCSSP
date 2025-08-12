@@ -85,6 +85,7 @@ const DictSelect: React.FC<Props> = (props, ref) => {
   const loadData = async () => {
     const isExsit = dictionary.get(dictKey);
     // console.log('字典返回数据', isExsit);
+
     setItems(isExsit as SelectOption[]);
 
     // console.log('传入的value', value);

@@ -60,9 +60,9 @@ export default () => {
             ],
           },
         ]}
-        pagination={{
-          pageSize: 30,
-        }}
+        // pagination={{
+        //   pageSize: 30,
+        // }}
         search={{
           labelWidth: 'auto',
           optionRender: ({ searchText }: any, { form }: any, dom: any) => {

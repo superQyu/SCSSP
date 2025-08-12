@@ -86,6 +86,8 @@ const DefultForm: React.FC<MenusPropsType> = forwardRef(({ subForm, onFormChange
             id: lists.length - index,
           })),
         ]);
+      }else {
+        setTempFileList([]);
       }
     }
   }, [subForm]);

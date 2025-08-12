@@ -136,7 +136,7 @@ export default (_: MenusPropsType) => {
     },
     {
       hideInSearch: true,
-      title: '车载容量',
+      title: '车载容量(升)',
       ellipsis: true,
       dataIndex: 'carStorage',
     },
@@ -146,8 +146,10 @@ export default (_: MenusPropsType) => {
       ellipsis: true,
       hideInSearch: true,
       render: (text, record) => {
-        const list = record?.attachment?.split('@');
-        if (list && list[0].length) {
+        const list = record?.attachment
+          ?.split('@')
+          .filter((item) => item != ' ');
+        if (list && list?.[0]?.length) {
           return (
             <div>
               <Image.PreviewGroup items={list}>

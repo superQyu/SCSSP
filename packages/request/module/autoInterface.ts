@@ -141,6 +141,7 @@ class AutoInterface {
                 }`;
               verifyed.config[rtk] = rdv;
             } else if (location === 'query' || !location) {
+            
               if (rdv != '' || `${rdv}` === '0')
                 verifyed.params[rtk] = rdv;
               if (

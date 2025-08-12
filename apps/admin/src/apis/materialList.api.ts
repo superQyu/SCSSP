@@ -253,5 +253,41 @@ const materialList: ApiItem[] = [
       { key: 'endTime', cn: '称重时间' },
     ],
   },
+  {
+    key: 'deleteFirst',
+    url: `${ADMIN_API}/wisdom/materials-first-inventory/delete`,
+    type: 'DELETE',
+    name: '删除一级类别',
+    description: '删除一级类别',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: 'id' },
+ 
+    ],
+  },
+  {
+    key: 'deleteSecond',
+    url: `${ADMIN_API}/wisdom/materials-second-inventory/delete`,
+    type: 'DELETE',
+    name: '删除二级类别',
+    description: '删除二级类别',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: 'id' },
+ 
+    ],
+  },
+  {
+    key: 'deleteThird',
+    url: `${ADMIN_API}/wisdom/materials-third-inventory/delete`,
+    type: 'DELETE',
+    name: '删除三级类别',
+    description: '删除三级类别',
+    params: [
+      { key: 'Authorization', location: 'header' },
+      { key: 'id', cn: 'id' },
+ 
+    ],
+  },
 ];
 export default materialList;

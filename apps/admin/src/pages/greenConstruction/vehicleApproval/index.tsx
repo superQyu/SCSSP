@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { Button, message } from 'antd';
+import { Button, message, Popconfirm } from 'antd';
 import {
   SearchOutlined,
   PlusOutlined,
@@ -143,6 +143,7 @@ export default () => {
 
                   setSubForm({
                     ...record,
+                    attachment: record.attachment,
                     materialEnterName:
                       materials.find(
                         (item: any) =>
@@ -154,16 +155,18 @@ export default () => {
                 {<EditOutlined />}
                 编辑
               </a>,
-              ,
-              <a
+              <Popconfirm
                 key="delete"
-                onClick={() => {
+                title="删除此项"
+                onConfirm={() => {
                   onDelete(record.id);
                 }}
+                okText="确认"
+                cancelText="取消"
               >
-                <DeleteOutlined />
-                删除
-              </a>,
+                <a>删除</a>
+              </Popconfirm>,
+
               !record.result &&
                 user.userInfor.roles.find(
                   (item: string) =>
@@ -198,9 +201,9 @@ export default () => {
             新建
           </Button>,
         ]}
-        pagination={{
-          pageSize: 30,
-        }}
+        // pagination={{
+        //   pageSize: 30,
+        // }}
         search={{
           labelWidth: 'auto',
           optionRender: (
