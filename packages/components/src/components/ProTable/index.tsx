@@ -32,6 +32,7 @@ export default (props: Props) => {
   const domRef = useRef(null);
   const [srcollY, setSrcollY] = useState<string>('');
   const [collapsed, setCollapsed] = useState<Boolean>(false);
+  const [tableScroll, setTableScroll] = useState<any>({});
 
   // 重写save方法 阻止提交失败也退出编辑状态
   const onSave = async (...args: any[]) => {
@@ -82,7 +83,15 @@ export default (props: Props) => {
   };
   const scroll = () => {
     const { x, y } = props.scroll || {};
-    let _y = !y ? undefined : y == 'auto' ? srcollY : y;
+    let _y = !y
+      ? undefined
+      : y == 'auto'
+      ? useTableScroll({
+          extraHeight: props.pagination ? 50 : 0,
+          tableDom: domRef.current,
+        })
+      : y;
+
     return { x: x || undefined, y: _y };
   };
 
@@ -91,8 +100,10 @@ export default (props: Props) => {
   }, [domRef]);
 
   useEffect(() => {
+    setTableScroll(scroll());
     window.addEventListener('resize', () => {
       initSrcollY();
+      setTableScroll(scroll());
     });
 
     return () => {
@@ -148,8 +159,8 @@ export default (props: Props) => {
                 collapsed: collapsed,
                 ...props.search,
                 onCollapse: (v) => {
-                setCollapsed(v)
-                  initSrcollY()
+                  setCollapsed(v);
+                  initSrcollY();
                 },
               } || {
                 labelWidth: 'auto',
@@ -176,22 +187,21 @@ export default (props: Props) => {
           }
         }
         pagination={
-
           // props.hasOwnProperty('pagination')
           //   ? {
           //     pageSize: 5,
           //     onChange: (page) => console.log(page),
           //     ...props.pagination
           //   }
-          //   : 
-            {
-                // pageSize: 5,
-                onChange: (page) => console.log(page),
-              }
+          //   :
+          {
+            // pageSize: 5,
+            onChange: (page) => console.log(page),
+          }
         }
         dateFormatter="string"
         headerTitle={props.headerTitle}
-        scroll={{ ...scroll() }}
+        scroll={tableScroll}
         expandable={props.expandable}
         onRow={props.onRow}
         onReset={props.onReset}

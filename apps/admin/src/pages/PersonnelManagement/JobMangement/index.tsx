@@ -3,7 +3,11 @@ import { useRef, useState, useEffect } from 'react';
 import { ProTable } from 'components';
 import { type ActionType } from '@ant-design/pro-components';
 import { Button, message, Popconfirm } from 'antd';
-import { PlusOutlined, UploadOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  PlusOutlined,
+  UploadOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 
 import EditDialog from './components/editdialog';
 import Styled from '@/components/Styled';
@@ -22,7 +26,8 @@ export default () => {
   const initColumns = siteModel({ server });
   const actionRef = useRef<ActionType>();
 
-  const [dialogVisible, setDialogVisible] = useState<boolean>(false);
+  const [dialogVisible, setDialogVisible] =
+    useState<boolean>(false);
 
   // 修改表单打开关闭状态
   const handleModalStateChange = async (state: boolean) => {
@@ -50,7 +55,7 @@ export default () => {
   };
 
   return (
-  <div className='h-full p-18px'>
+    <div className="h-full p-18px">
       <ProTable
         actionRef={actionRef}
         headerTitle={<SingleTitle label="工种列表" />}
@@ -61,7 +66,12 @@ export default () => {
             width: 100,
             valueType: 'option',
             dataIndex: 'option',
-            render: (_text: any, record: any, _: any, action: any) => [
+            render: (
+              _text: any,
+              record: any,
+              _: any,
+              action: any
+            ) => [
               <a
                 key="editable"
                 onClick={() => {
@@ -102,7 +112,11 @@ export default () => {
         scroll={{ y: 'auto' }}
         search={{
           labelWidth: 'auto',
-          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+          optionRender: (
+            { searchText }: any,
+            { form }: any,
+            dom: any
+          ) => {
             return [
               dom[0],
               <Button
@@ -117,8 +131,15 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.ExportButton api="exportWorkTypeInfo" fileName="工种导出" />,
-          <Button icon={<PlusOutlined />} onClick={() => setDialogVisible(true)} type="primary">
+          <Styled.ExportButton
+            api="exportWorkTypeInfo"
+            fileName="工种导出"
+          />,
+          <Button
+            icon={<PlusOutlined />}
+            onClick={() => setDialogVisible(true)}
+            type="primary"
+          >
             新建
           </Button>,
         ]}

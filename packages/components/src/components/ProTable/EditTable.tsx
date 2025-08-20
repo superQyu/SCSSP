@@ -1,21 +1,37 @@
-import React, { useRef, useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  forwardRef,
+  useImperativeHandle,
+} from 'react';
 import { message } from 'antd';
 import type { ActionType } from '@ant-design/pro-components';
-import { EditableProTable, useRefFunction } from '@ant-design/pro-components';
+import {
+  EditableProTable,
+  useRefFunction,
+} from '@ant-design/pro-components';
 
 import { useTableScroll } from './useTableScroll';
 import DefModel from './model';
 
 // 点击删除的相关方法
-const loopDataSourceFilter = (data: readonly any[], id: React.Key | undefined): any[] => {
+const loopDataSourceFilter = (
+  data: readonly any[],
+  id: React.Key | undefined
+): any[] => {
   return data
     .map((item) => {
       if (item.id !== id) {
         if (item.children) {
-          const newChildren = loopDataSourceFilter(item.children, id);
+          const newChildren = loopDataSourceFilter(
+            item.children,
+            id
+          );
           return {
             ...item,
-            children: newChildren.length > 0 ? newChildren : undefined,
+            children:
+              newChildren.length > 0 ? newChildren : undefined,
           };
         }
         return item;
@@ -30,22 +46,35 @@ export default forwardRef((props: any, ref: any) => {
   const domRef = useRef(null);
   const [srcollY, setSrcollY] = useState<string>('');
 
-  const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
+  const [editableKeys, setEditableRowKeys] = useState<
+    React.Key[]
+  >([]);
   const editRow = useRef<React.Key[]>([]);
   // 涉及闭包变量缓存问题
   editRow.current = editableKeys;
-  const [dataSource, setDataSource] = useState<readonly Record<string, any>[]>([]);
+  const [dataSource, setDataSource] = useState<
+    readonly Record<string, any>[]
+  >([]);
   const tableData = useRef<readonly Record<string, any>[]>([]);
   // 涉及闭包变量缓存问题
   tableData.current = dataSource;
   // 用来控制当前展开行
-  const [expandedRowKeys, setExpandedRowKeys] = useState<any[]>([]);
+  const [expandedRowKeys, setExpandedRowKeys] = useState<any[]>(
+    []
+  );
 
   // 初始化 表格列表项
   const initColumns = DefModel();
 
   // 重置 scroll
   const initSrcollY = () => {
+    console.log(
+      '=========',
+      // useTableScroll({
+      //   extraHeight: props.pagination ? 50 : 0,
+      //   tableDom: domRef.current,
+      // })
+    );
     setSrcollY(
       useTableScroll({
         extraHeight: props.pagination ? 50 : 0,
@@ -147,10 +176,15 @@ export default forwardRef((props: any, ref: any) => {
             // console.log('展开了', expanded);
             if (expanded) {
               // 展开时的逻辑
-              setExpandedRowKeys([...expandedRowKeys, record.id]);
+              setExpandedRowKeys([
+                ...expandedRowKeys,
+                record.id,
+              ]);
             } else {
               // 取消展开时的逻辑
-              setExpandedRowKeys(expandedRowKeys.filter((k) => k !== record.id));
+              setExpandedRowKeys(
+                expandedRowKeys.filter((k) => k !== record.id)
+              );
             }
           },
           ...props.expandable,

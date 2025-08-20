@@ -20,18 +20,21 @@ import UpdateLog from '@/pages/SynchronizeData';
 import Phone from '@/pages/phone';
 import PhoneError from '@/pages/phone/error';
 import PhoneHome from '@/pages/phone/home';
+// 进场
 import MaterialEnter from '@/pages/phone/materialEnter/index';
 import MaterialEnterDetail from '@/pages/phone/materialEnter/detail/index';
 import CreateMaterial from '@/pages/phone/materialEnter/create/index';
-
+// 出场
 import MaterialExit from '@/pages/phone/materialExit/index';
 import MaterialExitDetail from '@/pages/phone/materialExit/detail/index';
 import MaterialExitCreate from '@/pages/phone/materialExit/create/index';
-
+// 闸机管理
+import Gate from '@/pages/phone/gate/index';
+// 车牌管理
 import CarNo from '@/pages/phone/carNo/index';
 import CarNoCreate from '@/pages/phone/carNo/create/index';
 import CarNoDetail from '@/pages/phone/carNo/detail/index';
-
+// 个人中心
 import Center from '@/pages/phone/center/index';
 
 // 防止路由丢失
@@ -148,6 +151,10 @@ const defaultRoutes: any = [
         element: <CarNoDetail />,
       },
       { path: '/phone/center', element: <Center /> },
+      {
+        path: '/phone/gate',
+        element: <Gate />,
+      },
     ],
   },
 ];

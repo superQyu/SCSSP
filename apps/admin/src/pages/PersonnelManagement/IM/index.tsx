@@ -415,6 +415,7 @@ export default () => {
           },
         ]}
         scroll={{ x: 1900, y: 'auto' }}
+        pagination={{}}
         onSubmit={async (params: {}) => {}}
         // pagination={{
         //   pageSize: 30,

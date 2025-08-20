@@ -14,6 +14,7 @@ type MenusPropsType = {
 export default ({
   month: searchMonth,
   server,
+  callback,
 }: MenusPropsType) => {
   const { tabNavigate } = useRoute();
   const [params] = useSearchParams();
@@ -73,10 +74,9 @@ export default ({
         .toString()
         .padStart(2, '0')}`;
       return {
-        width: day == 1 ? 70 : 50,
+        // width: 35,
         hideInSearch: true,
-        title:
-          day == 1 ? '日期/01' : day.toString().padStart(2, '0'),
+        title: day + '号',
         dataIndex: date,
         align: 'center',
         render: (dom: any, row) => {
@@ -97,21 +97,12 @@ export default ({
               break;
           }
           return (
-            <a
-              onClick={() => {
-                tabNavigate({
-                  tabName: '考勤记录',
-                  namePath: `项目人员管理/考勤记录/${row.username}${date}考勤记录`,
-                  routePath: `/attendance/AttendanceRecord/${row.userId}?searchDate=${date}`,
-                  activeMenu:
-                    '/PM/AttendanceManagement/AttendanceRecord',
-                });
-              }}
-            >
-              <span
+            <a onClick={callback}>
+              22
+              {/* <span
                 className="inline-block w-20px h-20px line-height-20px rd-50%"
                 style={{ background: color }}
-              />
+              /> */}
             </a>
           );
         },
@@ -121,95 +112,15 @@ export default ({
 
   const columns: ProColumns[] = [
     {
-      width: 60,
-      hideInSearch: true,
-      title: '序号',
-      dataIndex: 'index',
-      valueType: 'indexBorder',
-      fixed: 'left',
-      align: 'center',
-      render: (text: any, record: any, index: number) => {
-        return index + 1;
-      },
-    },
-    {
-      width: 100,
+      width: 80,
       title: '人员名称',
       dataIndex: 'username',
       fixed: 'left',
       align: 'center',
     },
     {
-      hideInTable: true,
-      title: '年月',
-      valueType: 'dateMonth',
-      dataIndex: 'yearAndMonth',
-      formItemProps: {
-        initialValue: dayjs().format('YYYY-MM'),
-      },
-    },
-
-    {
-      hideInTable: true,
-      title: '单位',
-      dataIndex: 'subcontractorId',
-      renderFormItem: () => {
-        return (
-          <Select
-            placeholder="请选择单位"
-            options={subcontractorList}
-            allowClear
-          />
-        );
-      },
-    },
-    {
-      hideInTable: true,
-      title: '劳务工种',
-      dataIndex: 'workTypeId',
-      render: (text: any) => {
-        const obj = Object.fromEntries(
-          laborList.map(({ value, label }) => [value, label])
-        );
-        return <span>{obj[text] || '-'}</span>;
-      },
-      renderFormItem: () => {
-        return (
-          <Select
-            placeholder="请选择劳务工种"
-            options={laborList}
-            allowClear
-          />
-        );
-      },
-    },
-    {
-      hideInTable: true,
-      hideInSearch: true,
-      title: '班组名称',
-      dataIndex: 'groupId',
-      renderFormItem: () => {
-        return (
-          <Select
-            placeholder="请选择班组名称"
-            options={groupList}
-            allowClear
-          />
-        );
-      },
-    },
-
-    {
-      width: 100,
-      hideInSearch: true,
-      title: '出勤(天)',
-      dataIndex: 'attendanceDays',
-      fixed: 'left',
-      align: 'center',
-    },
-    {
-      width: 100,
-      title: '工时(小时)',
+      width: 60,
+      title: '合计/h',
       hideInSearch: true,
       dataIndex: 'workingHours',
       fixed: 'left',
