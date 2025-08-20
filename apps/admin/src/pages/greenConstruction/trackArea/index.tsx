@@ -29,6 +29,7 @@ export default () => {
     });
     return res;
   };
+  
     // 修改状态
     const handleModalStateChange = async (state: boolean) => {
       setSubForm({});
@@ -92,9 +93,9 @@ export default () => {
             ],
           },
         ]}
-        pagination={{
-          pageSize: 30,
-        }}
+        // pagination={{
+        //   pageSize: 30,
+        // }}
         search={{
           labelWidth: 'auto',
           optionRender: ({ searchText }: any, { form }: any, dom: any) => {

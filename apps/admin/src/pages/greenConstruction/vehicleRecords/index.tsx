@@ -46,7 +46,7 @@ export default () => {
   };
 
   return (
-    <div className='h-full p-18px'>
+    <div className="h-full p-18px">
       <ProTable
         headerTitle={<SingleTitle label="车辆进出记录" />}
         request={async (params: any) => {
@@ -139,9 +139,11 @@ export default () => {
             },
           },
         ]}
-        pagination={{
-          pageSize: 30,
-        }}
+        // pagination={
+        //   {
+        //     pageSize: 30,
+        //   }
+        // }
         search={{
           labelWidth: 'auto',
           optionRender: (

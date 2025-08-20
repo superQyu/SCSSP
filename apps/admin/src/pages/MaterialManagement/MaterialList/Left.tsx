@@ -12,7 +12,6 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import siteModel from './models/table.model';
 import styled from 'styled-components';
 
-
 const CustomDiv = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(
@@ -163,7 +162,10 @@ export default ({ onChange }: any) => {
   const { materialList } = server;
 
   // 初始化表格列
-  const { leftColumns } = siteModel({ server });
+  const { leftColumns } = siteModel({ server }, () => {
+    console.log('11',11);
+    firstTableRef.current?.reload();
+  });
 
   // 表格的受控 DOM
   const firstTableRef = useRef<ActionType>();

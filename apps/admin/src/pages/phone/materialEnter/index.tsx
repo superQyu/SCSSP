@@ -216,7 +216,7 @@ function MaterialEnter() {
 
   return (
     <MaterialEnterBox>
-      {userInfor.roles.includes('plan') && (
+      {userInfor?.roles?.includes('plan') && (
         <div className="add" onClick={handleAdd}>
           新增
         </div>
@@ -281,7 +281,7 @@ function MaterialEnter() {
               onClick={(e) => e.stopPropagation()}
             >
               {item.status == '0' &&
-                userInfor.roles.includes('plan') && (
+                userInfor?.roles?.includes('plan') && (
                   <Button
                     size="mini"
                     onClick={() => {
@@ -292,7 +292,7 @@ function MaterialEnter() {
                   </Button>
                 )}
               {item.status == '0' &&
-                userInfor.roles.includes('plan') && (
+                userInfor?.roles?.includes('plan') && (
                   <Button
                     size="mini"
                     onClick={() => {
@@ -303,7 +303,7 @@ function MaterialEnter() {
                   </Button>
                 )}
               {item.status == '0' &&
-                userInfor.roles.includes('plan') && (
+                userInfor?.roles?.includes('plan') && (
                   <Button
                     size="mini"
                     onClick={() => {
@@ -325,7 +325,7 @@ function MaterialEnter() {
                 </Button>
               )}
               {item.status == '11' &&
-                userInfor.roles.includes('project-manager') && (
+                userInfor?.roles?.includes('project-manager') && (
                   <Button
                     size="mini"
                     onClick={() => {
@@ -338,7 +338,7 @@ function MaterialEnter() {
               {(item.status == '1' ||
                 item.status == '10' ||
                 item.status == '444') &&
-              userInfor.roles.includes('wlys') ? (
+              userInfor?.roles?.includes('wlys') ? (
                 <Button
                   size="mini"
                   onClick={() => {

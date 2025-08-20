@@ -184,7 +184,7 @@ export default (formRef: any, picture: any[] = []) => {
     //   colNum: 12,
     // },
     {
-      label: '车载容量',
+      label: '车载容量(升)',
       dataIndex: 'carStorage',
       // formItem: <DictSelect dictKey={'cm_energy_type'} />,
       formItemProps: {
@@ -204,20 +204,24 @@ export default (formRef: any, picture: any[] = []) => {
           }
           onListChange={(res: any) => {
             // console.log('文件列表改变', res);
-            const list = res.map((item: any) => item.url);
+            const list = res
+              .map((item: any) => item.url)
+              .join('@');
             formRef.current.setFieldsValue({
               // 保险保单照片图片
-              attachment: list,
+              attachment: list || ' ',
             });
           }}
           defaultFileList={() =>
-            picture.map((item: string, index: number) => {
-              return {
-                uid: `${index}`,
-                name: item?.split('/')?.slice(-1)[0],
-                url: item,
-              };
-            })
+            picture
+              ? picture.map((item: string, index: number) => {
+                  return {
+                    uid: `${index}`,
+                    name: item?.split('/')?.slice(-1)[0],
+                    url: item,
+                  };
+                })
+              : []
           }
         />
       ),
@@ -260,7 +264,7 @@ export default (formRef: any, picture: any[] = []) => {
                 label: `${dayjs(item.enterDate).format(
                   'YYYY-MM-DD HH:mm:ss'
                 )} ${materials}`,
-                value:  `${dayjs(item.enterDate).format(
+                value: `${dayjs(item.enterDate).format(
                   'YYYY-MM-DD HH:mm:ss'
                 )} ${materials}`,
               };

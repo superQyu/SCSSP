@@ -211,12 +211,12 @@ export default ({ server }: MenusPropsType) => {
       dataIndex: 'phone',
       hideInSearch: true,
     },
-    {
-      title: '家庭住址',
-      // key: 'address',
-      dataIndex: 'address',
-      hideInSearch: true,
-    },
+    // {
+    //   title: '家庭住址',
+    //   // key: 'address',
+    //   dataIndex: 'address',
+    //   hideInSearch: true,
+    // },
     // {
     //   hideInSearch: true,
     //   title: '计价方式',

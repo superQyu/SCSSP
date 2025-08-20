@@ -14,8 +14,6 @@ import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import siteModel from './models/table.model';
 import { ToString } from '@/utils/transform';
 
-
-
 export default () => {
   // api 相关
   const { server } = useBasicConfiguration();
@@ -28,6 +26,7 @@ export default () => {
   const [dialogVisible, setDialogVisible] =
     useState<boolean>(false);
   const [detail, setDetail] = useState({});
+  const [type, setType] = useState('');
 
   // 修改表单打开关闭状态
   const handleModalStateChange = async (state: boolean) => {
@@ -55,7 +54,7 @@ export default () => {
   };
 
   return (
-    <div className='h-full p-18px'>
+    <div className="h-full p-18px">
       <ProTable
         actionRef={actionRef}
         headerTitle={<SingleTitle label="单位列表" />}
@@ -73,27 +72,36 @@ export default () => {
               _: any,
               action: any
             ) => [
-                <a
-                  key="editable"
-                  onClick={() => {
-                    // console.log('点击了编辑')
-                    // action?.startEditable?.(record.id);
-                    setDialogVisible(true);
-                    setDetail(record);
-                  }}
-                >
-                  编辑
-                </a>,
-                <Popconfirm
-                  key="delete"
-                  title="删除此项"
-                  onConfirm={() => onDelete(record.id)}
-                  okText="确认"
-                  cancelText="取消"
-                >
-                  <a>删除</a>
-                </Popconfirm>,
-              ],
+              <a
+                key="editable"
+                onClick={() => {
+                  setType('edit')
+                  setDialogVisible(true);
+                  setDetail(record);
+                }}
+              >
+                编辑
+              </a>,
+              <Popconfirm
+                key="delete"
+                title="删除此项"
+                onConfirm={() => onDelete(record.id)}
+                okText="确认"
+                cancelText="取消"
+              >
+                <a>删除</a>
+              </Popconfirm>,
+              <a
+                key="view"
+                onClick={() => {
+                  setType('view')
+                  setDialogVisible(true);
+                  setDetail(record);
+                }}
+              >
+                查看
+              </a>,
+            ],
           },
         ]}
         request={async (params = {}) => {
@@ -161,6 +169,7 @@ export default () => {
         detail={detail}
         openModal={dialogVisible}
         onStateChange={handleModalStateChange}
+        type={type}
       />
     </div>
   );

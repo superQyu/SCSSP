@@ -85,7 +85,8 @@ const AddMenus: React.FC<Props> = ({
   }, [openModal]);
 
   useEffect(() => {
-    setPicture(subForm.attachment?.split('@'));
+   
+    setPicture(subForm.attachment != ' '  ? subForm.attachment?.split('@') : '');
   }, [subForm]);
 
   const onReset = () => {
@@ -106,8 +107,6 @@ const AddMenus: React.FC<Props> = ({
       ]({
         ...values,
         id: subForm.id,
-        attachment:
-          values.attachment && values.attachment?.join('@'),
         materialEnterId:
           materials.find(
             (item: any) => item.label == values.materialEnterName

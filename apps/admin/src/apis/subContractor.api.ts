@@ -67,6 +67,7 @@ const subContractor: ApiItem[] = [
       { key: 'societyComplaintCall', cn: '人社部投诉电话' },
       { key: 'companyScore', cn: '公司项目经验' },
       { key: 'companySummary', cn: '公司简介' },
+      { key: 'url', cn: '保险单' },
     ],
   },
   {
@@ -102,6 +103,7 @@ const subContractor: ApiItem[] = [
       { key: 'societyComplaintCall', cn: '人社部投诉电话' },
       { key: 'companyScore', cn: '公司项目经验' },
       { key: 'companySummary', cn: '公司简介' },
+      { key: 'url', cn: '保险单' },
     ],
   },
   {

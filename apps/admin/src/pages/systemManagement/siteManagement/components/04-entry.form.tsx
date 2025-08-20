@@ -320,7 +320,7 @@ const EntryCom: React.FC<Props> = forwardRef(
               const list = res?.map((item: any) => item.url);
               formRef.current?.setFieldsValue({
                 // 证件图片
-                healthProve: list && list[0] ? list[0] : '',
+                healthProve: list && list.join('@')
               });
             }}
             defaultFileList={() => healthProveFile}

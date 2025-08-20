@@ -363,6 +363,7 @@ export default (
       ellipsis: true,
       readonly: status == '0' ? false : true,
       hideInSearch: true,
+      
     },
     {
       title: '实际验收数量',

@@ -30,7 +30,7 @@ interface Props {
   server: any;
   otherFormRef: any;
   // 是否可修改
-  ifEdit: Boolean
+  ifEdit: Boolean;
 }
 
 const CustomsDiv = styled.div`
@@ -44,7 +44,10 @@ const CustomsDiv = styled.div`
 `;
 
 const FunctionCom: React.FC<Props> = forwardRef(
-  ({ detail, openModel, server, otherFormRef, ifEdit }: Props, ref) => {
+  (
+    { detail, openModel, server, otherFormRef, ifEdit }: Props,
+    ref
+  ) => {
     const { subContractor, person } = server;
 
     const formRef = useRef<FormInstance>(null);
@@ -66,9 +69,9 @@ const FunctionCom: React.FC<Props> = forwardRef(
       getSelectOptions();
     }, []);
     useEffect(() => {
-      // console.log('detail发生变化', detail)
       if (JSON.stringify(detail) != '{}') {
         const subForm = { ...detail.personnelInfoRespVO };
+        subForm.jobCategory = `${subForm?.jobCategory}`;
         subForm.workerType =
           subForm.workerType != undefined &&
           `${subForm.workerType}`;
@@ -93,6 +96,7 @@ const FunctionCom: React.FC<Props> = forwardRef(
           value: item.id,
         };
       });
+
       setGzOptions(list2);
     };
 
@@ -127,7 +131,7 @@ const FunctionCom: React.FC<Props> = forwardRef(
         },
         formItem:
           workerType == '2' ? (
-            <DictSelect dictKey={'pm_job_category'} disabled />
+            <DictSelect dictKey={'pm_job_category'} />
           ) : (
             <Select
               placeholder="请选择"
@@ -234,8 +238,9 @@ const FunctionCom: React.FC<Props> = forwardRef(
               disabled={ifEdit}
             />
           </Col>
-          {!ifEdit ? <Col className="gutter-row" span={16}>
-            {/* <Button
+          {!ifEdit ? (
+            <Col className="gutter-row" span={16}>
+              {/* <Button
               className="pos-absolute"
               type="link"
               onClick={() => {
@@ -251,25 +256,27 @@ const FunctionCom: React.FC<Props> = forwardRef(
             >
               修改信息
             </Button> */}
-            <WorkerList
-              ref={workerListForm}
-              subForm={{
-                workerType: workerType,
-              }}
-              onSelect={(val: string) => {
-                if (workerType == '1') {
-                  formRef.current?.setFieldsValue({
-                    workTypeId: val,
-                  });
-                } else {
-                  formRef.current?.setFieldsValue({
-                    jobCategory: val,
-                  });
-                }
-              }}
-            />
-          </Col> : ''}
-
+              <WorkerList
+                ref={workerListForm}
+                subForm={{
+                  workerType: workerType,
+                }}
+                onSelect={(val: string) => {
+                  if (workerType == '1') {
+                    formRef.current?.setFieldsValue({
+                      workTypeId: val,
+                    });
+                  } else {
+                    formRef.current?.setFieldsValue({
+                      jobCategory: val,
+                    });
+                  }
+                }}
+              />
+            </Col>
+          ) : (
+            ''
+          )}
         </Row>
       </>
     );

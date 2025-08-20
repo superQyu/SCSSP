@@ -44,12 +44,12 @@ export default (
 
       colNum: 12,
       formItemProps: {
-        rules: [{ required: true, message: '请选择进场时间' }],
+        rules: [{ required: true, message: '请选择退场时间' }],
       },
       formItem: (
         <DatePicker
           showTime
-          placeholder="请选择进场时间"
+          placeholder="请选择退场时间"
           disabled={status == '0' ? false : true}
         />
       ),
@@ -95,7 +95,7 @@ export default (
       dataIndex: 'purchaserDepartment',
       colNum: 12,
       formItemProps: {
-        rules: [{ required: true, message: '请输入购买单位' }],
+        rules: [{ required: true, message: '请选择购买单位' }],
       },
       formItem: (
         <Select

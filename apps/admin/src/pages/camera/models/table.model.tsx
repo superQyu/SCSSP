@@ -1,5 +1,8 @@
-import { TableDropdown, type ProColumns } from '@ant-design/pro-components';
-
+import {
+  TableDropdown,
+  type ProColumns,
+} from '@ant-design/pro-components';
+import { Popconfirm } from 'antd';
 type objJson = Record<string, any>;
 
 type MenusPropsType = {
@@ -70,6 +73,7 @@ export default ({ server }: MenusPropsType) => {
       >
         编辑
       </a>,
+
     ],
   };
 

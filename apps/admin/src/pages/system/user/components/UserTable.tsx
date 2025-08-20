@@ -104,9 +104,9 @@ export default ({ queryParams = {} }: Props) => {
             total: res?.totlal || 0,
           } as unknown as ModesApi.pageItemType;
         }}
-        pagination={{
-          pageSize: 30,
-        }}
+        // pagination={{
+        //   pageSize: 30,
+        // }}
         onSubmit={async (params: {}) => {
           console.log(params);
         }}

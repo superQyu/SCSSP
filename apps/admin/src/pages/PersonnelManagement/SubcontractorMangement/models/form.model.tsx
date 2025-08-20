@@ -32,13 +32,15 @@ export default (subFormRef: any, picture: string[]) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   useEffect(() => {
-    const list = picture.map((item: string, index: number) => {
-      return {
-        uid: `${index}`,
-        name: item?.split('/')?.slice(-1)[0],
-        url: item,
-      };
-    });
+    const list = picture
+      .filter((item) => item.trim())
+      .map((item: string, index: number) => {
+        return {
+          uid: `${index}`,
+          name: item?.split('/')?.slice(-1)[0],
+          url: item,
+        };
+      });
     // console.log('当前list', list);
     setFileList(list);
   }, [picture]);
@@ -163,6 +165,7 @@ export default (subFormRef: any, picture: string[]) => {
       formItemProps: {
         rules: [
           { required: true, message: '请输入社会信用代码' },
+          { max: 20, message: '社会信用代码不正确' },
         ],
       },
     },
@@ -209,7 +212,6 @@ export default (subFormRef: any, picture: string[]) => {
             await file.fileUpload(params)
           }
           onListChange={(res: any) => {
-            // console.log('文件列表改变', res);
             const list = res.map((item: any) => item.url);
             subFormRef.current.setFieldsValue({
               // 证件图片

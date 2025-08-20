@@ -78,8 +78,8 @@ export default ({ server }: MenusPropsType) => {
             record.passportPhoto || (
               <Image
                 src={
-                  record.jobNo
-                    ? `/src/assets/avatar/${record.jobNo}_1.jpg`
+                  record.passportPhoto
+                    ? record.passportPhoto
                     : `/src/assets/avatar/default.png`
                 }
                 fallback={`/src/assets/avatar/default.png`}
@@ -92,7 +92,7 @@ export default ({ server }: MenusPropsType) => {
           }
         />
       ),
-      // renderFormItem: () => <IconSelect model="simple" />,
+      renderFormItem: () => <IconSelect model="simple" />,
     },
     {
       title: '姓名',
@@ -224,12 +224,12 @@ export default ({ server }: MenusPropsType) => {
       dataIndex: 'phone',
       hideInSearch: true,
     },
-    {
-      title: '家庭住址',
-      // key: 'address',
-      dataIndex: 'address',
-      hideInSearch: true,
-    },
+    // {
+    //   title: '家庭住址',
+    //   // key: 'address',
+    //   dataIndex: 'address',
+    //   hideInSearch: true,
+    // },
     {
       title: '状态',
       dataIndex: 'status',

@@ -1,4 +1,10 @@
-import React, { lazy, Suspense, useState, useEffect, useRef } from 'react';
+import React, {
+  lazy,
+  Suspense,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import { Button, message, Modal, Row, Col, Spin } from 'antd';
 
 import type { FormInstance } from 'antd/es/form';
@@ -7,16 +13,20 @@ import { clearStorage, sleep } from 'utils';
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 import { json } from 'stream/consumers';
 
-const FormArray = import.meta.glob('../components/**/*.form.tsx');
+const FormArray = import.meta.glob(
+  '../components/**/*.form.tsx'
+);
 // [0], Object.entries(FormArray)[1]
-const FormList = [...Object.entries(FormArray)].map(([key, val]) => {
-  let label = key.split('/').slice(-1)[0].split('.')[0];
-  if (label === 'index') label = key.split('/').slice(-2)[0];
-  return {
-    label: label,
-    Component: lazy(val as () => Promise<any>),
-  };
-});
+const FormList = [...Object.entries(FormArray)].map(
+  ([key, val]) => {
+    let label = key.split('/').slice(-1)[0].split('.')[0];
+    if (label === 'index') label = key.split('/').slice(-2)[0];
+    return {
+      label: label,
+      Component: lazy(val as () => Promise<any>),
+    };
+  }
+);
 
 type MenusType = {
   [key: string]: any;
@@ -34,7 +44,11 @@ interface Props extends MenusType {
   onStateChange: (state: boolean) => void;
 }
 
-const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Props) => {
+const AddProject: React.FC<Props> = ({
+  openModal,
+  subForm,
+  onStateChange,
+}: Props) => {
   const { server } = useBasicConfiguration();
   //  api server
   const { PMPM: P } = server;
@@ -57,7 +71,8 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
       return;
     }
     Object.entries(formRef.current).map(async ([_, funs]) => {
-      funs.form?.resetTables && funs.form.resetTables(!!isCancel);
+      funs.form?.resetTables &&
+        funs.form.resetTables(!!isCancel);
       await (funs.form?.resetFields && funs.form.resetFields());
     });
   };
@@ -75,17 +90,25 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
           .then((value: MenusType | MenusType[]) => {
             let v = transform ? transform(value) : value;
             if (Array.isArray(v)) {
-              !key || key == '' ? (params = v) : (params[key] = v);
+              !key || key == ''
+                ? (params = v)
+                : (params[key] = v);
               if (sourceKey && menus.hasOwnProperty(sourceKey)) {
                 // params[key] = [...menus[sourceKey], ...params[key]];
               }
             } else {
               !key || key == ''
                 ? (params = { ...params, ...v })
-                : (params[key] = { ...(params[key] || {}), ...v });
+                : (params[key] = {
+                    ...(params[key] || {}),
+                    ...v,
+                  });
 
               if (sourceKey && menus.hasOwnProperty(sourceKey)) {
-                params[key] = { ...menus[sourceKey], ...params[key] };
+                params[key] = {
+                  ...menus[sourceKey],
+                  ...params[key],
+                };
               }
             }
 
@@ -94,7 +117,8 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
           })
           .catch(() => {
             setLoading(false);
-            !isError && message.warning(`数据填写不完整,请完善!`);
+            !isError &&
+              message.warning(`数据填写不完整,请完善!`);
 
             isError = true;
           });
@@ -105,9 +129,11 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
   };
 
   const SubmitEvent = (params: MenusType) => {
-    P[isCreate ? 'createProjectUnity' : 'updateProjectUnity']({ ...params })
+    P[isCreate ? 'createProjectUnity' : 'updateProjectUnity']({
+      ...params,
+    })
       .then(async () => {
-        localStorage.removeItem('formData',)
+        localStorage.removeItem('formData');
         message.success('操作成功！');
         onReset();
 
@@ -124,36 +150,36 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
   const handleSave = async () => {
     try {
       setLoading(true);
-      let formData = {}
-      await Object.entries(formRef.current).map(async ([_, funs]) => {
-        const { key, sourceKey, form, transform } = funs || {};
-        if (form?.getFieldsValue) {
-          if (formData[sourceKey]) {
-            formData[sourceKey] = {
-              ...formData[sourceKey],
-              ...form.getFieldsValue()
+      let formData = {};
+      await Object.entries(formRef.current).map(
+        async ([_, funs]) => {
+          const { key, sourceKey, form, transform } = funs || {};
+          if (form?.getFieldsValue) {
+            if (formData[sourceKey]) {
+              formData[sourceKey] = {
+                ...formData[sourceKey],
+                ...form.getFieldsValue(),
+              };
+            } else {
+              Object.assign(formData, {
+                [sourceKey]: form.getFieldsValue(),
+              });
             }
-          }
-          else {
+          } else {
+            const data = await form.validateFields();
             Object.assign(formData, {
-              [sourceKey]: form.getFieldsValue()
-            })
+              [sourceKey]: data,
+            });
           }
-        } else {
-          const data = await form.validateFields()
-          Object.assign(formData, {
-            [sourceKey]:data
-          })
         }
-      });
-      console.log('暂存结果', formData)
-      localStorage.setItem('formData', JSON.stringify(formData))
+      );
+      localStorage.setItem('formData', JSON.stringify(formData));
       message.success(`数据暂存成功`);
       setLoading(false);
     } catch (errorInfo) {
       setLoading(false);
     }
-  }
+  };
 
   const handleCancel = () => {
     if (loading) {
@@ -174,14 +200,16 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
   useEffect(() => {
     setOpen(openModal);
     if (openModal) {
-      setMenus({ ...(!Object.entries(subForm).length ? {} : subForm) });
+      setMenus({
+        ...(!Object.entries(subForm).length ? {} : subForm),
+      });
     } else {
       setIsFormChanged(false);
     }
   }, [openModal]);
 
   useEffect(() => {
-    setIsCreate(!Object.entries(menus).length);
+    setIsCreate(!Object.values(menus).some((item) => item.id));
   }, [menus]);
 
   useEffect(() => {
@@ -193,7 +221,8 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
     const handleBeforeUnload = (event: any) => {
       if (isFormChanged) {
         // 当表单被修改时，提示用户是否需要刷新页面
-        const confirmationMessage = '表单已经修改，确定要离开吗？';
+        const confirmationMessage =
+          '表单已经修改，确定要离开吗？';
         event.preventDefault();
         event.returnValue = confirmationMessage; // 兼容不同浏览器的提示信息
         return confirmationMessage; // 兼容不同浏览器的提示信息
@@ -205,7 +234,10 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
     window.addEventListener('unload', handleUnload);
 
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener(
+        'beforeunload',
+        handleBeforeUnload
+      );
       window.removeEventListener('unload', handleUnload);
     };
   }, [isFormChanged]);
@@ -218,16 +250,36 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
       onCancel={handleCancel}
       maskClosable={false}
       footer={[
-        <Button key="save" onClick={handleSave} disabled={loading}>
-          暂存
-        </Button>,
-        <Button key="back" onClick={handleCancel} disabled={loading}>
+        isCreate && (
+          <Button
+            key="save"
+            onClick={handleSave}
+            disabled={loading}
+          >
+            暂存
+          </Button>
+        ),
+        <Button
+          key="back"
+          onClick={handleCancel}
+          disabled={loading}
+        >
           取消
         </Button>,
-        <Button key="reset" htmlType="reset" onClick={() => onReset()} disabled={loading}>
+        <Button
+          key="reset"
+          htmlType="reset"
+          onClick={() => onReset()}
+          disabled={loading}
+        >
           重置
         </Button>,
-        <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
+        <Button
+          key="submit"
+          type="primary"
+          loading={loading}
+          onClick={handleOk}
+        >
           {isCreate ? '提交' : '更新'}
         </Button>,
       ]}
@@ -236,7 +288,11 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
       <Spin tip="数据提交中..." spinning={loading}>
         <Row
           ref={rowRef}
-          style={{ maxHeight: '70vh', overflow: 'hidden auto', paddingInlineEnd: '15px' }}
+          style={{
+            maxHeight: '70vh',
+            overflow: 'hidden auto',
+            paddingInlineEnd: '15px',
+          }}
         >
           {FormList.map((Item) => (
             <Col span={24} key={Item.label}>
@@ -255,7 +311,9 @@ const AddProject: React.FC<Props> = ({ openModal, subForm, onStateChange }: Prop
                 }
               >
                 <Item.Component
-                  ref={(el: any) => (formRef.current[Item.label] = el)}
+                  ref={(el: any) =>
+                    (formRef.current[Item.label] = el)
+                  }
                   onFormChange={() => {
                     setIsFormChanged(true);
                   }}

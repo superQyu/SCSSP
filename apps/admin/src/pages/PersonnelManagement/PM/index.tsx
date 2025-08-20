@@ -3,7 +3,11 @@ import { useRef, useState } from 'react';
 import { ProTable } from 'components';
 import type { ActionType } from '@ant-design/pro-components';
 import { Button, message, Modal } from 'antd';
-import { ExclamationCircleFilled, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  ExclamationCircleFilled,
+  PlusOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 
 import { useBasicConfiguration } from '@/context/BasicConfigurationContext';
 
@@ -12,7 +16,9 @@ import Styled from '@/components/Styled';
 import SingleTitle from '@/components/SingleTitle';
 // 项目管理表格模型
 import type { ModesApi } from './modes/model';
-import PMmodel, { type ColumnsParamsProps } from './modes/PM.model';
+import PMmodel, {
+  type ColumnsParamsProps,
+} from './modes/PM.model';
 
 export default () => {
   const { server, setFullLoding } = useBasicConfiguration();
@@ -20,7 +26,9 @@ export default () => {
   const { PMPM: P, menus: M } = server;
   const actionRef = useRef<ActionType>();
 
-  const [subForm, setSubForm] = useState<Record<string, any>>({});
+  const [subForm, setSubForm] = useState<Record<string, any>>(
+    {}
+  );
   const [formModal, setFormModal] = useState<boolean>(false);
 
   // 修改状态
@@ -35,16 +43,20 @@ export default () => {
 
   // 删除行
   const onDelete = async (id: number) => {
-    const res = await M.deleteMenus({ ids: id }).then(async () => {
-      message.success('操作成功!');
-      await actionRef.current?.reload();
-    });
+    const res = await M.deleteMenus({ ids: id }).then(
+      async () => {
+        message.success('操作成功!');
+        await actionRef.current?.reload();
+      }
+    );
     return res;
   };
 
   const onSave = async (params: any) => {
     const res = await M.updateMenu(
-      JSON.parse(JSON.stringify({ ...params })) as ColumnsParamsProps
+      JSON.parse(
+        JSON.stringify({ ...params })
+      ) as ColumnsParamsProps
     ).then(async () => {
       message.success('信息更新成功！');
       await actionRef.current?.reload();
@@ -52,8 +64,8 @@ export default () => {
     return res;
   };
 
-  return (  
-  <div className='h-full p-18px'>
+  return (
+    <div className="h-full p-18px">
       <ProTable
         request={async (params = {}) => {
           const res = await P.projectUnityList({ ...params });
@@ -65,16 +77,16 @@ export default () => {
         }}
         actionRef={actionRef}
         scroll={{ x: 1900, y: 'auto' }}
-        onSubmit={async (params: {}) => { }}
-        pagination={{
-          pageSize: 30,
-        }}
+        onSubmit={async (params: {}) => {}}
+        // pagination={{
+        //   pageSize: 30,
+        // }}
         rowKey="id"
         headerTitle={<SingleTitle label="项目管理" />}
         columnsState={{
           persistenceKey: 'pro-table-pm-pm',
           persistenceType: 'localStorage',
-          onChange(_: any) { },
+          onChange(_: any) {},
         }}
         form={{
           syncToUrl: (values: any, _: string) => ({ ...values }),
@@ -83,7 +95,11 @@ export default () => {
         editable={{ onSave }}
         search={{
           labelWidth: 'auto',
-          optionRender: ({ searchText }: any, { form }: any, dom: any) => {
+          optionRender: (
+            { searchText }: any,
+            { form }: any,
+            dom: any
+          ) => {
             return [
               dom[0],
               <Button
@@ -98,14 +114,21 @@ export default () => {
           },
         }}
         toolBarRender={() => [
-          <Styled.ExportButton api="exportProjectUnity" fileName="项目导出" />,
+          <Styled.ExportButton
+            api="exportProjectUnity"
+            fileName="项目导出"
+          />,
           <Button
             key="button"
             icon={<PlusOutlined />}
             onClick={() => {
-              const localStorageData = localStorage.getItem('formData')
-              console.log('nwe',JSON.parse(localStorageData) )
-              setSubForm(localStorageData ? JSON.parse(localStorageData) : {});
+              const localStorageData =
+                localStorage.getItem('formData');
+              setSubForm(
+                localStorageData
+                  ? JSON.parse(localStorageData)
+                  : {}
+              );
               setFormModal(true);
             }}
             type="primary"
@@ -121,14 +144,21 @@ export default () => {
             valueType: 'option',
             key: 'option',
             fixed: 'right',
-            render: (_text: any, record: any, _: any, action: any) => [
+            render: (
+              _text: any,
+              record: any,
+              _: any,
+              action: any
+            ) => [
               <a
                 key="editable"
                 onClick={async () => {
                   setFullLoding(true);
-                  const res = await P.getProjectUnity({ id: record.id });
+                  const res = await P.getProjectUnity({
+                    id: record.id,
+                  });
                   setFullLoding(false);
-                  console.log('在修改', { ...res })
+                  console.log('在修改', { ...res });
                   setSubForm({ ...res });
                   setFormModal(true);
                 }}
@@ -148,12 +178,14 @@ export default () => {
                       okType: 'danger',
                       cancelText: '取消',
                       onOk: async () => {
-                        await P.deleteProjectUnity({ id: record.id });
+                        await P.deleteProjectUnity({
+                          id: record.id,
+                        });
                         action.reload();
                       },
-                      onCancel() { },
+                      onCancel() {},
                     });
-                  } catch (errorInfo) { }
+                  } catch (errorInfo) {}
                 }}
               >
                 删除
@@ -163,7 +195,11 @@ export default () => {
         ]}
       />
 
-      <InforModel subForm={subForm} openModal={formModal} onStateChange={handleModalStateChange} />
+      <InforModel
+        subForm={subForm}
+        openModal={formModal}
+        onStateChange={handleModalStateChange}
+      />
     </div>
   );
 };
